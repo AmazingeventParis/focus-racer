@@ -1,0 +1,4 @@
+# Force LF for shell scripts (critical for Linux deployment)
+*.sh text eol=lf
+render-build.sh text eol=lf
+scripts/* text eol=lf
