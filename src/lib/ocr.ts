@@ -51,6 +51,18 @@ async function extractWithRekognition(
 
 // --- Tesseract.js (dev/local fallback when AWS not configured) ---
 
+const OCR_TIMEOUT_MS = 30_000; // 30s max per photo
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms);
+    promise.then(
+      (v) => { clearTimeout(timer); resolve(v); },
+      (e) => { clearTimeout(timer); reject(e); }
+    );
+  });
+}
+
 async function extractWithTesseract(
   imagePath: string,
   validBibs?: Set<string>
@@ -58,16 +70,20 @@ async function extractWithTesseract(
   try {
     console.log(`[OCR] Tesseract (no AWS) on: ${imagePath}`);
 
-    const result = await Tesseract.recognize(imagePath, "eng", {
-      logger: (m) => {
-        if (m.status === "recognizing text") {
-          const pct = Math.round(m.progress * 100);
-          if (pct % 25 === 0) {
-            console.log(`[OCR] Tesseract progress: ${pct}%`);
+    const result = await withTimeout(
+      Tesseract.recognize(imagePath, "eng", {
+        logger: (m) => {
+          if (m.status === "recognizing text") {
+            const pct = Math.round(m.progress * 100);
+            if (pct % 25 === 0) {
+              console.log(`[OCR] Tesseract progress: ${pct}%`);
+            }
           }
-        }
-      },
-    });
+        },
+      }),
+      OCR_TIMEOUT_MS,
+      "Tesseract OCR"
+    );
 
     const rawText = result.data.text;
     const confidence = result.data.confidence;

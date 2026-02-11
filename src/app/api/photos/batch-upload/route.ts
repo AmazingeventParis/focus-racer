@@ -357,29 +357,33 @@ export async function POST(request: NextRequest) {
     let processedCount = 0;
     for (const photo of photos) {
       processingQueue.enqueue(async () => {
-        await processPhotoWithProgress(
-          photo.id,
-          photo.webPath,
-          eventId,
-          event.name,
-          sessionId,
-          photo.index,
-          nbPhotos,
-          ocrProvider,
-          creditsPerPhoto
-        );
+        try {
+          await processPhotoWithProgress(
+            photo.id,
+            photo.webPath,
+            eventId,
+            event.name,
+            sessionId,
+            photo.index,
+            nbPhotos,
+            ocrProvider,
+            creditsPerPhoto
+          );
+        } catch (err) {
+          console.error(`[Batch] Unhandled error for photo ${photo.id}:`, err);
+        } finally {
+          processedCount++;
+          const isComplete = processedCount >= nbPhotos;
 
-        processedCount++;
-        const isComplete = processedCount >= nbPhotos;
+          updateUploadProgress(sessionId, {
+            processed: processedCount,
+            currentStep: isComplete ? "Termine !" : `Traitement en cours...`,
+            complete: isComplete,
+          });
 
-        updateUploadProgress(sessionId, {
-          processed: processedCount,
-          currentStep: isComplete ? "Termine !" : `Traitement en cours...`,
-          complete: isComplete,
-        });
-
-        if (isComplete) {
-          scheduleAutoClustering(eventId);
+          if (isComplete) {
+            scheduleAutoClustering(eventId);
+          }
         }
       });
     }
