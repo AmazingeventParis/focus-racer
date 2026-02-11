@@ -182,10 +182,10 @@ export default function LiveUploadPage({
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-orange flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-emerald flex items-center justify-center">
                 <span className="text-white font-bold text-sm">FR</span>
               </div>
-              <span className="text-xl font-bold">Focus <span className="text-orange">Racer</span></span>
+              <span className="text-xl font-bold">Focus <span className="text-emerald">Racer</span></span>
             </Link>
             <Badge variant={isConnected ? "default" : "destructive"} className={isConnected ? "bg-emerald-500" : ""}>
               {isConnected ? "En direct" : "Déconnecté"}
@@ -207,7 +207,7 @@ export default function LiveUploadPage({
         <div className="grid grid-cols-3 gap-4 mb-8">
           <Card className="bg-gray-800 border-white/10 rounded-2xl">
             <CardContent className="pt-6 text-center">
-              <p className="text-4xl font-bold text-orange">{stats.totalPhotos}</p>
+              <p className="text-4xl font-bold text-emerald">{stats.totalPhotos}</p>
               <p className="text-sm text-white/50 mt-1">Photos reçues</p>
             </CardContent>
           </Card>
@@ -240,7 +240,7 @@ export default function LiveUploadPage({
               <div
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
-                className="border-2 border-dashed border-white/10 rounded-xl p-12 text-center hover:border-orange transition-colors cursor-pointer"
+                className="border-2 border-dashed border-white/10 rounded-xl p-12 text-center hover:border-emerald transition-colors cursor-pointer"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <input
@@ -253,13 +253,13 @@ export default function LiveUploadPage({
                 />
                 <div className="text-5xl mb-4">
                   {isUploading ? (
-                    <div className="animate-spin w-12 h-12 border-4 border-orange border-t-transparent rounded-full mx-auto" />
+                    <div className="animate-spin w-12 h-12 border-4 border-emerald border-t-transparent rounded-full mx-auto" />
                   ) : (
                     <span className="text-white/40">&#128247;</span>
                   )}
                 </div>
                 {isUploading ? (
-                  <p className="text-orange">
+                  <p className="text-emerald">
                     Envoi en cours... ({uploadQueue.length} restant{uploadQueue.length > 1 ? "s" : ""})
                   </p>
                 ) : (
@@ -274,7 +274,7 @@ export default function LiveUploadPage({
                 <div className="mt-4">
                   <div className="bg-white/5 rounded-full h-2 overflow-hidden">
                     <div
-                      className="bg-orange h-full transition-all duration-300"
+                      className="bg-emerald h-full transition-all duration-300"
                       style={{ width: `${stats.totalPhotos > 0 ? (stats.processed / stats.totalPhotos) * 100 : 0}%` }}
                     />
                   </div>
@@ -324,7 +324,7 @@ export default function LiveUploadPage({
                       <div className="flex gap-1 flex-shrink-0">
                         {photo.bibNumbers.length > 0 ? (
                           photo.bibNumbers.map((bib) => (
-                            <Badge key={bib} variant="secondary" className="text-xs bg-orange/20">
+                            <Badge key={bib} variant="secondary" className="text-xs bg-emerald/20">
                               #{bib}
                             </Badge>
                           ))

@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+﻿import { Resend } from "resend";
 
 const resend = process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== "re_PLACEHOLDER"
   ? new Resend(process.env.RESEND_API_KEY)
@@ -55,14 +55,14 @@ export async function sendRunnerNotification(data: RunnerNotificationData) {
         <style>
           body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { text-align: center; padding: 20px 0; border-bottom: 2px solid #3b82f6; }
+          .header { text-align: center; padding: 20px 0; border-bottom: 2px solid #14B8A6; }
           .header h1 { color: #1f2937; margin: 0; font-size: 24px; }
           .content { padding: 30px 0; }
-          .info-box { background: #f0f9ff; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6; }
+          .info-box { background: #f0f9ff; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #14B8A6; }
           .info-row { padding: 4px 0; }
           .info-label { color: #6b7280; font-size: 14px; }
           .info-value { font-weight: 600; }
-          .btn { display: inline-block; background: #3b82f6; color: white; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 16px; margin: 20px 0; }
+          .btn { display: inline-block; background: #14B8A6; color: white; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 16px; margin: 20px 0; }
           .note { color: #6b7280; font-size: 14px; }
           .footer { border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; color: #9ca3af; font-size: 12px; text-align: center; }
         </style>
@@ -149,7 +149,7 @@ export async function sendPurchaseConfirmation(data: PurchaseEmailData) {
         <style>
           body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { text-align: center; padding: 20px 0; border-bottom: 2px solid #3b82f6; }
+          .header { text-align: center; padding: 20px 0; border-bottom: 2px solid #14B8A6; }
           .header h1 { color: #1f2937; margin: 0; font-size: 24px; }
           .content { padding: 30px 0; }
           .order-box { background: #f9fafb; border-radius: 8px; padding: 20px; margin: 20px 0; }
@@ -157,7 +157,7 @@ export async function sendPurchaseConfirmation(data: PurchaseEmailData) {
           .order-row .label { color: #6b7280; }
           .order-row .value { font-weight: 600; }
           .total-row { border-top: 1px solid #e5e7eb; margin-top: 8px; padding-top: 12px; font-size: 18px; }
-          .btn { display: inline-block; background: #3b82f6; color: white; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 16px; margin: 20px 0; }
+          .btn { display: inline-block; background: #14B8A6; color: white; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 16px; margin: 20px 0; }
           .btn:hover { background: #2563eb; }
           .note { color: #6b7280; font-size: 14px; }
           .footer { border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; color: #9ca3af; font-size: 12px; text-align: center; }

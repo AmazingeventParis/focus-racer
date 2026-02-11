@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -79,11 +79,11 @@ export default function AdminSidebar() {
     <aside className="w-64 gradient-navy text-white min-h-screen flex flex-col">
       <div className="p-6">
         <Link href="/admin/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg gradient-orange flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg gradient-emerald flex items-center justify-center">
             <span className="text-white font-bold text-sm">FR</span>
           </div>
           <span className="text-lg font-bold">
-            Focus <span className="text-orange">Racer</span>
+            Focus <span className="text-emerald">Racer</span>
           </span>
         </Link>
         <p className="text-navy-200 text-xs mt-2 ml-10">Administration</p>
@@ -100,11 +100,11 @@ export default function AdminSidebar() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-white/10 text-orange shadow-sm"
+                      ? "bg-white/10 text-emerald shadow-sm"
                       : "text-navy-100 hover:bg-white/5 hover:text-white"
                   )}
                 >
-                  <span className={cn(isActive ? "text-orange" : "text-navy-200")}>
+                  <span className={cn(isActive ? "text-emerald" : "text-navy-200")}>
                     {item.icon}
                   </span>
                   {item.label}

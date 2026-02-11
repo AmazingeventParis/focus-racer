@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 const StripePayment = dynamic(() => import("@/components/stripe-payment"), {
   ssr: false,
   loading: () => (
-    <div className="animate-pulse bg-orange-50 rounded-lg h-48" />
+    <div className="animate-pulse bg-emerald-50 rounded-lg h-48" />
   ),
 });
 
@@ -149,7 +149,7 @@ export default function CheckoutPage({
   };
 
   const { total, savings, packUsed } = calculateTotal();
-  const primaryColor = eventInfo?.primaryColor || "#3b82f6";
+  const primaryColor = eventInfo?.primaryColor || "#14B8A6";
 
   const handleProceedToPayment = async () => {
     setError(null);
@@ -277,7 +277,7 @@ export default function CheckoutPage({
                     <button
                       onClick={() => setSelectedPackId(null)}
                       className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${
-                        !selectedPackId ? "border-orange bg-orange-50" : "border-orange-50 hover:border-orange/30"
+                        !selectedPackId ? "border-emerald bg-emerald-50" : "border-emerald-50 hover:border-emerald/30"
                       }`}
                     >
                       <div className="flex justify-between items-center">
@@ -302,9 +302,9 @@ export default function CheckoutPage({
                           disabled={!isApplicable}
                           className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${
                             selectedPackId === pack.id
-                              ? "border-orange bg-orange-50"
+                              ? "border-emerald bg-emerald-50"
                               : isApplicable
-                              ? "border-orange-50 hover:border-orange/30"
+                              ? "border-emerald-50 hover:border-emerald/30"
                               : "border-white/50 opacity-50 cursor-not-allowed"
                           }`}
                         >
@@ -319,7 +319,7 @@ export default function CheckoutPage({
                                   : "1 photo"}
                               </p>
                             </div>
-                            <span className="font-semibold text-orange">{pack.price.toFixed(2)}\u20AC</span>
+                            <span className="font-semibold text-emerald">{pack.price.toFixed(2)}\u20AC</span>
                           </div>
                         </button>
                       );
@@ -337,7 +337,7 @@ export default function CheckoutPage({
                 </CardHeader>
                 <CardContent>
                   {session?.user ? (
-                    <div className="bg-orange-50 rounded-lg p-4">
+                    <div className="bg-emerald-50 rounded-lg p-4">
                       <p className="text-sm text-muted-foreground">Connecté en tant que</p>
                       <p className="font-medium">{session.user.name}</p>
                       <p className="text-sm text-muted-foreground">{session.user.email}</p>
@@ -346,7 +346,7 @@ export default function CheckoutPage({
                     <div className="space-y-4">
                       <p className="text-sm text-muted-foreground">
                         Renseignez vos coordonnées pour recevoir vos photos par email.
-                        <Link href="/login" className="text-orange hover:text-orange-dark transition-colors ml-1">
+                        <Link href="/login" className="text-emerald hover:text-emerald-dark transition-colors ml-1">
                           Ou connectez-vous
                         </Link>
                       </p>
@@ -411,7 +411,7 @@ export default function CheckoutPage({
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{photos.length} photo{photos.length > 1 ? "s" : ""}</span>
                   {packUsed && (
-                    <Badge variant="outline" className="text-xs border-orange/30 text-orange">{packUsed.name}</Badge>
+                    <Badge variant="outline" className="text-xs border-emerald/30 text-emerald">{packUsed.name}</Badge>
                   )}
                 </div>
 
@@ -425,7 +425,7 @@ export default function CheckoutPage({
                 <div className="border-t pt-4">
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-orange">{total.toFixed(2)}\u20AC</span>
+                    <span className="text-emerald">{total.toFixed(2)}\u20AC</span>
                   </div>
                 </div>
 
@@ -435,7 +435,7 @@ export default function CheckoutPage({
 
                 {!clientSecret && (
                   <Button
-                    className="w-full bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200"
+                    className="w-full bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200"
                     size="lg"
                     style={{ backgroundColor: primaryColor }}
                     onClick={handleProceedToPayment}

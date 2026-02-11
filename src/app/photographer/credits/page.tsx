@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
@@ -25,9 +25,9 @@ const CREDIT_PACKS = [
 ];
 
 const TYPE_LABELS: Record<string, { label: string; color: string }> = {
-  PURCHASE: { label: "Achat", color: "bg-blue-100 text-blue-700" },
-  DEDUCTION: { label: "Deduction", color: "bg-orange-100 text-orange-700" },
-  REFUND: { label: "Remboursement", color: "bg-emerald-100 text-emerald-700" },
+  PURCHASE: { label: "Achat", color: "bg-teal-100 text-teal-700" },
+  DEDUCTION: { label: "Deduction", color: "bg-amber-100 text-amber-700" },
+  REFUND: { label: "Remboursement", color: "bg-green-100 text-green-700" },
   ADMIN_GRANT: { label: "Admin", color: "bg-purple-100 text-purple-700" },
 };
 
@@ -132,12 +132,12 @@ export default function CreditsPage() {
                   <Button
                     key={pack.amount}
                     variant="outline"
-                    className="h-auto py-4 flex flex-col gap-1 border-gray-200 hover:border-orange-300 hover:bg-orange-50 rounded-xl transition-all"
+                    className="h-auto py-4 flex flex-col gap-1 border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 rounded-xl transition-all"
                     onClick={() => buyCredits(pack.amount)}
                     disabled={loadingPack !== null}
                   >
                     {loadingPack === pack.amount ? (
-                      <svg className="animate-spin h-5 w-5 text-orange-500" viewBox="0 0 24 24">
+                      <svg className="animate-spin h-5 w-5 text-emerald-500" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
@@ -177,8 +177,8 @@ export default function CreditsPage() {
                 <Button
                   className={
                     session?.user?.stripeAccountId
-                      ? "text-orange-500 border-orange-200 hover:bg-orange-50 rounded-lg"
-                      : "bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-orange"
+                      ? "text-emerald-500 border-emerald-200 hover:bg-emerald-50 rounded-lg"
+                      : "bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg shadow-emerald"
                   }
                   variant={session?.user?.stripeAccountId ? "outline" : "default"}
                 >
@@ -290,13 +290,13 @@ export default function CreditsPage() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Balance card */}
-          <Card className="bg-gradient-to-br from-orange-500 to-orange-700 text-white border-0 shadow-lg shadow-orange-500/20 rounded-xl">
+          <Card className="bg-gradient-to-br from-emerald-500 to-emerald-700 text-white border-0 shadow-lg shadow-emerald-500/20 rounded-xl">
             <CardContent className="p-6">
-              <p className="text-orange-100 text-sm">Solde disponible</p>
+              <p className="text-emerald-100 text-sm">Solde disponible</p>
               <p className="text-4xl font-bold font-display mt-2">
                 {credits.toLocaleString("fr-FR")}
               </p>
-              <p className="text-orange-200 text-sm mt-1">credits</p>
+              <p className="text-emerald-200 text-sm mt-1">credits</p>
               {isTestMode && (
                 <Badge className="mt-3 bg-white/20 text-white border-0 text-xs">
                   Mode test - Credits illimites
@@ -312,15 +312,15 @@ export default function CreditsPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-gray-600">
               <div className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold">1</span>
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">1</span>
                 <p>Rechargez votre compte en credits</p>
               </div>
               <div className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold">2</span>
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">2</span>
                 <p>Importez vos photos (1 photo = 1 credit)</p>
               </div>
               <div className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold">3</span>
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">3</span>
                 <p>L&apos;IA analyse automatiquement vos photos</p>
               </div>
               <div className="flex gap-3">

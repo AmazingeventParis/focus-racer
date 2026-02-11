@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
@@ -192,7 +192,7 @@ export default function MarketplacePage() {
               {isOrganizer && (
                 <Dialog open={createOpen} onOpenChange={setCreateOpen}>
                   <DialogTrigger asChild>
-                    <Button className="bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200">Publier une annonce</Button>
+                    <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">Publier une annonce</Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-lg">
                     <DialogHeader>
@@ -210,7 +210,7 @@ export default function MarketplacePage() {
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                           placeholder="Décrivez l'événement, le nombre de photographes souhaités, les attentes..."
-                          className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange"
+                          className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
                           required
                         />
                       </div>
@@ -247,10 +247,10 @@ export default function MarketplacePage() {
                           value={requirements}
                           onChange={(e) => setRequirements(e.target.value)}
                           placeholder="Matériel requis, expérience minimum..."
-                          className="flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange"
+                          className="flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
                         />
                       </div>
-                      <Button type="submit" className="w-full bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200" disabled={isCreating}>
+                      <Button type="submit" className="w-full bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200" disabled={isCreating}>
                         {isCreating ? "Publication..." : "Publier l'annonce"}
                       </Button>
                     </form>
@@ -267,7 +267,7 @@ export default function MarketplacePage() {
               <CardContent className="py-12 text-center">
                 <p className="text-muted-foreground">Aucune annonce pour le moment</p>
                 {isOrganizer && (
-                  <Button className="mt-4 bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200" onClick={() => setCreateOpen(true)}>
+                  <Button className="mt-4 bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200" onClick={() => setCreateOpen(true)}>
                     Publiez la première annonce
                   </Button>
                 )}
@@ -285,7 +285,7 @@ export default function MarketplacePage() {
                           par {listing.creator.company || listing.creator.name}
                         </CardDescription>
                       </div>
-                      <Badge variant="outline" className="text-xs flex-shrink-0 border-orange/30 text-orange">
+                      <Badge variant="outline" className="text-xs flex-shrink-0 border-emerald/30 text-emerald">
                         {SPORT_LABELS[listing.sportType] || listing.sportType}
                       </Badge>
                     </div>
@@ -324,7 +324,7 @@ export default function MarketplacePage() {
                         if (!open) { setApplyMessage(""); setApplyRate(""); }
                       }}>
                         <DialogTrigger asChild>
-                          <Button className="w-full bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200" size="sm">Postuler</Button>
+                          <Button className="w-full bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200" size="sm">Postuler</Button>
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
@@ -338,7 +338,7 @@ export default function MarketplacePage() {
                                 value={applyMessage}
                                 onChange={(e) => setApplyMessage(e.target.value)}
                                 placeholder="Présentez-vous, votre expérience, votre matériel..."
-                                className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange"
+                                className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
                               />
                             </div>
                             <div className="space-y-2">
@@ -350,7 +350,7 @@ export default function MarketplacePage() {
                                 placeholder="Ex: 350"
                               />
                             </div>
-                            <Button className="w-full bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200" onClick={() => handleApply(listing.id)}>
+                            <Button className="w-full bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200" onClick={() => handleApply(listing.id)}>
                               Envoyer ma candidature
                             </Button>
                           </div>
@@ -360,7 +360,7 @@ export default function MarketplacePage() {
 
                     {!session?.user && (
                       <Link href="/login">
-                        <Button variant="outline" className="w-full border-orange text-orange hover:bg-orange-50" size="sm">
+                        <Button variant="outline" className="w-full border-emerald text-emerald hover:bg-emerald-50" size="sm">
                           Connectez-vous pour postuler
                         </Button>
                       </Link>

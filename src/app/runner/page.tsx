@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -118,15 +118,15 @@ export default function RunnerPage() {
                       </div>
                     ) : (
                       <div
-                        className="aspect-video flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100"
+                        className="aspect-video flex items-center justify-center bg-gradient-to-br from-emerald-50 to-emerald-100"
                       >
-                        <span className="text-4xl font-bold text-orange/40">
+                        <span className="text-4xl font-bold text-emerald/40">
                           {SPORT_LABELS[event.sportType]?.[0] || "E"}
                         </span>
                       </div>
                     )}
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg text-navy group-hover:text-orange transition-colors">{event.name}</CardTitle>
+                      <CardTitle className="text-lg text-navy group-hover:text-emerald transition-colors">{event.name}</CardTitle>
                       <CardDescription>
                         {new Date(event.date).toLocaleDateString("fr-FR", {
                           day: "numeric",
@@ -139,8 +139,8 @@ export default function RunnerPage() {
                     <CardContent>
                       <div className="flex justify-between items-center">
                         <div className="flex gap-2">
-                          <Badge variant="outline" className="border-orange/30 text-orange">{SPORT_LABELS[event.sportType] || event.sportType}</Badge>
-                          <Badge className="bg-orange/10 text-orange hover:bg-orange/10">
+                          <Badge variant="outline" className="border-emerald/30 text-emerald">{SPORT_LABELS[event.sportType] || event.sportType}</Badge>
+                          <Badge className="bg-emerald/10 text-emerald hover:bg-emerald/10">
                             {event._count.photos} photo{event._count.photos !== 1 ? "s" : ""}
                           </Badge>
                         </div>

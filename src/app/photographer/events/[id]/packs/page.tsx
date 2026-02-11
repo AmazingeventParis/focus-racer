@@ -170,7 +170,7 @@ export default function PacksPage({
     <div className="p-8 max-w-4xl animate-fade-in">
       <Link
         href={`/photographer/events/${id}`}
-        className="text-orange hover:text-orange-dark transition-colors mb-4 inline-block"
+        className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
       >
         &larr; Retour a {eventName || "l'evenement"}
       </Link>
@@ -237,7 +237,7 @@ export default function PacksPage({
                   </div>
                 )}
               </div>
-              <Button type="submit" disabled={isCreating} className="bg-orange hover:bg-orange-hover text-white shadow-orange transition-all duration-200">
+              <Button type="submit" disabled={isCreating} className="bg-emerald hover:bg-emerald-hover text-white shadow-emerald transition-all duration-200">
                 {isCreating ? "Création..." : "Créer le pack"}
               </Button>
             </form>
@@ -275,14 +275,14 @@ export default function PacksPage({
                       <TableRow key={pack.id}>
                         <TableCell className="font-medium">{pack.name}</TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="border-orange/30 text-orange">
+                          <Badge variant="outline" className="border-emerald/30 text-emerald">
                             {PACK_TYPES.find((p) => p.value === pack.type)?.label || pack.type}
                           </Badge>
                         </TableCell>
                         <TableCell>{pack.price.toFixed(2)} &euro;</TableCell>
                         <TableCell>{pack.quantity ?? "Illimité"}</TableCell>
                         <TableCell>
-                          <Badge variant={pack.isActive ? "default" : "secondary"} className={pack.isActive ? "bg-orange" : ""}>
+                          <Badge variant={pack.isActive ? "default" : "secondary"} className={pack.isActive ? "bg-emerald" : ""}>
                             {pack.isActive ? "Actif" : "Inactif"}
                           </Badge>
                         </TableCell>

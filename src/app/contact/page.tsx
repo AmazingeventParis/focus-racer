@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Header from "@/components/layout/Header";
@@ -63,22 +63,22 @@ export default function ContactPage() {
 
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-orange" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-emerald" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                       </svg>
                     </div>
                     <div>
                       <p className="font-medium text-navy">Email</p>
-                      <a href="mailto:contact@focusracer.com" className="text-orange hover:text-orange-dark transition-colors">
+                      <a href="mailto:contact@focusracer.com" className="text-emerald hover:text-emerald-dark transition-colors">
                         contact@focusracer.com
                       </a>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-orange" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-emerald" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
@@ -89,8 +89,8 @@ export default function ContactPage() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-orange" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-emerald" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
                       </svg>
@@ -136,7 +136,7 @@ export default function ContactPage() {
                               id="name"
                               name="name"
                               required
-                              className="bg-white/50 border-white/30 focus:border-orange focus:ring-orange"
+                              className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                             />
                           </div>
                           <div className="space-y-2">
@@ -146,7 +146,7 @@ export default function ContactPage() {
                               name="email"
                               type="email"
                               required
-                              className="bg-white/50 border-white/30 focus:border-orange focus:ring-orange"
+                              className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                             />
                           </div>
                         </div>
@@ -156,7 +156,7 @@ export default function ContactPage() {
                             id="subject"
                             name="subject"
                             required
-                            className="bg-white/50 border-white/30 focus:border-orange focus:ring-orange"
+                            className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                           />
                         </div>
                         <div className="space-y-2">
@@ -166,12 +166,12 @@ export default function ContactPage() {
                             name="message"
                             rows={5}
                             required
-                            className="flex w-full rounded-xl border border-white/30 bg-white/50 px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange"
+                            className="flex w-full rounded-xl border border-white/30 bg-white/50 px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
                           />
                         </div>
                         <Button
                           type="submit"
-                          className="w-full bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200"
+                          className="w-full bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200"
                           disabled={isLoading}
                         >
                           {isLoading ? "Envoi en cours..." : "Envoyer le message"}

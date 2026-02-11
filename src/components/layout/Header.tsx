@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -45,11 +45,11 @@ export default function Header() {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg gradient-orange flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg gradient-emerald flex items-center justify-center">
             <span className="text-white font-bold text-sm">FR</span>
           </div>
           <span className="text-xl font-bold text-navy">
-            Focus <span className="text-orange">Racer</span>
+            Focus <span className="text-emerald">Racer</span>
           </span>
         </Link>
 
@@ -62,8 +62,8 @@ export default function Header() {
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                 pathname === link.href
-                  ? "text-orange bg-orange-50"
-                  : "text-navy-600 hover:text-orange hover:bg-orange-50/50"
+                  ? "text-emerald bg-emerald-50"
+                  : "text-navy-600 hover:text-emerald hover:bg-emerald-50/50"
               )}
             >
               {link.label}
@@ -75,19 +75,19 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-3">
           {session ? (
             <Link href={dashboardHref}>
-              <Button className="bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200">
+              <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
                 Mon espace
               </Button>
             </Link>
           ) : (
             <>
               <Link href="/login">
-                <Button variant="ghost" className="text-navy hover:text-orange hover:bg-orange-50/50">
+                <Button variant="ghost" className="text-navy hover:text-emerald hover:bg-emerald-50/50">
                   Connexion
                 </Button>
               </Link>
               <Link href="/register">
-                <Button className="bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200">
+                <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
                   Inscription
                 </Button>
               </Link>
@@ -127,8 +127,8 @@ export default function Header() {
                 className={cn(
                   "px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200",
                   pathname === link.href
-                    ? "text-orange bg-orange-50"
-                    : "text-navy-600 hover:text-orange hover:bg-orange-50/50"
+                    ? "text-emerald bg-emerald-50"
+                    : "text-navy-600 hover:text-emerald hover:bg-emerald-50/50"
                 )}
               >
                 {link.label}
@@ -137,19 +137,19 @@ export default function Header() {
             <div className="border-t border-gray-100 mt-2 pt-4 flex flex-col gap-2">
               {session ? (
                 <Link href={dashboardHref}>
-                  <Button className="w-full bg-orange hover:bg-orange-dark text-white">
+                  <Button className="w-full bg-emerald hover:bg-emerald-dark text-white">
                     Mon espace
                   </Button>
                 </Link>
               ) : (
                 <>
                   <Link href="/login">
-                    <Button variant="outline" className="w-full border-orange text-orange hover:bg-orange-50">
+                    <Button variant="outline" className="w-full border-emerald text-emerald hover:bg-emerald-50">
                       Connexion
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button className="w-full bg-orange hover:bg-orange-dark text-white">
+                    <Button className="w-full bg-emerald hover:bg-emerald-dark text-white">
                       Inscription
                     </Button>
                   </Link>

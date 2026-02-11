@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -39,7 +39,7 @@ interface OrderData {
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   PENDING: { label: "En attente", color: "bg-yellow-100 text-yellow-800" },
   PAID: { label: "Payé", color: "bg-emerald-100 text-emerald-700" },
-  DELIVERED: { label: "Livré", color: "bg-blue-100 text-blue-800" },
+  DELIVERED: { label: "Livré", color: "bg-teal-100 text-teal-800" },
   REFUNDED: { label: "Remboursé", color: "bg-white/50 text-muted-foreground" },
   EXPIRED: { label: "Expiré", color: "bg-red-100 text-red-800" },
 };
@@ -164,7 +164,7 @@ export default function PurchasesPage() {
                         {order.items.slice(0, 8).map((item) => (
                           <div
                             key={item.photo.id}
-                            className="w-16 h-16 flex-shrink-0 relative rounded overflow-hidden bg-orange-50"
+                            className="w-16 h-16 flex-shrink-0 relative rounded overflow-hidden bg-emerald-50"
                           >
                             {item.photo.thumbnail ? (
                               <Image
@@ -182,7 +182,7 @@ export default function PurchasesPage() {
                           </div>
                         ))}
                         {order.items.length > 8 && (
-                          <div className="w-16 h-16 flex-shrink-0 rounded bg-orange-50 flex items-center justify-center text-sm text-muted-foreground">
+                          <div className="w-16 h-16 flex-shrink-0 rounded bg-emerald-50 flex items-center justify-center text-sm text-muted-foreground">
                             +{order.items.length - 8}
                           </div>
                         )}
@@ -194,7 +194,7 @@ export default function PurchasesPage() {
                           {order.downloadToken && !tokenExpired ? (
                             <>
                               <a href={`/api/downloads/${order.downloadToken}`}>
-                                <Button size="sm" className="bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200">
+                                <Button size="sm" className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
                                   Télécharger (ZIP)
                                 </Button>
                               </a>

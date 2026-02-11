@@ -239,7 +239,7 @@ export default function UploadPage({
       <div className="p-8 max-w-2xl mx-auto animate-fade-in">
         <button
           onClick={goBackToSelect}
-          className="text-orange-500 hover:text-orange-600 transition-colors mb-4 inline-block text-sm"
+          className="text-emerald-500 hover:text-emerald-600 transition-colors mb-4 inline-block text-sm"
         >
           &larr; Retour a la selection
         </button>
@@ -264,7 +264,7 @@ export default function UploadPage({
                 <p className="text-sm text-gray-500 mt-1">photos</p>
               </div>
               <div className="p-4 rounded-xl bg-gray-50 text-center">
-                <p className="text-3xl font-bold text-orange-500">{selectedFiles.length}</p>
+                <p className="text-3xl font-bold text-emerald-500">{selectedFiles.length}</p>
                 <p className="text-sm text-gray-500 mt-1">credits necessaires</p>
               </div>
             </div>
@@ -296,12 +296,12 @@ export default function UploadPage({
                   onClick={() => setOcrProvider("tesseract")}
                   className={`relative p-4 rounded-xl border-2 text-left transition-all ${
                     ocrProvider === "tesseract"
-                      ? "border-orange-500 bg-orange-50/50 shadow-sm"
+                      ? "border-emerald-500 bg-emerald-50/50 shadow-sm"
                       : "border-gray-200 hover:border-gray-300 bg-white"
                   }`}
                 >
                   {ocrProvider === "tesseract" && (
-                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center">
+                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
                       <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                       </svg>
@@ -332,12 +332,12 @@ export default function UploadPage({
                   onClick={() => setOcrProvider("aws")}
                   className={`relative p-4 rounded-xl border-2 text-left transition-all ${
                     ocrProvider === "aws"
-                      ? "border-orange-500 bg-orange-50/50 shadow-sm"
+                      ? "border-emerald-500 bg-emerald-50/50 shadow-sm"
                       : "border-gray-200 hover:border-gray-300 bg-white"
                   }`}
                 >
                   {ocrProvider === "aws" && (
-                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center">
+                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
                       <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                       </svg>
@@ -365,7 +365,7 @@ export default function UploadPage({
             </div>
 
             {/* Info */}
-            <div className="p-4 rounded-xl bg-blue-50 border border-blue-100 text-sm text-blue-700">
+            <div className="p-4 rounded-xl bg-teal-50 border border-teal-100 text-sm text-teal-700">
               Les credits des photos orphelines (sans dossard detecte) vous seront automatiquement restitues.
             </div>
 
@@ -395,7 +395,7 @@ export default function UploadPage({
               <Button
                 onClick={startUpload}
                 disabled={!hasEnoughCredits || isUploading}
-                className="flex-1 bg-orange-500 hover:bg-orange-600 text-white rounded-xl shadow-lg shadow-orange-500/20 disabled:opacity-50"
+                className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-500/20 disabled:opacity-50"
               >
                 {isUploading ? (
                   <span className="flex items-center gap-2">
@@ -421,7 +421,7 @@ export default function UploadPage({
     <div className="p-8 max-w-4xl animate-fade-in">
       <Link
         href={`/photographer/events/${id}`}
-        className="text-orange-500 hover:text-orange-600 transition-colors mb-4 inline-block"
+        className="text-emerald-500 hover:text-emerald-600 transition-colors mb-4 inline-block"
       >
         &larr; Retour a l&apos;evenement
       </Link>
@@ -442,8 +442,8 @@ export default function UploadPage({
           <div
             className={`border-2 border-dashed rounded-2xl p-12 text-center transition-colors ${
               isDragging
-                ? "border-orange-500 bg-orange-50"
-                : "border-orange-200 hover:border-orange-300"
+                ? "border-emerald-500 bg-emerald-50"
+                : "border-emerald-200 hover:border-emerald-300"
             }`}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
@@ -478,7 +478,7 @@ export default function UploadPage({
                 Glissez-deposez vos photos ici
               </p>
               <p className="text-muted-foreground mb-4">ou cliquez pour selectionner</p>
-              <Button type="button" variant="outline" className="border-orange-200 text-orange-500 hover:bg-orange-50">
+              <Button type="button" variant="outline" className="border-emerald-200 text-emerald-500 hover:bg-emerald-50">
                 Selectionner des fichiers
               </Button>
             </label>
@@ -499,7 +499,7 @@ export default function UploadPage({
                   variant="outline"
                   size="sm"
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-orange-200 text-orange-500 hover:bg-orange-50 rounded-lg"
+                  className="border-emerald-200 text-emerald-500 hover:bg-emerald-50 rounded-lg"
                 >
                   + Ajouter
                 </Button>
@@ -547,7 +547,7 @@ export default function UploadPage({
               </p>
               <Button
                 onClick={goToConfirm}
-                className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-8 shadow-lg shadow-orange-500/20"
+                className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl px-8 shadow-lg shadow-emerald-500/20"
               >
                 Continuer
               </Button>

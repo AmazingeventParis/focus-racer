@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -83,12 +83,12 @@ export default function PricingPage() {
                 <Card
                   key={plan.name}
                   className={`glass-card rounded-2xl relative overflow-hidden transition-all duration-300 hover:shadow-glass-lg ${
-                    plan.popular ? "ring-2 ring-orange shadow-orange-lg" : ""
+                    plan.popular ? "ring-2 ring-emerald shadow-emerald-lg" : ""
                   }`}
                 >
                   {plan.popular && (
                     <div className="absolute top-0 right-0">
-                      <Badge className="rounded-none rounded-bl-xl bg-orange text-white px-3 py-1">
+                      <Badge className="rounded-none rounded-bl-xl bg-emerald text-white px-3 py-1">
                         Populaire
                       </Badge>
                     </div>
@@ -106,7 +106,7 @@ export default function PricingPage() {
                       {plan.features.map((feature) => (
                         <li key={feature} className="flex items-start gap-2 text-sm">
                           <svg
-                            className="w-5 h-5 text-orange flex-shrink-0 mt-0.5"
+                            className="w-5 h-5 text-emerald flex-shrink-0 mt-0.5"
                             fill="none"
                             viewBox="0 0 24 24"
                             strokeWidth={2}
@@ -122,8 +122,8 @@ export default function PricingPage() {
                       <Button
                         className={`w-full ${
                           plan.popular
-                            ? "bg-orange hover:bg-orange-dark text-white shadow-orange"
-                            : "bg-white border border-orange/30 text-orange hover:bg-orange-50"
+                            ? "bg-emerald hover:bg-emerald-dark text-white shadow-emerald"
+                            : "bg-white border border-emerald/30 text-emerald hover:bg-emerald-50"
                         } transition-all duration-200`}
                       >
                         {plan.cta}
@@ -146,7 +146,7 @@ export default function PricingPage() {
               Notre equipe est la pour vous aider. N&apos;hesitez pas a nous contacter.
             </p>
             <Link href="/contact">
-              <Button className="bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200">
+              <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
                 Nous contacter
               </Button>
             </Link>

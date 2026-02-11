@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
@@ -128,7 +128,7 @@ export default function AdminEventsPage() {
             <CardTitle className="text-sm text-muted-foreground">Commandes payées (page)</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-blue-600">{totalOrders}</p>
+            <p className="text-2xl font-bold text-teal-600">{totalOrders}</p>
           </CardContent>
         </Card>
         <Card className="glass-card">
@@ -136,7 +136,7 @@ export default function AdminEventsPage() {
             <CardTitle className="text-sm text-muted-foreground">CA généré (page)</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-orange">{totalRevenue.toFixed(2)}€</p>
+            <p className="text-2xl font-bold text-emerald">{totalRevenue.toFixed(2)}€</p>
           </CardContent>
         </Card>
       </div>
@@ -208,7 +208,7 @@ export default function AdminEventsPage() {
                           <TableCell>
                             <Link
                               href={`/admin/users/${event.user.id}`}
-                              className="text-orange hover:text-orange-dark transition-colors text-sm"
+                              className="text-emerald hover:text-emerald-dark transition-colors text-sm"
                             >
                               {event.user.name}
                             </Link>
@@ -229,7 +229,7 @@ export default function AdminEventsPage() {
                           </TableCell>
                           <TableCell>
                             {event.revenue > 0 ? (
-                              <span className="font-semibold text-orange">
+                              <span className="font-semibold text-emerald">
                                 {event.revenue.toFixed(2)}€
                               </span>
                             ) : (

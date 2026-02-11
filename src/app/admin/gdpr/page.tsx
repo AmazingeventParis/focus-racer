@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
@@ -152,7 +152,7 @@ export default function AdminGdprPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <Link href="/admin/dashboard" className="text-orange hover:text-orange-dark transition-colors mb-4 inline-block">
+        <Link href="/admin/dashboard" className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block">
           &larr; Retour au tableau de bord
         </Link>
 

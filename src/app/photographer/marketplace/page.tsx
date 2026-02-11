@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -149,7 +149,7 @@ export default function PhotographerMarketplacePage() {
           placeholder="Rechercher par titre ou lieu..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="bg-white max-w-md border-gray-200 rounded-lg focus:ring-2 focus:ring-orange/20 focus:border-orange"
+          className="bg-white max-w-md border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
         />
       </div>
 
@@ -188,7 +188,7 @@ export default function PhotographerMarketplacePage() {
                     {SPORT_LABELS[listing.sportType] || listing.sportType}
                   </span>
                   {listing.budget && (
-                    <span className="text-orange font-semibold">{listing.budget}€</span>
+                    <span className="text-emerald font-semibold">{listing.budget}€</span>
                   )}
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">{listing.title}</h3>
@@ -223,7 +223,7 @@ export default function PhotographerMarketplacePage() {
                       <Button
                         size="sm"
                         onClick={() => setSelectedListing(listing)}
-                        className="bg-orange hover:bg-orange-hover text-white rounded-lg shadow-orange transition-all duration-200"
+                        className="bg-emerald hover:bg-emerald-hover text-white rounded-lg shadow-emerald transition-all duration-200"
                       >
                         Postuler
                       </Button>
@@ -237,7 +237,7 @@ export default function PhotographerMarketplacePage() {
                         <div className="space-y-2">
                           <Label className="text-gray-700">Message de candidature</Label>
                           <textarea
-                            className="flex min-h-[100px] w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange/20 focus:border-orange transition-all"
+                            className="flex min-h-[100px] w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald transition-all"
                             placeholder="Presentez-vous et expliquez pourquoi vous etes le bon photographe pour cette mission..."
                             value={applyMessage}
                             onChange={(e) => setApplyMessage(e.target.value)}
@@ -250,11 +250,11 @@ export default function PhotographerMarketplacePage() {
                             placeholder="Votre tarif pour cette mission"
                             value={applyRate}
                             onChange={(e) => setApplyRate(e.target.value)}
-                            className="bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-orange/20 focus:border-orange"
+                            className="bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
                           />
                         </div>
                         <Button
-                          className="w-full bg-orange hover:bg-orange-hover text-white rounded-lg shadow-orange transition-all duration-200"
+                          className="w-full bg-emerald hover:bg-emerald-hover text-white rounded-lg shadow-emerald transition-all duration-200"
                           onClick={handleApply}
                           disabled={isApplying || !applyMessage}
                         >

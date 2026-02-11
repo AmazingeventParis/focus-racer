@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -67,7 +67,7 @@ export default function GdprPage() {
               Votre demande a bien été prise en compte. Conformément au RGPD, nous traiterons votre demande dans un délai maximum de 30 jours. Vous recevrez un email de confirmation.
             </p>
             <Link href="/">
-              <Button variant="outline" className="border-orange text-orange hover:bg-orange-50">Retour à l&apos;accueil</Button>
+              <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50">Retour à l&apos;accueil</Button>
             </Link>
           </div>
         </main>
@@ -154,7 +154,7 @@ export default function GdprPage() {
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                     placeholder="Décrivez votre demande..."
-                    className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange"
+                    className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
                   />
                 </div>
 
@@ -169,7 +169,7 @@ export default function GdprPage() {
                   <p className="text-red-600 text-sm">{error}</p>
                 )}
 
-                <Button type="submit" className="w-full bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200" disabled={isSubmitting}>
+                <Button type="submit" className="w-full bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200" disabled={isSubmitting}>
                   {isSubmitting ? "Envoi en cours..." : "Soumettre ma demande"}
                 </Button>
               </form>

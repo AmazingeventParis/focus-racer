@@ -281,7 +281,7 @@ export default function StartListPage({
     <div className="p-8 max-w-4xl animate-fade-in">
       <Link
         href={`/photographer/events/${id}`}
-        className="text-orange hover:text-orange-dark transition-colors mb-4 inline-block"
+        className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
       >
         &larr; Retour a {eventName || "l'evenement"}
       </Link>
@@ -325,7 +325,7 @@ export default function StartListPage({
                     >
                       Annuler
                     </Button>
-                    <Button size="sm" onClick={handleImport} disabled={isImporting} className="bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200">
+                    <Button size="sm" onClick={handleImport} disabled={isImporting} className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
                       {isImporting ? "Import en cours..." : "Importer"}
                     </Button>
                   </div>
@@ -387,8 +387,8 @@ export default function StartListPage({
                     }}
                     className={`text-left p-4 rounded-lg border-2 transition-colors ${
                       selectedConnector === connector.id
-                        ? "border-orange bg-orange-50"
-                        : "border-orange/20 hover:border-orange/40"
+                        ? "border-emerald bg-emerald-50"
+                        : "border-emerald/20 hover:border-emerald/40"
                     }`}
                   >
                     <p className="font-medium text-sm">{connector.name}</p>
@@ -424,7 +424,7 @@ export default function StartListPage({
                         onClick={handleConnectorImport}
                         disabled={isConnectorImporting}
                         size="sm"
-                        className="bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200"
+                        className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200"
                       >
                         {isConnectorImporting ? "Import en cours..." : "Importer"}
                       </Button>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -80,7 +80,7 @@ export default function EventsListPage() {
           <p className="text-gray-500 mt-1">Gerez tous vos evenements photo</p>
         </div>
         <Link href="/photographer/events/new">
-          <Button className="gap-2 bg-orange hover:bg-orange-hover text-white rounded-lg shadow-orange transition-all duration-200 hover:-translate-y-0.5">
+          <Button className="gap-2 bg-emerald hover:bg-emerald-hover text-white rounded-lg shadow-emerald transition-all duration-200 hover:-translate-y-0.5">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
@@ -96,7 +96,7 @@ export default function EventsListPage() {
             placeholder="Rechercher un evenement..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-white border-gray-200 rounded-lg focus:ring-2 focus:ring-orange/20 focus:border-orange transition-all"
+            className="bg-white border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald transition-all"
           />
         </div>
         <div className="flex gap-2">
@@ -113,7 +113,7 @@ export default function EventsListPage() {
               onClick={() => setStatusFilter(f.value)}
               className={
                 statusFilter === f.value
-                  ? "bg-orange hover:bg-orange-hover text-white rounded-lg"
+                  ? "bg-emerald hover:bg-emerald-hover text-white rounded-lg"
                   : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 rounded-lg"
               }
             >
@@ -148,7 +148,7 @@ export default function EventsListPage() {
             </p>
             {events.length === 0 && (
               <Link href="/photographer/events/new">
-                <Button className="bg-orange hover:bg-orange-hover text-white rounded-lg shadow-orange">
+                <Button className="bg-emerald hover:bg-emerald-hover text-white rounded-lg shadow-emerald">
                   Creer mon premier evenement
                 </Button>
               </Link>
@@ -162,7 +162,7 @@ export default function EventsListPage() {
               <Card className="bg-white border-0 shadow-card rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer h-full">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange to-orange-700 flex items-center justify-center text-white font-bold text-lg shadow-orange">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald to-emerald-700 flex items-center justify-center text-white font-bold text-lg shadow-emerald">
                       {event.name.charAt(0)}
                     </div>
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-md ${
@@ -170,7 +170,7 @@ export default function EventsListPage() {
                         ? "bg-success-light text-success-dark"
                         : event.status === "DRAFT"
                         ? "bg-gray-100 text-gray-600"
-                        : "bg-blue-50 text-blue"
+                        : "bg-teal-50 text-teal"
                     }`}>
                       {event.status === "PUBLISHED" ? "Publie" : event.status === "DRAFT" ? "Brouillon" : "Archive"}
                     </span>

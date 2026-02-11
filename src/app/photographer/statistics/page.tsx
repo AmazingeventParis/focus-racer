@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -101,8 +101,8 @@ export default function StatisticsPage() {
                     <p className="text-sm text-gray-500">Evenements</p>
                     <p className="text-3xl font-bold font-display text-gray-900 mt-1">{stats?.totalEvents || 0}</p>
                   </div>
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <svg className="w-6 h-6 text-blue" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-teal" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                     </svg>
                   </div>
@@ -120,8 +120,8 @@ export default function StatisticsPage() {
                     <p className="text-sm text-gray-500">Photos</p>
                     <p className="text-3xl font-bold font-display text-gray-900 mt-1">{stats?.totalPhotos || 0}</p>
                   </div>
-                  <div className="w-12 h-12 rounded-xl bg-orange-light flex items-center justify-center">
-                    <svg className="w-6 h-6 text-orange" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-light flex items-center justify-center">
+                    <svg className="w-6 h-6 text-emerald" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                     </svg>
                   </div>
@@ -156,10 +156,10 @@ export default function StatisticsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-500">Revenus</p>
-                    <p className="text-3xl font-bold font-display text-orange mt-1">{(stats?.totalRevenue || 0).toFixed(2)}€</p>
+                    <p className="text-3xl font-bold font-display text-emerald mt-1">{(stats?.totalRevenue || 0).toFixed(2)}€</p>
                   </div>
-                  <div className="w-12 h-12 rounded-xl bg-orange-light flex items-center justify-center">
-                    <svg className="w-6 h-6 text-orange" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-light flex items-center justify-center">
+                    <svg className="w-6 h-6 text-emerald" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
@@ -198,7 +198,7 @@ export default function StatisticsPage() {
               <div className="space-y-4">
                 {stats.topEvents.map((event, index) => (
                   <div key={event.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-sm font-bold text-orange">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-sm font-bold text-emerald">
                       {index + 1}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -206,7 +206,7 @@ export default function StatisticsPage() {
                       <p className="text-sm text-gray-500">{event.photos} photos</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-orange">{event.revenue.toFixed(2)}€</p>
+                      <p className="font-semibold text-emerald">{event.revenue.toFixed(2)}€</p>
                       <p className="text-xs text-gray-500">{event.orders} ventes</p>
                     </div>
                   </div>
@@ -225,8 +225,8 @@ export default function StatisticsPage() {
             <CardDescription className="text-gray-500">Optimisez vos performances</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors">
-              <svg className="w-5 h-5 text-blue mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <div className="flex items-start gap-3 p-4 rounded-xl bg-teal-50 hover:bg-teal-100 transition-colors">
+              <svg className="w-5 h-5 text-teal mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
               </svg>
               <div>
@@ -243,8 +243,8 @@ export default function StatisticsPage() {
                 <p className="text-xs text-gray-600 mt-1">Uploadez vos photos en direct pendant la course pour maximiser les ventes.</p>
               </div>
             </div>
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-orange-light hover:bg-orange-100 transition-colors">
-              <svg className="w-5 h-5 text-orange mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <div className="flex items-start gap-3 p-4 rounded-xl bg-emerald-light hover:bg-emerald-100 transition-colors">
+              <svg className="w-5 h-5 text-emerald mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
               </svg>

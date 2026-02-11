@@ -12,14 +12,14 @@
 
 @layer base {
   :root {
-    /* Palette "Performance" */
-    --blue-primary: #2D5BFF;
-    --blue-primary-hover: #2451E6;
-    --orange-action: #FF6B4A;
-    --orange-action-hover: #E55F42;
+    /* Palette "Teal + Emerald" */
+    --teal-primary: #0F766E;
+    --teal-primary-hover: #0D9488;
+    --emerald-action: #10B981;
+    --emerald-action-hover: #059669;
     --bg-interface: #F8FAFC;
     --white: #FFFFFF;
-    --text-primary: #0F172A;
+    --text-primary: #042F2E;
     --text-secondary: #64748B;
     --success: #10B981;
     --success-light: #D1FAE5;
@@ -32,7 +32,7 @@
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 227 100% 59%;
+    --primary: 174 78% 26%;
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96%;
     --secondary-foreground: 222 47% 11%;
@@ -44,8 +44,8 @@
     --destructive-foreground: 0 0% 100%;
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 227 100% 59%;
-    --chart-1: 227 100% 59%;
+    --ring: 174 78% 26%;
+    --chart-1: 174 78% 26%;
     --chart-2: 160 84% 39%;
     --chart-3: 16 100% 64%;
     --chart-4: 43 96% 56%;
@@ -60,7 +60,7 @@
     --card-foreground: 210 40% 98%;
     --popover: 222 47% 10%;
     --popover-foreground: 210 40% 98%;
-    --primary: 227 100% 59%;
+    --primary: 174 78% 26%;
     --primary-foreground: 0 0% 100%;
     --secondary: 222 30% 18%;
     --secondary-foreground: 210 40% 98%;
@@ -72,8 +72,8 @@
     --destructive-foreground: 0 0% 98%;
     --border: 222 30% 18%;
     --input: 222 30% 18%;
-    --ring: 227 100% 59%;
-    --chart-1: 227 100% 59%;
+    --ring: 174 78% 26%;
+    --chart-1: 174 78% 26%;
     --chart-2: 160 60% 45%;
     --chart-3: 16 100% 64%;
     --chart-4: 43 96% 56%;
@@ -104,19 +104,19 @@
 @layer components {
   /* ===== GRADIENTS & BACKGROUNDS ===== */
   .gradient-bg {
-    @apply bg-gradient-to-br from-[#2D5BFF] via-[#1E40AF] to-[#0F172A];
+    @apply bg-gradient-to-br from-[#0F766E] via-[#115E59] to-[#042F2E];
   }
 
   .gradient-bg-subtle {
-    @apply bg-gradient-to-b from-[#F8FAFC] to-[#FFF7ED];
+    @apply bg-gradient-to-b from-[#F8FAFC] to-[#ECFDF5];
   }
 
-  .gradient-orange {
-    @apply bg-gradient-to-r from-[#FF6B4A] to-[#F97316];
+  .gradient-emerald {
+    @apply bg-gradient-to-r from-[#10B981] to-[#059669];
   }
 
   .gradient-navy {
-    @apply bg-gradient-to-b from-[#0F172A] to-[#1E293B];
+    @apply bg-gradient-to-b from-[#042F2E] to-[#134E4A];
   }
 
   /* ===== GLASSMORPHISM CARDS ===== */
@@ -128,22 +128,22 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
   }
 
-  .shadow-orange-lg {
-    box-shadow: 0 8px 24px -4px rgba(255, 107, 74, 0.4);
+  .shadow-emerald-lg {
+    box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.4);
   }
 
   /* ===== BOUTONS ===== */
   .btn-primary {
-    @apply bg-orange text-white font-medium px-4 py-2 rounded-lg
+    @apply bg-emerald text-white font-medium px-4 py-2 rounded-lg
            transition-all duration-200 ease-out
-           hover:bg-orange-hover hover:shadow-md
+           hover:bg-emerald-hover hover:shadow-md
            active:scale-[0.98];
   }
 
   .btn-secondary {
-    @apply bg-white text-orange border border-orange/30 font-medium px-4 py-2 rounded-lg
+    @apply bg-white text-emerald border border-emerald/30 font-medium px-4 py-2 rounded-lg
            transition-all duration-200 ease-out
-           hover:bg-orange-50
+           hover:bg-emerald-50
            active:scale-[0.98];
   }
 
@@ -181,7 +181,7 @@
   }
 
   .badge-archived {
-    @apply bg-[#DBEAFE] text-[#2D5BFF] text-xs font-medium px-2.5 py-1 rounded-md;
+    @apply bg-[#CCFBF1] text-[#0F766E] text-xs font-medium px-2.5 py-1 rounded-md;
   }
 
   .badge-success {
@@ -200,7 +200,7 @@
   }
 
   .sidebar-item-active {
-    @apply sidebar-item bg-white text-blue shadow-sm;
+    @apply sidebar-item bg-white text-teal shadow-sm;
   }
 
   /* ===== INPUTS ===== */
@@ -208,7 +208,7 @@
     @apply w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5
            text-primary placeholder:text-secondary
            transition-all duration-200
-           focus:outline-none focus:ring-2 focus:ring-orange/20 focus:border-orange;
+           focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald;
   }
 
   /* ===== SKELETON LOADING ===== */
@@ -235,7 +235,7 @@
 
   /* ===== FOND SOMBRE POUR GALERIE COUREUR ===== */
   .runner-gallery-bg {
-    @apply bg-[#0F172A];
+    @apply bg-[#042F2E];
   }
 }
 

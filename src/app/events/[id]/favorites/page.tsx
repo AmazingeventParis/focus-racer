@@ -205,14 +205,14 @@ export default function FavoritesPage({
       <Header />
 
       <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl pt-24">
-        <Link href={`/events/${id}`} className="text-orange hover:text-orange-dark hover:underline mb-4 inline-block transition-colors duration-200">
+        <Link href={`/events/${id}`} className="text-emerald hover:text-emerald-dark hover:underline mb-4 inline-block transition-colors duration-200">
           &larr; Retour a {eventInfo?.name || "l'evenement"}
         </Link>
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 animate-fade-in">
           <div>
             <h1 className="text-2xl font-bold text-navy">
-              <span className="text-orange mr-2">&hearts;</span>
+              <span className="text-emerald mr-2">&hearts;</span>
               Mes favoris
             </h1>
             <p className="text-muted-foreground">
@@ -221,11 +221,11 @@ export default function FavoritesPage({
           </div>
           {favoritePhotos.length > 0 && (
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={clearAll} className="border-orange text-orange hover:bg-orange-50 transition-all duration-200">
+              <Button variant="outline" size="sm" onClick={clearAll} className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">
                 Tout retirer
               </Button>
               <Link href={`/events/${id}/checkout`}>
-                <Button size="sm" className="bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200">
+                <Button size="sm" className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
                   Acheter ({favoritePhotos.length})
                   {pricing && ` - ${pricing.totalPrice.toFixed(2)}EUR`}
                 </Button>
@@ -254,7 +254,7 @@ export default function FavoritesPage({
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {packs.map((pack) => (
-                    <Badge key={pack.id} variant="outline" className="text-xs border-orange/30 text-orange">
+                    <Badge key={pack.id} variant="outline" className="text-xs border-emerald/30 text-emerald">
                       {pack.name} : {pack.price.toFixed(2)}EUR
                       {pack.quantity && ` (${pack.quantity} photos)`}
                     </Badge>
@@ -290,7 +290,7 @@ export default function FavoritesPage({
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground mb-4">Vous n&apos;avez pas encore de favoris</p>
               <Link href={`/events/${id}`}>
-                <Button variant="outline" className="border-orange text-orange hover:bg-orange-50 transition-all duration-200">Parcourir la galerie</Button>
+                <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">Parcourir la galerie</Button>
               </Link>
             </CardContent>
           </Card>
@@ -311,13 +311,13 @@ export default function FavoritesPage({
                     className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-all duration-200 shadow-sm"
                     title="Retirer des favoris"
                   >
-                    <span className="text-orange">&times;</span>
+                    <span className="text-emerald">&times;</span>
                   </button>
                 </div>
                 {photo.bibNumbers.length > 0 && (
                   <div className="p-2 flex flex-wrap gap-1 bg-white/50">
                     {photo.bibNumbers.map((bib) => (
-                      <Badge key={bib.id} variant="secondary" className="text-xs bg-orange-50 text-orange">
+                      <Badge key={bib.id} variant="secondary" className="text-xs bg-emerald-50 text-emerald">
                         #{bib.number}
                       </Badge>
                     ))}

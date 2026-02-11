@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
@@ -67,12 +67,12 @@ export default function LoginPage() {
       <div className="w-full max-w-md relative animate-fade-in">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl gradient-orange flex items-center justify-center shadow-orange">
+            <div className="w-10 h-10 rounded-xl gradient-emerald flex items-center justify-center shadow-emerald">
               <span className="text-white font-bold">FR</span>
             </div>
           </Link>
           <h1 className="text-2xl font-bold text-white mt-4">
-            Focus <span className="text-orange-light">Racer</span>
+            Focus <span className="text-emerald-light">Racer</span>
           </h1>
           <p className="text-white/60 mt-2">Connectez-vous a votre compte</p>
         </div>
@@ -94,7 +94,7 @@ export default function LoginPage() {
                   type="email"
                   placeholder="vous@example.com"
                   required
-                  className="bg-white/50 border-white/30 focus:border-orange focus:ring-orange"
+                  className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                 />
               </div>
               <div className="space-y-2">
@@ -104,17 +104,17 @@ export default function LoginPage() {
                   name="password"
                   type="password"
                   required
-                  className="bg-white/50 border-white/30 focus:border-orange focus:ring-orange"
+                  className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                 />
               </div>
-              <Button type="submit" className="w-full bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200" disabled={isLoading}>
+              <Button type="submit" className="w-full bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200" disabled={isLoading}>
                 {isLoading ? "Connexion..." : "Se connecter"}
               </Button>
             </form>
 
             <div className="mt-6 text-center text-sm text-muted-foreground">
               Pas encore de compte ?{" "}
-              <Link href="/register" className="text-orange hover:text-orange-dark font-medium transition-colors">
+              <Link href="/register" className="text-emerald hover:text-emerald-dark font-medium transition-colors">
                 Creer un compte
               </Link>
             </div>

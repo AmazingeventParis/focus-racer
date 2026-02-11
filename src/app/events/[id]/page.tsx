@@ -172,14 +172,14 @@ export default function PublicEventPage({
         <div className="text-center">
           <p className="text-muted-foreground mb-4">Événement non trouvé ou non publié</p>
           <Link href="/runner">
-            <Button className="bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200">Voir les événements</Button>
+            <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">Voir les événements</Button>
           </Link>
         </div>
       </div>
     );
   }
 
-  const primaryColor = event.primaryColor || "#3b82f6";
+  const primaryColor = event.primaryColor || "#14B8A6";
   const favCount = favorites.size;
 
   return (
@@ -194,7 +194,7 @@ export default function PublicEventPage({
             {favCount > 0 && (
               <Link href={`/events/${id}/favorites`}>
                 <Button variant="outline" size="sm">
-                  <span className="text-orange mr-1">&hearts;</span> {favCount} favori{favCount > 1 ? "s" : ""}
+                  <span className="text-emerald mr-1">&hearts;</span> {favCount} favori{favCount > 1 ? "s" : ""}
                 </Button>
               </Link>
             )}
@@ -236,10 +236,10 @@ export default function PublicEventPage({
             </div>
           </div>
           <div className="flex flex-wrap gap-2 mb-4">
-            <Badge variant="outline" className="border-orange/30 text-orange">{SPORT_LABELS[event.sportType] || event.sportType}</Badge>
-            <Badge variant="secondary" className="bg-orange/10 text-orange">{event.photoCount} photos</Badge>
+            <Badge variant="outline" className="border-emerald/30 text-emerald">{SPORT_LABELS[event.sportType] || event.sportType}</Badge>
+            <Badge variant="secondary" className="bg-emerald/10 text-emerald">{event.photoCount} photos</Badge>
             {event.runnerCount > 0 && (
-              <Badge variant="secondary" className="bg-orange/10 text-orange">{event.runnerCount} coureurs</Badge>
+              <Badge variant="secondary" className="bg-emerald/10 text-emerald">{event.runnerCount} coureurs</Badge>
             )}
             <span className="text-sm text-muted-foreground">par {event.photographer}</span>
           </div>
@@ -263,7 +263,7 @@ export default function PublicEventPage({
                   className="bg-white/90 backdrop-blur-sm border-white/30 shadow-glass-lg"
                 />
               </div>
-              <Button type="submit" disabled={isSearching || !searchQuery.trim()} className="bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200" style={{ backgroundColor: primaryColor }}>
+              <Button type="submit" disabled={isSearching || !searchQuery.trim()} className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200" style={{ backgroundColor: primaryColor }}>
                 {isSearching ? "Recherche..." : "Rechercher"}
               </Button>
               {/* Selfie search */}
@@ -297,7 +297,7 @@ export default function PublicEventPage({
                   }}
                 />
                 <span
-                  className="inline-flex items-center gap-1 px-4 py-2 rounded-md border border-orange/30 text-sm font-medium hover:bg-orange-50 transition-colors"
+                  className="inline-flex items-center gap-1 px-4 py-2 rounded-md border border-emerald/30 text-sm font-medium hover:bg-emerald-50 transition-colors"
                   title="Rechercher par selfie"
                 >
                   &#128247; Selfie
@@ -319,7 +319,7 @@ export default function PublicEventPage({
               <div className="bg-white rounded-lg p-4 mb-4 border" style={{ borderLeftColor: primaryColor, borderLeftWidth: 4 }}>
                 <p className="font-semibold">
                   {searchResult.runner.firstName} {searchResult.runner.lastName}
-                  <Badge variant="secondary" className="ml-2 bg-orange/10 text-orange">#{searchResult.runner.bibNumber}</Badge>
+                  <Badge variant="secondary" className="ml-2 bg-emerald/10 text-emerald">#{searchResult.runner.bibNumber}</Badge>
                 </p>
               </div>
             )}
@@ -365,7 +365,7 @@ export default function PublicEventPage({
                     onClick={(e) => { e.stopPropagation(); toggleFavorite(photo.id); }}
                     className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center hover:bg-white transition-colors"
                   >
-                    <span className={favorites.has(photo.id) ? "text-orange fill-orange" : "text-muted-foreground"}>
+                    <span className={favorites.has(photo.id) ? "text-emerald fill-emerald" : "text-muted-foreground"}>
                       {favorites.has(photo.id) ? "\u2665" : "\u2661"}
                     </span>
                   </button>
@@ -373,7 +373,7 @@ export default function PublicEventPage({
                 {photo.bibNumbers.length > 0 && (
                   <div className="p-2 flex flex-wrap gap-1">
                     {photo.bibNumbers.map((bib) => (
-                      <Badge key={bib.id} variant="secondary" className="text-xs bg-orange/10 text-orange">
+                      <Badge key={bib.id} variant="secondary" className="text-xs bg-emerald/10 text-emerald">
                         #{bib.number}
                       </Badge>
                     ))}
@@ -401,7 +401,7 @@ export default function PublicEventPage({
             className="absolute top-4 left-4 text-2xl z-10"
             onClick={(e) => { e.stopPropagation(); toggleFavorite(viewerPhoto.id); }}
           >
-            <span className={favorites.has(viewerPhoto.id) ? "text-orange fill-orange" : "text-white/70"}>
+            <span className={favorites.has(viewerPhoto.id) ? "text-emerald fill-emerald" : "text-white/70"}>
               {favorites.has(viewerPhoto.id) ? "\u2665" : "\u2661"}
             </span>
           </button>
@@ -446,7 +446,7 @@ export default function PublicEventPage({
               <>
                 <span className="text-white/40">|</span>
                 {viewerPhoto.bibNumbers.map((bib) => (
-                  <Badge key={bib.id} variant="secondary" className="text-xs bg-orange/10 text-orange">
+                  <Badge key={bib.id} variant="secondary" className="text-xs bg-emerald/10 text-emerald">
                     #{bib.number}
                   </Badge>
                 ))}

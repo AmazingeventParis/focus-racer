@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -16,7 +16,7 @@ export default function HomePage() {
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 animate-fade-in">
                 Vos photos de course,{" "}
-                <span className="text-orange-light">en un clic</span>
+                <span className="text-emerald-light">en un clic</span>
               </h1>
               <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 animate-fade-in animation-delay-100">
                 Retrouvez instantanement vos photos grace a la reconnaissance
@@ -104,10 +104,10 @@ export default function HomePage() {
                   key={item.step}
                   className={`glass-card rounded-2xl p-8 text-center hover:shadow-glass-lg transition-all duration-300 animate-slide-up animation-delay-${(i + 1) * 100}`}
                 >
-                  <div className="w-16 h-16 rounded-2xl gradient-orange flex items-center justify-center mx-auto mb-6 text-white shadow-orange">
+                  <div className="w-16 h-16 rounded-2xl gradient-emerald flex items-center justify-center mx-auto mb-6 text-white shadow-emerald">
                     {item.icon}
                   </div>
-                  <div className="text-xs font-bold text-orange uppercase tracking-widest mb-2">
+                  <div className="text-xs font-bold text-emerald uppercase tracking-widest mb-2">
                     Etape {item.step}
                   </div>
                   <h3 className="font-bold text-xl text-navy mb-3">{item.title}</h3>
@@ -167,8 +167,8 @@ export default function HomePage() {
                   key={feature.title}
                   className="glass-card rounded-2xl p-6 hover:shadow-glass-lg transition-all duration-300 group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center mb-4 group-hover:bg-orange group-hover:text-white transition-all duration-300">
-                    <span className="font-bold text-orange group-hover:text-white transition-colors duration-300">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center mb-4 group-hover:bg-emerald group-hover:text-white transition-all duration-300">
+                    <span className="font-bold text-emerald group-hover:text-white transition-colors duration-300">
                       {feature.icon}
                     </span>
                   </div>
@@ -216,7 +216,7 @@ export default function HomePage() {
                   key={persona.title}
                   className={`rounded-2xl p-8 transition-all duration-300 hover:shadow-glass-lg ${
                     persona.accent
-                      ? "gradient-orange text-white shadow-orange-lg"
+                      ? "gradient-emerald text-white shadow-emerald-lg"
                       : "glass-card"
                   }`}
                 >
@@ -230,8 +230,8 @@ export default function HomePage() {
                     <Button
                       className={
                         persona.accent
-                          ? "bg-white text-orange hover:bg-white/90 w-full"
-                          : "bg-orange hover:bg-orange-dark text-white shadow-orange w-full"
+                          ? "bg-white text-emerald hover:bg-white/90 w-full"
+                          : "bg-emerald hover:bg-emerald-dark text-white shadow-emerald w-full"
                       }
                       size="lg"
                     >
@@ -271,7 +271,7 @@ export default function HomePage() {
                 },
               ].map((testimonial) => (
                 <div key={testimonial.name} className="glass-card rounded-2xl p-8">
-                  <div className="flex gap-1 text-orange mb-4">
+                  <div className="flex gap-1 text-emerald mb-4">
                     {[...Array(5)].map((_, i) => (
                       <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />

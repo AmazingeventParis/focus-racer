@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -104,8 +104,8 @@ export default function DashboardPage() {
             <Card className="bg-white border-0 shadow-card rounded-xl">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <svg className="w-6 h-6 text-blue" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-teal" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                     </svg>
                   </div>
@@ -136,8 +136,8 @@ export default function DashboardPage() {
             <Card className="bg-white border-0 shadow-card rounded-xl">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-orange-light flex items-center justify-center">
-                    <svg className="w-6 h-6 text-orange" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-light flex items-center justify-center">
+                    <svg className="w-6 h-6 text-emerald" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                     </svg>
                   </div>
@@ -152,8 +152,8 @@ export default function DashboardPage() {
             <Card className="bg-white border-0 shadow-card rounded-xl">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <svg className="w-6 h-6 text-blue" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-teal" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                     </svg>
                   </div>
@@ -178,7 +178,7 @@ export default function DashboardPage() {
                 <CardDescription className="text-gray-500">Vos derniers evenements crees</CardDescription>
               </div>
               <Link href="/photographer/events">
-                <Button variant="outline" size="sm" className="text-orange border-orange/30 hover:bg-orange-50 rounded-lg">
+                <Button variant="outline" size="sm" className="text-emerald border-emerald/30 hover:bg-emerald-50 rounded-lg">
                   Voir tout
                 </Button>
               </Link>
@@ -199,7 +199,7 @@ export default function DashboardPage() {
                   </div>
                   <p className="text-gray-500 mb-4">Aucun evenement pour le moment</p>
                   <Link href="/photographer/events/new">
-                    <Button className="bg-orange hover:bg-orange-hover text-white rounded-lg shadow-orange">
+                    <Button className="bg-emerald hover:bg-emerald-hover text-white rounded-lg shadow-emerald">
                       Creer mon premier evenement
                     </Button>
                   </Link>
@@ -213,7 +213,7 @@ export default function DashboardPage() {
                       className="flex items-center justify-between p-4 rounded-xl bg-gray-50 hover:bg-gray-100 hover:-translate-y-0.5 hover:shadow-sm transition-all duration-200"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange font-bold text-sm">
+                        <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald font-bold text-sm">
                           {event.name.charAt(0)}
                         </div>
                         <div>
@@ -229,7 +229,7 @@ export default function DashboardPage() {
                             ? "bg-success-light text-success-dark"
                             : event.status === "DRAFT"
                             ? "bg-gray-100 text-gray-600"
-                            : "bg-blue-50 text-blue"
+                            : "bg-teal-50 text-teal"
                         }`}>
                           {event.status === "PUBLISHED" ? "Publie" : event.status === "DRAFT" ? "Brouillon" : "Archive"}
                         </span>
@@ -253,7 +253,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <Link href="/photographer/events/new" className="block">
-                <Button className="w-full justify-start gap-3 bg-orange hover:bg-orange-hover text-white rounded-lg shadow-orange transition-all duration-200 hover:-translate-y-0.5">
+                <Button className="w-full justify-start gap-3 bg-emerald hover:bg-emerald-hover text-white rounded-lg shadow-emerald transition-all duration-200 hover:-translate-y-0.5">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
@@ -270,7 +270,7 @@ export default function DashboardPage() {
               </Link>
               <Link href="/photographer/statistics" className="block">
                 <Button variant="outline" className="w-full justify-start gap-3 text-gray-700 border-gray-200 hover:bg-gray-50 rounded-lg transition-all duration-200">
-                  <svg className="w-5 h-5 text-blue" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <svg className="w-5 h-5 text-teal" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
                   </svg>
                   Voir les statistiques

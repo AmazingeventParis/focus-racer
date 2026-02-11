@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
@@ -95,7 +95,7 @@ export default function ProcessingScreen({
                 left: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 2}s`,
                 animationDuration: `${2 + Math.random() * 3}s`,
-                backgroundColor: ["#F97316", "#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"][
+                backgroundColor: ["#059669", "#14B8A6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"][
                   i % 6
                 ],
               }}
@@ -119,7 +119,7 @@ export default function ProcessingScreen({
         {/* Track */}
         <div className="relative h-24 mb-4">
           {/* Track surface */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-orange-900/30 rounded-xl border border-orange-800/30 overflow-hidden">
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-emerald-900/30 rounded-xl border border-emerald-800/30 overflow-hidden">
             {/* Lane lines */}
             <div className="absolute inset-0 flex items-center justify-between px-4">
               {[...Array(11)].map((_, i) => (
@@ -130,7 +130,7 @@ export default function ProcessingScreen({
               ))}
             </div>
             {/* Distance markers */}
-            <div className="absolute bottom-1 left-0 right-0 flex justify-between px-3 text-[10px] text-orange-400/50">
+            <div className="absolute bottom-1 left-0 right-0 flex justify-between px-3 text-[10px] text-emerald-400/50">
               <span>0%</span>
               <span>25%</span>
               <span>50%</span>
@@ -156,13 +156,13 @@ export default function ProcessingScreen({
         {/* Progress bar */}
         <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full transition-all duration-700 ease-out"
+            className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-700 ease-out"
             style={{ width: `${runnerPosition}%` }}
           />
         </div>
         <div className="flex justify-between mt-2 text-sm">
           <span className="text-slate-400">{progress.currentStep}</span>
-          <span className="text-orange-400 font-bold">{progress.percent}%</span>
+          <span className="text-emerald-400 font-bold">{progress.percent}%</span>
         </div>
       </div>
 
@@ -194,7 +194,7 @@ export default function ProcessingScreen({
       {currentFact && (
         <div className="max-w-lg mx-auto px-6 py-4 bg-white/5 border border-white/10 rounded-xl text-center mb-8 relative z-10 animate-fade-in">
           <p className="text-sm text-slate-300">
-            <span className="text-orange-400 font-medium mr-1">Le saviez-vous ?</span>
+            <span className="text-emerald-400 font-medium mr-1">Le saviez-vous ?</span>
             {currentFact}
           </p>
         </div>
@@ -213,7 +213,7 @@ export default function ProcessingScreen({
       {progress.complete && (
         <div className="flex gap-4 relative z-10 animate-fade-in">
           <Link href={`/photographer/events/${eventId}`}>
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-lg rounded-xl shadow-lg shadow-orange-500/25">
+            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 text-lg rounded-xl shadow-lg shadow-emerald-500/25">
               Voir les photos
             </Button>
           </Link>
@@ -267,7 +267,7 @@ function ProcessingBadge({
         done
           ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
           : active
-            ? "bg-orange-500/20 text-orange-400 border border-orange-500/30 animate-pulse"
+            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 animate-pulse"
             : "bg-slate-700/50 text-slate-500 border border-slate-600/30"
       }`}
     >

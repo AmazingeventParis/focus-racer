@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
@@ -132,12 +132,12 @@ export default function RegisterPage() {
       <div className="w-full max-w-2xl relative animate-fade-in">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl gradient-orange flex items-center justify-center shadow-orange">
+            <div className="w-10 h-10 rounded-xl gradient-emerald flex items-center justify-center shadow-emerald">
               <span className="text-white font-bold">FR</span>
             </div>
           </Link>
           <h1 className="text-2xl font-bold text-white mt-4">
-            Focus <span className="text-orange-light">Racer</span>
+            Focus <span className="text-emerald-light">Racer</span>
           </h1>
           <p className="text-white/60 mt-2">Creez votre compte</p>
         </div>
@@ -153,7 +153,7 @@ export default function RegisterPage() {
                   key={type.role}
                   className={`glass-card rounded-2xl cursor-pointer transition-all duration-200 hover:shadow-glass-lg ${
                     selectedRole === type.role
-                      ? "ring-2 ring-orange shadow-orange-lg border-orange/30"
+                      ? "ring-2 ring-emerald shadow-emerald-lg border-emerald/30"
                       : "border-white/20"
                   }`}
                   onClick={() => setSelectedRole(type.role)}
@@ -161,8 +161,8 @@ export default function RegisterPage() {
                   <div className="p-6">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-colors duration-200 ${
                       selectedRole === type.role
-                        ? "bg-orange text-white"
-                        : "bg-orange-50 text-orange"
+                        ? "bg-emerald text-white"
+                        : "bg-emerald-50 text-emerald"
                     }`}>
                       {type.icon}
                     </div>
@@ -191,7 +191,7 @@ export default function RegisterPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setStep(1)}
-                  className="text-orange hover:text-orange-dark text-sm transition-colors"
+                  className="text-emerald hover:text-emerald-dark text-sm transition-colors"
                 >
                   &larr; Retour
                 </button>
@@ -211,7 +211,7 @@ export default function RegisterPage() {
                     type="text"
                     placeholder="Jean Dupont"
                     required
-                    className="bg-white/50 border-white/30 focus:border-orange focus:ring-orange"
+                    className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                   />
                 </div>
                 <div className="space-y-2">
@@ -222,7 +222,7 @@ export default function RegisterPage() {
                     type="email"
                     placeholder="vous@example.com"
                     required
-                    className="bg-white/50 border-white/30 focus:border-orange focus:ring-orange"
+                    className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                   />
                 </div>
                 <div className="space-y-2">
@@ -233,7 +233,7 @@ export default function RegisterPage() {
                     type="password"
                     minLength={6}
                     required
-                    className="bg-white/50 border-white/30 focus:border-orange focus:ring-orange"
+                    className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                   />
                 </div>
                 <div className="space-y-2">
@@ -243,7 +243,7 @@ export default function RegisterPage() {
                     name="phone"
                     type="tel"
                     placeholder="+33 6 12 34 56 78"
-                    className="bg-white/50 border-white/30 focus:border-orange focus:ring-orange"
+                    className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                   />
                 </div>
                 {isProRole && (
@@ -254,11 +254,11 @@ export default function RegisterPage() {
                       name="company"
                       type="text"
                       placeholder="Nom de votre entreprise"
-                      className="bg-white/50 border-white/30 focus:border-orange focus:ring-orange"
+                      className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                     />
                   </div>
                 )}
-                <Button type="submit" className="w-full bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200" disabled={isLoading}>
+                <Button type="submit" className="w-full bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200" disabled={isLoading}>
                   {isLoading ? "Inscription..." : "Creer mon compte"}
                 </Button>
               </form>
@@ -268,7 +268,7 @@ export default function RegisterPage() {
 
         <div className="mt-6 text-center text-sm text-white/60">
           Deja un compte ?{" "}
-          <Link href="/login" className="text-orange-light hover:text-white font-medium transition-colors">
+          <Link href="/login" className="text-emerald-light hover:text-white font-medium transition-colors">
             Se connecter
           </Link>
         </div>

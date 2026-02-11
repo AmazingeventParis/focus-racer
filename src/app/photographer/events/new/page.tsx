@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -95,7 +95,7 @@ export default function NewEventPage() {
     <div className="p-8 max-w-2xl animate-fade-in">
       <Link
         href="/photographer/events"
-        className="text-orange hover:text-orange-dark transition-colors mb-4 inline-block"
+        className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
       >
         &larr; Retour aux evenements
       </Link>
@@ -168,7 +168,7 @@ export default function NewEventPage() {
                     Annuler
                   </Button>
                 </Link>
-                <Button type="submit" className="flex-1 bg-orange hover:bg-orange-hover text-white shadow-orange rounded-lg transition-all duration-200" disabled={isLoading}>
+                <Button type="submit" className="flex-1 bg-emerald hover:bg-emerald-hover text-white shadow-emerald rounded-lg transition-all duration-200" disabled={isLoading}>
                   {isLoading ? "Creation..." : "Creer l'evenement"}
                 </Button>
               </div>

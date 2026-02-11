@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -87,7 +87,7 @@ export default function ClientSidebar() {
     .slice(0, 2);
 
   return (
-    <aside className="w-64 bg-gradient-to-b from-blue to-blue-800 text-white min-h-screen flex flex-col shadow-sidebar">
+    <aside className="w-64 bg-gradient-to-b from-teal to-teal-800 text-white min-h-screen flex flex-col shadow-sidebar">
       {/* Logo */}
       <div className="p-6 pb-4">
         <Link href="/" className="flex items-center gap-3">
@@ -113,13 +113,13 @@ export default function ClientSidebar() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-white text-blue shadow-sm"
+                      ? "bg-white text-teal shadow-sm"
                       : "text-white/70 hover:bg-white/10 hover:text-white"
                   )}
                 >
                   <span className={cn(
                     "transition-colors",
-                    isActive ? "text-blue" : "text-white/60"
+                    isActive ? "text-teal" : "text-white/60"
                   )}>
                     {item.icon}
                   </span>
@@ -134,7 +134,7 @@ export default function ClientSidebar() {
       {/* User profile */}
       <div className="p-4 border-t border-white/10">
         <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/10 mb-3">
-          <div className="w-10 h-10 rounded-full bg-orange flex items-center justify-center text-white font-bold text-sm shadow-orange">
+          <div className="w-10 h-10 rounded-full bg-emerald flex items-center justify-center text-white font-bold text-sm shadow-emerald">
             {userInitials}
           </div>
           <div className="flex-1 min-w-0">

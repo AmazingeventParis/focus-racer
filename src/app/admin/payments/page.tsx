@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
@@ -47,7 +47,7 @@ interface Pagination {
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   PENDING: { label: "En attente", color: "bg-yellow-100 text-yellow-800" },
   PAID: { label: "Payé", color: "bg-emerald-100 text-emerald-700" },
-  DELIVERED: { label: "Livré", color: "bg-blue-100 text-blue-800" },
+  DELIVERED: { label: "Livré", color: "bg-teal-100 text-teal-800" },
   REFUNDED: { label: "Remboursé", color: "bg-white/50 text-gray-800" },
   EXPIRED: { label: "Expiré", color: "bg-red-100 text-red-800" },
 };
@@ -116,7 +116,7 @@ export default function AdminPaymentsPage() {
             <CardTitle className="text-sm text-muted-foreground">Revenus (page)</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-orange">{totalRevenue.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-emerald">{totalRevenue.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card className="glass-card">
@@ -124,7 +124,7 @@ export default function AdminPaymentsPage() {
             <CardTitle className="text-sm text-muted-foreground">Commissions plateforme (page)</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-blue-600">{totalFees.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-teal-600">{totalFees.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card className="glass-card">
@@ -206,7 +206,7 @@ export default function AdminPaymentsPage() {
                           <TableCell className="text-sm">
                             <Link
                               href={`/admin/events?id=${order.event.id}`}
-                              className="text-orange hover:text-orange-dark transition-colors"
+                              className="text-emerald hover:text-emerald-dark transition-colors"
                             >
                               {order.event.name}
                             </Link>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -83,23 +83,23 @@ export default function AdminDashboardPage() {
 
       {/* Revenue KPIs */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="glass-card border-l-4 border-l-orange overflow-hidden">
+        <Card className="glass-card border-l-4 border-l-emerald overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Chiffre d&apos;affaires</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-orange">{stats.revenue.totalCA.toFixed(2)}&euro;</p>
+            <p className="text-3xl font-bold text-emerald">{stats.revenue.totalCA.toFixed(2)}&euro;</p>
             <p className="text-xs text-muted-foreground mt-1">
               dont {stats.revenue.totalPlatformFees.toFixed(2)}&euro; commission
             </p>
           </CardContent>
         </Card>
-        <Card className="glass-card border-l-4 border-l-blue-500 overflow-hidden">
+        <Card className="glass-card border-l-4 border-l-teal-500 overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Commandes payees</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-blue-600">{stats.revenue.totalOrders}</p>
+            <p className="text-3xl font-bold text-teal-600">{stats.revenue.totalOrders}</p>
             <p className="text-xs text-muted-foreground mt-1">
               Panier moyen : {stats.revenue.avgOrderValue.toFixed(2)}&euro;
             </p>
@@ -163,9 +163,9 @@ export default function AdminDashboardPage() {
                 return (
                   <div key={m.month} className="flex items-center gap-4">
                     <span className="text-sm text-muted-foreground w-24">{label}</span>
-                    <div className="flex-1 bg-orange-50 rounded-full h-6 relative overflow-hidden">
+                    <div className="flex-1 bg-emerald-50 rounded-full h-6 relative overflow-hidden">
                       <div
-                        className="gradient-orange h-6 rounded-full flex items-center justify-end pr-2 transition-all duration-500"
+                        className="gradient-emerald h-6 rounded-full flex items-center justify-end pr-2 transition-all duration-500"
                         style={{ width: `${Math.max(pct, 5)}%` }}
                       >
                         <span className="text-xs text-white font-medium">
@@ -189,7 +189,7 @@ export default function AdminDashboardPage() {
         <Card className="glass-card">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-navy">Dernieres commandes</CardTitle>
-            <Link href="/admin/payments" className="text-sm text-orange hover:text-orange-dark transition-colors">
+            <Link href="/admin/payments" className="text-sm text-emerald hover:text-emerald-dark transition-colors">
               Voir tout
             </Link>
           </CardHeader>
@@ -231,7 +231,7 @@ export default function AdminDashboardPage() {
         <Card className="glass-card">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-navy">Utilisateurs par role</CardTitle>
-            <Link href="/admin/users" className="text-sm text-orange hover:text-orange-dark transition-colors">
+            <Link href="/admin/users" className="text-sm text-emerald hover:text-emerald-dark transition-colors">
               Gerer
             </Link>
           </CardHeader>
@@ -240,7 +240,7 @@ export default function AdminDashboardPage() {
               {Object.entries(stats.roleStats).map(([role, count]) => (
                 <div key={role} className="flex justify-between items-center p-3 rounded-xl bg-white/50">
                   <span className="text-navy">{getRoleLabel(role)}</span>
-                  <Badge className="bg-orange/10 text-orange hover:bg-orange/10">{count}</Badge>
+                  <Badge className="bg-emerald/10 text-emerald hover:bg-emerald/10">{count}</Badge>
                 </div>
               ))}
             </div>
@@ -250,7 +250,7 @@ export default function AdminDashboardPage() {
 
       {/* Quick links */}
       <div className="mb-8">
-        <Link href="/admin/gdpr" className="text-sm text-orange hover:text-orange-dark transition-colors">
+        <Link href="/admin/gdpr" className="text-sm text-emerald hover:text-emerald-dark transition-colors">
           RGPD - Demandes de donnees
         </Link>
       </div>
@@ -269,7 +269,7 @@ export default function AdminDashboardPage() {
                   <p className="text-xs text-muted-foreground">{user.email}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="border-orange/30 text-orange">{getRoleLabel(user.role)}</Badge>
+                  <Badge variant="outline" className="border-emerald/30 text-emerald">{getRoleLabel(user.role)}</Badge>
                   <span className="text-xs text-muted-foreground">
                     {new Date(user.createdAt).toLocaleDateString("fr-FR")}
                   </span>

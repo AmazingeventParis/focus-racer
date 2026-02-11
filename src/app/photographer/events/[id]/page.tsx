@@ -83,7 +83,7 @@ export default function EventDetailPage({
   const [editDescription, setEditDescription] = useState("");
   const [editSportType, setEditSportType] = useState("RUNNING");
   const [editStatus, setEditStatus] = useState("DRAFT");
-  const [editColor, setEditColor] = useState("#3b82f6");
+  const [editColor, setEditColor] = useState("#14B8A6");
 
   const fetchEvent = useCallback(async () => {
     try {
@@ -98,7 +98,7 @@ export default function EventDetailPage({
         setEditDescription(data.description || "");
         setEditSportType(data.sportType || "RUNNING");
         setEditStatus(data.status || "DRAFT");
-        setEditColor(data.primaryColor || "#3b82f6");
+        setEditColor(data.primaryColor || "#14B8A6");
       } else {
         toast({
           title: "Erreur",
@@ -379,7 +379,7 @@ export default function EventDetailPage({
     <div className="p-8 animate-fade-in">
       <Link
         href="/photographer/events"
-        className="text-orange hover:text-orange-dark transition-colors mb-4 inline-block"
+        className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
       >
         &larr; Retour aux evenements
       </Link>
@@ -410,25 +410,25 @@ export default function EventDetailPage({
               <div className="flex gap-2">
                 {/* Quick status toggle */}
                 {event.status === "DRAFT" && (
-                  <Button variant="outline" size="sm" className="border-orange/30 text-orange hover:bg-orange-50 transition-all duration-200" onClick={() => handleStatusChange("PUBLISHED")}>
+                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => handleStatusChange("PUBLISHED")}>
                     Publier
                   </Button>
                 )}
                 {event.status === "PUBLISHED" && (
-                  <Button variant="outline" size="sm" className="border-orange/30 text-orange hover:bg-orange-50 transition-all duration-200" onClick={() => handleStatusChange("ARCHIVED")}>
+                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => handleStatusChange("ARCHIVED")}>
                     Archiver
                   </Button>
                 )}
                 {event.status === "ARCHIVED" && (
-                  <Button variant="outline" size="sm" className="border-orange/30 text-orange hover:bg-orange-50 transition-all duration-200" onClick={() => handleStatusChange("DRAFT")}>
+                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => handleStatusChange("DRAFT")}>
                     Remettre en brouillon
                   </Button>
                 )}
                 <Link href={`/photographer/events/${id}/start-list`}>
-                  <Button variant="outline" size="sm" className="border-orange/30 text-orange hover:bg-orange-50 transition-all duration-200">Start-List</Button>
+                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200">Start-List</Button>
                 </Link>
                 <Link href={`/photographer/events/${id}/packs`}>
-                  <Button variant="outline" size="sm" className="border-orange/30 text-orange hover:bg-orange-50 transition-all duration-200">Packs de vente</Button>
+                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200">Packs de vente</Button>
                 </Link>
                 {notifyStatus && notifyStatus.pending > 0 && (
                   <Button
@@ -436,7 +436,7 @@ export default function EventDetailPage({
                     size="sm"
                     onClick={handleNotifyRunners}
                     disabled={isNotifying}
-                    className="text-orange border-orange/30 hover:bg-orange-50 transition-all duration-200"
+                    className="text-emerald border-emerald/30 hover:bg-emerald-50 transition-all duration-200"
                   >
                     {isNotifying
                       ? "Envoi en cours..."
@@ -444,7 +444,7 @@ export default function EventDetailPage({
                   </Button>
                 )}
                 {notifyStatus && notifyStatus.pending === 0 && notifyStatus.notified > 0 && (
-                  <Badge variant="outline" className="text-orange border-orange/30 py-1.5">
+                  <Badge variant="outline" className="text-emerald border-emerald/30 py-1.5">
                     {notifyStatus.notified} notifie{notifyStatus.notified > 1 ? "s" : ""}
                   </Badge>
                 )}
@@ -454,7 +454,7 @@ export default function EventDetailPage({
                     size="sm"
                     onClick={handleClusterFaces}
                     disabled={isClustering}
-                    className="text-orange border-orange/30 hover:bg-orange-50 transition-all duration-200"
+                    className="text-emerald border-emerald/30 hover:bg-emerald-50 transition-all duration-200"
                     title={`${clusteringStats.orphanPhotos} photos sans dossard peuvent etre associees par reconnaissance faciale`}
                   >
                     {isClustering
@@ -463,10 +463,10 @@ export default function EventDetailPage({
                   </Button>
                 )}
                 <Link href={`/photographer/events/${id}/upload`}>
-                  <Button size="sm" className="bg-orange hover:bg-orange-hover text-white shadow-orange transition-all duration-200">Ajouter des photos</Button>
+                  <Button size="sm" className="bg-emerald hover:bg-emerald-hover text-white shadow-emerald transition-all duration-200">Ajouter des photos</Button>
                 </Link>
                 <Link href={`/photographer/events/${id}/live`}>
-                  <Button size="sm" variant="outline" className="text-orange border-orange/30 hover:bg-orange-50 transition-all duration-200">
+                  <Button size="sm" variant="outline" className="text-emerald border-emerald/30 hover:bg-emerald-50 transition-all duration-200">
                     Mode Live
                   </Button>
                 </Link>
@@ -475,14 +475,14 @@ export default function EventDetailPage({
           </CardHeader>
           <CardContent>
             <div className="flex gap-4 flex-wrap items-center">
-              <Badge variant="secondary" className="bg-orange/10 text-orange">
+              <Badge variant="secondary" className="bg-emerald/10 text-emerald">
                 {event._count.photos} photo{event._count.photos !== 1 ? "s" : ""}
               </Badge>
-              <Badge variant="outline" className="border-orange/30 text-orange">
+              <Badge variant="outline" className="border-emerald/30 text-emerald">
                 {uniqueBibNumbers.length} dossard{uniqueBibNumbers.length !== 1 ? "s" : ""} detecte{uniqueBibNumbers.length !== 1 ? "s" : ""}
               </Badge>
               {event._count.startListEntries > 0 && (
-                <Badge variant="outline" className="border-orange/30 text-orange">
+                <Badge variant="outline" className="border-emerald/30 text-emerald">
                   {event._count.startListEntries} coureur{event._count.startListEntries !== 1 ? "s" : ""} inscrit{event._count.startListEntries !== 1 ? "s" : ""}
                 </Badge>
               )}
@@ -607,8 +607,8 @@ export default function EventDetailPage({
                     </div>
 
                     <div className="flex gap-2 justify-end">
-                      <Button type="button" variant="outline" className="border-orange/30 text-orange hover:bg-orange-50 transition-all duration-200" onClick={() => setEditOpen(false)}>Annuler</Button>
-                      <Button type="submit" className="bg-orange hover:bg-orange-hover text-white shadow-orange transition-all duration-200" disabled={isSaving}>
+                      <Button type="button" variant="outline" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => setEditOpen(false)}>Annuler</Button>
+                      <Button type="submit" className="bg-emerald hover:bg-emerald-hover text-white shadow-emerald transition-all duration-200" disabled={isSaving}>
                         {isSaving ? "Enregistrement..." : "Enregistrer"}
                       </Button>
                     </div>
@@ -645,7 +645,7 @@ export default function EventDetailPage({
               </p>
               {event.photos.length === 0 && (
                 <Link href={`/photographer/events/${id}/upload`}>
-                  <Button className="bg-orange hover:bg-orange-hover text-white shadow-orange transition-all duration-200">Ajouter des photos</Button>
+                  <Button className="bg-emerald hover:bg-emerald-hover text-white shadow-emerald transition-all duration-200">Ajouter des photos</Button>
                 </Link>
               )}
             </CardContent>
@@ -677,7 +677,7 @@ export default function EventDetailPage({
                         <Badge
                           key={bib.id}
                           variant="secondary"
-                          className="text-xs cursor-pointer hover:bg-red-100 group/bib bg-orange/10 text-orange"
+                          className="text-xs cursor-pointer hover:bg-red-100 group/bib bg-emerald/10 text-emerald"
                           onClick={() => handleRemoveBib(photo.id, bib.id)}
                           title="Cliquez pour retirer ce dossard"
                         >
@@ -706,14 +706,14 @@ export default function EventDetailPage({
                         }}
                         autoFocus
                       />
-                      <Button size="sm" className="h-7 text-xs px-2 bg-orange hover:bg-orange-hover text-white shadow-orange transition-all duration-200" onClick={() => handleAddBib(photo.id)}>
+                      <Button size="sm" className="h-7 text-xs px-2 bg-emerald hover:bg-emerald-hover text-white shadow-emerald transition-all duration-200" onClick={() => handleAddBib(photo.id)}>
                         OK
                       </Button>
                     </div>
                   ) : (
                     <button
                       onClick={() => { setAddBibPhotoId(photo.id); setNewBibNumber(""); }}
-                      className="text-xs text-orange hover:text-orange-dark transition-colors"
+                      className="text-xs text-emerald hover:text-emerald-dark transition-colors"
                     >
                       + Ajouter un dossard
                     </button>
@@ -739,7 +739,7 @@ export default function EventDetailPage({
                   <Badge
                     key={num}
                     variant={filterBib === num ? "default" : "outline"}
-                    className={filterBib === num ? "cursor-pointer bg-orange hover:bg-orange-hover" : "cursor-pointer border-orange/30 text-orange hover:bg-orange-50"}
+                    className={filterBib === num ? "cursor-pointer bg-emerald hover:bg-emerald-hover" : "cursor-pointer border-emerald/30 text-emerald hover:bg-emerald-50"}
                     onClick={() => setFilterBib(filterBib === num ? "" : num)}
                   >
                     #{num}

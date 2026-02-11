@@ -33,10 +33,10 @@ export default function CheckoutCancelPage({
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href={`/events/${id}/checkout`}>
-                <Button className="bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200">Reessayer le paiement</Button>
+                <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">Reessayer le paiement</Button>
               </Link>
               <Link href={`/events/${id}/favorites`}>
-                <Button variant="outline" className="border-orange text-orange hover:bg-orange-50 transition-all duration-200">Retour aux favoris</Button>
+                <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">Retour aux favoris</Button>
               </Link>
             </div>
           </CardContent>

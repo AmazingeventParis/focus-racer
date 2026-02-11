@@ -72,7 +72,7 @@ export default function CheckoutSuccessPage({
     return (
       <div className="min-h-screen gradient-bg-subtle flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-orange border-t-transparent rounded-full mx-auto mb-4" />
+          <div className="animate-spin w-8 h-8 border-4 border-emerald border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-muted-foreground">Confirmation du paiement en cours...</p>
         </div>
       </div>
@@ -126,7 +126,7 @@ export default function CheckoutSuccessPage({
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3">
                     <a href={`/api/downloads/${order.downloadToken}`}>
-                      <Button className="w-full bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200">
+                      <Button className="w-full bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
                         Telecharger tout (ZIP)
                       </Button>
                     </a>
@@ -148,14 +148,14 @@ export default function CheckoutSuccessPage({
 
             {/* Account prompt for guests */}
             {!session?.user && (
-              <Card className="glass-card rounded-2xl mb-6 border-orange/20 bg-orange-50/50">
+              <Card className="glass-card rounded-2xl mb-6 border-emerald/20 bg-emerald-50/50">
                 <CardContent className="pt-6">
                   <p className="font-medium text-navy mb-2">Creez un compte pour retrouver vos achats</p>
                   <p className="text-sm text-muted-foreground mb-4">
                     Avec un compte, vous pourrez re-telecharger vos photos et retrouver votre historique d&apos;achats.
                   </p>
                   <Link href="/register">
-                    <Button variant="outline" className="border-orange text-orange hover:bg-orange-50 transition-all duration-200">Creer un compte</Button>
+                    <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">Creer un compte</Button>
                   </Link>
                 </CardContent>
               </Card>
@@ -164,14 +164,14 @@ export default function CheckoutSuccessPage({
             {session?.user && (
               <div className="text-center">
                 <Link href="/account/purchases">
-                  <Button variant="outline" className="border-orange text-orange hover:bg-orange-50 transition-all duration-200">Voir mes achats</Button>
+                  <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">Voir mes achats</Button>
                 </Link>
               </div>
             )}
           </div>
         ) : order?.status === "PENDING" ? (
           <div className="text-center animate-fade-in">
-            <div className="animate-spin w-8 h-8 border-4 border-orange border-t-transparent rounded-full mx-auto mb-4" />
+            <div className="animate-spin w-8 h-8 border-4 border-emerald border-t-transparent rounded-full mx-auto mb-4" />
             <h1 className="text-xl font-bold text-navy mb-2">Confirmation en cours...</h1>
             <p className="text-muted-foreground">Votre paiement est en cours de traitement. Cette page se mettra a jour automatiquement.</p>
           </div>
@@ -180,7 +180,7 @@ export default function CheckoutSuccessPage({
             <h1 className="text-xl font-bold text-navy mb-2">Commande non trouvee</h1>
             <p className="text-muted-foreground mb-4">Impossible de trouver les details de cette commande.</p>
             <Link href={`/events/${id}`}>
-              <Button variant="outline" className="border-orange text-orange hover:bg-orange-50 transition-all duration-200">Retour a l&apos;evenement</Button>
+              <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">Retour a l&apos;evenement</Button>
             </Link>
           </div>
         )}

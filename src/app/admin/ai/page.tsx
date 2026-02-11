@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -168,7 +168,7 @@ export default function AdminAIPage() {
               <div className="flex items-center gap-3">
                 <div className="flex-1 bg-gray-200 rounded-full h-3">
                   <div
-                    className="bg-orange h-3 rounded-full"
+                    className="bg-emerald h-3 rounded-full"
                     style={{ width: `${config.ocrConfidenceThreshold}%` }}
                   />
                 </div>
@@ -183,7 +183,7 @@ export default function AdminAIPage() {
               <div className="flex items-center gap-3">
                 <div className="flex-1 bg-gray-200 rounded-full h-3">
                   <div
-                    className="bg-orange h-3 rounded-full"
+                    className="bg-emerald h-3 rounded-full"
                     style={{ width: `${config.qualityThreshold}%` }}
                   />
                 </div>
@@ -212,7 +212,7 @@ export default function AdminAIPage() {
               <p className="text-sm text-muted-foreground">Photos total</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-orange">{stats.processedPhotos}</p>
+              <p className="text-3xl font-bold text-emerald">{stats.processedPhotos}</p>
               <p className="text-sm text-muted-foreground">Traitées ({processingRate}%)</p>
             </div>
             <div className="text-center">

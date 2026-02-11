@@ -134,7 +134,7 @@ export default function AdminUserDetailPage({
     <div className="animate-fade-in">
       <Link
         href="/admin/users"
-        className="text-orange hover:text-orange-dark hover:underline mb-4 inline-block transition-colors duration-200"
+        className="text-emerald hover:text-emerald-dark hover:underline mb-4 inline-block transition-colors duration-200"
       >
         &larr; Retour a la liste
       </Link>
@@ -144,7 +144,7 @@ export default function AdminUserDetailPage({
         <Badge variant={user.isActive ? "default" : "destructive"} className={user.isActive ? "bg-emerald-500" : ""}>
           {user.isActive ? "Actif" : "Inactif"}
         </Badge>
-        <Badge variant="outline" className="border-orange text-orange">{getRoleLabel(user.role)}</Badge>
+        <Badge variant="outline" className="border-emerald text-emerald">{getRoleLabel(user.role)}</Badge>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -190,7 +190,7 @@ export default function AdminUserDetailPage({
             <div>
               <p className="text-sm text-muted-foreground mb-2">Changer le role</p>
               <Select value={user.role} onValueChange={changeRole}>
-                <SelectTrigger className="border-gray-200 focus:border-orange focus:ring-orange">
+                <SelectTrigger className="border-gray-200 focus:border-emerald focus:ring-emerald">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -210,7 +210,7 @@ export default function AdminUserDetailPage({
               <Button
                 variant={user.isActive ? "destructive" : "default"}
                 onClick={toggleActive}
-                className={`w-full ${!user.isActive ? "bg-orange hover:bg-orange-dark text-white shadow-orange transition-all duration-200" : ""}`}
+                className={`w-full ${!user.isActive ? "bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200" : ""}`}
               >
                 {user.isActive ? "Desactiver le compte" : "Activer le compte"}
               </Button>
@@ -218,7 +218,7 @@ export default function AdminUserDetailPage({
 
             <div>
               <p className="text-sm text-muted-foreground mb-2">Mot de passe</p>
-              <Button variant="outline" onClick={resetPassword} className="w-full border-orange text-orange hover:bg-orange-50 transition-all duration-200">
+              <Button variant="outline" onClick={resetPassword} className="w-full border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">
                 Reinitialiser le mot de passe
               </Button>
               {tempPassword && (
@@ -255,7 +255,7 @@ export default function AdminUserDetailPage({
                       {new Date(event.date).toLocaleDateString("fr-FR")}
                     </p>
                   </div>
-                  <Badge variant="secondary" className="bg-orange-50 text-orange">
+                  <Badge variant="secondary" className="bg-emerald-50 text-emerald">
                     {event._count.photos} photo{event._count.photos !== 1 ? "s" : ""}
                   </Badge>
                 </div>
