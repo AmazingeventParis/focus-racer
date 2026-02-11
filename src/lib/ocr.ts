@@ -8,13 +8,23 @@ const BIB_NUMBER_REGEX = /\b\d{1,5}\b/g;
 /**
  * Extract bib numbers from image.
  *
- * - AWS configured → Rekognition only (~0.3s, high accuracy)
- * - AWS not configured → Tesseract fallback (dev/local only)
+ * @param forceProvider - "aws" | "tesseract" | undefined
+ *   - "aws" → force Rekognition (requires AWS keys)
+ *   - "tesseract" → force Tesseract.js (free, slower)
+ *   - undefined → auto: AWS if configured, Tesseract otherwise
  */
 export async function extractBibNumbers(
   imagePath: string,
-  validBibs?: Set<string>
+  validBibs?: Set<string>,
+  forceProvider?: "aws" | "tesseract"
 ): Promise<OCRResult & { provider: string }> {
+  if (forceProvider === "tesseract") {
+    return extractWithTesseract(imagePath, validBibs);
+  }
+  if (forceProvider === "aws" && aiConfig.awsEnabled) {
+    return extractWithRekognition(imagePath, validBibs);
+  }
+  // Auto: AWS if available, Tesseract otherwise
   if (aiConfig.awsEnabled) {
     return extractWithRekognition(imagePath, validBibs);
   }
@@ -99,9 +109,10 @@ async function extractWithTesseract(
  */
 export async function processPhotoOCR(
   imagePath: string,
-  validBibs?: Set<string>
+  validBibs?: Set<string>,
+  forceProvider?: "aws" | "tesseract"
 ): Promise<{ numbers: string[]; confidence: number; provider: string }> {
-  const result = await extractBibNumbers(imagePath, validBibs);
+  const result = await extractBibNumbers(imagePath, validBibs, forceProvider);
   return {
     numbers: result.bibNumbers,
     confidence: result.confidence,

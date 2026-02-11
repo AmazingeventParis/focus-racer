@@ -22,7 +22,8 @@ async function processPhotoWithProgress(
   eventName: string,
   sessionId: string,
   photoIndex: number,
-  totalPhotos: number
+  totalPhotos: number,
+  ocrProvider?: "aws" | "tesseract"
 ) {
   try {
     const webFullPath = await getUploadedFilePath(webFilePath);
@@ -78,7 +79,7 @@ async function processPhotoWithProgress(
       validBibs = new Set(startList.map((s) => s.bibNumber));
     }
 
-    const ocrResult = await processPhotoOCR(webFullPath, validBibs);
+    const ocrResult = await processPhotoOCR(webFullPath, validBibs, ocrProvider);
 
     if (ocrResult.numbers.length > 0) {
       await prisma.bibNumber.createMany({
@@ -216,6 +217,10 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const eventId = formData.get("eventId") as string | null;
+    const ocrProviderParam = formData.get("ocrProvider") as string | null;
+    const ocrProvider = (ocrProviderParam === "aws" || ocrProviderParam === "tesseract")
+      ? ocrProviderParam
+      : undefined;
 
     if (!eventId) {
       return NextResponse.json({ error: "ID d'evenement manquant" }, { status: 400 });
@@ -323,7 +328,8 @@ export async function POST(request: NextRequest) {
           event.name,
           sessionId,
           photo.index,
-          nbPhotos
+          nbPhotos,
+          ocrProvider
         );
 
         processedCount++;
