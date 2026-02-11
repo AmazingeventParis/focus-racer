@@ -249,8 +249,6 @@ export default function UploadPage({
       const rm = min % 60;
       return `~${h}h${rm > 0 ? ` ${rm} min` : ""}`;
     };
-    const estimatedTime = formatTime(totalSeconds);
-    const successRate = ocrProvider === "aws" ? "95-99%" : "70-85%";
 
     return (
       <div className="p-8 max-w-2xl mx-auto animate-fade-in">

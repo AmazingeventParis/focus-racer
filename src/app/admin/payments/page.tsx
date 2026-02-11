@@ -89,9 +89,6 @@ export default function AdminPaymentsPage() {
   const totalRevenue = orders
     .filter((o) => o.status === "PAID")
     .reduce((sum, o) => sum + o.totalAmount, 0);
-  const totalFees = orders
-    .filter((o) => o.status === "PAID")
-    .reduce((sum, o) => sum + o.platformFee, 0);
 
   const handleExport = async () => {
     const params = new URLSearchParams();
