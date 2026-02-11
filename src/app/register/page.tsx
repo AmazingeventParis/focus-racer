@@ -35,7 +35,7 @@ const ACCOUNT_TYPES = [
   {
     role: "ORGANIZER",
     title: "Organisateur",
-    description: "Gerez les photos de vos evenements sportifs",
+    description: "Gérez les photos de vos événements sportifs",
     icon: (
       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M18.75 4.236c.982.143 1.954.317 2.916.52A6.003 6.003 0 0016.27 9.728M18.75 4.236V4.5c0 2.108-.966 3.99-2.48 5.228m0 0a6.003 6.003 0 01-5.54 0" />
@@ -45,7 +45,7 @@ const ACCOUNT_TYPES = [
   {
     role: "AGENCY",
     title: "Agence",
-    description: "Gerez plusieurs photographes et evenements",
+    description: "Gérez plusieurs photographes et événements",
     icon: (
       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
@@ -98,7 +98,7 @@ export default function RegisterPage() {
         });
       } else {
         toast({
-          title: "Inscription reussie",
+          title: "Inscription réussie",
           description: "Bienvenue sur Focus Racer !",
         });
         // Auto-login after registration
@@ -139,13 +139,13 @@ export default function RegisterPage() {
           <h1 className="text-2xl font-bold text-white mt-4">
             Focus <span className="text-emerald-light">Racer</span>
           </h1>
-          <p className="text-white/60 mt-2">Creez votre compte</p>
+          <p className="text-white/60 mt-2">Créez votre compte</p>
         </div>
 
         {step === 1 && (
           <div>
             <h2 className="text-xl font-semibold text-center mb-6 text-white">
-              Quel type de compte souhaitez-vous creer ?
+              Quel type de compte souhaitez-vous créer ?
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {ACCOUNT_TYPES.map((type) => (
@@ -196,9 +196,9 @@ export default function RegisterPage() {
                   &larr; Retour
                 </button>
               </div>
-              <CardTitle className="text-navy">Creer un compte</CardTitle>
+              <CardTitle className="text-navy">Créer un compte</CardTitle>
               <CardDescription>
-                Remplissez le formulaire pour creer votre compte
+                Remplissez le formulaire pour créer votre compte
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -237,7 +237,7 @@ export default function RegisterPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Telephone</Label>
+                  <Label htmlFor="phone">Téléphone</Label>
                   <Input
                     id="phone"
                     name="phone"
@@ -248,7 +248,7 @@ export default function RegisterPage() {
                 </div>
                 {isProRole && (
                   <div className="space-y-2">
-                    <Label htmlFor="company">Societe / Organisation</Label>
+                    <Label htmlFor="company">Société / Organisation</Label>
                     <Input
                       id="company"
                       name="company"
@@ -259,7 +259,7 @@ export default function RegisterPage() {
                   </div>
                 )}
                 <Button type="submit" className="w-full bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200" disabled={isLoading}>
-                  {isLoading ? "Inscription..." : "Creer mon compte"}
+                  {isLoading ? "Inscription..." : "Créer mon compte"}
                 </Button>
               </form>
             </CardContent>
@@ -267,7 +267,7 @@ export default function RegisterPage() {
         )}
 
         <div className="mt-6 text-center text-sm text-white/60">
-          Deja un compte ?{" "}
+          Déjà un compte ?{" "}
           <Link href="/login" className="text-emerald-light hover:text-white font-medium transition-colors">
             Se connecter
           </Link>

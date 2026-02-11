@@ -14,11 +14,11 @@ const footerLinks = {
     title: "Entreprise",
     links: [
       { href: "/contact", label: "Contact" },
-      { href: "/legal", label: "Mentions legales" },
+      { href: "/legal", label: "Mentions légales" },
     ],
   },
   legal: {
-    title: "Confidentialite",
+    title: "Confidentialité",
     links: [
       { href: "/gdpr", label: "Demande RGPD" },
       { href: "/legal", label: "CGU & CGV" },
@@ -42,7 +42,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-navy-100 text-sm leading-relaxed">
-              La plateforme de reference pour retrouver et acheter vos photos de courses sportives.
+              La plateforme de référence pour retrouver et acheter vos photos de courses sportives.
             </p>
           </div>
 
@@ -71,7 +71,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-navy-light mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-navy-200 text-sm">
-            &copy; {new Date().getFullYear()} Focus Racer. Tous droits reserves.
+            &copy; {new Date().getFullYear()} Focus Racer. Tous droits réservés.
           </p>
           <div className="flex items-center gap-6">
             <a

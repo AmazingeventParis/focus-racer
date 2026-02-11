@@ -17,28 +17,28 @@ import { useToast } from "@/hooks/use-toast";
 import { PhotoWithBibNumbers, Event } from "@/types";
 
 const SPORT_LABELS: Record<string, string> = {
-  RUNNING: "Course a pied",
+  RUNNING: "Course à pied",
   TRAIL: "Trail",
   TRIATHLON: "Triathlon",
   CYCLING: "Cyclisme",
   SWIMMING: "Natation",
-  OBSTACLE: "Course a obstacles",
+  OBSTACLE: "Course à obstacles",
   OTHER: "Autre",
 };
 
 const STATUS_LABELS: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
   DRAFT: { label: "Brouillon", variant: "secondary" },
-  PUBLISHED: { label: "Publie", variant: "default" },
-  ARCHIVED: { label: "Archive", variant: "outline" },
+  PUBLISHED: { label: "Publié", variant: "default" },
+  ARCHIVED: { label: "Archivé", variant: "outline" },
 };
 
 const SPORT_TYPES = [
-  { value: "RUNNING", label: "Course a pied" },
+  { value: "RUNNING", label: "Course à pied" },
   { value: "TRAIL", label: "Trail" },
   { value: "TRIATHLON", label: "Triathlon" },
   { value: "CYCLING", label: "Cyclisme" },
   { value: "SWIMMING", label: "Natation" },
-  { value: "OBSTACLE", label: "Course a obstacles" },
+  { value: "OBSTACLE", label: "Course à obstacles" },
   { value: "OTHER", label: "Autre" },
 ];
 
@@ -102,7 +102,7 @@ export default function EventDetailPage({
       } else {
         toast({
           title: "Erreur",
-          description: "Evenement non trouve",
+          description: "Événement non trouvé",
           variant: "destructive",
         });
         router.push("/photographer/dashboard");
@@ -542,7 +542,7 @@ export default function EventDetailPage({
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="DRAFT">Brouillon</SelectItem>
-                            <SelectItem value="PUBLISHED">Publie</SelectItem>
+                            <SelectItem value="PUBLISHED">Publié</SelectItem>
                             <SelectItem value="ARCHIVED">Archive</SelectItem>
                           </SelectContent>
                         </Select>

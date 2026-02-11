@@ -74,14 +74,14 @@ export default function LoginPage() {
           <h1 className="text-2xl font-bold text-white mt-4">
             Focus <span className="text-emerald-light">Racer</span>
           </h1>
-          <p className="text-white/60 mt-2">Connectez-vous a votre compte</p>
+          <p className="text-white/60 mt-2">Connectez-vous à votre compte</p>
         </div>
 
         <Card className="glass-card rounded-2xl border-white/20">
           <CardHeader>
             <CardTitle className="text-navy">Connexion</CardTitle>
             <CardDescription>
-              Entrez vos identifiants pour acceder a votre espace
+              Entrez vos identifiants pour accéder à votre espace
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -115,7 +115,7 @@ export default function LoginPage() {
             <div className="mt-6 text-center text-sm text-muted-foreground">
               Pas encore de compte ?{" "}
               <Link href="/register" className="text-emerald hover:text-emerald-dark font-medium transition-colors">
-                Creer un compte
+                Créer un compte
               </Link>
             </div>
           </CardContent>

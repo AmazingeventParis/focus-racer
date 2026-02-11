@@ -19,8 +19,8 @@ export default function HomePage() {
                 <span className="text-emerald-light">en un clic</span>
               </h1>
               <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 animate-fade-in animation-delay-100">
-                Retrouvez instantanement vos photos grace a la reconnaissance
-                automatique des numeros de dossard. Marathon, trail, triathlon
+                Retrouvez instantanément vos photos grâce à la reconnaissance
+                automatique des numéros de dossard. Marathon, trail, triathlon
                 et plus encore.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in animation-delay-200">
@@ -60,10 +60,10 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">
-                Comment ca marche ?
+                Comment ça marche ?
               </h2>
               <p className="text-muted-foreground max-w-lg mx-auto">
-                Trois etapes simples pour retrouver toutes vos photos de course
+                Trois étapes simples pour retrouver toutes vos photos de course
               </p>
             </div>
 
@@ -72,7 +72,7 @@ export default function HomePage() {
                 {
                   step: "1",
                   title: "Upload",
-                  desc: "Le photographe televerse ses photos de la course sur la plateforme",
+                  desc: "Le photographe téléverse ses photos de la course sur la plateforme",
                   icon: (
                     <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -82,7 +82,7 @@ export default function HomePage() {
                 {
                   step: "2",
                   title: "Analyse IA",
-                  desc: "Notre systeme detecte automatiquement les numeros de dossard et les visages",
+                  desc: "Notre système détecte automatiquement les numéros de dossard et les visages",
                   icon: (
                     <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
@@ -92,7 +92,7 @@ export default function HomePage() {
                 {
                   step: "3",
                   title: "Recherche",
-                  desc: "Les coureurs retrouvent et achetent leurs photos instantanement",
+                  desc: "Les coureurs retrouvent et achètent leurs photos instantanément",
                   icon: (
                     <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -108,7 +108,7 @@ export default function HomePage() {
                     {item.icon}
                   </div>
                   <div className="text-xs font-bold text-emerald uppercase tracking-widest mb-2">
-                    Etape {item.step}
+                    Étape {item.step}
                   </div>
                   <h3 className="font-bold text-xl text-navy mb-3">{item.title}</h3>
                   <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
@@ -126,7 +126,7 @@ export default function HomePage() {
                 Tout ce dont vous avez besoin
               </h2>
               <p className="text-muted-foreground max-w-lg mx-auto">
-                Une plateforme complete pour les coureurs, photographes et organisateurs
+                Une plateforme complète pour les coureurs, photographes et organisateurs
               </p>
             </div>
 
@@ -134,32 +134,32 @@ export default function HomePage() {
               {[
                 {
                   title: "Recherche par dossard",
-                  desc: "Trouvez vos photos en entrant simplement votre numero de dossard",
+                  desc: "Trouvez vos photos en entrant simplement votre numéro de dossard",
                   icon: "#",
                 },
                 {
                   title: "Reconnaissance faciale",
-                  desc: "Retrouvez vos photos grace a un selfie, meme sans dossard visible",
+                  desc: "Retrouvez vos photos grâce à un selfie, même sans dossard visible",
                   icon: "AI",
                 },
                 {
-                  title: "Galeries personnalisees",
-                  desc: "Chaque evenement dispose de sa galerie avec le branding de l'organisateur",
+                  title: "Galeries personnalisées",
+                  desc: "Chaque événement dispose de sa galerie avec le branding de l&apos;organisateur",
                   icon: "G",
                 },
                 {
-                  title: "Paiement securise",
-                  desc: "Achetez vos photos en toute securite via Stripe",
+                  title: "Paiement sécurisé",
+                  desc: "Achetez vos photos en toute sécurité via Stripe",
                   icon: "S",
                 },
                 {
                   title: "Mode Live",
-                  desc: "Upload en temps reel pendant la course avec detection instantanee",
+                  desc: "Upload en temps réel pendant la course avec détection instantanée",
                   icon: "L",
                 },
                 {
                   title: "Marketplace",
-                  desc: "Connectez photographes et organisateurs pour vos evenements",
+                  desc: "Connectez photographes et organisateurs pour vos événements",
                   icon: "M",
                 },
               ].map((feature) => (
@@ -192,22 +192,22 @@ export default function HomePage() {
               {[
                 {
                   title: "Coureurs",
-                  desc: "Retrouvez toutes vos photos de course en quelques secondes. Recherchez par dossard, par nom ou meme par selfie.",
+                  desc: "Retrouvez toutes vos photos de course en quelques secondes. Recherchez par dossard, par nom ou même par selfie.",
                   cta: "Trouver mes photos",
                   href: "/runner",
                   accent: true,
                 },
                 {
                   title: "Photographes",
-                  desc: "Uploadez vos photos, laissez l'IA les trier et vendez-les automatiquement. Gerez votre activite simplement.",
+                  desc: "Uploadez vos photos, laissez l&apos;IA les trier et vendez-les automatiquement. Gérez votre activité simplement.",
                   cta: "Espace photographe",
                   href: "/login",
                   accent: false,
                 },
                 {
                   title: "Organisateurs",
-                  desc: "Offrez une experience photo complete a vos coureurs. Trouvez des photographes via la marketplace.",
-                  cta: "Creer un compte Pro",
+                  desc: "Offrez une expérience photo complète à vos coureurs. Trouvez des photographes via la marketplace.",
+                  cta: "Créer un compte Pro",
                   href: "/register",
                   accent: false,
                 },
@@ -255,17 +255,17 @@ export default function HomePage() {
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {[
                 {
-                  quote: "J'ai retrouve toutes mes photos du marathon en moins de 30 secondes. Incroyable !",
+                  quote: "J&apos;ai retrouvé toutes mes photos du marathon en moins de 30 secondes. Incroyable !",
                   name: "Sophie M.",
                   role: "Coureuse",
                 },
                 {
-                  quote: "Le tri automatique par dossard me fait gagner des heures de travail apres chaque course.",
+                  quote: "Le tri automatique par dossard me fait gagner des heures de travail après chaque course.",
                   name: "Thomas L.",
                   role: "Photographe sportif",
                 },
                 {
-                  quote: "La marketplace nous a permis de trouver facilement des photographes pour notre evenement.",
+                  quote: "La marketplace nous a permis de trouver facilement des photographes pour notre événement.",
                   name: "Claire D.",
                   role: "Organisatrice",
                 },
@@ -298,7 +298,7 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMC41IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDgpIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCBmaWxsPSJ1cmwoI2cpIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIi8+PC9zdmc+')] opacity-50" />
               <div className="relative px-8 py-16 md:px-16 md:py-20 text-center">
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                  Pret a retrouver vos photos ?
+                  Prêt à retrouver vos photos ?
                 </h2>
                 <p className="text-white/75 text-lg max-w-xl mx-auto mb-10">
                   Rejoignez des milliers de coureurs et photographes qui utilisent Focus Racer
@@ -318,7 +318,7 @@ export default function HomePage() {
                       variant="outline"
                       className="border-white/30 text-white hover:bg-white/10 text-base px-8 py-6"
                     >
-                      Creer un compte
+                      Créer un compte
                     </Button>
                   </Link>
                 </div>

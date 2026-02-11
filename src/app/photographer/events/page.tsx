@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { EventWithStats } from "@/types";
 
 const SPORT_LABELS: Record<string, string> = {
-  RUNNING: "Course a pied",
+  RUNNING: "Course à pied",
   TRAIL: "Trail",
   TRIATHLON: "Triathlon",
   CYCLING: "Cyclisme",
@@ -76,15 +76,15 @@ export default function EventsListPage() {
       {/* Header */}
       <div className="flex justify-between items-start mb-8">
         <div>
-          <h1 className="text-2xl font-bold font-display text-gray-900">Evenements</h1>
-          <p className="text-gray-500 mt-1">Gerez tous vos evenements photo</p>
+          <h1 className="text-2xl font-bold font-display text-gray-900">Événements</h1>
+          <p className="text-gray-500 mt-1">Gérez tous vos événements photo</p>
         </div>
         <Link href="/photographer/events/new">
           <Button className="gap-2 bg-emerald hover:bg-emerald-hover text-white rounded-lg shadow-emerald transition-all duration-200 hover:-translate-y-0.5">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
-            Nouvel evenement
+            Nouvel événement
           </Button>
         </Link>
       </div>
@@ -93,7 +93,7 @@ export default function EventsListPage() {
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="flex-1">
           <Input
-            placeholder="Rechercher un evenement..."
+            placeholder="Rechercher un événement..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="bg-white border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald transition-all"
@@ -103,8 +103,8 @@ export default function EventsListPage() {
           {[
             { value: "ALL", label: "Tous" },
             { value: "DRAFT", label: "Brouillons" },
-            { value: "PUBLISHED", label: "Publies" },
-            { value: "ARCHIVED", label: "Archives" },
+            { value: "PUBLISHED", label: "Publiés" },
+            { value: "ARCHIVED", label: "Archivés" },
           ].map((f) => (
             <Button
               key={f.value}
@@ -143,13 +143,13 @@ export default function EventsListPage() {
             </div>
             <p className="text-gray-500 mb-4">
               {events.length === 0
-                ? "Vous n'avez pas encore cree d'evenement"
-                : "Aucun evenement ne correspond a vos criteres"}
+                ? "Vous n'avez pas encore créé d'événement"
+                : "Aucun événement ne correspond à vos critères"}
             </p>
             {events.length === 0 && (
               <Link href="/photographer/events/new">
                 <Button className="bg-emerald hover:bg-emerald-hover text-white rounded-lg shadow-emerald">
-                  Creer mon premier evenement
+                  Créer mon premier événement
                 </Button>
               </Link>
             )}
@@ -172,7 +172,7 @@ export default function EventsListPage() {
                         ? "bg-gray-100 text-gray-600"
                         : "bg-teal-50 text-teal"
                     }`}>
-                      {event.status === "PUBLISHED" ? "Publie" : event.status === "DRAFT" ? "Brouillon" : "Archive"}
+                      {event.status === "PUBLISHED" ? "Publié" : event.status === "DRAFT" ? "Brouillon" : "Archivé"}
                     </span>
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-1">{event.name}</h3>

@@ -12,12 +12,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 
 const SPORT_TYPES = [
-  { value: "RUNNING", label: "Course a pied" },
+  { value: "RUNNING", label: "Course à pied" },
   { value: "TRAIL", label: "Trail" },
   { value: "TRIATHLON", label: "Triathlon" },
   { value: "CYCLING", label: "Cyclisme" },
   { value: "SWIMMING", label: "Natation" },
-  { value: "OBSTACLE", label: "Course a obstacles" },
+  { value: "OBSTACLE", label: "Course à obstacles" },
   { value: "OTHER", label: "Autre" },
 ];
 
@@ -70,12 +70,12 @@ export default function NewEventPage() {
       if (!response.ok) {
         toast({
           title: "Erreur",
-          description: data.error || "Impossible de creer l'evenement",
+          description: data.error || "Impossible de créer l&apos;événement",
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Evenement cree",
+          title: "Événement créé",
           description: "Vous pouvez maintenant ajouter des photos",
         });
         router.push(`/photographer/events/${data.id}`);
@@ -97,20 +97,20 @@ export default function NewEventPage() {
         href="/photographer/events"
         className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
       >
-        &larr; Retour aux evenements
+        &larr; Retour aux événements
       </Link>
 
       <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardHeader>
-            <CardTitle className="text-gray-900 font-display">Creer un evenement</CardTitle>
+            <CardTitle className="text-gray-900 font-display">Créer un événement</CardTitle>
             <CardDescription>
-              Renseignez les informations de la course ou de l&apos;evenement
+              Renseignez les informations de la course ou de l&apos;événement
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Nom de l&apos;evenement *</Label>
+                <Label htmlFor="name">Nom de l&apos;événement *</Label>
                 <Input
                   id="name"
                   name="name"
@@ -158,7 +158,7 @@ export default function NewEventPage() {
                   id="description"
                   name="description"
                   className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Decrivez votre evenement (parcours, categories, ambiance...)"
+                  placeholder="Décrivez votre événement (parcours, catégories, ambiance...)"
                 />
               </div>
 
@@ -169,7 +169,7 @@ export default function NewEventPage() {
                   </Button>
                 </Link>
                 <Button type="submit" className="flex-1 bg-emerald hover:bg-emerald-hover text-white shadow-emerald rounded-lg transition-all duration-200" disabled={isLoading}>
-                  {isLoading ? "Creation..." : "Creer l'evenement"}
+                  {isLoading ? "Création..." : "Créer l'événement"}
                 </Button>
               </div>
             </form>

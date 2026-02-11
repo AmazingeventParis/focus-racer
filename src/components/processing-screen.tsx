@@ -29,7 +29,7 @@ export default function ProcessingScreen({
     total: totalPhotos,
     processed: 0,
     percent: 0,
-    currentStep: "Demarrage...",
+    currentStep: "Démarrage...",
     creditsRefunded: 0,
     complete: false,
   });
@@ -107,10 +107,10 @@ export default function ProcessingScreen({
       {/* Title */}
       <div className="text-center mb-8 relative z-10">
         <h1 className="text-2xl md:text-3xl font-bold font-display mb-2">
-          {progress.complete ? "Traitement termine !" : "Traitement en cours..."}
+          {progress.complete ? "Traitement terminé !" : "Traitement en cours..."}
         </h1>
         <p className="text-slate-400 text-sm">
-          {progress.processed} / {progress.total} photos traitees
+          {progress.processed} / {progress.total} photos traitées
         </p>
       </div>
 
@@ -169,7 +169,7 @@ export default function ProcessingScreen({
       {/* Processing badges */}
       <div className="flex flex-wrap gap-3 justify-center mb-8 relative z-10">
         <ProcessingBadge
-          label="Qualite"
+          label="Qualité"
           active={progress.percent >= 5}
           done={progress.percent >= 30}
         />
@@ -204,7 +204,7 @@ export default function ProcessingScreen({
       {progress.creditsRefunded > 0 && (
         <div className="text-center mb-6 relative z-10">
           <p className="text-sm text-emerald-400">
-            {progress.creditsRefunded} credit{progress.creditsRefunded > 1 ? "s" : ""} rembourse{progress.creditsRefunded > 1 ? "s" : ""} (photos sans dossard)
+            {progress.creditsRefunded} crédit{progress.creditsRefunded > 1 ? "s" : ""} remboursé{progress.creditsRefunded > 1 ? "s" : ""} (photos sans dossard)
           </p>
         </div>
       )}

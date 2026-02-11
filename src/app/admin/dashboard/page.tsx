@@ -90,13 +90,13 @@ export default function AdminDashboardPage() {
           <CardContent>
             <p className="text-3xl font-bold text-emerald">{stats.revenue.totalCA.toFixed(2)}&euro;</p>
             <p className="text-xs text-muted-foreground mt-1">
-              {stats.revenue.totalOrders} commande{stats.revenue.totalOrders > 1 ? "s" : ""} payee{stats.revenue.totalOrders > 1 ? "s" : ""}
+              {stats.revenue.totalOrders} commande{stats.revenue.totalOrders > 1 ? "s" : ""} payée{stats.revenue.totalOrders > 1 ? "s" : ""}
             </p>
           </CardContent>
         </Card>
         <Card className="glass-card border-l-4 border-l-teal-500 overflow-hidden">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Commandes payees</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">Commandes payées</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold text-teal-600">{stats.revenue.totalOrders}</p>
@@ -111,12 +111,12 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold text-amber-600">{stats.revenue.pendingOrders}</p>
-            <p className="text-xs text-muted-foreground mt-1">commandes non finalisees</p>
+            <p className="text-xs text-muted-foreground mt-1">commandes non finalisées</p>
           </CardContent>
         </Card>
         <Card className="glass-card border-l-4 border-l-navy overflow-hidden">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Evenements publies</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">Événements publiés</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold text-navy">{stats.publishedEvents}</p>
@@ -129,9 +129,9 @@ export default function AdminDashboardPage() {
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {[
           { label: "Utilisateurs", value: stats.totalUsers },
-          { label: "Evenements", value: stats.totalEvents },
+          { label: "Événements", value: stats.totalEvents },
           { label: "Photos", value: stats.totalPhotos },
-          { label: "Dossards detectes", value: stats.totalBibNumbers },
+          { label: "Dossards détectés", value: stats.totalBibNumbers },
         ].map((stat) => (
           <Card key={stat.label} className="glass-card">
             <CardHeader className="pb-2">
@@ -188,7 +188,7 @@ export default function AdminDashboardPage() {
         {/* Recent orders */}
         <Card className="glass-card">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-navy">Dernieres commandes</CardTitle>
+            <CardTitle className="text-navy">Dernières commandes</CardTitle>
             <Link href="/admin/payments" className="text-sm text-emerald hover:text-emerald-dark transition-colors">
               Voir tout
             </Link>
@@ -202,7 +202,7 @@ export default function AdminDashboardPage() {
                   <div key={order.id} className="flex justify-between items-center p-3 rounded-xl bg-white/50 hover:bg-white/80 transition-colors">
                     <div>
                       <p className="font-medium text-sm text-navy">
-                        {order.user?.name || order.guestEmail || "Invite"}
+                        {order.user?.name || order.guestEmail || "Invité"}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {order.event.name} &bull; {order._count.items} photo{order._count.items > 1 ? "s" : ""}
@@ -217,7 +217,7 @@ export default function AdminDashboardPage() {
                             : "bg-muted text-muted-foreground"
                         }
                       >
-                        {order.status === "PAID" ? "Paye" : "Rembourse"}
+                        {order.status === "PAID" ? "Payé" : "Remboursé"}
                       </Badge>
                     </div>
                   </div>
@@ -230,9 +230,9 @@ export default function AdminDashboardPage() {
         {/* Users by role */}
         <Card className="glass-card">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-navy">Utilisateurs par role</CardTitle>
+            <CardTitle className="text-navy">Utilisateurs par rôle</CardTitle>
             <Link href="/admin/users" className="text-sm text-emerald hover:text-emerald-dark transition-colors">
-              Gerer
+              Gérer
             </Link>
           </CardHeader>
           <CardContent>
@@ -251,14 +251,14 @@ export default function AdminDashboardPage() {
       {/* Quick links */}
       <div className="mb-8">
         <Link href="/admin/gdpr" className="text-sm text-emerald hover:text-emerald-dark transition-colors">
-          RGPD - Demandes de donnees
+          RGPD - Demandes de données
         </Link>
       </div>
 
       {/* Recent users */}
       <Card className="glass-card">
         <CardHeader>
-          <CardTitle className="text-navy">Inscriptions recentes</CardTitle>
+          <CardTitle className="text-navy">Inscriptions récentes</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">

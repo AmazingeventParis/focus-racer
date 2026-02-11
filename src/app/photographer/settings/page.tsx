@@ -24,8 +24,8 @@ export default function SettingsPage() {
 
     try {
       toast({
-        title: "Profil mis a jour",
-        description: "Vos informations ont ete enregistrees.",
+        title: "Profil mis à jour",
+        description: "Vos informations ont été enregistrées.",
       });
       await update();
     } catch {
@@ -42,8 +42,8 @@ export default function SettingsPage() {
   return (
     <div className="p-8 animate-fade-in">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold font-display text-gray-900">Parametres</h1>
-        <p className="text-gray-500 mt-1">Gerez votre compte et vos preferences</p>
+        <h1 className="text-2xl font-bold font-display text-gray-900">Paramètres</h1>
+        <p className="text-gray-500 mt-1">Gérez votre compte et vos préférences</p>
       </div>
 
       <div className="max-w-2xl space-y-6">
@@ -93,7 +93,7 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="company" className="text-gray-700">Societe</Label>
+                  <Label htmlFor="company" className="text-gray-700">Société</Label>
                   <Input
                     id="company"
                     value={company}
@@ -103,7 +103,7 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-gray-700">Telephone</Label>
+                  <Label htmlFor="phone" className="text-gray-700">Téléphone</Label>
                   <Input
                     id="phone"
                     type="tel"
@@ -177,14 +177,14 @@ export default function SettingsPage() {
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardHeader>
             <CardTitle className="text-lg font-display text-gray-900">Notifications</CardTitle>
-            <CardDescription className="text-gray-500">Configurez vos preferences de notification</CardDescription>
+            <CardDescription className="text-gray-500">Configurez vos préférences de notification</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {[
-                { id: "orders", label: "Nouvelles commandes", desc: "Recevez un email a chaque vente" },
-                { id: "marketing", label: "Newsletter", desc: "Actualites et conseils Focus Racer" },
-                { id: "marketplace", label: "Marketplace", desc: "Nouvelles opportunites correspondant a votre profil" },
+                { id: "orders", label: "Nouvelles commandes", desc: "Recevez un email à chaque vente" },
+                { id: "marketing", label: "Newsletter", desc: "Actualités et conseils Focus Racer" },
+                { id: "marketplace", label: "Marketplace", desc: "Nouvelles opportunités correspondant à votre profil" },
               ].map((notif) => (
                 <div key={notif.id} className="flex items-center justify-between p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
                   <div>
@@ -205,13 +205,13 @@ export default function SettingsPage() {
         <Card className="bg-white border-0 shadow-card rounded-xl border-l-4 border-l-red-500">
           <CardHeader>
             <CardTitle className="text-lg font-display text-red-600">Zone de danger</CardTitle>
-            <CardDescription className="text-gray-500">Actions irreversibles</CardDescription>
+            <CardDescription className="text-gray-500">Actions irréversibles</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between p-4 rounded-xl bg-red-50">
               <div>
                 <p className="font-medium text-gray-900 text-sm">Supprimer mon compte</p>
-                <p className="text-xs text-gray-500 mt-0.5">Cette action est irreversible et supprimera toutes vos donnees.</p>
+                <p className="text-xs text-gray-500 mt-0.5">Cette action est irréversible et supprimera toutes vos données.</p>
               </div>
               <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-100 rounded-lg">
                 Supprimer

@@ -85,8 +85,8 @@ export default function CreditsPage() {
         const data = await res.json();
         setCredits(data.credits);
         toast({
-          title: "Credits ajoutes",
-          description: `${amount} credits ont ete ajoutes a votre compte.`,
+          title: "Crédits ajoutés",
+          description: `${amount} crédits ont été ajoutés à votre compte.`,
         });
         fetchTransactions(1);
         setPage(1);
@@ -170,7 +170,7 @@ export default function CreditsPage() {
                   <div>
                     <p className="font-medium text-gray-900">Stripe Connect</p>
                     <p className="text-sm text-gray-500">
-                      {session?.user?.stripeAccountId ? "Compte connecte" : "Non configure"}
+                      {session?.user?.stripeAccountId ? "Compte connecté" : "Non configuré"}
                     </p>
                   </div>
                 </div>
@@ -182,7 +182,7 @@ export default function CreditsPage() {
                   }
                   variant={session?.user?.stripeAccountId ? "outline" : "default"}
                 >
-                  {session?.user?.stripeAccountId ? "Gerer" : "Configurer"}
+                  {session?.user?.stripeAccountId ? "Gérer" : "Configurer"}
                 </Button>
               </div>
             </CardContent>
@@ -192,7 +192,7 @@ export default function CreditsPage() {
           <Card className="bg-white border-0 shadow-card rounded-xl">
             <CardHeader>
               <CardTitle className="text-lg font-display text-gray-900">Historique des transactions</CardTitle>
-              <CardDescription className="text-gray-500">Toutes vos operations de credits</CardDescription>
+              <CardDescription className="text-gray-500">Toutes vos opérations de crédits</CardDescription>
             </CardHeader>
             <CardContent>
               {transactions.length === 0 ? (

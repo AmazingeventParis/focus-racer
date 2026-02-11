@@ -10,7 +10,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
 const SPORT_LABELS: Record<string, string> = {
-  RUNNING: "Course a pied",
+  RUNNING: "Course à pied",
   TRAIL: "Trail",
   TRIATHLON: "Triathlon",
   CYCLING: "Cyclisme",
@@ -72,11 +72,11 @@ export default function RunnerPage() {
                 Trouvez vos photos de course
               </h1>
               <p className="text-white/70 max-w-lg mx-auto mb-8 animate-fade-in animation-delay-100">
-                Selectionnez un evenement puis recherchez par numero de dossard ou par nom
+                Sélectionnez un événement puis recherchez par numéro de dossard ou par nom
               </p>
               <div className="max-w-md mx-auto animate-fade-in animation-delay-200">
                 <Input
-                  placeholder="Rechercher un evenement..."
+                  placeholder="Rechercher un événement..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="text-center bg-white/90 backdrop-blur-sm border-white/30 shadow-glass-lg h-12 rounded-xl text-navy placeholder:text-navy/40"
@@ -89,15 +89,15 @@ export default function RunnerPage() {
         <div className="container mx-auto px-4 py-12">
           {isLoading ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">Chargement des evenements...</p>
+              <p className="text-muted-foreground">Chargement des événements...</p>
             </div>
           ) : filteredEvents.length === 0 ? (
             <Card className="glass-card max-w-md mx-auto rounded-2xl">
               <CardContent className="py-12 text-center">
                 <p className="text-muted-foreground">
                   {events.length === 0
-                    ? "Aucun evenement publie pour le moment"
-                    : "Aucun evenement ne correspond a votre recherche"}
+                    ? "Aucun événement publié pour le moment"
+                    : "Aucun événement ne correspond à votre recherche"}
                 </p>
               </CardContent>
             </Card>

@@ -56,7 +56,7 @@ export default function UploadPage({
         } else {
           toast({
             title: "Erreur",
-            description: "Evenement non trouve",
+            description: "Événement non trouvé",
             variant: "destructive",
           });
           router.push("/photographer/dashboard");
@@ -102,7 +102,7 @@ export default function UploadPage({
       if (imageFiles.length === 0) {
         toast({
           title: "Erreur",
-          description: "Veuillez selectionner des images",
+          description: "Veuillez sélectionner des images",
           variant: "destructive",
         });
         return;
@@ -188,7 +188,7 @@ export default function UploadPage({
       if (!res.ok) {
         if (data.code === "INSUFFICIENT_CREDITS") {
           toast({
-            title: "Credits insuffisants",
+            title: "Crédits insuffisants",
             description: `Vous avez ${credits} credits, il en faut ${selectedFiles.length}.`,
             variant: "destructive",
           });
@@ -254,7 +254,7 @@ export default function UploadPage({
           onClick={goBackToSelect}
           className="text-emerald-500 hover:text-emerald-600 transition-colors mb-4 inline-block text-sm"
         >
-          &larr; Retour a la selection
+          &larr; Retour à la sélection
         </button>
 
         <Card className="bg-white border-0 shadow-sm rounded-2xl">
@@ -296,12 +296,12 @@ export default function UploadPage({
                     <Badge className="bg-gray-100 text-gray-600 border-0 text-[10px]">0 credit</Badge>
                   </div>
                   <p className="text-xs text-gray-500 leading-relaxed mb-3">
-                    Detection basique des dossards. Photos compressees pour un traitement leger.
+                    Détection basique des dossards. Photos compressées pour un traitement léger.
                   </p>
                   <ul className="space-y-1.5 text-[11px] mb-3">
                     <li className="flex items-center gap-1.5 text-gray-500">
                       <svg className="w-3.5 h-3.5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Detection des dossards (OCR)
+                      Détection des dossards (OCR)
                     </li>
                     <li className="flex items-center gap-1.5 text-gray-500">
                       <svg className="w-3.5 h-3.5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
@@ -321,7 +321,7 @@ export default function UploadPage({
                     </li>
                     <li className="flex items-center gap-1.5 text-gray-300">
                       <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                      <span className="line-through">Detection vetements</span>
+                      <span className="line-through">Détection vêtements</span>
                     </li>
                   </ul>
                   <div className="flex items-center gap-3 text-[11px] pt-2 border-t border-gray-100">
@@ -347,7 +347,7 @@ export default function UploadPage({
                   }`}
                 >
                   <div className="absolute -top-2.5 left-4">
-                    <Badge className="bg-amber-500 text-white border-0 text-[10px] shadow-sm">Recommande</Badge>
+                    <Badge className="bg-amber-500 text-white border-0 text-[10px] shadow-sm">Recommandé</Badge>
                   </div>
                   {ocrProvider === "aws" && (
                     <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
@@ -361,20 +361,20 @@ export default function UploadPage({
                     <Badge className="bg-amber-100 text-amber-700 border-0 text-[10px]">3 credits/photo</Badge>
                   </div>
                   <p className="text-xs text-gray-500 leading-relaxed mb-3">
-                    Traitement IA complet. Retouche, watermark, tri par dossard, visage et vetements.
+                    Traitement IA complet. Retouche, watermark, tri par dossard, visage et vêtements.
                   </p>
                   <ul className="space-y-1.5 text-[11px] mb-3">
                     <li className="flex items-center gap-1.5 text-gray-600 font-medium">
                       <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Detection des dossards (OCR haute precision)
+                      Détection des dossards (OCR haute précision)
                     </li>
                     <li className="flex items-center gap-1.5 text-gray-600 font-medium">
                       <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Analyse qualite + filtrage photos floues
+                      Analyse qualité + filtrage photos floues
                     </li>
                     <li className="flex items-center gap-1.5 text-gray-600 font-medium">
                       <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Retouche auto (exposition, contraste, nettete)
+                      Retouche auto (exposition, contraste, netteté)
                     </li>
                     <li className="flex items-center gap-1.5 text-gray-600 font-medium">
                       <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
@@ -386,7 +386,7 @@ export default function UploadPage({
                     </li>
                     <li className="flex items-center gap-1.5 text-gray-600 font-medium">
                       <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Detection vetements et accessoires
+                      Détection vêtements et accessoires
                     </li>
                   </ul>
                   <div className="flex items-center gap-3 text-[11px] pt-2 border-t border-amber-100">
@@ -421,7 +421,7 @@ export default function UploadPage({
                 <span className="text-gray-700">Votre solde</span>
                 <div className="flex items-center gap-2">
                   <span className="text-xl font-bold text-gray-900">
-                    {credits.toLocaleString("fr-FR")} credits
+                    {crédits.toLocaleString("fr-FR")} credits
                   </span>
                   {isTestMode && (
                     <Badge className="bg-emerald-100 text-emerald-700 border-0 text-xs">
@@ -435,20 +435,20 @@ export default function UploadPage({
             {/* Info credits refund - Premium only */}
             {ocrProvider === "aws" && (
               <div className="p-4 rounded-xl bg-teal-50 border border-teal-100 text-sm text-teal-700">
-                Les credits des photos orphelines (sans dossard detecte) vous seront automatiquement restitues.
+                Les crédits des photos orphelines (sans dossard détecté) vous seront automatiquement restitués.
               </div>
             )}
 
             {/* Insufficient credits warning */}
             {!hasEnoughCredits && (
               <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-sm text-red-700">
-                <p className="font-medium mb-1">Credits insuffisants</p>
-                <p>Il vous manque {totalCreditsNeeded - credits} credits.</p>
+                <p className="font-medium mb-1">Crédits insuffisants</p>
+                <p>Il vous manque {totalCreditsNeeded - credits} crédits.</p>
                 <Link
                   href="/photographer/credits"
                   className="inline-block mt-2 text-red-800 underline font-medium"
                 >
-                  Recharger vos credits
+                  Recharger vos crédits
                 </Link>
               </div>
             )}
@@ -476,7 +476,7 @@ export default function UploadPage({
                     Upload en cours...
                   </span>
                 ) : (
-                  `Valider l'import (${totalCreditsNeeded} credits)`
+                  `Valider l'import (${totalCreditsNeeded} crédits)`
                 )}
               </Button>
             </div>
@@ -547,7 +547,7 @@ export default function UploadPage({
               <p className="text-lg font-medium text-gray-900 mb-2">
                 Glissez-deposez vos photos ici
               </p>
-              <p className="text-muted-foreground mb-4">ou cliquez pour selectionner</p>
+              <p className="text-muted-foreground mb-4">ou cliquez pour sélectionner</p>
               <Button type="button" variant="outline" className="border-emerald-200 text-emerald-500 hover:bg-emerald-50">
                 Selectionner des fichiers
               </Button>
@@ -562,7 +562,7 @@ export default function UploadPage({
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle className="text-gray-900">
-                {selectedFiles.length} photo{selectedFiles.length > 1 ? "s" : ""} selectionnee{selectedFiles.length > 1 ? "s" : ""}
+                {selectedFiles.length} photo{selectedFiles.length > 1 ? "s" : ""} sélectionnée{selectedFiles.length > 1 ? "s" : ""}
               </CardTitle>
               <div className="flex gap-2">
                 <Button

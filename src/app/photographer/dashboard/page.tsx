@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { EventWithStats } from "@/types";
 
 const SPORT_LABELS: Record<string, string> = {
-  RUNNING: "Course a pied",
+  RUNNING: "Course à pied",
   TRAIL: "Trail",
   TRIATHLON: "Triathlon",
   CYCLING: "Cyclisme",
@@ -111,7 +111,7 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold font-display text-gray-900">{events.length}</p>
-                    <p className="text-sm text-gray-500">Evenements</p>
+                    <p className="text-sm text-gray-500">Événements</p>
                   </div>
                 </div>
               </CardContent>
@@ -127,7 +127,7 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold font-display text-gray-900">{publishedCount}</p>
-                    <p className="text-sm text-gray-500">Publies</p>
+                    <p className="text-sm text-gray-500">Publiés</p>
                   </div>
                 </div>
               </CardContent>
@@ -174,8 +174,8 @@ export default function DashboardPage() {
           <Card className="bg-white border-0 shadow-card rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div>
-                <CardTitle className="text-lg font-display text-gray-900">Evenements recents</CardTitle>
-                <CardDescription className="text-gray-500">Vos derniers evenements crees</CardDescription>
+                <CardTitle className="text-lg font-display text-gray-900">Événements récents</CardTitle>
+                <CardDescription className="text-gray-500">Vos derniers événements créés</CardDescription>
               </div>
               <Link href="/photographer/events">
                 <Button variant="outline" size="sm" className="text-emerald border-emerald/30 hover:bg-emerald-50 rounded-lg">
@@ -197,10 +197,10 @@ export default function DashboardPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                     </svg>
                   </div>
-                  <p className="text-gray-500 mb-4">Aucun evenement pour le moment</p>
+                  <p className="text-gray-500 mb-4">Aucun événement pour le moment</p>
                   <Link href="/photographer/events/new">
                     <Button className="bg-emerald hover:bg-emerald-hover text-white rounded-lg shadow-emerald">
-                      Creer mon premier evenement
+                      Créer mon premier événement
                     </Button>
                   </Link>
                 </div>
@@ -231,7 +231,7 @@ export default function DashboardPage() {
                             ? "bg-gray-100 text-gray-600"
                             : "bg-teal-50 text-teal"
                         }`}>
-                          {event.status === "PUBLISHED" ? "Publie" : event.status === "DRAFT" ? "Brouillon" : "Archive"}
+                          {event.status === "PUBLISHED" ? "Publié" : event.status === "DRAFT" ? "Brouillon" : "Archivé"}
                         </span>
                         <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -257,7 +257,7 @@ export default function DashboardPage() {
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
-                  Nouvel evenement
+                  Nouvel événement
                 </Button>
               </Link>
               <Link href="/photographer/marketplace" className="block">
@@ -297,7 +297,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ) : events.length === 0 ? (
-                <p className="text-gray-500 text-sm">Aucune donnee</p>
+                <p className="text-gray-500 text-sm">Aucune donnée</p>
               ) : (
                 <div className="space-y-2">
                   {Object.entries(

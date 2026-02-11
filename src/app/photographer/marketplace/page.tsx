@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 
 const SPORT_LABELS: Record<string, string> = {
-  RUNNING: "Course a pied",
+  RUNNING: "Course à pied",
   TRAIL: "Trail",
   TRIATHLON: "Triathlon",
   CYCLING: "Cyclisme",
@@ -105,8 +105,8 @@ export default function PhotographerMarketplacePage() {
 
       if (response.ok) {
         toast({
-          title: "Candidature envoyee",
-          description: "L'organisateur a ete notifie de votre candidature.",
+          title: "Candidature envoyée",
+          description: "L'organisateur a été notifié de votre candidature.",
         });
         setSelectedListing(null);
         setApplyMessage("");
@@ -174,7 +174,7 @@ export default function PhotographerMarketplacePage() {
             <p className="text-gray-500">
               {listings.length === 0
                 ? "Aucune offre disponible pour le moment"
-                : "Aucune offre ne correspond a votre recherche"}
+                : "Aucune offre ne correspond à votre recherche"}
             </p>
           </CardContent>
         </Card>
@@ -230,7 +230,7 @@ export default function PhotographerMarketplacePage() {
                     </DialogTrigger>
                     <DialogContent className="rounded-xl">
                       <DialogHeader>
-                        <DialogTitle className="font-display text-gray-900">Postuler a cette mission</DialogTitle>
+                        <DialogTitle className="font-display text-gray-900">Postuler à cette mission</DialogTitle>
                         <DialogDescription className="text-gray-500">{listing.title}</DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4 mt-4">
@@ -238,13 +238,13 @@ export default function PhotographerMarketplacePage() {
                           <Label className="text-gray-700">Message de candidature</Label>
                           <textarea
                             className="flex min-h-[100px] w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald transition-all"
-                            placeholder="Presentez-vous et expliquez pourquoi vous etes le bon photographe pour cette mission..."
+                            placeholder="Présentez-vous et expliquez pourquoi vous êtes le bon photographe pour cette mission..."
                             value={applyMessage}
                             onChange={(e) => setApplyMessage(e.target.value)}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label className="text-gray-700">Tarif propose (€)</Label>
+                          <Label className="text-gray-700">Tarif proposé (€)</Label>
                           <Input
                             type="number"
                             placeholder="Votre tarif pour cette mission"

@@ -80,7 +80,7 @@ export default function StatisticsPage() {
     <div className="p-8 animate-fade-in">
       <div className="mb-8">
         <h1 className="text-2xl font-bold font-display text-gray-900">Statistiques</h1>
-        <p className="text-gray-500 mt-1">Analysez les performances de vos evenements</p>
+        <p className="text-gray-500 mt-1">Analysez les performances de vos événements</p>
       </div>
 
       {/* KPI Cards */}
@@ -98,7 +98,7 @@ export default function StatisticsPage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-500">Evenements</p>
+                    <p className="text-sm text-gray-500">Événements</p>
                     <p className="text-3xl font-bold font-display text-gray-900 mt-1">{stats?.totalEvents || 0}</p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
@@ -108,7 +108,7 @@ export default function StatisticsPage() {
                   </div>
                 </div>
                 <p className="text-sm text-success mt-2">
-                  {stats?.publishedEvents || 0} publies
+                  {stats?.publishedEvents || 0} publiés
                 </p>
               </CardContent>
             </Card>
@@ -127,7 +127,7 @@ export default function StatisticsPage() {
                   </div>
                 </div>
                 <p className="text-sm text-gray-500 mt-2">
-                  {stats?.totalBibNumbers || 0} dossards detectes
+                  {stats?.totalBibNumbers || 0} dossards détectés
                 </p>
               </CardContent>
             </Card>
@@ -177,8 +177,8 @@ export default function StatisticsPage() {
         {/* Top events */}
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardHeader>
-            <CardTitle className="text-lg font-display text-gray-900">Top evenements</CardTitle>
-            <CardDescription className="text-gray-500">Vos evenements les plus performants</CardDescription>
+            <CardTitle className="text-lg font-display text-gray-900">Top événements</CardTitle>
+            <CardDescription className="text-gray-500">Vos événements les plus performants</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -213,7 +213,7 @@ export default function StatisticsPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 py-4 text-center">Aucune donnee disponible</p>
+              <p className="text-gray-500 py-4 text-center">Aucune donnée disponible</p>
             )}
           </CardContent>
         </Card>
@@ -231,7 +231,7 @@ export default function StatisticsPage() {
               </svg>
               <div>
                 <p className="font-medium text-gray-900 text-sm">Importez votre start-list</p>
-                <p className="text-xs text-gray-600 mt-1">Les coureurs seront notifies automatiquement quand leurs photos seront disponibles.</p>
+                <p className="text-xs text-gray-600 mt-1">Les coureurs seront notifiés automatiquement quand leurs photos seront disponibles.</p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-4 rounded-xl bg-success-light hover:bg-green-100 transition-colors">
@@ -249,8 +249,8 @@ export default function StatisticsPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
               </svg>
               <div>
-                <p className="font-medium text-gray-900 text-sm">Creez des packs attractifs</p>
-                <p className="text-xs text-gray-600 mt-1">Les packs all-inclusive generent 3x plus de revenus en moyenne.</p>
+                <p className="font-medium text-gray-900 text-sm">Créez des packs attractifs</p>
+                <p className="text-xs text-gray-600 mt-1">Les packs all-inclusive génèrent 3x plus de revenus en moyenne.</p>
               </div>
             </div>
           </CardContent>

@@ -107,7 +107,7 @@ export default function OrdersPage() {
       {/* Search */}
       <div className="mb-6">
         <Input
-          placeholder="Rechercher par client ou evenement..."
+          placeholder="Rechercher par client ou événement..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="bg-white max-w-md border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
@@ -137,7 +137,7 @@ export default function OrdersPage() {
               <p className="text-gray-500">
                 {orders.length === 0
                   ? "Vous n'avez pas encore de commandes"
-                  : "Aucune commande ne correspond a votre recherche"}
+                  : "Aucune commande ne correspond à votre recherche"}
               </p>
             </div>
           ) : (
@@ -174,7 +174,7 @@ export default function OrdersPage() {
                         ? "bg-success-light text-success-dark"
                         : "bg-gray-100 text-gray-600"
                     }`}>
-                      {order.status === "PAID" ? "Paye" : "Rembourse"}
+                      {order.status === "PAID" ? "Payé" : "Remboursé"}
                     </span>
                     <span className="text-xs text-gray-400">
                       {new Date(order.createdAt).toLocaleDateString("fr-FR")}
