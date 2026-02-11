@@ -25,7 +25,7 @@ const plans = [
     name: "Photographe",
     description: "Vendez vos photos de courses sportives",
     price: "0€",
-    priceDetail: "15% de commission",
+    priceDetail: "Systeme de credits",
     features: [
       "Upload illimite de photos",
       "Detection automatique des dossards",

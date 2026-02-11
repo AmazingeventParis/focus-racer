@@ -90,7 +90,7 @@ export default function AdminDashboardPage() {
           <CardContent>
             <p className="text-3xl font-bold text-emerald">{stats.revenue.totalCA.toFixed(2)}&euro;</p>
             <p className="text-xs text-muted-foreground mt-1">
-              dont {stats.revenue.totalPlatformFees.toFixed(2)}&euro; commission
+              {stats.revenue.totalOrders} commande{stats.revenue.totalOrders > 1 ? "s" : ""} payee{stats.revenue.totalOrders > 1 ? "s" : ""}
             </p>
           </CardContent>
         </Card>

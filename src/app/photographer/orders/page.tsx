@@ -92,7 +92,7 @@ export default function OrdersPage() {
         </Card>
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardContent className="p-6">
-            <p className="text-sm text-gray-500">Vos revenus (apres commission)</p>
+            <p className="text-sm text-gray-500">Vos revenus nets</p>
             <p className="text-2xl font-bold font-display text-success mt-1">{photographerRevenue.toFixed(2)}€</p>
           </CardContent>
         </Card>

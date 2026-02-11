@@ -121,10 +121,10 @@ export default function AdminPaymentsPage() {
         </Card>
         <Card className="glass-card">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Commissions plateforme (page)</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">Panier moyen</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-teal-600">{totalFees.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-teal-600">{orders.length > 0 ? (totalRevenue / orders.length).toFixed(2) : "0.00"}</p>
           </CardContent>
         </Card>
         <Card className="glass-card">
@@ -180,7 +180,6 @@ export default function AdminPaymentsPage() {
                       <TableHead>Événement</TableHead>
                       <TableHead>Photos</TableHead>
                       <TableHead>Montant</TableHead>
-                      <TableHead>Commission</TableHead>
                       <TableHead>Statut</TableHead>
                       <TableHead>Date</TableHead>
                       <TableHead></TableHead>
@@ -214,9 +213,6 @@ export default function AdminPaymentsPage() {
                           <TableCell>{order._count.items}</TableCell>
                           <TableCell className="font-semibold">
                             {order.totalAmount.toFixed(2)}
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {order.platformFee.toFixed(2)}
                           </TableCell>
                           <TableCell>
                             <Badge className={statusCfg.color}>{statusCfg.label}</Badge>

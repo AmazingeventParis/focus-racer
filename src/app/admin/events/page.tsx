@@ -262,12 +262,8 @@ export default function AdminEventsPage() {
                                       <span className="font-medium">{event.revenue.toFixed(2)}€</span>
                                     </div>
                                     <div className="flex justify-between">
-                                      <span className="text-muted-foreground">Commission plateforme</span>
-                                      <span>{event.platformFee.toFixed(2)}€</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                      <span className="text-muted-foreground">Reversement photographe</span>
-                                      <span>{(event.revenue - event.platformFee).toFixed(2)}€</span>
+                                      <span className="text-muted-foreground">Revenu net photographe</span>
+                                      <span>{event.revenue.toFixed(2)}€</span>
                                     </div>
                                     <div className="flex justify-between">
                                       <span className="text-muted-foreground">Commandes payées</span>
