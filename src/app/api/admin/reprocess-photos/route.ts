@@ -6,12 +6,11 @@ import path from "path";
 import fs from "fs/promises";
 import sharp from "sharp";
 import { extractBibNumbers } from "@/lib/ocr";
+import { generateWatermarkedThumbnail as createWatermark } from "@/lib/watermark";
 
 const UPLOAD_DIR = process.env.UPLOAD_DIR || "./public/uploads";
 const WEB_MAX_DIMENSION = 1600;
 const WEB_JPEG_QUALITY = 80;
-const WATERMARK_TEXT = "FOCUS RACER";
-const WATERMARK_OPACITY = 0.3;
 
 async function generateWebVersion(
   originalPath: string,
@@ -35,53 +34,7 @@ async function generateWebVersion(
   return `/uploads/${eventId}/web/${webFilename}`;
 }
 
-async function generateWatermarkedThumbnail(
-  originalPath: string,
-  eventId: string,
-  filename: string
-): Promise<string> {
-  const thumbDir = path.join(UPLOAD_DIR, eventId, "thumbnails");
-  await fs.mkdir(thumbDir, { recursive: true });
-
-  const thumbFilename = `thumb_${path.parse(filename).name}.jpg`;
-  const thumbPath = path.join(thumbDir, thumbFilename);
-
-  // First, resize the image to get final dimensions
-  const resizedImage = sharp(originalPath).resize(800, 600, {
-    fit: "inside",
-    withoutEnlargement: true,
-  });
-
-  const metadata = await resizedImage.metadata();
-  const width = metadata.width || 800;
-  const height = metadata.height || 600;
-
-  // Create watermark SVG with the RESIZED dimensions
-  const watermarkSvg = Buffer.from(`
-    <svg width="${width}" height="${height}">
-      <style>
-        .watermark {
-          fill: white;
-          font-size: ${Math.min(width, height) * 0.08}px;
-          font-family: Arial, sans-serif;
-          font-weight: bold;
-          opacity: ${WATERMARK_OPACITY};
-        }
-      </style>
-      <text x="50%" y="50%" text-anchor="middle" class="watermark">
-        ${WATERMARK_TEXT}
-      </text>
-    </svg>
-  `);
-
-  // Apply watermark to the resized image
-  await resizedImage
-    .composite([{ input: watermarkSvg, gravity: "center" }])
-    .jpeg({ quality: 80 })
-    .toFile(thumbPath);
-
-  return `/uploads/${eventId}/thumbnails/${thumbFilename}`;
-}
+// Removed: use the real watermark function from @/lib/watermark instead
 
 export async function POST() {
   try {
@@ -131,12 +84,8 @@ export async function POST() {
         // Generate web version
         const webPath = await generateWebVersion(originalPath, eventId, filename);
 
-        // Generate watermarked thumbnail
-        const thumbnailPath = await generateWatermarkedThumbnail(
-          originalPath,
-          eventId,
-          filename
-        );
+        // Generate watermarked thumbnail using the web version (not the original)
+        const thumbnailPath = await createWatermark(eventId, webPath, "FOCUS RACER");
 
         // Run OCR on web version
         const webFilePath = path.join(
