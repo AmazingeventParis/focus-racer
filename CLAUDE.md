@@ -8,7 +8,7 @@
 ## 1. Présentation du projet
 
 **Nom** : Focus Racer
-**Version** : 0.9.2 (déployé sur Render — https://focus-racer.onrender.com)
+**Version** : 0.9.3 (déployé sur Render — https://focus-racer.onrender.com)
 **Type** : Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 **Objectif** : Automatiser le tri des photos par IA (dossard/visage), permettre aux coureurs de retrouver et acheter leurs photos, et offrir aux pros un outil de gestion complet.
 
@@ -701,6 +701,101 @@ Error: Cannot find module '/opt/render/project/src/.next/worker-script/node/inde
 - `.env` (ajout clés AWS en local)
 
 **Déploiement Render** : Variables AWS configurées, redéploiement automatique effectué, mode Premium opérationnel.
+
+### Session 7 (suite) — 2026-02-15 (Configuration AWS S3 stockage permanent)
+
+**Contexte** : Sur Render free tier, le système de fichiers est **éphémère** — tous les fichiers uploadés dans `public/uploads/` sont **supprimés à chaque redéploiement**. Cela rend impossible l'utilisation en production sans stockage externe.
+
+**Solution** : Configuration AWS S3 pour stockage permanent des photos.
+
+**Étapes effectuées** :
+
+1. **Script de configuration automatisé** :
+   - Création `scripts/setup-s3.js` : script Node.js pour automatiser toute la configuration S3
+   - Détecte les credentials AWS existants depuis `.env`
+   - Crée le bucket S3 automatiquement avec nom unique (`focusracer-{timestamp}`)
+   - Configure CORS pour autoriser les uploads cross-origin
+   - Bloque l'accès public (sécurité : accès uniquement via URLs signées)
+   - Teste upload/download automatiquement
+   - Met à jour `.env` local automatiquement
+
+2. **Ajout permissions S3 à l'utilisateur IAM** :
+   - Utilisateur IAM `focusracer-rekognition` avait seulement `AmazonRekognitionFullAccess`
+   - Ajout de la policy `AmazonS3FullAccess` via console AWS
+   - Permissions finales : Rekognition + S3
+
+3. **Création bucket S3** :
+   - Bucket créé : `focusracer-1771162064453`
+   - Région : `eu-west-1` (Irlande)
+   - Configuration :
+     - ✅ CORS activé (uploads cross-origin)
+     - ✅ Public access bloqué (sécurité)
+     - ✅ Versioning désactivé (économies)
+     - ✅ Encryption SSE-S3 (par défaut)
+
+4. **Tests réussis** :
+   - ✅ Upload test fichier → OK
+   - ✅ Download test fichier → OK
+   - ✅ Cleanup test fichier → OK
+
+5. **Configuration Render** :
+   - Variable ajoutée : `AWS_S3_BUCKET=focusracer-1771162064453`
+   - Redéploiement automatique déclenché
+
+**Architecture de stockage S3** :
+
+```
+focusracer-1771162064453/
+└── events/
+    └── {eventId}/
+        ├── originals/       # Photos HD originales (pour téléchargement post-achat)
+        ├── thumbs/          # Thumbnails watermarkées (galerie publique)
+        └── branding/        # Logos événements
+```
+
+**Intégration code existant** :
+
+Le code était déjà prêt pour S3 (implémenté en Session 3) :
+- `src/lib/s3.ts` : fonctions upload/download/delete S3
+- `src/lib/storage.ts` : dual storage (local + S3 si configuré)
+- `src/lib/ai-config.ts` : détection automatique si S3 activé via `AWS_S3_BUCKET`
+- URLs signées 24h pour téléchargements sécurisés
+- Support CloudFront CDN (optionnel, pour plus tard)
+
+**Free Tier AWS S3** :
+- ✅ 5 GB stockage gratuit pendant 12 mois
+- ✅ 20 000 GET requests/mois
+- ✅ 2 000 PUT requests/mois
+- ✅ 100 GB transfert sortant/mois
+- 📊 Capacité estimée : **~5 000-10 000 photos** selon taille
+
+**Après Free Tier** (ou après 12 mois) :
+- Stockage : ~0,024€/GB/mois (~2,40€ pour 100 GB)
+- Transfert : ~0,09€/GB
+- **Estimation** : 10 000 photos = **~0,50€/mois** (très abordable)
+
+**Migration future vers Cloudflare R2** (recommandé long terme) :
+- 10 GB gratuits À VIE (vs 5 GB pendant 12 mois sur S3)
+- Transfert sortant GRATUIT (vs payant sur S3)
+- API S3-compatible → migration facile
+
+**Commits** :
+- `22b8424` : Add automated S3 bucket setup script
+
+**Fichiers créés** :
+- `scripts/setup-s3.js` (script configuration S3 automatisée)
+
+**Fichiers modifiés** :
+- `.env` (ajout `AWS_S3_BUCKET="focusracer-1771162064453"`)
+
+**État final** :
+- ✅ Stockage S3 opérationnel
+- ✅ Photos stockées de manière permanente (plus de perte lors des redéploiements)
+- ✅ 5 GB gratuits pendant 12 mois
+- ✅ URLs signées pour sécurité
+- ✅ Prêt pour production
+
+**Déploiement Render** : Variable `AWS_S3_BUCKET` configurée, redéploiement en cours, stockage permanent activé.
 
 ---
 
