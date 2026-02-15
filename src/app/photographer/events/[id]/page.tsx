@@ -470,6 +470,11 @@ export default function EventDetailPage({
                     Mode Live
                   </Button>
                 </Link>
+                <Link href={`/photographer/events/${id}/analytics`}>
+                  <Button size="sm" variant="outline" className="text-blue-600 border-blue-600/30 hover:bg-blue-50 transition-all duration-200">
+                    📊 Analytics
+                  </Button>
+                </Link>
               </div>
             </div>
           </CardHeader>
