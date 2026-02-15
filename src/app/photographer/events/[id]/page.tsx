@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { PhotoWithBibNumbers, Event } from "@/types";
+import { EventAnalytics } from "@/components/event-analytics";
 
 const SPORT_LABELS: Record<string, string> = {
   RUNNING: "Course à pied",
@@ -571,16 +572,7 @@ export default function EventDetailPage({
         </Card>
 
         {/* Analytics Section */}
-        <Card className="bg-white border-0 shadow-sm rounded-2xl overflow-hidden">
-          <CardContent className="p-0">
-            <iframe
-              src={`/photographer/events/${id}/analytics`}
-              className="w-full border-0"
-              style={{ minHeight: "1200px", height: "100vh" }}
-              title="Analytics"
-            />
-          </CardContent>
-        </Card>
+        <EventAnalytics eventId={id} />
     </div>
   );
 }
