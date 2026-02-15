@@ -187,12 +187,14 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{summary.avgProcessingTime}s</div>
+            <div className="text-2xl font-bold">
+              {Math.floor(summary.totalProcessingTime / 60)}min {summary.totalProcessingTime % 60}s
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
-              Temps moyen par photo
+              Durée totale de traitement
             </p>
             <p className="text-xs text-muted-foreground">
-              Total: {Math.floor(summary.totalProcessingTime / 60)}min {summary.totalProcessingTime % 60}s
+              Moyenne: {summary.avgProcessingTime}s par photo
             </p>
           </CardContent>
         </Card>
