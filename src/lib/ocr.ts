@@ -70,17 +70,25 @@ async function extractWithTesseract(
   try {
     console.log(`[OCR] Tesseract (no AWS) on: ${imagePath}`);
 
+    // Create worker manually to avoid worker-script module issues on Render
+    const worker = await Tesseract.createWorker("eng", 1, {
+      // Disable worker threads to avoid MODULE_NOT_FOUND errors on Render
+      workerPath: undefined,
+      corePath: undefined,
+      langPath: undefined,
+    });
+
     const result = await withTimeout(
-      Tesseract.recognize(imagePath, "eng", {
-        logger: (m) => {
-          if (m.status === "recognizing text") {
-            const pct = Math.round(m.progress * 100);
-            if (pct % 25 === 0) {
-              console.log(`[OCR] Tesseract progress: ${pct}%`);
-            }
-          }
-        },
-      }),
+      (async () => {
+        try {
+          const res = await worker.recognize(imagePath);
+          await worker.terminate();
+          return res;
+        } catch (err) {
+          await worker.terminate();
+          throw err;
+        }
+      })(),
       OCR_TIMEOUT_MS,
       "Tesseract OCR"
     );
