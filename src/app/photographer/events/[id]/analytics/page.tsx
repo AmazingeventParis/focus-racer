@@ -10,7 +10,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft,
-  TrendingUp,
   Image as ImageIcon,
   Hash,
   Target,
@@ -19,7 +18,6 @@ import {
   AlertCircle,
   BarChart3,
   DollarSign,
-  Users,
 } from "lucide-react";
 
 interface Analytics {
