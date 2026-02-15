@@ -414,11 +414,6 @@ export default function EventDetailPage({
                     Mode Live
                   </Button>
                 </Link>
-                <Link href={`/photographer/events/${id}/photos`}>
-                  <Button size="sm" variant="outline" className="text-purple-600 border-purple-600/30 hover:bg-purple-50 transition-all duration-200">
-                    📸 Consulter les photos
-                  </Button>
-                </Link>
               </div>
             </div>
           </CardHeader>

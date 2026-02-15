@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -40,6 +40,8 @@ export default function EventPhotosPage({
   const { id } = params;
   const { status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const showOrphanOnly = searchParams.get("orphan") === "true";
   const { toast } = useToast();
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -121,11 +123,19 @@ export default function EventPhotosPage({
     );
   }
 
-  const filteredPhotos = searchBib
-    ? event.photos.filter((photo) =>
-        photo.bibNumbers.some((bib) => bib.number.includes(searchBib))
-      )
-    : event.photos;
+  let filteredPhotos = event.photos;
+
+  // Filter by orphan status if requested
+  if (showOrphanOnly) {
+    filteredPhotos = filteredPhotos.filter((photo) => photo.bibNumbers.length === 0);
+  }
+
+  // Filter by bib search
+  if (searchBib) {
+    filteredPhotos = filteredPhotos.filter((photo) =>
+      photo.bibNumbers.some((bib) => bib.number.includes(searchBib))
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 py-8">
@@ -141,10 +151,12 @@ export default function EventPhotosPage({
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-slate-900">
-                Photos - {event.name}
+                {showOrphanOnly ? "Photos Orphelines" : "Photos"} - {event.name}
               </h1>
               <p className="text-slate-600 mt-1">
-                {event.photos.length} photo{event.photos.length > 1 ? "s" : ""} au total
+                {filteredPhotos.length} photo{filteredPhotos.length > 1 ? "s" : ""}
+                {showOrphanOnly ? " orpheline" : ""}{filteredPhotos.length > 1 && showOrphanOnly ? "s" : ""}
+                {!showOrphanOnly && ` sur ${event.photos.length} au total`}
               </p>
             </div>
           </div>

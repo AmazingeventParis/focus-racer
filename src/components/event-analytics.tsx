@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   ImageIcon,
   Hash,
@@ -13,6 +15,7 @@ import {
   BarChart3,
   DollarSign,
   AlertCircle,
+  Eye,
 } from "lucide-react";
 
 interface Analytics {
@@ -118,18 +121,44 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
   return (
     <div className="space-y-8">
       {/* KPIs Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         {/* Total Photos */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Photos</CardTitle>
             <ImageIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-2">
             <div className="text-2xl font-bold">{summary.totalPhotos}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {summary.photosWithBibs} triées ({summary.orphanPhotos} orphelines)
+            <p className="text-xs text-muted-foreground">
+              {summary.photosWithBibs} triées
             </p>
+            <Link href={`/photographer/events/${eventId}/photos`}>
+              <Button size="sm" variant="outline" className="w-full mt-2">
+                <Eye className="h-3 w-3 mr-1" />
+                Voir
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        {/* Orphan Photos */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Photos Orphelines</CardTitle>
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold text-amber-600">{summary.orphanPhotos}</div>
+            <p className="text-xs text-muted-foreground">
+              Sans dossard détecté
+            </p>
+            <Link href={`/photographer/events/${eventId}/photos?orphan=true`}>
+              <Button size="sm" variant="outline" className="w-full mt-2 border-amber-600/30 text-amber-600 hover:bg-amber-50">
+                <Eye className="h-3 w-3 mr-1" />
+                Voir
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 
@@ -142,7 +171,7 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
           <CardContent>
             <div className="text-2xl font-bold">{summary.uniqueBibs}</div>
             <p className="text-xs text-muted-foreground mt-1">
-              {summary.avgPhotosPerBib.toFixed(1)} photos/dossard en moyenne
+              {summary.avgPhotosPerBib.toFixed(1)} photos par coureur en moyenne
             </p>
           </CardContent>
         </Card>
