@@ -27,6 +27,7 @@ interface Analytics {
     totalPhotos: number;
     photosWithBibs: number;
     orphanPhotos: number;
+    totalAssociations: number;
     uniqueBibs: number;
     avgPhotosPerBib: number;
     successRate: number;
@@ -130,7 +131,7 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
           <CardContent className="space-y-2">
             <div className="text-2xl font-bold">{summary.totalPhotos}</div>
             <p className="text-xs text-muted-foreground">
-              {summary.photosWithBibs} triées
+              {summary.photosWithBibs} triées • {summary.totalAssociations} associations
             </p>
             <Link href={`/photographer/events/${eventId}/photos`}>
               <Button size="sm" variant="outline" className="w-full mt-2">

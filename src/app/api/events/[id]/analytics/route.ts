@@ -53,6 +53,9 @@ export async function GET(
     const photosWithBibs = photos.filter((p) => p.bibNumbers.length > 0);
     const orphanPhotos = photos.filter((p) => p.bibNumbers.length === 0);
 
+    // Total associations (photo-bib pairs)
+    const totalAssociations = photos.reduce((total, p) => total + p.bibNumbers.length, 0);
+
     // Unique bib numbers
     const uniqueBibs = new Set<string>();
     photos.forEach((p) => {
@@ -170,6 +173,7 @@ export async function GET(
         totalPhotos,
         photosWithBibs: photosWithBibs.length,
         orphanPhotos: orphanPhotos.length,
+        totalAssociations,
         uniqueBibs: uniqueBibs.size,
         avgPhotosPerBib: Math.round(avgPhotosPerBib * 10) / 10,
         successRate: totalPhotos > 0 ? Math.round((photosWithBibs.length / totalPhotos) * 100) : 0,
