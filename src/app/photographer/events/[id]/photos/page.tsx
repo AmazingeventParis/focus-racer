@@ -52,6 +52,8 @@ export default function EventPhotosPage({
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [newBibNumber, setNewBibNumber] = useState("");
   const [isAddingBib, setIsAddingBib] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -117,6 +119,18 @@ export default function EventPhotosPage({
     setSelectedPhoto(photo);
     setNewBibNumber("");
     setAddBibDialogOpen(true);
+  };
+
+  const handleOpenLightbox = (photo: Photo) => {
+    setLightboxPhoto(photo);
+    setLightboxOpen(true);
+  };
+
+  const handleAddBibFromLightbox = () => {
+    if (lightboxPhoto) {
+      setLightboxOpen(false);
+      handleOpenAddBib(lightboxPhoto);
+    }
   };
 
   const handleAddBib = async () => {
@@ -254,7 +268,8 @@ export default function EventPhotosPage({
             {filteredPhotos.map((photo) => (
               <div
                 key={photo.id}
-                className="group relative aspect-square bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-slate-200"
+                className="group relative aspect-square bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-slate-200 cursor-pointer"
+                onClick={() => handleOpenLightbox(photo)}
               >
                 {/* Photo */}
                 <Image
@@ -263,6 +278,7 @@ export default function EventPhotosPage({
                   fill
                   className="object-cover"
                   sizes="100px"
+                  unoptimized
                 />
 
                 {/* Overlay on hover */}
@@ -271,7 +287,10 @@ export default function EventPhotosPage({
                     {/* Add bib button (for orphans) */}
                     {photo.bibNumbers.length === 0 && (
                       <button
-                        onClick={() => handleOpenAddBib(photo)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenAddBib(photo);
+                        }}
                         className="bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-emerald-600 transition-colors"
                         title="Ajouter un dossard"
                       >
@@ -281,7 +300,10 @@ export default function EventPhotosPage({
 
                     {/* Delete button */}
                     <button
-                      onClick={() => handleDeletePhoto(photo.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeletePhoto(photo.id);
+                      }}
                       className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
                       title="Supprimer"
                     >
@@ -363,6 +385,69 @@ export default function EventPhotosPage({
                   {isAddingBib ? "Ajout..." : "Ajouter"}
                 </Button>
               </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Lightbox */}
+        <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+          <DialogContent className="max-w-5xl h-[90vh]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center justify-between">
+                <span>{lightboxPhoto?.originalName}</span>
+                {lightboxPhoto?.bibNumbers && lightboxPhoto.bibNumbers.length > 0 && (
+                  <div className="flex gap-2">
+                    {lightboxPhoto.bibNumbers.map((bib) => (
+                      <Badge key={bib.id} className="bg-emerald-500 text-white">
+                        Dossard {bib.number}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="relative flex-1 min-h-0">
+              {lightboxPhoto && (
+                <div className="relative w-full h-full">
+                  <Image
+                    src={lightboxPhoto.webPath || lightboxPhoto.path}
+                    alt={lightboxPhoto.originalName}
+                    fill
+                    className="object-contain"
+                    unoptimized
+                  />
+                </div>
+              )}
+            </div>
+            <div className="flex gap-2 pt-4 border-t">
+              {lightboxPhoto?.bibNumbers.length === 0 && (
+                <Button
+                  onClick={handleAddBibFromLightbox}
+                  className="bg-emerald-500 hover:bg-emerald-600"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Ajouter un dossard
+                </Button>
+              )}
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  if (lightboxPhoto) {
+                    setLightboxOpen(false);
+                    handleDeletePhoto(lightboxPhoto.id);
+                  }
+                }}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Supprimer
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setLightboxOpen(false)}
+                className="ml-auto"
+              >
+                Fermer
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
