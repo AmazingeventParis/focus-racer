@@ -9,7 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Search, Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { ArrowLeft, Search, Trash2, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface BibNumber {
@@ -46,6 +48,10 @@ export default function EventPhotosPage({
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchBib, setSearchBib] = useState("");
+  const [addBibDialogOpen, setAddBibDialogOpen] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [newBibNumber, setNewBibNumber] = useState("");
+  const [isAddingBib, setIsAddingBib] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -104,6 +110,56 @@ export default function EventPhotosPage({
         description: "Impossible de supprimer la photo",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleOpenAddBib = (photo: Photo) => {
+    setSelectedPhoto(photo);
+    setNewBibNumber("");
+    setAddBibDialogOpen(true);
+  };
+
+  const handleAddBib = async () => {
+    if (!selectedPhoto || !newBibNumber.trim()) return;
+
+    setIsAddingBib(true);
+    try {
+      const res = await fetch(`/api/photos/${selectedPhoto.id}/bib-numbers`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ number: newBibNumber.trim() }),
+      });
+
+      if (res.ok) {
+        const newBib = await res.json();
+        setEvent((prev) =>
+          prev
+            ? {
+                ...prev,
+                photos: prev.photos.map((p) =>
+                  p.id === selectedPhoto.id
+                    ? { ...p, bibNumbers: [...p.bibNumbers, newBib] }
+                    : p
+                ),
+              }
+            : null
+        );
+        toast({
+          title: "Dossard ajouté",
+          description: `Dossard ${newBibNumber} ajouté avec succès`,
+        });
+        setAddBibDialogOpen(false);
+      } else {
+        throw new Error("Failed to add bib");
+      }
+    } catch {
+      toast({
+        title: "Erreur",
+        description: "Impossible d'ajouter le dossard",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAddingBib(false);
     }
   };
 
@@ -211,14 +267,27 @@ export default function EventPhotosPage({
 
                 {/* Overlay on hover */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-1">
-                  {/* Delete button */}
-                  <button
-                    onClick={() => handleDeletePhoto(photo.id)}
-                    className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
-                    title="Supprimer"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </button>
+                  <div className="flex gap-1">
+                    {/* Add bib button (for orphans) */}
+                    {photo.bibNumbers.length === 0 && (
+                      <button
+                        onClick={() => handleOpenAddBib(photo)}
+                        className="bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-emerald-600 transition-colors"
+                        title="Ajouter un dossard"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </button>
+                    )}
+
+                    {/* Delete button */}
+                    <button
+                      onClick={() => handleDeletePhoto(photo.id)}
+                      className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                      title="Supprimer"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </div>
 
                   {/* Bib numbers */}
                   {photo.bibNumbers.length > 0 && (
@@ -252,6 +321,51 @@ export default function EventPhotosPage({
             ))}
           </div>
         )}
+
+        {/* Add Bib Dialog */}
+        <Dialog open={addBibDialogOpen} onOpenChange={setAddBibDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Ajouter un dossard</DialogTitle>
+              <DialogDescription>
+                Ajoutez manuellement un numéro de dossard à cette photo
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="bibNumber">Numéro de dossard</Label>
+                <Input
+                  id="bibNumber"
+                  placeholder="Ex: 1234"
+                  value={newBibNumber}
+                  onChange={(e) => setNewBibNumber(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !isAddingBib) {
+                      handleAddBib();
+                    }
+                  }}
+                  autoFocus
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setAddBibDialogOpen(false)}
+                  disabled={isAddingBib}
+                >
+                  Annuler
+                </Button>
+                <Button
+                  onClick={handleAddBib}
+                  disabled={!newBibNumber.trim() || isAddingBib}
+                  className="bg-emerald-500 hover:bg-emerald-600"
+                >
+                  {isAddingBib ? "Ajout..." : "Ajouter"}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

@@ -100,6 +100,8 @@ model Event {
   pricePacks   PricePack[]
   orders       Order[]
   faceClusteredAt DateTime? // When face clustering was last run
+  uploadStartedAt DateTime? // When the first batch upload started
+  uploadCompletedAt DateTime? // When the last photo was processed
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 

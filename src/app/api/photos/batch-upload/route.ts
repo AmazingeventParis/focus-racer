@@ -330,6 +330,14 @@ export async function POST(request: NextRequest) {
     // Create upload session for progress tracking (use client-provided ID or generate new one)
     const sessionId = createUploadSession(session.user.id, eventId, nbPhotos, sessionIdParam || undefined);
 
+    // Record upload start timestamp
+    if (!event.uploadStartedAt) {
+      await prisma.event.update({
+        where: { id: eventId },
+        data: { uploadStartedAt: new Date() },
+      });
+    }
+
     // Save all files in parallel (with limited concurrency to avoid timeout)
     const photos: { id: string; webPath: string; index: number }[] = [];
     const failedFiles: string[] = [];
@@ -424,6 +432,11 @@ export async function POST(request: NextRequest) {
           });
 
           if (isComplete) {
+            // Record upload completion timestamp
+            await prisma.event.update({
+              where: { id: eventId },
+              data: { uploadCompletedAt: new Date() },
+            });
             scheduleAutoClustering(eventId);
           }
         }

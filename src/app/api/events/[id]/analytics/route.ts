@@ -23,6 +23,8 @@ export async function GET(
         name: true,
         userId: true,
         createdAt: true,
+        uploadStartedAt: true,
+        uploadCompletedAt: true,
       },
     });
 
@@ -75,20 +77,31 @@ export async function GET(
         ? totalAssociations / uniqueBibs.size
         : 0;
 
-    // Processing time (first photo to last processed photo)
-    const processedPhotos = photos.filter((p) => p.processedAt);
+    // Processing time (upload start to completion)
     let avgProcessingTime = 0;
     let totalProcessingTime = 0;
 
-    if (processedPhotos.length > 0) {
-      const times = processedPhotos.map((p) => {
-        if (p.processedAt && p.createdAt) {
-          return p.processedAt.getTime() - p.createdAt.getTime();
-        }
-        return 0;
-      });
-      totalProcessingTime = times.reduce((a, b) => a + b, 0);
-      avgProcessingTime = totalProcessingTime / processedPhotos.length;
+    if (event.uploadStartedAt && event.uploadCompletedAt) {
+      // Real processing time from start to end
+      totalProcessingTime = event.uploadCompletedAt.getTime() - event.uploadStartedAt.getTime();
+
+      // Average per photo
+      if (totalPhotos > 0) {
+        avgProcessingTime = totalProcessingTime / totalPhotos;
+      }
+    } else if (totalPhotos > 0) {
+      // Fallback: estimate from photo creation times (old behavior for legacy data)
+      const processedPhotos = photos.filter((p) => p.processedAt);
+      if (processedPhotos.length > 0) {
+        const times = processedPhotos.map((p) => {
+          if (p.processedAt && p.createdAt) {
+            return p.processedAt.getTime() - p.createdAt.getTime();
+          }
+          return 0;
+        });
+        totalProcessingTime = times.reduce((a, b) => a + b, 0);
+        avgProcessingTime = totalProcessingTime / processedPhotos.length;
+      }
     }
 
     // Credits used (count photos that deducted credits)
