@@ -63,6 +63,7 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
     <div className="space-y-8">
       {/* Visual Analytics Summary - Vue d'ensemble unique */}
       <AnalyticsVisual
+        eventId={eventId}
         totalPhotos={summary.totalPhotos}
         photosWithBibs={summary.photosWithBibs}
         orphanPhotos={summary.orphanPhotos}

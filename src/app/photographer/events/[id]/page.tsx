@@ -366,7 +366,7 @@ export default function EventDetailPage({
                   <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200">Start-List</Button>
                 </Link>
                 <Link href={`/photographer/events/${id}/packs`}>
-                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200">Packs de vente</Button>
+                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200">Tarifs</Button>
                 </Link>
                 {notifyStatus && notifyStatus.pending > 0 && (
                   <Button
@@ -399,18 +399,6 @@ export default function EventDetailPage({
                       ? "Clustering..."
                       : `Lier ${clusteringStats.orphanPhotos} photo${clusteringStats.orphanPhotos > 1 ? "s" : ""} par visage`}
                   </Button>
-                )}
-                <Link href={`/photographer/events/${id}/photos`}>
-                  <Button size="sm" variant="outline" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200">
-                    Voir les miniatures
-                  </Button>
-                </Link>
-                {clusteringStats && clusteringStats.orphanPhotos > 0 && (
-                  <Link href={`/photographer/events/${id}/photos?orphan=true`}>
-                    <Button size="sm" variant="outline" className="text-amber-600 border-amber-300 hover:bg-amber-50 transition-all duration-200">
-                      {clusteringStats.orphanPhotos} orpheline{clusteringStats.orphanPhotos > 1 ? "s" : ""}
-                    </Button>
-                  </Link>
                 )}
                 <Link href={`/photographer/events/${id}/upload`}>
                   <Button size="sm" className="bg-emerald hover:bg-emerald-hover text-white shadow-emerald transition-all duration-200">Ajouter des photos</Button>

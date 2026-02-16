@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ImageIcon, Hash, Zap, Clock, TrendingUp } from "lucide-react";
+import { ImageIcon, Hash, Zap, Clock, TrendingUp, AlertCircle } from "lucide-react";
 
 interface AnalyticsVisualProps {
+  eventId: string;
   totalPhotos: number;
   photosWithBibs: number;
   orphanPhotos: number;
@@ -13,6 +15,7 @@ interface AnalyticsVisualProps {
 }
 
 export function AnalyticsVisual({
+  eventId,
   totalPhotos,
   photosWithBibs,
   orphanPhotos,
@@ -43,7 +46,7 @@ export function AnalyticsVisual({
       </CardHeader>
       <CardContent className="p-6">
         {/* Main metrics row */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-6 mb-8">
           {/* Total Photos */}
           <div className="group">
             <div className="flex items-center gap-2 mb-3">
@@ -56,8 +59,8 @@ export function AnalyticsVisual({
             <p className="text-xs text-slate-500">fichiers uploadés</p>
           </div>
 
-          {/* Photos Sorted */}
-          <div className="group">
+          {/* Photos Sorted - CLICKABLE */}
+          <Link href={`/photographer/events/${eventId}/photos`} className="group cursor-pointer hover:scale-[1.02] transition-transform">
             <div className="flex items-center gap-2 mb-3">
               <div className="p-1.5 rounded-md bg-emerald-50 group-hover:bg-emerald-100 transition-colors">
                 <svg className="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,9 +69,23 @@ export function AnalyticsVisual({
               </div>
               <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Triées</span>
             </div>
-            <p className="text-3xl font-bold text-emerald-600 mb-1">{photosWithBibs}</p>
-            <p className="text-xs text-slate-500">{sortedPercentage.toFixed(1)}% du total</p>
-          </div>
+            <p className="text-3xl font-bold text-emerald-600 mb-1 group-hover:text-emerald-700 transition-colors">{photosWithBibs}</p>
+            <p className="text-xs text-slate-500 group-hover:text-emerald-600 transition-colors">{sortedPercentage.toFixed(1)}% du total →</p>
+          </Link>
+
+          {/* Orphan Photos - CLICKABLE */}
+          {orphanPhotos > 0 && (
+            <Link href={`/photographer/events/${eventId}/photos?orphan=true`} className="group cursor-pointer hover:scale-[1.02] transition-transform">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-1.5 rounded-md bg-amber-50 group-hover:bg-amber-100 transition-colors">
+                  <AlertCircle className="h-3.5 w-3.5 text-amber-600" />
+                </div>
+                <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Orphelines</span>
+              </div>
+              <p className="text-3xl font-bold text-amber-600 mb-1 group-hover:text-amber-700 transition-colors">{orphanPhotos}</p>
+              <p className="text-xs text-slate-500 group-hover:text-amber-600 transition-colors">à traiter →</p>
+            </Link>
+          )}
 
           {/* Associations */}
           <div className="group">
@@ -97,12 +114,12 @@ export function AnalyticsVisual({
           {/* Processing Time */}
           <div className="group">
             <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-md bg-amber-50 group-hover:bg-amber-100 transition-colors">
-                <Clock className="h-3.5 w-3.5 text-amber-600" />
+              <div className="p-1.5 rounded-md bg-indigo-50 group-hover:bg-indigo-100 transition-colors">
+                <Clock className="h-3.5 w-3.5 text-indigo-600" />
               </div>
               <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Traitement</span>
             </div>
-            <p className="text-3xl font-bold text-amber-600 mb-1">
+            <p className="text-3xl font-bold text-indigo-600 mb-1">
               {Math.floor(totalProcessingTime / 60)}<span className="text-xl">m</span>
             </p>
             <p className="text-xs text-slate-500">{avgProcessingTime}s par photo</p>
@@ -144,59 +161,6 @@ export function AnalyticsVisual({
                   </span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Performance indicators */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-100">
-            {/* Coverage quality */}
-            <div className="text-center p-4 rounded-lg bg-gradient-to-br from-slate-50 to-transparent border border-slate-100">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm mb-2">
-                {avgPhotosPerBib >= 3 ? (
-                  <span className="text-lg">🏆</span>
-                ) : avgPhotosPerBib >= 1.5 ? (
-                  <span className="text-lg">✨</span>
-                ) : (
-                  <span className="text-lg">📊</span>
-                )}
-              </div>
-              <p className="text-xs text-slate-500 mb-1">Couverture</p>
-              <p className="text-sm font-semibold text-slate-700">
-                {avgPhotosPerBib >= 3 ? "Excellente" : avgPhotosPerBib >= 1.5 ? "Bonne" : "Standard"}
-              </p>
-            </div>
-
-            {/* Success rate */}
-            <div className="text-center p-4 rounded-lg bg-gradient-to-br from-slate-50 to-transparent border border-slate-100">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm mb-2">
-                <span className="text-sm font-bold text-emerald-600">{sortedPercentage.toFixed(0)}%</span>
-              </div>
-              <p className="text-xs text-slate-500 mb-1">Taux de tri</p>
-              <p className="text-sm font-semibold text-slate-700">
-                {sortedPercentage >= 90 ? "Optimal" : sortedPercentage >= 70 ? "Bon" : "À améliorer"}
-              </p>
-            </div>
-
-            {/* Efficiency */}
-            <div className="text-center p-4 rounded-lg bg-gradient-to-br from-slate-50 to-transparent border border-slate-100">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm mb-2">
-                <span className="text-sm font-bold text-purple-600">×{bibsPerPhoto.toFixed(1)}</span>
-              </div>
-              <p className="text-xs text-slate-500 mb-1">Efficacité</p>
-              <p className="text-sm font-semibold text-slate-700">
-                {bibsPerPhoto >= 2 ? "Groupe dense" : bibsPerPhoto >= 1.2 ? "Standard" : "Solo"}
-              </p>
-            </div>
-
-            {/* Processing speed */}
-            <div className="text-center p-4 rounded-lg bg-gradient-to-br from-slate-50 to-transparent border border-slate-100">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm mb-2">
-                <span className="text-sm font-bold text-amber-600">{avgProcessingTime}s</span>
-              </div>
-              <p className="text-xs text-slate-500 mb-1">Vitesse</p>
-              <p className="text-sm font-semibold text-slate-700">
-                {avgProcessingTime <= 2 ? "Rapide" : avgProcessingTime <= 5 ? "Normal" : "Lent"}
-              </p>
             </div>
           </div>
         </div>
