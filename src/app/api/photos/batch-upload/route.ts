@@ -242,6 +242,7 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const eventId = formData.get("eventId") as string | null;
+    const sessionIdParam = formData.get("sessionId") as string | null;
     const ocrProviderParam = formData.get("ocrProvider") as string | null;
     const ocrProvider = (ocrProviderParam === "aws" || ocrProviderParam === "tesseract")
       ? ocrProviderParam
@@ -326,31 +327,72 @@ export async function POST(request: NextRequest) {
       creditsRemaining = creditResult.balanceAfter;
     }
 
-    // Create upload session for progress tracking (before saving so client can connect early)
-    const sessionId = createUploadSession(session.user.id, eventId, nbPhotos);
+    // Create upload session for progress tracking (use client-provided ID or generate new one)
+    const sessionId = createUploadSession(session.user.id, eventId, nbPhotos, sessionIdParam || undefined);
 
-    // Save all files and create photo records
+    // Save all files in parallel (with limited concurrency to avoid timeout)
     const photos: { id: string; webPath: string; index: number }[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      updateUploadProgress(sessionId, {
-        currentStep: `Sauvegarde fichier ${i + 1}/${files.length}`,
-      });
-      const { filename, path, webPath, s3Key } = await saveFile(file, eventId);
+    const failedFiles: string[] = [];
 
-      const photo = await prisma.photo.create({
-        data: {
-          filename,
-          originalName: file.name,
-          path,
-          webPath,
-          s3Key,
-          eventId,
-          creditDeducted: totalCredits > 0,
+    // Process files in batches of 5 to avoid overwhelming the server
+    const BATCH_SIZE = 5;
+    for (let batchStart = 0; batchStart < files.length; batchStart += BATCH_SIZE) {
+      const batch = files.slice(batchStart, batchStart + BATCH_SIZE);
+      const batchPromises = batch.map(async (file, batchIndex) => {
+        const fileIndex = batchStart + batchIndex;
+        updateUploadProgress(sessionId, {
+          currentStep: `Sauvegarde fichier ${fileIndex + 1}/${files.length}`,
+        });
+
+        try {
+          const { filename, path, webPath, s3Key } = await saveFile(file, eventId);
+
+          const photo = await prisma.photo.create({
+            data: {
+              filename,
+              originalName: file.name,
+              path,
+              webPath,
+              s3Key,
+              eventId,
+              creditDeducted: totalCredits > 0,
+            },
+          });
+
+          return { id: photo.id, webPath, index: fileIndex, name: file.name };
+        } catch (saveError) {
+          console.error(`Failed to save file ${file.name}:`, saveError);
+          return { error: file.name };
+        }
+      });
+
+      const batchResults = await Promise.allSettled(batchPromises);
+
+      // Process batch results
+      for (const result of batchResults) {
+        if (result.status === "fulfilled") {
+          const value = result.value;
+          if ("error" in value && value.error) {
+            failedFiles.push(value.error);
+          } else if ("id" in value && value.id && value.webPath !== undefined && typeof value.index === "number") {
+            photos.push({ id: value.id, webPath: value.webPath, index: value.index });
+          }
+        } else {
+          console.error("Batch processing error:", result.reason);
+        }
+      }
+    }
+
+    // If all files failed, return error
+    if (photos.length === 0) {
+      return NextResponse.json(
+        {
+          error: "Impossible de traiter les fichiers",
+          details: `${failedFiles.length} fichier(s) ont echoue: ${failedFiles.join(", ")}`,
+          failedFiles
         },
-      });
-
-      photos.push({ id: photo.id, webPath, index: i });
+        { status: 400 }
+      );
     }
 
     // Enqueue all photos for processing
@@ -390,9 +432,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       sessionId,
-      totalPhotos: nbPhotos,
+      totalPhotos: photos.length, // Only count successfully uploaded photos
       creditsDeducted: totalCredits,
       creditsRemaining,
+      ...(failedFiles.length > 0 && {
+        warnings: `${failedFiles.length} fichier(s) non traite(s)`,
+        failedFiles
+      })
     });
   } catch (error) {
     console.error("Batch upload error:", error);

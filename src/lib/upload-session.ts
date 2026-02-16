@@ -16,9 +16,10 @@ const sessions = new Map<string, UploadSessionData>();
 export function createUploadSession(
   userId: string,
   eventId: string,
-  total: number
+  total: number,
+  providedSessionId?: string
 ): string {
-  const sessionId = uuidv4();
+  const sessionId = providedSessionId || uuidv4();
   sessions.set(sessionId, {
     userId,
     eventId,

@@ -12,11 +12,53 @@ import { useToast } from "@/hooks/use-toast";
 import { Event } from "@/types";
 import ProcessingScreen from "@/components/processing-screen";
 
+function generateSessionId(): string {
+  return `upload_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+}
+
 type Phase = "select" | "confirm" | "uploading" | "processing";
 
 interface SelectedFile {
   file: File;
   previewUrl: string;
+}
+
+interface ExcludedFile {
+  name: string;
+  reason: string;
+}
+
+// Formats d'image acceptés (compressés uniquement)
+const ACCEPTED_FORMATS = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'image/heic',
+  'image/heif'
+];
+
+const ACCEPTED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'];
+
+function isValidImageFormat(file: File): { valid: boolean; reason?: string } {
+  // Check MIME type
+  if (file.type && ACCEPTED_FORMATS.includes(file.type.toLowerCase())) {
+    return { valid: true };
+  }
+
+  // Fallback: check extension
+  const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+  if (ACCEPTED_EXTENSIONS.includes(ext)) {
+    return { valid: true };
+  }
+
+  // Detect RAW formats by extension
+  const rawExtensions = ['.cr2', '.cr3', '.nef', '.arw', '.dng', '.orf', '.raf', '.rw2', '.raw'];
+  if (rawExtensions.includes(ext)) {
+    return { valid: false, reason: 'Format RAW non supporté (trop lourd, utilisez un JPEG)' };
+  }
+
+  return { valid: false, reason: 'Format non supporté (JPEG, PNG, WebP uniquement)' };
 }
 
 export default function UploadPage({
@@ -32,6 +74,7 @@ export default function UploadPage({
   const [isLoading, setIsLoading] = useState(true);
   const [phase, setPhase] = useState<Phase>("select");
   const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
+  const [excludedFiles, setExcludedFiles] = useState<ExcludedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [credits, setCredits] = useState<number>(0);
   const [isTestMode, setIsTestMode] = useState(false);
@@ -98,11 +141,26 @@ export default function UploadPage({
 
   const addFiles = useCallback(
     (files: FileList) => {
-      const imageFiles = Array.from(files).filter((file) =>
-        file.type.startsWith("image/")
-      );
+      const allFiles = Array.from(files);
+      const validFiles: SelectedFile[] = [];
+      const invalidFiles: ExcludedFile[] = [];
 
-      if (imageFiles.length === 0) {
+      for (const file of allFiles) {
+        const validation = isValidImageFormat(file);
+        if (validation.valid) {
+          validFiles.push({
+            file,
+            previewUrl: URL.createObjectURL(file),
+          });
+        } else {
+          invalidFiles.push({
+            name: file.name,
+            reason: validation.reason || 'Format invalide',
+          });
+        }
+      }
+
+      if (validFiles.length === 0 && invalidFiles.length === 0) {
         toast({
           title: "Erreur",
           description: "Veuillez sélectionner des images",
@@ -111,12 +169,16 @@ export default function UploadPage({
         return;
       }
 
-      const newFiles: SelectedFile[] = imageFiles.map((file) => ({
-        file,
-        previewUrl: URL.createObjectURL(file),
-      }));
+      setSelectedFiles((prev) => [...prev, ...validFiles]);
+      setExcludedFiles((prev) => [...prev, ...invalidFiles]);
 
-      setSelectedFiles((prev) => [...prev, ...newFiles]);
+      if (invalidFiles.length > 0) {
+        toast({
+          title: `${invalidFiles.length} fichier${invalidFiles.length > 1 ? 's' : ''} exclu${invalidFiles.length > 1 ? 's' : ''}`,
+          description: `${validFiles.length} fichier${validFiles.length > 1 ? 's' : ''} valide${validFiles.length > 1 ? 's' : ''} ajouté${validFiles.length > 1 ? 's' : ''}`,
+          variant: "default",
+        });
+      }
     },
     [toast]
   );
@@ -176,6 +238,9 @@ export default function UploadPage({
     setCompressProgress(0);
     setUploadStep("compressing");
     setPhase("uploading");
+
+    // Generate session ID upfront so we can switch to processing immediately after upload
+    const uploadSessionId = generateSessionId();
 
     // --- Step 1: Compress images client-side ---
     const MAX_DIM = 4000;
@@ -244,6 +309,7 @@ export default function UploadPage({
 
     const formData = new FormData();
     formData.append("eventId", id);
+    formData.append("sessionId", uploadSessionId);
     formData.append("ocrProvider", ocrProvider);
     compressed.forEach((file) => {
       formData.append("files", file);
@@ -253,13 +319,32 @@ export default function UploadPage({
 
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable) {
-        setUploadProgress(Math.round((e.loaded / e.total) * 100));
+        const progress = Math.round((e.loaded / e.total) * 100);
+        setUploadProgress(progress);
+
+        // When upload reaches 100%, switch to processing immediately
+        if (progress === 100) {
+          setSessionId(uploadSessionId);
+          setPhase("processing");
+        }
       }
     };
 
     xhr.onload = () => {
       try {
-        const data = JSON.parse(xhr.responseText);
+        // Check if response is empty
+        if (!xhr.responseText || xhr.responseText.trim() === "") {
+          throw new Error("Le serveur n'a pas retourne de reponse. Verifiez que vos images sont valides.");
+        }
+
+        let data;
+        try {
+          data = JSON.parse(xhr.responseText);
+        } catch {
+          console.error("Failed to parse response:", xhr.responseText);
+          throw new Error("Reponse invalide du serveur. Verifiez les logs.");
+        }
+
         if (xhr.status >= 400) {
           if (data.code === "INSUFFICIENT_CREDITS") {
             toast({
@@ -271,11 +356,21 @@ export default function UploadPage({
             setPhase("confirm");
             return;
           }
-          throw new Error(data.error || "Erreur lors de l'upload");
+          throw new Error(data.error || data.details || "Erreur lors de l'upload");
         }
-        setSessionId(data.sessionId);
-        setPhase("processing");
+
+        // Show warnings if some files failed
+        if (data.warnings) {
+          toast({
+            title: "Attention",
+            description: data.warnings,
+            variant: "default",
+          });
+        }
+
+        // Session is already set and processing started, response is just for confirmation
       } catch (error) {
+        console.error("Upload error:", error);
         toast({
           title: "Erreur",
           description: error instanceof Error ? error.message : "Erreur inconnue",
@@ -796,6 +891,48 @@ export default function UploadPage({
                 Continuer
               </Button>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Excluded files warning */}
+      {excludedFiles.length > 0 && (
+        <Card className="bg-amber-50 border-amber-200 rounded-2xl">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
+              <CardTitle className="text-amber-900">
+                {excludedFiles.length} fichier{excludedFiles.length > 1 ? "s" : ""} exclu{excludedFiles.length > 1 ? "s" : ""}
+              </CardTitle>
+            </div>
+            <CardDescription className="text-amber-700">
+              Ces fichiers ne peuvent pas être traités
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {excludedFiles.map((file, index) => (
+                <div key={index} className="flex items-start gap-3 p-3 bg-white rounded-lg border border-amber-200">
+                  <svg className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                    <p className="text-xs text-amber-700">{file.reason}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setExcludedFiles([])}
+              className="mt-3 border-amber-300 text-amber-700 hover:bg-amber-100"
+            >
+              Effacer la liste
+            </Button>
           </CardContent>
         </Card>
       )}

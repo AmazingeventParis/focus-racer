@@ -23,15 +23,47 @@ export async function ensureUploadDir(eventId: string): Promise<string> {
  * Exported for use in other modules (watermark, image-processing, etc.)
  */
 export async function normalizeImage(inputPath: string): Promise<Buffer> {
-  try {
-    // Try to read and convert to a standard format without any transformations
-    return await sharp(inputPath, { failOnError: false })
+  const strategies = [
+    // Strategy 1: Try with failOnError: false
+    () => sharp(inputPath, { failOnError: false })
       .jpeg({ quality: 95, force: true })
-      .toBuffer();
-  } catch (error) {
-    console.error("Failed to normalize image:", error);
-    throw error;
+      .toBuffer(),
+
+    // Strategy 2: Try with raw input
+    () => sharp(inputPath, { failOnError: false, unlimited: true })
+      .toFormat("jpeg", { quality: 95 })
+      .toBuffer(),
+
+    // Strategy 3: Try to extract raw pixels first
+    () => sharp(inputPath, { failOnError: false })
+      .raw()
+      .toBuffer({ resolveWithObject: true })
+      .then(({ data, info }) =>
+        sharp(data, {
+          raw: {
+            width: info.width,
+            height: info.height,
+            channels: info.channels
+          }
+        })
+        .jpeg({ quality: 95 })
+        .toBuffer()
+      ),
+  ];
+
+  for (let i = 0; i < strategies.length; i++) {
+    try {
+      return await strategies[i]();
+    } catch (error) {
+      console.warn(`Normalization strategy ${i + 1} failed:`, error instanceof Error ? error.message : error);
+      if (i === strategies.length - 1) {
+        // Last strategy failed
+        throw new Error(`Unable to normalize image after ${strategies.length} attempts`);
+      }
+    }
   }
+
+  throw new Error("All normalization strategies failed");
 }
 
 /**
@@ -59,8 +91,9 @@ async function generateWebVersion(
       })
       .jpeg({ quality: WEB_JPEG_QUALITY, mozjpeg: true })
       .toFile(webPath);
-  } catch {
-    console.warn(`Standard processing failed for ${filename}, attempting normalization...`);
+  } catch (standardError) {
+    console.warn(`Standard processing failed for ${filename}:`, standardError instanceof Error ? standardError.message : standardError);
+    console.warn(`Attempting normalization...`);
 
     try {
       // If standard processing fails, normalize the image first
@@ -77,8 +110,9 @@ async function generateWebVersion(
 
       console.log(`Successfully normalized and processed ${filename}`);
     } catch (normalizeError) {
-      console.error(`Failed to normalize ${filename}:`, normalizeError);
-      throw new Error(`Unable to process image: ${filename}. The file may be corrupted or in an unsupported format.`);
+      const errorMsg = normalizeError instanceof Error ? normalizeError.message : String(normalizeError);
+      console.error(`Failed to normalize ${filename}:`, errorMsg);
+      throw new Error(`Unable to process image: ${filename}. Error: ${errorMsg}`);
     }
   }
 
