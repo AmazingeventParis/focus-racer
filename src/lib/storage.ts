@@ -9,7 +9,7 @@ const UPLOAD_DIR = process.env.UPLOAD_DIR || "./public/uploads";
 
 /** Max dimension for the web-optimized version (used by AI pipeline + display) */
 const WEB_MAX_DIMENSION = 1600;
-const WEB_QUALITY = 80; // For WebP format
+const WEB_JPEG_QUALITY = 80;
 
 export async function ensureUploadDir(eventId: string): Promise<string> {
   const eventDir = path.join(UPLOAD_DIR, eventId);
@@ -68,8 +68,9 @@ export async function normalizeImage(inputPath: string): Promise<Buffer> {
 
 /**
  * Generate a web-optimized version of the photo.
- * Resized to max 1600px, WebP quality 80 → typically 150-300 KB (25% lighter than JPEG).
+ * Resized to max 1600px, JPEG quality 80 → typically 200-400 KB.
  * Used for: AI pipeline (OCR, face), web gallery display.
+ * IMPORTANT: Must be JPEG for AWS Rekognition compatibility (WebP not supported).
  */
 async function generateWebVersion(
   originalPath: string,
@@ -79,7 +80,7 @@ async function generateWebVersion(
   const webDir = path.join(eventDir, "web");
   await fs.mkdir(webDir, { recursive: true });
 
-  const webFilename = `web_${path.parse(filename).name}.webp`;
+  const webFilename = `web_${path.parse(filename).name}.jpg`;
   const webPath = path.join(webDir, webFilename);
 
   let webBuffer: Buffer;
@@ -91,7 +92,7 @@ async function generateWebVersion(
         fit: "inside",
         withoutEnlargement: true,
       })
-      .webp({ quality: WEB_QUALITY })
+      .jpeg({ quality: WEB_JPEG_QUALITY, mozjpeg: true })
       .toBuffer();
 
     await fs.writeFile(webPath, webBuffer);
@@ -109,7 +110,7 @@ async function generateWebVersion(
           fit: "inside",
           withoutEnlargement: true,
         })
-        .webp({ quality: WEB_QUALITY })
+        .jpeg({ quality: WEB_JPEG_QUALITY, mozjpeg: true })
         .toBuffer();
 
       await fs.writeFile(webPath, webBuffer);

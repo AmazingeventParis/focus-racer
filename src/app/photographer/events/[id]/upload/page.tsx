@@ -588,7 +588,7 @@ export default function UploadPage({
                   <div className="flex items-center gap-3 text-[11px] pt-2 border-t border-gray-100">
                     <span className="flex items-center gap-1 text-emerald-600">
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-                      {formatTime(Math.round(selectedFiles.length * 0.6))}
+                      {formatTime(Math.round(selectedFiles.length * 0.7))}
                     </span>
                     <span className="flex items-center gap-1 text-emerald-600">
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -645,7 +645,7 @@ export default function UploadPage({
                   <div className="flex items-center gap-3 text-[11px] pt-2 border-t border-amber-100">
                     <span className="flex items-center gap-1 text-amber-600">
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-                      {formatTime(Math.round(selectedFiles.length * 1.2))}
+                      {formatTime(Math.round(selectedFiles.length * 1.4))}
                     </span>
                     <span className="flex items-center gap-1 text-amber-600">
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
