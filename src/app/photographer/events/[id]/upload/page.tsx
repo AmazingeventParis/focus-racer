@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Event } from "@/types";
 import ProcessingScreen from "@/components/processing-screen";
+import { UploadTimeline } from "@/components/upload-timeline";
 
 function generateSessionId(): string {
   return `upload_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
@@ -410,9 +411,37 @@ export default function UploadPage({
     const isCompressing = uploadStep === "compressing";
     const currentPercent = isCompressing ? compressProgress : uploadProgress;
 
+    const timelineSteps = [
+      {
+        id: "compress",
+        label: "Compression",
+        status: isCompressing ? "active" : uploadStep === "sending" ? "completed" : "pending",
+        progress: isCompressing ? compressProgress : uploadStep === "sending" ? 100 : 0,
+      },
+      {
+        id: "upload",
+        label: "Envoi serveur",
+        status: uploadStep === "sending" && uploadProgress < 100 ? "active" : uploadProgress === 100 ? "completed" : "pending",
+        progress: uploadStep === "sending" ? uploadProgress : 0,
+      },
+      {
+        id: "processing",
+        label: "Traitement",
+        status: "pending",
+      },
+      {
+        id: "complete",
+        label: "Terminé",
+        status: "pending",
+      },
+    ] as const;
+
     return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
-        <div className="w-full max-w-md px-8 text-center">
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white p-8">
+        {/* Timeline */}
+        <UploadTimeline steps={timelineSteps} />
+
+        <div className="w-full max-w-md px-8 text-center mt-8">
           {/* Animated icon */}
           <div className="mb-6">
             {isCompressing ? (

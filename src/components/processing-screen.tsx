@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { getFactForMilestone } from "@/lib/runner-facts";
 import Link from "next/link";
 import BibRunner from "@/components/game/bib-runner";
+import { UploadTimeline } from "@/components/upload-timeline";
 
 interface ProcessingScreenProps {
   sessionId: string;
@@ -83,8 +84,39 @@ export default function ProcessingScreen({
 
   const runnerPosition = Math.min(progress.percent, 100);
 
+  const timelineSteps = [
+    {
+      id: "compress",
+      label: "Compression",
+      status: "completed" as const,
+      progress: 100,
+    },
+    {
+      id: "upload",
+      label: "Envoi serveur",
+      status: "completed" as const,
+      progress: 100,
+    },
+    {
+      id: "processing",
+      label: "Traitement",
+      status: (progress.complete ? "completed" : "active") as const,
+      progress: progress.percent,
+    },
+    {
+      id: "complete",
+      label: "Terminé",
+      status: (progress.complete ? "completed" : "pending") as const,
+    },
+  ];
+
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden p-8">
+      {/* Timeline */}
+      <div className="w-full max-w-5xl mb-8">
+        <UploadTimeline steps={timelineSteps} />
+      </div>
+
       {/* Confetti */}
       {showConfetti && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">

@@ -9,7 +9,7 @@ services:
     plan: free
     name: focus-racer
     runtime: node
-    buildCommand: npm install --include=dev && npx prisma generate && npm run build
+    buildCommand: NODE_OPTIONS="--max-old-space-size=450" npm install --include=dev && npx prisma generate && NODE_OPTIONS="--max-old-space-size=450" npm run build
     startCommand: npx prisma migrate deploy && npx next start -p $PORT
     envVars:
       - key: NODE_VERSION
@@ -69,4 +69,6 @@ services:
       - key: AI_LABEL_DETECTION_ENABLED
         value: "true"
       - key: AI_MAX_CONCURRENT
-        value: "4"
+        value: "1"
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=450"

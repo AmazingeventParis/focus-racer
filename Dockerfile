@@ -52,8 +52,6 @@ COPY --from=deps /app/node_modules/prisma ./node_modules/prisma
 COPY --from=deps /app/node_modules/@prisma ./node_modules/@prisma
 
 # Sharp native binaries (included via standalone)
-# Tesseract.js eng training data (for dev fallback OCR)
-COPY --from=builder /app/node_modules/tesseract.js-core ./node_modules/tesseract.js-core
 
 # Create uploads directory with correct permissions
 RUN mkdir -p /app/public/uploads && chown -R nextjs:nodejs /app/public/uploads

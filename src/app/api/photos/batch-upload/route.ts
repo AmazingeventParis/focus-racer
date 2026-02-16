@@ -13,6 +13,11 @@ import {
   createUploadSession,
   updateUploadProgress,
 } from "@/lib/upload-session";
+import sharp from "sharp";
+
+// Optimize Sharp for low memory environments (Render 512MB)
+sharp.cache(false); // Disable cache to free memory immediately
+sharp.concurrency(1); // Process one image at a time
 
 async function processPhotoWithProgress(
   photoId: string,

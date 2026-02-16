@@ -2,6 +2,10 @@ import sharp from "sharp";
 import path from "path";
 import fs from "fs/promises";
 
+// Optimize Sharp for low memory environments
+sharp.cache(false);
+sharp.concurrency(1);
+
 const UPLOAD_DIR = process.env.UPLOAD_DIR || "./public/uploads";
 
 function generateWatermarkSvg(width: number, height: number): Buffer {

@@ -5,6 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 import { aiConfig } from "./ai-config";
 import { uploadToS3, deleteFromS3, getS3Key } from "./s3";
 
+// Optimize Sharp for low memory environments
+sharp.cache(false);
+sharp.concurrency(1);
+
 const UPLOAD_DIR = process.env.UPLOAD_DIR || "./public/uploads";
 
 /** Max dimension for the web-optimized version (used by AI pipeline + display) */
