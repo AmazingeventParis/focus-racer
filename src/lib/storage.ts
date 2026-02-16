@@ -9,7 +9,7 @@ const UPLOAD_DIR = process.env.UPLOAD_DIR || "./public/uploads";
 
 /** Max dimension for the web-optimized version (used by AI pipeline + display) */
 const WEB_MAX_DIMENSION = 1600;
-const WEB_JPEG_QUALITY = 80;
+const WEB_QUALITY = 80; // For WebP format
 
 export async function ensureUploadDir(eventId: string): Promise<string> {
   const eventDir = path.join(UPLOAD_DIR, eventId);
@@ -68,29 +68,33 @@ export async function normalizeImage(inputPath: string): Promise<Buffer> {
 
 /**
  * Generate a web-optimized version of the photo.
- * Resized to max 1600px, JPEG quality 80 → typically 200-400 KB.
- * Used for: AI pipeline (OCR, face, labels), web gallery display.
+ * Resized to max 1600px, WebP quality 80 → typically 150-300 KB (25% lighter than JPEG).
+ * Used for: AI pipeline (OCR, face), web gallery display.
  */
 async function generateWebVersion(
   originalPath: string,
   eventDir: string,
   filename: string
-): Promise<{ webFilename: string; webRelativePath: string }> {
+): Promise<{ webFilename: string; webRelativePath: string; webBuffer: Buffer }> {
   const webDir = path.join(eventDir, "web");
   await fs.mkdir(webDir, { recursive: true });
 
-  const webFilename = `web_${path.parse(filename).name}.jpg`;
+  const webFilename = `web_${path.parse(filename).name}.webp`;
   const webPath = path.join(webDir, webFilename);
+
+  let webBuffer: Buffer;
 
   try {
     // Try normal processing first
-    await sharp(originalPath)
+    webBuffer = await sharp(originalPath)
       .resize(WEB_MAX_DIMENSION, WEB_MAX_DIMENSION, {
         fit: "inside",
         withoutEnlargement: true,
       })
-      .jpeg({ quality: WEB_JPEG_QUALITY, mozjpeg: true })
-      .toFile(webPath);
+      .webp({ quality: WEB_QUALITY })
+      .toBuffer();
+
+    await fs.writeFile(webPath, webBuffer);
   } catch (standardError) {
     console.warn(`Standard processing failed for ${filename}:`, standardError instanceof Error ? standardError.message : standardError);
     console.warn(`Attempting normalization...`);
@@ -100,13 +104,15 @@ async function generateWebVersion(
       const normalizedBuffer = await normalizeImage(originalPath);
 
       // Then process the normalized version
-      await sharp(normalizedBuffer)
+      webBuffer = await sharp(normalizedBuffer)
         .resize(WEB_MAX_DIMENSION, WEB_MAX_DIMENSION, {
           fit: "inside",
           withoutEnlargement: true,
         })
-        .jpeg({ quality: WEB_JPEG_QUALITY, mozjpeg: true })
-        .toFile(webPath);
+        .webp({ quality: WEB_QUALITY })
+        .toBuffer();
+
+      await fs.writeFile(webPath, webBuffer);
 
       console.log(`Successfully normalized and processed ${filename}`);
     } catch (normalizeError) {
@@ -120,12 +126,14 @@ async function generateWebVersion(
   return {
     webFilename,
     webRelativePath: `/uploads/${eventId}/web/${webFilename}`,
+    webBuffer, // Return buffer for immediate use (no re-read needed)
   };
 }
 
 /**
  * Save a file to local disk (and optionally to S3).
  * Creates both the HD original and a web-optimized version.
+ * Returns the web buffer for immediate use (no re-read needed).
  */
 export async function saveFile(
   file: File,
@@ -134,6 +142,7 @@ export async function saveFile(
   filename: string;
   path: string;
   webPath: string;
+  webBuffer: Buffer;
   s3Key: string | null;
 }> {
   const eventDir = await ensureUploadDir(eventId);
@@ -146,7 +155,7 @@ export async function saveFile(
   await fs.writeFile(filePath, buffer);
 
   // Generate web-optimized version (for AI pipeline + web display)
-  const { webRelativePath } = await generateWebVersion(filePath, eventDir, filename);
+  const { webRelativePath, webBuffer } = await generateWebVersion(filePath, eventDir, filename);
 
   const relativePath = `/uploads/${eventId}/${filename}`;
   let s3Key: string | null = null;
@@ -163,7 +172,7 @@ export async function saveFile(
     }
   }
 
-  return { filename, path: relativePath, webPath: webRelativePath, s3Key };
+  return { filename, path: relativePath, webPath: webRelativePath, webBuffer, s3Key };
 }
 
 export async function deleteFile(relativePath: string, s3Key?: string | null): Promise<void> {

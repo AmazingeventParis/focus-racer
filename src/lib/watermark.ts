@@ -1,61 +1,12 @@
 import sharp from "sharp";
 import path from "path";
 import fs from "fs/promises";
-import { normalizeImage } from "./storage";
 
 const UPLOAD_DIR = process.env.UPLOAD_DIR || "./public/uploads";
 
-/**
- * Generate a watermarked thumbnail for public display.
- * Uses the web-optimized source (already resized) for fast processing.
- * The HD original is kept untouched for delivery after purchase.
- *
- * @param eventId - Event ID for output directory
- * @param sourcePath - Relative path to source image (e.g. /uploads/eventId/web/web_xxx.jpg)
- * @param watermarkText - Text to overlay
- */
-export async function generateWatermarkedThumbnail(
-  eventId: string,
-  sourcePath: string,
-  watermarkText: string = "FOCUS RACER"
-): Promise<string> {
-  const thumbDir = path.join(UPLOAD_DIR, eventId, "thumbs");
-  await fs.mkdir(thumbDir, { recursive: true });
-
-  // Resolve full path from relative path
-  const fullSourcePath = path.join(process.cwd(), "public", sourcePath);
-
-  const sourceBasename = path.parse(path.basename(sourcePath)).name;
-  const thumbFilename = `wm_${sourceBasename}.jpg`;
-  const thumbPath = path.join(thumbDir, thumbFilename);
-
-  let imageSource: string | Buffer = fullSourcePath;
-  let width = 800;
-  let height = 600;
-
-  try {
-    // Try to read metadata normally
-    const image = sharp(fullSourcePath);
-    const metadata = await image.metadata();
-    width = metadata.width || 800;
-    height = metadata.height || 600;
-  } catch {
-    console.warn(`Metadata read failed for ${sourcePath}, attempting normalization...`);
-    try {
-      // Normalize the image first
-      imageSource = await normalizeImage(fullSourcePath);
-      const metadata = await sharp(imageSource).metadata();
-      width = metadata.width || 800;
-      height = metadata.height || 600;
-      console.log(`Successfully normalized ${sourcePath}`);
-    } catch (normalizeError) {
-      console.error(`Failed to normalize ${sourcePath}:`, normalizeError);
-      throw new Error(`Unable to process image for watermarking: ${sourcePath}`);
-    }
-  }
-
-  // Create SVG watermark overlay with repeated diagonal text
+function generateWatermarkSvg(width: number, height: number): Buffer {
   const fontSize = Math.max(Math.round(width / 20), 16);
+  const watermarkText = "FOCUS RACER";
   const lines: string[] = [];
 
   for (let y = -height; y < height * 2; y += fontSize * 3) {
@@ -66,14 +17,44 @@ export async function generateWatermarkedThumbnail(
     }
   }
 
-  const svgOverlay = Buffer.from(
+  return Buffer.from(
     `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
       ${lines.join("\n")}
     </svg>`
   );
+}
+
+/**
+ * Generate a watermarked thumbnail for public display with static "FOCUS RACER" watermark.
+ * Uses the web-optimized source (already resized) for fast processing.
+ * The HD original is kept untouched for delivery after purchase.
+ *
+ * @param eventId - Event ID for output directory
+ * @param imageBuffer - Image buffer (from web-optimized version)
+ * @param sourceFilename - Original filename for thumbnail naming
+ */
+export async function generateWatermarkedThumbnail(
+  eventId: string,
+  imageBuffer: Buffer,
+  sourceFilename: string
+): Promise<string> {
+  const thumbDir = path.join(UPLOAD_DIR, eventId, "thumbs");
+  await fs.mkdir(thumbDir, { recursive: true });
+
+  const sourceBasename = path.parse(sourceFilename).name;
+  const thumbFilename = `wm_${sourceBasename}.jpg`;
+  const thumbPath = path.join(thumbDir, thumbFilename);
+
+  // Get image dimensions from buffer
+  const metadata = await sharp(imageBuffer).metadata();
+  const width = metadata.width || 800;
+  const height = metadata.height || 600;
+
+  // Generate SVG watermark overlay (static "FOCUS RACER")
+  const svgOverlay = generateWatermarkSvg(width, height);
 
   // Source is already web-optimized (max 1600px), resize to 1200px for thumbnail
-  await sharp(imageSource)
+  await sharp(imageBuffer)
     .resize(1200, 1200, { fit: "inside", withoutEnlargement: true })
     .composite([
       {

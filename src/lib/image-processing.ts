@@ -6,11 +6,11 @@ import { aiConfig } from "./ai-config";
  * Returns a score 0-100 where lower = blurrier.
  */
 export async function analyzeQuality(
-  imagePath: string
+  imageInput: string | Buffer
 ): Promise<{ score: number; isBlurry: boolean }> {
   try {
     // Resize to small size for fast analysis
-    const { data, info } = await sharp(imagePath)
+    const { data, info } = await sharp(imageInput)
       .resize(256, 256, { fit: "inside" })
       .greyscale()
       .raw()

@@ -2,12 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-import { saveFile, getUploadedFilePath } from "@/lib/storage";
-import { processPhotoOCR } from "@/lib/ocr";
+import { saveFile } from "@/lib/storage";
 import { generateWatermarkedThumbnail } from "@/lib/watermark";
-import { analyzeQuality, autoEditImage } from "@/lib/image-processing";
+import { analyzeQuality } from "@/lib/image-processing";
 import { aiConfig } from "@/lib/ai-config";
-import { indexFaces, detectLabels } from "@/lib/rekognition";
+import { detectTextFromImage, indexFaces } from "@/lib/rekognition";
 import { scheduleAutoClustering } from "@/lib/auto-cluster";
 import { processingQueue } from "@/lib/processing-queue";
 import {
@@ -17,117 +16,118 @@ import {
 
 async function processPhotoWithProgress(
   photoId: string,
-  webFilePath: string,
+  webBuffer: Buffer,
+  originalFilename: string,
   eventId: string,
-  eventName: string,
   sessionId: string,
   photoIndex: number,
   totalPhotos: number,
-  ocrProvider?: "aws" | "tesseract",
-  creditsPerPhoto: number = 1
+  processingMode: "lite" | "premium",
+  creditsPerPhoto: number,
+  validBibs: Set<string> | undefined
 ) {
-  const isPremium = ocrProvider === "aws";
-
   try {
-    const webFullPath = await getUploadedFilePath(webFilePath);
     const label = `${photoIndex + 1}/${totalPhotos}`;
 
-    // Free mode: compression step indicator
-    if (!isPremium) {
-      updateUploadProgress(sessionId, {
-        currentStep: `Compression photo ${label}`,
-      });
-      // Small delay so SSE can push the update before OCR starts
-      await new Promise((r) => setTimeout(r, 50));
-    }
+    // Collect all data for single batch update
+    const photoData: {
+      processedAt: Date;
+      qualityScore?: number;
+      isBlurry?: boolean;
+      thumbnailPath?: string;
+      ocrProvider?: string;
+      faceIndexed?: boolean;
+    } = {
+      processedAt: new Date(),
+    };
 
-    // Premium only: quality analysis, auto-edit, watermark
-    if (isPremium) {
-      updateUploadProgress(sessionId, {
-        currentStep: `Analyse qualite ${label}`,
-      });
+    // 1. Quality analysis
+    updateUploadProgress(sessionId, {
+      currentStep: `Analyse qualite ${label}`,
+    });
 
-      // 1. Quality analysis
-      const quality = await analyzeQuality(webFullPath);
-      await prisma.photo.update({
-        where: { id: photoId },
-        data: { qualityScore: quality.score, isBlurry: quality.isBlurry },
-      });
+    const quality = await analyzeQuality(webBuffer);
+    photoData.qualityScore = quality.score;
+    photoData.isBlurry = quality.isBlurry;
 
-      // 2. Auto-edit
-      updateUploadProgress(sessionId, {
-        currentStep: `Retouche auto ${label}`,
-      });
-      if (!quality.isBlurry && aiConfig.autoEditEnabled) {
-        const wasEdited = await autoEditImage(webFullPath);
-        if (wasEdited) {
-          await prisma.photo.update({
-            where: { id: photoId },
-            data: { autoEdited: true },
-          });
-        }
-      }
+    // 2. Watermark (static "FOCUS RACER")
+    updateUploadProgress(sessionId, {
+      currentStep: `Watermark ${label}`,
+    });
 
-      // 3. Watermark
-      updateUploadProgress(sessionId, {
-        currentStep: `Watermark ${label}`,
-      });
-      try {
-        const thumbnailPath = await generateWatermarkedThumbnail(
-          eventId,
-          webFilePath,
-          eventName || "FOCUS RACER"
-        );
-        await prisma.photo.update({
-          where: { id: photoId },
-          data: { thumbnailPath },
-        });
-      } catch (err) {
-        console.error(`[Batch] Watermark error for ${photoId}:`, err);
-      }
+    try {
+      const thumbnailPath = await generateWatermarkedThumbnail(
+        eventId,
+        webBuffer,
+        originalFilename
+      );
+      photoData.thumbnailPath = thumbnailPath;
+    } catch (err) {
+      console.error(`[Batch] Watermark error for ${photoId}:`, err);
     }
 
     updateUploadProgress(sessionId, {
-      currentStep: `Analyse dossard ${label}`,
+      currentStep: `Analyse IA ${label}`,
     });
 
-    // 4. OCR
-    let validBibs: Set<string> | undefined;
-    const startList = await prisma.startListEntry.findMany({
-      where: { eventId },
-      select: { bibNumber: true },
-    });
-    if (startList.length > 0) {
-      validBibs = new Set(startList.map((s) => s.bibNumber));
+    // 3. Parallel AWS calls (OCR + Faces if premium)
+    const ocrPromise = detectTextFromImage(webBuffer, validBibs);
+
+    // Face indexing only in premium mode
+    let facesPromise: Promise<Array<{ faceId: string; confidence: number; boundingBox: unknown }>> | undefined;
+    if (processingMode === "premium" && aiConfig.faceIndexEnabled) {
+      facesPromise = indexFaces(webBuffer, `${eventId}:${photoId}`).catch((err) => {
+        console.error(`[Batch] Face indexing error for ${photoId}:`, err);
+        return [];
+      });
     }
 
-    const ocrResult = await processPhotoOCR(webFullPath, validBibs, ocrProvider);
+    const [ocrResult, faces] = await Promise.all([
+      ocrPromise,
+      facesPromise || Promise.resolve(undefined),
+    ]);
 
-    if (ocrResult.numbers.length > 0) {
+    // Process OCR results
+    photoData.ocrProvider = "ocr_aws";
+
+    if (ocrResult.bibNumbers.length > 0) {
       await prisma.bibNumber.createMany({
-        data: ocrResult.numbers.map((number) => ({
+        data: ocrResult.bibNumbers.map((number: string) => ({
           number,
           photoId,
           confidence: ocrResult.confidence,
-          source: ocrResult.provider,
+          source: "ocr_aws",
         })),
       });
     }
 
+    // Process face indexing results (premium only)
+    if (faces && faces.length > 0) {
+      await prisma.photoFace.createMany({
+        data: faces.map((face) => ({
+          photoId,
+          faceId: face.faceId,
+          confidence: face.confidence,
+          boundingBox: JSON.stringify(face.boundingBox),
+        })),
+      });
+      photoData.faceIndexed = true;
+    }
+
+    // 4. Single batch update to Photo
     await prisma.photo.update({
       where: { id: photoId },
-      data: { ocrProvider: ocrResult.provider, processedAt: new Date() },
+      data: photoData,
     });
 
-    // Refund credit if no bib detected
-    if (ocrResult.numbers.length === 0) {
+    // 5. Refund credit if no bib detected
+    if (ocrResult.bibNumbers.length === 0) {
       const photo = await prisma.photo.findUnique({
         where: { id: photoId },
         select: { creditDeducted: true, creditRefunded: true },
       });
 
       if (photo && photo.creditDeducted && !photo.creditRefunded) {
-        // Get userId from photo's event owner
         const event = await prisma.event.findUnique({
           where: { id: eventId },
           select: { userId: true },
@@ -168,7 +168,6 @@ async function processPhotoWithProgress(
             });
           });
 
-          // Update session refund counter
           const uploadSession = (await import("@/lib/upload-session")).getUploadSession(sessionId);
           if (uploadSession) {
             updateUploadProgress(sessionId, {
@@ -176,54 +175,6 @@ async function processPhotoWithProgress(
             });
           }
         }
-      }
-    }
-
-    // 5. Face indexing (Premium only)
-    if (isPremium && aiConfig.faceIndexEnabled) {
-      updateUploadProgress(sessionId, {
-        currentStep: `Reconnaissance faciale ${label}`,
-      });
-      try {
-        const faces = await indexFaces(webFullPath, `${eventId}:${photoId}`);
-        if (faces.length > 0) {
-          await prisma.photoFace.createMany({
-            data: faces.map((face) => ({
-              photoId,
-              faceId: face.faceId,
-              confidence: face.confidence,
-              boundingBox: JSON.stringify(face.boundingBox),
-            })),
-          });
-          await prisma.photo.update({
-            where: { id: photoId },
-            data: { faceIndexed: true },
-          });
-        }
-      } catch (err) {
-        console.error(`[Batch] Face indexing error for ${photoId}:`, err);
-      }
-    }
-
-    // 6. Label detection (Premium only)
-    if (isPremium && aiConfig.labelDetectionEnabled) {
-      updateUploadProgress(sessionId, {
-        currentStep: `Detection labels ${label}`,
-      });
-      try {
-        const labels = await detectLabels(webFullPath, 15, 60);
-        if (labels.length > 0) {
-          await prisma.photo.update({
-            where: { id: photoId },
-            data: {
-              labels: JSON.stringify(
-                labels.map((l) => ({ name: l.name, confidence: Math.round(l.confidence) }))
-              ),
-            },
-          });
-        }
-      } catch (err) {
-        console.error(`[Batch] Label detection error for ${photoId}:`, err);
       }
     }
 
@@ -243,10 +194,10 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const eventId = formData.get("eventId") as string | null;
     const sessionIdParam = formData.get("sessionId") as string | null;
-    const ocrProviderParam = formData.get("ocrProvider") as string | null;
-    const ocrProvider = (ocrProviderParam === "aws" || ocrProviderParam === "tesseract")
-      ? ocrProviderParam
-      : undefined;
+    const processingModeParam = formData.get("processingMode") as string | null;
+    const processingMode = (processingModeParam === "lite" || processingModeParam === "premium")
+      ? processingModeParam
+      : "lite"; // Default to lite
 
     if (!eventId) {
       return NextResponse.json({ error: "ID d'evenement manquant" }, { status: 400 });
@@ -273,11 +224,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Non autorise" }, { status: 403 });
     }
 
-    // Check and deduct credits atomically (premium only)
+    // Check and deduct credits atomically
     const nbPhotos = files.length;
-    const creditsPerPhoto = ocrProvider === "aws" ? 3 : 0;
+    const creditsPerPhoto = processingMode === "premium" ? 2 : 1; // Lite: 1 credit, Premium: 2 credits
     const totalCredits = nbPhotos * creditsPerPhoto;
-    const planLabel = ocrProvider === "aws" ? "Premium" : "Gratuit";
+    const planLabel = processingMode === "premium" ? "Premium" : "Lite";
     let creditsRemaining = 0;
 
     if (totalCredits > 0) {
@@ -338,8 +289,18 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Load valid bibs ONCE (cache for all photos)
+    let validBibs: Set<string> | undefined;
+    const startList = await prisma.startListEntry.findMany({
+      where: { eventId },
+      select: { bibNumber: true },
+    });
+    if (startList.length > 0) {
+      validBibs = new Set(startList.map((s) => s.bibNumber));
+    }
+
     // Save all files in parallel (with limited concurrency to avoid timeout)
-    const photos: { id: string; webPath: string; index: number }[] = [];
+    const photos: { id: string; webBuffer: Buffer; originalName: string; index: number }[] = [];
     const failedFiles: string[] = [];
 
     // Process files in batches of 5 to avoid overwhelming the server
@@ -353,7 +314,7 @@ export async function POST(request: NextRequest) {
         });
 
         try {
-          const { filename, path, webPath, s3Key } = await saveFile(file, eventId);
+          const { filename, path, webPath, webBuffer, s3Key } = await saveFile(file, eventId);
 
           const photo = await prisma.photo.create({
             data: {
@@ -367,7 +328,7 @@ export async function POST(request: NextRequest) {
             },
           });
 
-          return { id: photo.id, webPath, index: fileIndex, name: file.name };
+          return { id: photo.id, webBuffer, originalName: file.name, index: fileIndex };
         } catch (saveError) {
           console.error(`Failed to save file ${file.name}:`, saveError);
           return { error: file.name };
@@ -382,8 +343,13 @@ export async function POST(request: NextRequest) {
           const value = result.value;
           if ("error" in value && value.error) {
             failedFiles.push(value.error);
-          } else if ("id" in value && value.id && value.webPath !== undefined && typeof value.index === "number") {
-            photos.push({ id: value.id, webPath: value.webPath, index: value.index });
+          } else if ("id" in value && value.id && value.webBuffer && typeof value.index === "number") {
+            photos.push({
+              id: value.id,
+              webBuffer: value.webBuffer,
+              originalName: value.originalName,
+              index: value.index
+            });
           }
         } else {
           console.error("Batch processing error:", result.reason);
@@ -410,14 +376,15 @@ export async function POST(request: NextRequest) {
         try {
           await processPhotoWithProgress(
             photo.id,
-            photo.webPath,
+            photo.webBuffer,
+            photo.originalName,
             eventId,
-            event.name,
             sessionId,
             photo.index,
             nbPhotos,
-            ocrProvider,
-            creditsPerPhoto
+            processingMode,
+            creditsPerPhoto,
+            validBibs
           );
         } catch (err) {
           console.error(`[Batch] Unhandled error for photo ${photo.id}:`, err);

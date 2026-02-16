@@ -84,8 +84,11 @@ export async function POST() {
         // Generate web version
         const webPath = await generateWebVersion(originalPath, eventId, filename);
 
-        // Generate watermarked thumbnail using the web version (not the original)
-        const thumbnailPath = await createWatermark(eventId, webPath, "FOCUS RACER");
+        // Read web buffer for watermarking
+        const webBuffer = await fs.readFile(path.join(UPLOAD_DIR, eventId, "web", `web_${path.parse(filename).name}.jpg`));
+
+        // Generate watermarked thumbnail using the web buffer
+        const thumbnailPath = await createWatermark(eventId, webBuffer, filename);
 
         // Run OCR on web version
         const webFilePath = path.join(

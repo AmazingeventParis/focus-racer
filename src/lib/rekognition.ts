@@ -37,10 +37,10 @@ export interface RekognitionOCRResult {
 const BIB_NUMBER_REGEX = /\b\d{1,5}\b/g;
 
 export async function detectTextFromImage(
-  imagePath: string,
+  imageInput: string | Buffer,
   validBibs?: Set<string>
 ): Promise<RekognitionOCRResult> {
-  const imageBytes = readFileSync(imagePath);
+  const imageBytes = typeof imageInput === "string" ? readFileSync(imageInput) : imageInput;
   const rekognition = getClient();
 
   const response = await rekognition.send(
@@ -97,11 +97,11 @@ export interface LabelResult {
 }
 
 export async function detectLabels(
-  imagePath: string,
+  imageInput: string | Buffer,
   maxLabels: number = 20,
   minConfidence: number = 70
 ): Promise<LabelResult[]> {
-  const imageBytes = readFileSync(imagePath);
+  const imageBytes = typeof imageInput === "string" ? readFileSync(imageInput) : imageInput;
   const rekognition = getClient();
 
   const response = await rekognition.send(
@@ -146,10 +146,10 @@ export interface IndexedFace {
 }
 
 export async function indexFaces(
-  imagePath: string,
+  imageInput: string | Buffer,
   externalImageId: string
 ): Promise<IndexedFace[]> {
-  const imageBytes = readFileSync(imagePath);
+  const imageBytes = typeof imageInput === "string" ? readFileSync(imageInput) : imageInput;
   const rekognition = getClient();
 
   await ensureFaceCollection();

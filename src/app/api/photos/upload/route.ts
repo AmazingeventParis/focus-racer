@@ -20,8 +20,7 @@ async function processPhotoInBackground(
   photoId: string,
   webFilePath: string,
   originalFilePath: string,
-  eventId: string,
-  eventName: string
+  eventId: string
 ) {
   try {
     const webFullPath = await getUploadedFilePath(webFilePath);
@@ -52,10 +51,17 @@ async function processPhotoInBackground(
 
     // 3. Watermark thumbnail (from web version)
     try {
+      const fs = await import("fs/promises");
+      const webFullPath = await getUploadedFilePath(webFilePath);
+      const webBuffer = await fs.readFile(webFullPath);
+      const photo = await prisma.photo.findUnique({
+        where: { id: photoId },
+        select: { originalName: true },
+      });
       const thumbnailPath = await generateWatermarkedThumbnail(
         eventId,
-        webFilePath,
-        eventName || "FOCUS RACER"
+        webBuffer,
+        photo?.originalName || "photo.jpg"
       );
       await prisma.photo.update({
         where: { id: photoId },
@@ -265,7 +271,7 @@ export async function POST(request: NextRequest) {
 
     // Enqueue AI processing (bounded concurrency, default 4 workers)
     processingQueue.enqueue(() =>
-      processPhotoInBackground(photo.id, webPath, path, eventId, event.name)
+      processPhotoInBackground(photo.id, webPath, path, eventId)
     );
 
     return NextResponse.json({
