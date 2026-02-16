@@ -44,3 +44,13 @@
  ✓ Compiled /instrumentation in 2.5s (21 modules)
 🏓 Keep-alive enabled: pinging http://localhost:3000/api/health every 10 min
  ✓ Ready in 5.9s
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'C:\Users\shoot\Focus Racer\.next\cache\webpack\server-development\0.pack.gz_' -> 'C:\Users\shoot\Focus Racer\.next\cache\webpack\server-development\0.pack.gz'
+ ✓ Compiled /api/health in 401ms (58 modules)
+ GET /api/health 200 in 513ms
+ GET /api/health 200 in 513ms
+ GET /api/health 200 in 519ms
+🏓 Keep-alive ping OK (2026-02-16T10:54:45.067Z)
+ GET /api/health 200 in 26ms
+ GET /api/health 200 in 37ms
+ GET /api/health 200 in 32ms
+🏓 Keep-alive ping OK (2026-02-16T11:04:44.565Z)

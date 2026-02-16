@@ -6,7 +6,7 @@ import { saveFile } from "@/lib/storage";
 import { generateWatermarkedThumbnail } from "@/lib/watermark";
 import { analyzeQuality } from "@/lib/image-processing";
 import { aiConfig } from "@/lib/ai-config";
-import { detectTextFromImage, indexFaces } from "@/lib/rekognition";
+import { detectTextFromImage, indexFaces, searchFaceByImage } from "@/lib/rekognition";
 import { scheduleAutoClustering } from "@/lib/auto-cluster";
 import { processingQueue } from "@/lib/processing-queue";
 import {
@@ -125,8 +125,59 @@ async function processPhotoWithProgress(
       data: photoData,
     });
 
-    // 5. Refund credit if no bib detected
-    if (ocrResult.bibNumbers.length === 0) {
+    // 5. Auto-link orphan photos by face recognition (Premium only)
+    let bibsFoundByFace = 0;
+    if (ocrResult.bibNumbers.length === 0 && processingMode === "premium" && faces && faces.length > 0) {
+      updateUploadProgress(sessionId, {
+        currentStep: `Recherche visages ${label}`,
+      });
+
+      try {
+        // Search for matching faces in the collection
+        const faceMatches = await searchFaceByImage(webBuffer, 10, 85);
+
+        if (faceMatches.length > 0) {
+          // Extract photoIds from externalImageId (format: "eventId:photoId")
+          const matchedPhotoIds = faceMatches
+            .map((match) => {
+              const parts = match.externalImageId.split(":");
+              return parts.length === 2 ? parts[1] : null;
+            })
+            .filter((id): id is string => id !== null);
+
+          if (matchedPhotoIds.length > 0) {
+            // Find bib numbers from matched photos
+            const matchedBibs = await prisma.bibNumber.findMany({
+              where: {
+                photoId: { in: matchedPhotoIds },
+              },
+              select: { number: true },
+              distinct: ["number"],
+            });
+
+            // Auto-assign bib numbers to the orphan photo
+            if (matchedBibs.length > 0) {
+              await prisma.bibNumber.createMany({
+                data: matchedBibs.map((bib) => ({
+                  number: bib.number,
+                  photoId,
+                  confidence: 95, // High confidence from face match
+                  source: "face_recognition",
+                })),
+              });
+
+              bibsFoundByFace = matchedBibs.length;
+              console.log(`[Batch] Auto-linked ${bibsFoundByFace} bib(s) to photo ${photoId} via face recognition`);
+            }
+          }
+        }
+      } catch (err) {
+        console.error(`[Batch] Face search error for ${photoId}:`, err);
+      }
+    }
+
+    // 6. Refund credit if no bib detected (neither OCR nor face recognition)
+    if (ocrResult.bibNumbers.length === 0 && bibsFoundByFace === 0) {
       const photo = await prisma.photo.findUnique({
         where: { id: photoId },
         select: { creditDeducted: true, creditRefunded: true },

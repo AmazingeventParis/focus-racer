@@ -64,7 +64,7 @@ export default function EventDetailPage({
   const [isUploadingBranding, setIsUploadingBranding] = useState(false);
   const [isNotifying, setIsNotifying] = useState(false);
   const [notifyStatus, setNotifyStatus] = useState<{ pending: number; notified: number; withEmail: number } | null>(null);
-  const [isClustering, setIsClustering] = useState(false);
+  // isClustering removed: face linking is now automatic during Premium upload
   const [clusteringStats, setClusteringStats] = useState<{
     totalPhotos: number;
     photosWithBibs: number;
@@ -244,39 +244,7 @@ export default function EventDetailPage({
     }
   };
 
-  const handleClusterFaces = async () => {
-    if (!clusteringStats?.orphanPhotos) return;
-
-    if (!confirm(
-      `Lancer le clustering facial pour associer ${clusteringStats.orphanPhotos} photo${clusteringStats.orphanPhotos > 1 ? "s" : ""} orpheline${clusteringStats.orphanPhotos > 1 ? "s" : ""} aux dossards detectes ?`
-    )) return;
-
-    setIsClustering(true);
-    try {
-      const response = await fetch(`/api/events/${id}/cluster-faces`, {
-        method: "POST",
-      });
-      const data = await response.json();
-      if (response.ok) {
-        toast({
-          title: "Clustering termine",
-          description: data.message,
-        });
-        fetchEvent();
-        fetchClusteringStats();
-      } else {
-        toast({
-          title: "Erreur",
-          description: data.error,
-          variant: "destructive",
-        });
-      }
-    } catch {
-      toast({ title: "Erreur", description: "Impossible de lancer le clustering", variant: "destructive" });
-    } finally {
-      setIsClustering(false);
-    }
-  };
+  // handleClusterFaces removed: face linking is now automatic during Premium upload pipeline
 
   const handleBrandingUpload = async (imageType: string, file: File) => {
     setIsUploadingBranding(true);
@@ -386,20 +354,7 @@ export default function EventDetailPage({
                     {notifyStatus.notified} notifie{notifyStatus.notified > 1 ? "s" : ""}
                   </Badge>
                 )}
-                {clusteringStats && clusteringStats.orphanPhotos > 0 && clusteringStats.photosWithFaces > 0 && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleClusterFaces}
-                    disabled={isClustering}
-                    className="text-emerald border-emerald/30 hover:bg-emerald-50 transition-all duration-200"
-                    title={`${clusteringStats.orphanPhotos} photos sans dossard peuvent etre associees par reconnaissance faciale`}
-                  >
-                    {isClustering
-                      ? "Clustering..."
-                      : `Lier ${clusteringStats.orphanPhotos} photo${clusteringStats.orphanPhotos > 1 ? "s" : ""} par visage`}
-                  </Button>
-                )}
+                {/* Clustering button removed: face linking is now automatic during Premium upload pipeline */}
                 <Link href={`/photographer/events/${id}/upload`}>
                   <Button size="sm" className="bg-emerald hover:bg-emerald-hover text-white shadow-emerald transition-all duration-200">Ajouter des photos</Button>
                 </Link>
