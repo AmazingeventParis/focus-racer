@@ -41,23 +41,42 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        name: `${firstName} ${lastName}`,
-        firstName,
-        lastName,
-        role,
-        phone: phone || null,
-        company: company || null,
-        postalCode: postalCode || null,
-        city: city || null,
-        portfolio: portfolio || null,
-        referralSource: referralSource || null,
-        acceptedCguAt: new Date(),
-        newsletterOptIn: newsletterOptIn || false,
-      },
+    const WELCOME_CREDITS = 100;
+
+    const user = await prisma.$transaction(async (tx) => {
+      const newUser = await tx.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          name: `${firstName} ${lastName}`,
+          firstName,
+          lastName,
+          role,
+          phone: phone || null,
+          company: company || null,
+          postalCode: postalCode || null,
+          city: city || null,
+          portfolio: portfolio || null,
+          referralSource: referralSource || null,
+          acceptedCguAt: new Date(),
+          newsletterOptIn: newsletterOptIn || false,
+          credits: WELCOME_CREDITS,
+        },
+      });
+
+      // Record the welcome credits transaction
+      await tx.creditTransaction.create({
+        data: {
+          userId: newUser.id,
+          type: "ADMIN_GRANT",
+          amount: WELCOME_CREDITS,
+          balanceBefore: 0,
+          balanceAfter: WELCOME_CREDITS,
+          reason: "Crédits de bienvenue - inscription",
+        },
+      });
+
+      return newUser;
     });
 
     return NextResponse.json({

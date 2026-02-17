@@ -83,6 +83,7 @@ model User {
   applicationsAsPh   MarketplaceApplication[] @relation("ApplicationPhotographer")
   reviewsGiven       MarketplaceReview[]  @relation("ReviewAuthor")
   reviewsReceived    MarketplaceReview[]  @relation("ReviewTarget")
+  supportMessages    SupportMessage[]
 
   @@index([role])
   @@index([isActive])
@@ -366,6 +367,47 @@ model MarketplaceApplication {
   @@index([listingId])
   @@index([photographerId])
   @@index([status])
+}
+
+// =========== SUPPORT MESSAGING ===========
+
+enum MessageCategory {
+  BILLING
+  SORTING
+  GDPR
+  ACCOUNT
+  TECHNICAL
+  EVENT
+  OTHER
+}
+
+enum MessageStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+model SupportMessage {
+  id         String          @id @default(cuid())
+  userId     String
+  user       User            @relation(fields: [userId], references: [id])
+  subject    String
+  message    String
+  category   MessageCategory @default(OTHER)
+  status     MessageStatus   @default(OPEN)
+  eventId    String?
+  orderId    String?
+  adminReply String?
+  repliedBy  String?
+  repliedAt  DateTime?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([category])
+  @@index([createdAt])
 }
 
 // =========== PLATFORM SETTINGS ===========

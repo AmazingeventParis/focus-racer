@@ -18,9 +18,19 @@ export async function GET(
         phone: true,
         company: true,
         isActive: true,
+        credits: true,
+        stripeAccountId: true,
+        stripeOnboarded: true,
         createdAt: true,
         updatedAt: true,
-        _count: { select: { events: true } },
+        _count: {
+          select: {
+            events: true,
+            orders: true,
+            creditTransactions: true,
+            supportMessages: true,
+          },
+        },
         events: {
           select: {
             id: true,
@@ -36,16 +46,48 @@ export async function GET(
 
     if (!user) {
       return NextResponse.json(
-        { error: "Utilisateur non trouvé" },
+        { error: "Utilisateur non trouve" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(user);
+    // Calculate total revenue from paid orders associated with this user's events
+    const revenueResult = await prisma.order.aggregate({
+      where: {
+        event: { userId: id },
+        status: "PAID",
+      },
+      _sum: { totalAmount: true },
+    });
+
+    // Calculate total photos across all events
+    const photosResult = await prisma.photo.count({
+      where: {
+        event: { userId: id },
+      },
+    });
+
+    // Count orders placed by this user (as buyer)
+    const buyerOrdersResult = await prisma.order.aggregate({
+      where: {
+        userId: id,
+        status: "PAID",
+      },
+      _sum: { totalAmount: true },
+      _count: true,
+    });
+
+    return NextResponse.json({
+      ...user,
+      totalRevenue: revenueResult._sum.totalAmount || 0,
+      totalPhotos: photosResult,
+      buyerOrdersCount: buyerOrdersResult._count || 0,
+      buyerTotalSpent: buyerOrdersResult._sum.totalAmount || 0,
+    });
   } catch (error) {
     console.error("Error fetching user:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la récupération de l'utilisateur" },
+      { error: "Erreur lors de la recuperation de l'utilisateur" },
       { status: 500 }
     );
   }
@@ -79,7 +121,7 @@ export async function PATCH(
   } catch (error) {
     console.error("Error updating user:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la mise à jour" },
+      { error: "Erreur lors de la mise a jour" },
       { status: 500 }
     );
   }
@@ -101,7 +143,7 @@ export async function DELETE(
   } catch (error) {
     console.error("Error deactivating user:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la désactivation" },
+      { error: "Erreur lors de la desactivation" },
       { status: 500 }
     );
   }

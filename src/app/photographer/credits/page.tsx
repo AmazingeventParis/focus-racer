@@ -18,10 +18,10 @@ interface CreditTransaction {
 }
 
 const CREDIT_PACKS = [
-  { amount: 10, label: "10 credits" },
-  { amount: 50, label: "50 credits" },
-  { amount: 100, label: "100 credits" },
-  { amount: 500, label: "500 credits" },
+  { amount: 50, label: "50 credits", price: "4,90 €" },
+  { amount: 100, label: "100 credits", price: "8,90 €" },
+  { amount: 250, label: "250 credits", price: "19,90 €" },
+  { amount: 500, label: "500 credits", price: "34,90 €" },
 ];
 
 const TYPE_LABELS: Record<string, { label: string; color: string }> = {
@@ -121,7 +121,7 @@ export default function CreditsPage() {
           {/* Recharge */}
           <Card className="bg-white border-0 shadow-card rounded-xl">
             <CardHeader>
-              <CardTitle className="text-lg font-display text-gray-900">Recharger</CardTitle>
+              <CardTitle className="text-lg font-display text-gray-900">Acheter des credits</CardTitle>
               <CardDescription className="text-gray-500">
                 1 credit = 1 photo importee. Credits rembourses si aucun dossard detecte.
               </CardDescription>
@@ -144,12 +144,15 @@ export default function CreditsPage() {
                     ) : (
                       <>
                         <span className="text-xl font-bold text-gray-900">+{pack.amount}</span>
-                        <span className="text-xs text-gray-500">{pack.label}</span>
+                        <span className="text-xs text-gray-500">{pack.price}</span>
                       </>
                     )}
                   </Button>
                 ))}
               </div>
+              <p className="text-xs text-gray-400 mt-3 text-center">
+                Le paiement sera traite via Stripe. 100 credits offerts a l&apos;inscription.
+              </p>
             </CardContent>
           </Card>
 
@@ -346,7 +349,7 @@ export default function CreditsPage() {
                 <span className="text-gray-700">FAQ Credits</span>
               </a>
               <a
-                href="/contact"
+                href="/photographer/support"
                 className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors text-sm"
               >
                 <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status") || "";
     const search = searchParams.get("search") || "";
     const eventId = searchParams.get("eventId") || "";
+    const from = searchParams.get("from") || "";
+    const to = searchParams.get("to") || "";
 
     const where: Record<string, unknown> = {};
 
@@ -18,6 +20,17 @@ export async function GET(request: NextRequest) {
 
     if (eventId) {
       where.eventId = eventId;
+    }
+
+    if (from || to) {
+      const dateFilter: Record<string, Date> = {};
+      if (from) dateFilter.gte = new Date(from);
+      if (to) {
+        const toDate = new Date(to);
+        toDate.setHours(23, 59, 59, 999);
+        dateFilter.lte = toDate;
+      }
+      where.createdAt = dateFilter;
     }
 
     if (search) {
