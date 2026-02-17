@@ -178,3 +178,85 @@ export async function smartCropFace(
     return null;
   }
 }
+
+/**
+ * Compute a perceptual hash (pHash) for duplicate detection.
+ * Resizes to 8x8 grayscale, compares each pixel to the average.
+ * Returns a 64-character binary string ("0" and "1").
+ */
+export async function computePerceptualHash(jpegBuffer: Buffer): Promise<string> {
+  const { data } = await sharp(jpegBuffer)
+    .resize(8, 8, { fit: "fill" })
+    .greyscale()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  // Compute average
+  let sum = 0;
+  for (let i = 0; i < 64; i++) sum += data[i];
+  const avg = sum / 64;
+
+  // Build hash: 1 if pixel >= average, 0 otherwise
+  let hash = "";
+  for (let i = 0; i < 64; i++) {
+    hash += data[i] >= avg ? "1" : "0";
+  }
+  return hash;
+}
+
+/**
+ * Compute hamming distance between two pHash strings.
+ */
+function hammingDistance(a: string, b: string): number {
+  let dist = 0;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) dist++;
+  }
+  return dist;
+}
+
+/**
+ * Find duplicate photos from a list of buffers using perceptual hashing.
+ * Returns indices of photos to KEEP (first in each group = best kept).
+ * Threshold: hamming distance <= 5 out of 64 = ~92% similar.
+ */
+export async function findDuplicateIndices(
+  jpegBuffers: Buffer[]
+): Promise<{ keepIndices: Set<number>; duplicateCount: number }> {
+  if (jpegBuffers.length <= 1) {
+    return { keepIndices: new Set(jpegBuffers.map((_, i) => i)), duplicateCount: 0 };
+  }
+
+  const THRESHOLD = 5; // hamming distance <= 5 = duplicate
+  const hashes: string[] = [];
+
+  // Compute all hashes
+  for (const buf of jpegBuffers) {
+    try {
+      const hash = await computePerceptualHash(buf);
+      hashes.push(hash);
+    } catch {
+      hashes.push(""); // Empty hash = never matches = always kept
+    }
+  }
+
+  // Mark duplicates (keep first occurrence in each group)
+  const isDuplicate = new Set<number>();
+
+  for (let i = 0; i < hashes.length; i++) {
+    if (isDuplicate.has(i) || !hashes[i]) continue;
+    for (let j = i + 1; j < hashes.length; j++) {
+      if (isDuplicate.has(j) || !hashes[j]) continue;
+      if (hammingDistance(hashes[i], hashes[j]) <= THRESHOLD) {
+        isDuplicate.add(j);
+      }
+    }
+  }
+
+  const keepIndices = new Set<number>();
+  for (let i = 0; i < hashes.length; i++) {
+    if (!isDuplicate.has(i)) keepIndices.add(i);
+  }
+
+  return { keepIndices, duplicateCount: isDuplicate.size };
+}

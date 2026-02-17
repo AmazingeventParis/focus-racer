@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { saveFile } from "@/lib/storage";
 import { generateWatermarkedThumbnail } from "@/lib/watermark";
-import { analyzeQuality, autoRetouchWebVersion, smartCropFace } from "@/lib/image-processing";
+import { analyzeQuality, autoRetouchWebVersion, smartCropFace, findDuplicateIndices } from "@/lib/image-processing";
 import { aiConfig } from "@/lib/ai-config";
 import { detectTextFromImage, indexFaces, searchFaceByImage } from "@/lib/rekognition";
 import { scheduleAutoClustering } from "@/lib/auto-cluster";
@@ -274,6 +274,7 @@ export async function POST(request: NextRequest) {
       : "lite"; // Default to lite
     const autoRetouch = formData.get("autoRetouch") === "true";
     const smartCrop = formData.get("smartCrop") === "true";
+    const removeDuplicates = formData.get("removeDuplicates") === "true";
     const processingOptions = { autoRetouch, smartCrop };
 
     if (!eventId) {
@@ -447,9 +448,47 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Enqueue all photos for processing
+    // Duplicate removal: detect and remove duplicates BEFORE AWS processing
+    // Credits already deducted for ALL photos (including duplicates) — no refund
+    let duplicateCount = 0;
+    let photosToProcess = photos;
+
+    if (removeDuplicates && photos.length > 1) {
+      updateUploadProgress(sessionId, {
+        currentStep: `Détection des doublons...`,
+      });
+
+      try {
+        const buffers = photos.map((p) => p.jpegBuffer);
+        const { keepIndices, duplicateCount: dups } = await findDuplicateIndices(buffers);
+        duplicateCount = dups;
+
+        if (dups > 0) {
+          // Delete duplicate photo records and files (they won't appear in gallery)
+          const duplicatePhotos = photos.filter((_, i) => !keepIndices.has(i));
+          const duplicateIds = duplicatePhotos.map((p) => p.id);
+
+          await prisma.photo.deleteMany({
+            where: { id: { in: duplicateIds } },
+          });
+
+          photosToProcess = photos.filter((_, i) => keepIndices.has(i));
+          console.log(`[Batch] Removed ${dups} duplicate(s), processing ${photosToProcess.length} unique photos`);
+
+          updateUploadProgress(sessionId, {
+            currentStep: `${dups} doublon${dups > 1 ? "s" : ""} supprimé${dups > 1 ? "s" : ""}`,
+          });
+        }
+      } catch (dupErr) {
+        console.error("[Batch] Duplicate detection error:", dupErr);
+        // Continue with all photos if detection fails
+      }
+    }
+
+    // Enqueue unique photos for processing
+    const totalToProcess = photosToProcess.length;
     let processedCount = 0;
-    for (const photo of photos) {
+    for (const photo of photosToProcess) {
       processingQueue.enqueue(async () => {
         try {
           await processPhotoWithProgress(
@@ -459,7 +498,7 @@ export async function POST(request: NextRequest) {
             eventId,
             sessionId,
             photo.index,
-            nbPhotos,
+            totalToProcess,
             processingMode,
             creditsPerPhoto,
             validBibs,
@@ -470,7 +509,7 @@ export async function POST(request: NextRequest) {
           console.error(`[Batch] Unhandled error for photo ${photo.id}:`, err);
         } finally {
           processedCount++;
-          const isComplete = processedCount >= nbPhotos;
+          const isComplete = processedCount >= totalToProcess;
 
           updateUploadProgress(sessionId, {
             processed: processedCount,
@@ -492,9 +531,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       sessionId,
-      totalPhotos: photos.length, // Only count successfully uploaded photos
-      creditsDeducted: totalCredits,
+      totalPhotos: photosToProcess.length,
+      creditsDeducted: totalCredits, // Credits for ALL photos including duplicates
       creditsRemaining,
+      ...(duplicateCount > 0 && {
+        duplicatesRemoved: duplicateCount,
+      }),
       ...(failedFiles.length > 0 && {
         warnings: `${failedFiles.length} fichier(s) non traite(s)`,
         failedFiles

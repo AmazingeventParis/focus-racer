@@ -82,6 +82,7 @@ export default function UploadPage({
   const [isUploading, setIsUploading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [processingMode, setProcessingMode] = useState<"lite" | "premium">("lite");
+  const [removeDuplicates, setRemoveDuplicates] = useState(true); // ON by default
   const [autoRetouch, setAutoRetouch] = useState(false);
   const [smartCrop, setSmartCrop] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -340,6 +341,7 @@ export default function UploadPage({
           formData.append("eventId", id);
           formData.append("sessionId", uploadSessionId);
           formData.append("processingMode", processingMode);
+          if (removeDuplicates) formData.append("removeDuplicates", "true");
           if (autoRetouch) formData.append("autoRetouch", "true");
           if (smartCrop) formData.append("smartCrop", "true");
           chunk.forEach((file) => {
@@ -420,7 +422,7 @@ export default function UploadPage({
       setIsUploading(false);
       setPhase("confirm");
     }
-  }, [id, selectedFiles, credits, isUploading, processingMode, autoRetouch, smartCrop, toast]);
+  }, [id, selectedFiles, credits, isUploading, processingMode, removeDuplicates, autoRetouch, smartCrop, toast]);
 
   if (status === "loading" || isLoading) {
     return (
@@ -715,6 +717,32 @@ export default function UploadPage({
             <div>
               <p className="text-sm font-medium text-gray-900 mb-3">Options de traitement <Badge className="bg-green-100 text-green-700 border-0 text-[10px] ml-1">Gratuit</Badge></p>
               <div className="space-y-3">
+                {/* Duplicate Removal — PROMINENT, checked by default */}
+                <label className={`flex items-start gap-3 p-3 rounded-xl border-2 transition-colors cursor-pointer ${
+                  removeDuplicates
+                    ? "border-emerald-500 bg-emerald-50/50"
+                    : "border-gray-200 hover:border-emerald-300"
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={removeDuplicates}
+                    onChange={(e) => setRemoveDuplicates(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+                      </svg>
+                      <span className="text-sm font-medium text-gray-900">Nettoyage intelligent</span>
+                      <Badge className="bg-emerald-100 text-emerald-700 border-0 text-[9px]">Recommandé</Badge>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Détecte et supprime automatiquement les photos en double (rafales identiques). Votre galerie est plus propre, vos coureurs trouvent leurs photos plus vite.
+                    </p>
+                  </div>
+                </label>
+
                 {/* Auto Retouch */}
                 <label className="flex items-start gap-3 p-3 rounded-xl border border-gray-200 hover:border-emerald-300 transition-colors cursor-pointer">
                   <input
