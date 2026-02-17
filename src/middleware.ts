@@ -16,9 +16,9 @@ export default withAuth(
       }
     }
 
-    // Photographer/Pro routes: Pro roles only
+    // Photographer/Pro routes: Pro roles + ADMIN
     if (pathname.startsWith("/photographer")) {
-      if (!role || !PRO_ROLES.includes(role)) {
+      if (!role || (!PRO_ROLES.includes(role) && role !== "ADMIN")) {
         return NextResponse.redirect(new URL("/login", req.url));
       }
     }

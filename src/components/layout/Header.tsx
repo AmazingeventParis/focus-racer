@@ -29,7 +29,8 @@ export default function Header() {
     setMobileOpen(false);
   }, [pathname]);
 
-  const dashboardHref = session?.user?.role === "ADMIN"
+  const isAdmin = session?.user?.role === "ADMIN";
+  const dashboardHref = isAdmin
     ? "/focus-mgr-7k9x/dashboard"
     : "/photographer/dashboard";
 
@@ -74,11 +75,20 @@ export default function Header() {
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-3">
           {session ? (
-            <Link href={dashboardHref}>
-              <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
-                Mon espace
-              </Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              {isAdmin && (
+                <Link href="/photographer/dashboard">
+                  <Button variant="ghost" className="text-navy hover:text-emerald hover:bg-emerald-50/50">
+                    Espace Pro
+                  </Button>
+                </Link>
+              )}
+              <Link href={dashboardHref}>
+                <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
+                  {isAdmin ? "Admin" : "Mon espace"}
+                </Button>
+              </Link>
+            </div>
           ) : (
             <>
               <Link href="/login">
@@ -136,11 +146,20 @@ export default function Header() {
             ))}
             <div className="border-t border-gray-100 mt-2 pt-4 flex flex-col gap-2">
               {session ? (
-                <Link href={dashboardHref}>
-                  <Button className="w-full bg-emerald hover:bg-emerald-dark text-white">
-                    Mon espace
-                  </Button>
-                </Link>
+                <div className="flex flex-col gap-2">
+                  {isAdmin && (
+                    <Link href="/photographer/dashboard">
+                      <Button variant="outline" className="w-full border-emerald text-emerald hover:bg-emerald-50">
+                        Espace Pro
+                      </Button>
+                    </Link>
+                  )}
+                  <Link href={dashboardHref}>
+                    <Button className="w-full bg-emerald hover:bg-emerald-dark text-white">
+                      {isAdmin ? "Admin" : "Mon espace"}
+                    </Button>
+                  </Link>
+                </div>
               ) : (
                 <>
                   <Link href="/login">
