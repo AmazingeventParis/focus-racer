@@ -18,11 +18,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
-  const hash = await bcrypt.hash(password, 10);
-  const user = await prisma.user.update({
-    where: { email },
-    data: { password: hash },
-  });
-
-  return NextResponse.json({ ok: true, email: user.email });
+  try {
+    const hash = await bcrypt.hash(password, 10);
+    const user = await prisma.user.update({
+      where: { email },
+      data: { password: hash },
+    });
+    return NextResponse.json({ ok: true, email: user.email });
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: err.message, code: err.code, meta: err.meta },
+      { status: 500 }
+    );
+  }
 }
