@@ -149,7 +149,7 @@ export default function CreditsPage() {
                       <>
                         <span className="text-xl font-bold text-gray-900">+{pack.amount.toLocaleString("fr-FR")}</span>
                         <span className="text-sm font-semibold text-emerald-600">{pack.price}</span>
-                        <span className="text-[11px] text-gray-400">{(pack.priceValue / pack.amount * 100).toFixed(1).replace(".", ",")} ct/photo</span>
+                        <span className="text-[11px] text-gray-400">{(pack.priceValue / pack.amount).toFixed(3).replace(".", ",")} €/photo</span>
                       </>
                     )}
                   </Button>
@@ -185,7 +185,7 @@ export default function CreditsPage() {
                       <div className="mt-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-semibold">
                         {sub.price}
                       </div>
-                      <span className="text-[11px] text-gray-400">{(sub.priceValue / (sub.credits * 12) * 100).toFixed(2).replace(".", ",")} ct/photo</span>
+                      <span className="text-[11px] text-gray-400">{(sub.priceValue / (sub.credits * 12)).toFixed(4).replace(".", ",")} €/photo</span>
                     </div>
                   </div>
                 ))}
