@@ -4,14 +4,12 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import type { DateRange } from "react-day-picker";
 
 // ─── Types ───────────────────────────────────────────────────────────────
 
@@ -157,12 +155,12 @@ const SECTIONS = [
   { id: "downloads", label: "Downloads" },
 ];
 
-const PERIOD_OPTIONS = [
-  { value: "today", label: "Aujourd'hui" },
-  { value: "7d", label: "7 jours" },
-  { value: "30d", label: "30 jours" },
-  { value: "90d", label: "90 jours" },
-  { value: "all", label: "Tout" },
+const QUICK_RANGES = [
+  { label: "Aujourd'hui", days: 0 },
+  { label: "7 jours", days: 7 },
+  { label: "30 jours", days: 30 },
+  { label: "90 jours", days: 90 },
+  { label: "Tout", days: -1 },
 ];
 
 const ROLE_LABELS: Record<string, string> = {
@@ -436,25 +434,48 @@ function fmtStorage(mb: number): string {
 export default function AdminDataPage() {
   const [data, setData] = useState<DataResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [period, setPeriod] = useState("all");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [activeSection, setActiveSection] = useState("users");
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const sectionsRef = useRef<Record<string, HTMLDivElement | null>>({});
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/admin/data?period=${period}`);
+      const params = new URLSearchParams();
+      if (dateRange?.from) params.set("from", dateRange.from.toISOString());
+      if (dateRange?.to) params.set("to", dateRange.to.toISOString());
+      const res = await fetch(`/api/admin/data?${params}`);
       if (res.ok) setData(await res.json());
     } catch (e) {
       console.error("Failed to fetch data:", e);
     } finally {
       setIsLoading(false);
     }
-  }, [period]);
+  }, [dateRange]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const applyQuickRange = (days: number) => {
+    if (days === -1) {
+      setDateRange(undefined);
+    } else {
+      const now = new Date();
+      const from = days === 0
+        ? new Date(now.getFullYear(), now.getMonth(), now.getDate())
+        : new Date(now.getTime() - days * 86400000);
+      setDateRange({ from, to: now });
+    }
+    setCalendarOpen(false);
+  };
+
+  const dateRangeLabel = dateRange?.from
+    ? dateRange.to
+      ? `${format(dateRange.from, "dd MMM yyyy", { locale: fr })} - ${format(dateRange.to, "dd MMM yyyy", { locale: fr })}`
+      : format(dateRange.from, "dd MMM yyyy", { locale: fr })
+    : "Toutes les donnees";
 
   // IntersectionObserver for sticky nav
   useEffect(() => {
@@ -509,18 +530,46 @@ export default function AdminDataPage() {
           <span className="text-xs text-muted-foreground">
             {new Date(data.generatedAt).toLocaleString("fr-FR")}
           </span>
-          <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-36">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PERIOD_OPTIONS.map((o) => (
-                <SelectItem key={o.value} value={o.value}>
-                  {o.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="min-w-[240px] justify-start text-left font-normal">
+                <svg className="h-4 w-4 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                </svg>
+                <span className="truncate">{dateRangeLabel}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <div className="flex">
+                <div className="border-r p-3 space-y-1">
+                  <p className="text-xs font-medium text-muted-foreground mb-2 px-2">Raccourcis</p>
+                  {QUICK_RANGES.map((qr) => (
+                    <button
+                      key={qr.label}
+                      onClick={() => applyQuickRange(qr.days)}
+                      className="block w-full text-left text-sm px-3 py-1.5 rounded-md hover:bg-emerald-50 hover:text-emerald-700 transition-colors whitespace-nowrap"
+                    >
+                      {qr.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="p-3">
+                  <Calendar
+                    mode="range"
+                    selected={dateRange}
+                    onSelect={(range) => {
+                      setDateRange(range);
+                      if (range?.from && range?.to) {
+                        setCalendarOpen(false);
+                      }
+                    }}
+                    numberOfMonths={2}
+                    defaultMonth={dateRange?.from || new Date()}
+                  />
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
           <Button variant="outline" size="sm" onClick={fetchData} disabled={isLoading}>
             <svg
               className={cn("h-4 w-4 mr-1", isLoading && "animate-spin")}
@@ -572,7 +621,7 @@ export default function AdminDataPage() {
             <KPICard label="Actifs 24h" value={fmt(data.users.recentlyActive)} borderColor="border-l-amber-400" subtitle="Derniere activite" />
           </div>
           <div className="grid md:grid-cols-2 gap-4 mb-6">
-            <KPICard label="Nouveaux (periode)" value={fmt(data.users.newInPeriod)} borderColor="border-l-emerald-300" subtitle={PERIOD_OPTIONS.find(p => p.value === period)?.label} />
+            <KPICard label="Nouveaux (periode)" value={fmt(data.users.newInPeriod)} borderColor="border-l-emerald-300" subtitle={dateRangeLabel} />
             <KPICard label="Stripe onboarded" value={fmt(data.users.stripeOnboarded)} borderColor="border-l-indigo-400" subtitle="Photographes connectes Stripe" />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
@@ -611,7 +660,7 @@ export default function AdminDataPage() {
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             <KPICard label="Avec photos" value={fmt(data.events.withPhotos)} borderColor="border-l-teal-300" />
             <KPICard label="Moy. photos/event" value={data.events.avgPhotosPerEvent} borderColor="border-l-teal-300" />
-            <KPICard label="Nouveaux (periode)" value={fmt(data.events.newInPeriod)} borderColor="border-l-teal-300" subtitle={PERIOD_OPTIONS.find(p => p.value === period)?.label} />
+            <KPICard label="Nouveaux (periode)" value={fmt(data.events.newInPeriod)} borderColor="border-l-teal-300" subtitle={dateRangeLabel} />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="glass-card">
@@ -768,8 +817,8 @@ export default function AdminDataPage() {
           </div>
           {data.sales.revenueInPeriod > 0 && (
             <div className="grid md:grid-cols-2 gap-4 mb-6">
-              <KPICard label="CA (periode)" value={fmtEur(data.sales.revenueInPeriod)} borderColor="border-l-emerald-400" subtitle={PERIOD_OPTIONS.find(p => p.value === period)?.label} />
-              <KPICard label="Commandes (periode)" value={fmt(data.sales.ordersInPeriod)} borderColor="border-l-emerald-300" subtitle={PERIOD_OPTIONS.find(p => p.value === period)?.label} />
+              <KPICard label="CA (periode)" value={fmtEur(data.sales.revenueInPeriod)} borderColor="border-l-emerald-400" subtitle={dateRangeLabel} />
+              <KPICard label="Commandes (periode)" value={fmt(data.sales.ordersInPeriod)} borderColor="border-l-emerald-300" subtitle={dateRangeLabel} />
             </div>
           )}
           <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -854,7 +903,7 @@ export default function AdminDataPage() {
           <SectionHeader sectionId="credits" label="Credits" />
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             <KPICard label="Total en circulation" value={fmt(data.credits.totalInCirculation)} borderColor="border-l-amber-500" subtitle="Solde cumule tous utilisateurs" />
-            <KPICard label="Transactions (periode)" value={fmt(data.credits.transactionsInPeriod)} borderColor="border-l-amber-400" subtitle={PERIOD_OPTIONS.find(p => p.value === period)?.label} />
+            <KPICard label="Transactions (periode)" value={fmt(data.credits.transactionsInPeriod)} borderColor="border-l-amber-400" subtitle={dateRangeLabel} />
             <KPICard
               label="Types de transactions"
               value={Object.keys(data.credits.transactionsByType).length}

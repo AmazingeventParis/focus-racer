@@ -4,24 +4,33 @@ import prisma from "@/lib/prisma";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const period = searchParams.get("period") || "all";
+    const fromParam = searchParams.get("from");
+    const toParam = searchParams.get("to");
 
     let dateFrom: Date | null = null;
-    const now = new Date();
-    switch (period) {
-      case "today":
-        dateFrom = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        break;
-      case "7d":
-        dateFrom = new Date(now.getTime() - 7 * 86400000);
-        break;
-      case "30d":
-        dateFrom = new Date(now.getTime() - 30 * 86400000);
-        break;
-      case "90d":
-        dateFrom = new Date(now.getTime() - 90 * 86400000);
-        break;
+    let dateTo: Date | null = null;
+
+    if (fromParam) {
+      dateFrom = new Date(fromParam);
+      if (isNaN(dateFrom.getTime())) dateFrom = null;
     }
+    if (toParam) {
+      dateTo = new Date(toParam);
+      if (isNaN(dateTo.getTime())) dateTo = null;
+      else {
+        // Include the full end day
+        dateTo.setHours(23, 59, 59, 999);
+      }
+    }
+
+    const periodLabel = dateFrom
+      ? `${dateFrom.toISOString().slice(0, 10)}${dateTo ? " - " + dateTo.toISOString().slice(0, 10) : ""}`
+      : "all";
+
+    // Build date filter for Prisma queries
+    const dateFilter = dateFrom
+      ? { createdAt: { gte: dateFrom, ...(dateTo ? { lte: dateTo } : {}) } }
+      : {};
 
     const [
       // --- USERS ---
@@ -132,7 +141,7 @@ export async function GET(request: NextRequest) {
         ORDER BY month ASC
       `,
       dateFrom
-        ? prisma.user.count({ where: { createdAt: { gte: dateFrom } } })
+        ? prisma.user.count({ where: dateFilter })
         : prisma.user.count(),
       prisma.user.count({ where: { stripeOnboarded: true } }),
 
@@ -158,7 +167,7 @@ export async function GET(request: NextRequest) {
         ORDER BY month ASC
       `,
       dateFrom
-        ? prisma.event.count({ where: { createdAt: { gte: dateFrom } } })
+        ? prisma.event.count({ where: dateFilter })
         : prisma.event.count(),
 
       // --- PHOTOS ---
@@ -198,7 +207,7 @@ export async function GET(request: NextRequest) {
       prisma.photo.count({ where: { creditDeducted: true } }),
       prisma.photo.count({ where: { creditRefunded: true } }),
       dateFrom
-        ? prisma.photo.count({ where: { createdAt: { gte: dateFrom } } })
+        ? prisma.photo.count({ where: dateFilter })
         : prisma.photo.count(),
 
       // --- BIBS ---
@@ -282,11 +291,11 @@ export async function GET(request: NextRequest) {
         GROUP BY pp.type
       `,
       dateFrom
-        ? prisma.order.count({ where: { status: "PAID", createdAt: { gte: dateFrom } } })
+        ? prisma.order.count({ where: { status: "PAID", ...dateFilter } })
         : prisma.order.count({ where: { status: "PAID" } }),
       dateFrom
         ? prisma.order.aggregate({
-            where: { status: "PAID", createdAt: { gte: dateFrom } },
+            where: { status: "PAID", ...dateFilter },
             _sum: { totalAmount: true },
           })
         : prisma.order.aggregate({
@@ -314,7 +323,7 @@ export async function GET(request: NextRequest) {
         ORDER BY month ASC
       `,
       dateFrom
-        ? prisma.creditTransaction.count({ where: { createdAt: { gte: dateFrom } } })
+        ? prisma.creditTransaction.count({ where: dateFilter })
         : prisma.creditTransaction.count(),
 
       // --- MARKETPLACE ---
@@ -396,7 +405,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       generatedAt: new Date().toISOString(),
-      period,
+      period: periodLabel,
 
       users: {
         total: totalUsers,
