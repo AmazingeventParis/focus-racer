@@ -81,8 +81,8 @@ export default function UploadPage({
   const [isTestMode, setIsTestMode] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [processingMode, setProcessingMode] = useState<"lite" | "premium">("lite");
   const [removeDuplicates, setRemoveDuplicates] = useState(true); // ON by default
+  const [removeBlurry, setRemoveBlurry] = useState(true); // ON by default
   const [autoRetouch, setAutoRetouch] = useState(false);
   const [smartCrop, setSmartCrop] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -340,8 +340,9 @@ export default function UploadPage({
           const formData = new FormData();
           formData.append("eventId", id);
           formData.append("sessionId", uploadSessionId);
-          formData.append("processingMode", processingMode);
+          formData.append("processingMode", "premium");
           if (removeDuplicates) formData.append("removeDuplicates", "true");
+          if (removeBlurry) formData.append("removeBlurry", "true");
           if (autoRetouch) formData.append("autoRetouch", "true");
           if (smartCrop) formData.append("smartCrop", "true");
           chunk.forEach((file) => {
@@ -422,7 +423,7 @@ export default function UploadPage({
       setIsUploading(false);
       setPhase("confirm");
     }
-  }, [id, selectedFiles, credits, isUploading, processingMode, removeDuplicates, autoRetouch, smartCrop, toast]);
+  }, [id, selectedFiles, credits, isUploading, removeDuplicates, removeBlurry, autoRetouch, smartCrop, toast]);
 
   if (status === "loading" || isLoading) {
     return (
@@ -559,20 +560,9 @@ export default function UploadPage({
 
   // Phase: Confirm
   if (phase === "confirm") {
-    const creditsPerPhoto = processingMode === "premium" ? 2 : 1;
+    const creditsPerPhoto = 2; // Always Premium
     const totalCreditsNeeded = selectedFiles.length * creditsPerPhoto;
     const hasEnoughCredits = credits >= totalCreditsNeeded;
-
-    // Time estimation
-    const formatTime = (s: number) => {
-      if (s < 60) return `~${s} sec`;
-      const min = Math.floor(s / 60);
-      const sec = s % 60;
-      if (min < 60) return sec > 0 ? `~${min} min ${sec} sec` : `~${min} min`;
-      const h = Math.floor(min / 60);
-      const rm = min % 60;
-      return `~${h}h${rm > 0 ? ` ${rm} min` : ""}`;
-    };
 
     return (
       <div className="p-8 max-w-2xl mx-auto animate-fade-in">
@@ -596,120 +586,19 @@ export default function UploadPage({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Plan choice */}
-            <div>
-              <p className="text-sm font-medium text-gray-900 mb-3">Choisissez votre formule</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Lite */}
-                <button
-                  type="button"
-                  onClick={() => { setProcessingMode("lite"); setSmartCrop(false); }}
-                  className={`relative p-4 rounded-xl border-2 text-left transition-all ${
-                    processingMode === "lite"
-                      ? "border-emerald-500 bg-emerald-50/50 shadow-sm"
-                      : "border-gray-200 hover:border-gray-300 bg-white"
-                  }`}
-                >
-                  {processingMode === "lite" && (
-                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-lg font-bold text-gray-900">Lite</span>
-                    <Badge className="bg-emerald-100 text-emerald-700 border-0 text-[10px]">1 crédit/photo</Badge>
-                  </div>
-                  <p className="text-xs text-gray-500 leading-relaxed mb-3">
-                    Tri automatique rapide par dossard. Détection OCR haute précision AWS.
-                  </p>
-                  <ul className="space-y-1.5 text-[11px] mb-3">
-                    <li className="flex items-center gap-1.5 text-gray-600 font-medium">
-                      <svg className="w-3.5 h-3.5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Détection dossards (OCR AWS haute précision)
-                    </li>
-                    <li className="flex items-center gap-1.5 text-gray-600 font-medium">
-                      <svg className="w-3.5 h-3.5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Analyse qualité + filtrage photos floues
-                    </li>
-                    <li className="flex items-center gap-1.5 text-gray-600 font-medium">
-                      <svg className="w-3.5 h-3.5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Watermark professionnel
-                    </li>
-                    <li className="flex items-center gap-1.5 text-gray-300">
-                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                      <span className="line-through">Reconnaissance faciale</span>
-                    </li>
-                  </ul>
-                  <div className="flex items-center gap-3 text-[11px] pt-2 border-t border-gray-100">
-                    <span className="flex items-center gap-1 text-emerald-600">
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-                      {formatTime(Math.round(selectedFiles.length * 0.7))}
-                    </span>
-                    <span className="flex items-center gap-1 text-emerald-600">
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                      ~90-95%
-                    </span>
-                  </div>
-                </button>
-
-                {/* Premium */}
-                <button
-                  type="button"
-                  onClick={() => setProcessingMode("premium")}
-                  className={`relative p-4 rounded-xl border-2 text-left transition-all ${
-                    processingMode === "premium"
-                      ? "border-amber-500 bg-amber-50/50 shadow-sm ring-1 ring-amber-200"
-                      : "border-gray-200 hover:border-amber-300 bg-white"
-                  }`}
-                >
-                  <div className="absolute -top-2.5 left-4">
-                    <Badge className="bg-amber-500 text-white border-0 text-[10px] shadow-sm">Recommandé</Badge>
-                  </div>
-                  {processingMode === "premium" && (
-                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-2 mb-2 mt-1">
-                    <span className="text-lg font-bold text-gray-900">Premium</span>
-                    <Badge className="bg-amber-100 text-amber-700 border-0 text-[10px]">2 crédits/photo</Badge>
-                  </div>
-                  <p className="text-xs text-gray-500 leading-relaxed mb-3">
-                    Traitement IA complet avec reconnaissance faciale pour recherche par selfie.
-                  </p>
-                  <ul className="space-y-1.5 text-[11px] mb-3">
-                    <li className="flex items-center gap-1.5 text-gray-600 font-medium">
-                      <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Détection dossards (OCR AWS haute précision)
-                    </li>
-                    <li className="flex items-center gap-1.5 text-gray-600 font-medium">
-                      <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Analyse qualité + filtrage photos floues
-                    </li>
-                    <li className="flex items-center gap-1.5 text-gray-600 font-medium">
-                      <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Watermark professionnel
-                    </li>
-                    <li className="flex items-center gap-1.5 text-gray-600 font-medium">
-                      <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                      Reconnaissance faciale (recherche par selfie)
-                    </li>
-                  </ul>
-                  <div className="flex items-center gap-3 text-[11px] pt-2 border-t border-amber-100">
-                    <span className="flex items-center gap-1 text-amber-600">
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-                      {formatTime(Math.round(selectedFiles.length * 1.4))}
-                    </span>
-                    <span className="flex items-center gap-1 text-amber-600">
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                      ~95-99%
-                    </span>
-                  </div>
-                </button>
+            {/* Plan summary (always Premium) */}
+            <div className="p-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-900">Traitement IA complet</p>
+                  <p className="text-xs text-gray-500">OCR dossards + reconnaissance faciale + watermark + analyse qualité</p>
+                </div>
+                <Badge className="bg-amber-100 text-amber-700 border-0 text-xs ml-auto shrink-0">2 crédits/photo</Badge>
               </div>
             </div>
 
@@ -732,13 +621,40 @@ export default function UploadPage({
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
                       </svg>
-                      <span className="text-sm font-medium text-gray-900">Nettoyage intelligent</span>
+                      <span className="text-sm font-medium text-gray-900">Suppression des doublons</span>
                       <Badge className="bg-emerald-100 text-emerald-700 border-0 text-[9px]">Recommandé</Badge>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
                       Détecte et supprime automatiquement les photos en double (rafales identiques). Votre galerie est plus propre, vos coureurs trouvent leurs photos plus vite.
+                    </p>
+                  </div>
+                </label>
+
+                {/* Blur Filter — checked by default */}
+                <label className={`flex items-start gap-3 p-3 rounded-xl border-2 transition-colors cursor-pointer ${
+                  removeBlurry
+                    ? "border-emerald-500 bg-emerald-50/50"
+                    : "border-gray-200 hover:border-emerald-300"
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={removeBlurry}
+                    onChange={(e) => setRemoveBlurry(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span className="text-sm font-medium text-gray-900">Filtre photos floues</span>
+                      <Badge className="bg-emerald-100 text-emerald-700 border-0 text-[9px]">Recommandé</Badge>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Élimine automatiquement les photos trop floues ou mal exposées avant traitement. Galerie de meilleure qualité pour vos clients.
                     </p>
                   </div>
                 </label>
@@ -765,32 +681,23 @@ export default function UploadPage({
                 </label>
 
                 {/* Smart Crop */}
-                <label className={`flex items-start gap-3 p-3 rounded-xl border transition-colors ${
-                  processingMode === "premium"
-                    ? "border-gray-200 hover:border-amber-300 cursor-pointer"
-                    : "border-gray-100 bg-gray-50 cursor-not-allowed opacity-60"
-                }`}>
+                <label className="flex items-start gap-3 p-3 rounded-xl border border-gray-200 hover:border-amber-300 transition-colors cursor-pointer">
                   <input
                     type="checkbox"
                     checked={smartCrop}
                     onChange={(e) => setSmartCrop(e.target.checked)}
-                    disabled={processingMode !== "premium"}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500 disabled:opacity-50"
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500"
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <svg className="w-4 h-4 text-purple-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M7.848 8.25l1.536.887M7.848 8.25a3 3 0 11-5.196-3 3 3 0 015.196 3zm1.536.887a2.165 2.165 0 011.083 1.839c.005.351.054.695.14 1.024M9.384 9.137l2.077 1.199M7.848 15.75l1.536-.887m-1.536.887a3 3 0 11-5.196 3 3 3 0 015.196-3zm1.536-.887a2.165 2.165 0 001.083-1.838c.005-.352.054-.696.14-1.025m-1.223 2.863l2.077-1.199m0-3.328a4.323 4.323 0 012.068-1.379l5.325-1.628a4.5 4.5 0 012.48 0l.136.046m-9.924 2.961l-2.077 1.199M18.375 6.75l-1.5.75M18.375 6.75a1.5 1.5 0 013 0 1.5 1.5 0 01-3 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
                       </svg>
                       <span className="text-sm font-medium text-gray-900">Smart Crop</span>
-                      <Badge className="bg-amber-100 text-amber-700 border-0 text-[9px]">Premium</Badge>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
                       Génère un recadrage individuel par coureur détecté. Chaque visage reçoit un crop centré avec le buste et le dossard visible.
                     </p>
-                    {processingMode !== "premium" && (
-                      <p className="text-[10px] text-amber-600 mt-1 font-medium">Nécessite le mode Premium (reconnaissance faciale)</p>
-                    )}
                   </div>
                 </label>
               </div>
@@ -804,7 +711,7 @@ export default function UploadPage({
               </div>
               <div className="p-4 rounded-xl bg-gray-50 text-center">
                 <p className="text-3xl font-bold text-emerald-500">{totalCreditsNeeded}</p>
-                <p className="text-sm text-gray-500 mt-1">credits necessaires</p>
+                <p className="text-sm text-gray-500 mt-1">crédits nécessaires</p>
               </div>
             </div>
 
@@ -823,11 +730,6 @@ export default function UploadPage({
                   )}
                 </div>
               </div>
-            </div>
-
-            {/* Info credits refund */}
-            <div className="p-4 rounded-xl bg-teal-50 border border-teal-100 text-sm text-teal-700">
-              Les crédits des photos orphelines (sans dossard détecté) vous seront automatiquement restitués.
             </div>
 
             {/* Insufficient credits warning */}
@@ -1004,7 +906,7 @@ export default function UploadPage({
 
             <div className="flex justify-between items-center pt-4 border-t border-gray-100">
               <p className="text-sm text-gray-500">
-                {selectedFiles.length} photo{selectedFiles.length > 1 ? "s" : ""} = {selectedFiles.length} credit{selectedFiles.length > 1 ? "s" : ""}
+                {selectedFiles.length} photo{selectedFiles.length > 1 ? "s" : ""} = {selectedFiles.length * 2} crédits
               </p>
               <Button
                 onClick={goToConfirm}

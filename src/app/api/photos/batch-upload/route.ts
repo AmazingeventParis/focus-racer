@@ -59,7 +59,7 @@ async function processPhotoWithProgress(
       generateWatermarkedThumbnail(eventId, jpegBuffer, originalFilename)
         .catch((err) => { console.error(`[Batch] Watermark error for ${photoId}:`, err); return null; }),
       detectTextFromImage(jpegBuffer, validBibs),
-      (processingMode === "premium" && aiConfig.faceIndexEnabled)
+      aiConfig.faceIndexEnabled
         ? indexFaces(jpegBuffer, `${eventId}:${photoId}`).catch((err) => {
             console.error(`[Batch] Face indexing error for ${photoId}:`, err);
             return [] as Array<{ faceId: string; confidence: number; boundingBox: unknown }>;
@@ -143,19 +143,16 @@ async function processPhotoWithProgress(
       data: photoData,
     });
 
-    // 5. Auto-link orphan photos by face recognition (Premium only)
-    let bibsFoundByFace = 0;
-    if (ocrResult.bibNumbers.length === 0 && processingMode === "premium" && faces && faces.length > 0) {
+    // 5. Auto-link orphan photos by face recognition
+    if (ocrResult.bibNumbers.length === 0 && faces && faces.length > 0) {
       updateUploadProgress(sessionId, {
         currentStep: `Recherche visages ${label}`,
       });
 
       try {
-        // Search for matching faces in the collection
         const faceMatches = await searchFaceByImage(jpegBuffer, 10, 85);
 
         if (faceMatches.length > 0) {
-          // Extract photoIds from externalImageId (format: "eventId:photoId")
           const matchedPhotoIds = faceMatches
             .map((match) => {
               const parts = match.externalImageId.split(":");
@@ -164,28 +161,22 @@ async function processPhotoWithProgress(
             .filter((id): id is string => id !== null);
 
           if (matchedPhotoIds.length > 0) {
-            // Find bib numbers from matched photos
             const matchedBibs = await prisma.bibNumber.findMany({
-              where: {
-                photoId: { in: matchedPhotoIds },
-              },
+              where: { photoId: { in: matchedPhotoIds } },
               select: { number: true },
               distinct: ["number"],
             });
 
-            // Auto-assign bib numbers to the orphan photo
             if (matchedBibs.length > 0) {
               await prisma.bibNumber.createMany({
                 data: matchedBibs.map((bib) => ({
                   number: bib.number,
                   photoId,
-                  confidence: 95, // High confidence from face match
+                  confidence: 95,
                   source: "face_recognition",
                 })),
               });
-
-              bibsFoundByFace = matchedBibs.length;
-              console.log(`[Batch] Auto-linked ${bibsFoundByFace} bib(s) to photo ${photoId} via face recognition`);
+              console.log(`[Batch] Auto-linked ${matchedBibs.length} bib(s) to photo ${photoId} via face recognition`);
             }
           }
         }
@@ -194,63 +185,7 @@ async function processPhotoWithProgress(
       }
     }
 
-    // 6. Refund credit if no bib detected (neither OCR nor face recognition)
-    if (ocrResult.bibNumbers.length === 0 && bibsFoundByFace === 0) {
-      const photo = await prisma.photo.findUnique({
-        where: { id: photoId },
-        select: { creditDeducted: true, creditRefunded: true },
-      });
-
-      if (photo && photo.creditDeducted && !photo.creditRefunded) {
-        const event = await prisma.event.findUnique({
-          where: { id: eventId },
-          select: { userId: true },
-        });
-
-        if (event) {
-          await prisma.$transaction(async (tx) => {
-            const user = await tx.user.findUnique({
-              where: { id: event.userId },
-              select: { credits: true },
-            });
-            if (!user) return;
-
-            const balanceBefore = user.credits;
-            const balanceAfter = balanceBefore + creditsPerPhoto;
-
-            await tx.user.update({
-              where: { id: event.userId },
-              data: { credits: balanceAfter },
-            });
-
-            await tx.creditTransaction.create({
-              data: {
-                userId: event.userId,
-                type: "REFUND",
-                amount: creditsPerPhoto,
-                balanceBefore,
-                balanceAfter,
-                reason: `Aucun dossard detecte (${creditsPerPhoto} credit${creditsPerPhoto > 1 ? "s" : ""})`,
-                photoId,
-                eventId,
-              },
-            });
-
-            await tx.photo.update({
-              where: { id: photoId },
-              data: { creditRefunded: true },
-            });
-          });
-
-          const uploadSession = (await import("@/lib/upload-session")).getUploadSession(sessionId);
-          if (uploadSession) {
-            updateUploadProgress(sessionId, {
-              creditsRefunded: uploadSession.creditsRefunded + 1,
-            });
-          }
-        }
-      }
-    }
+    // No credit refund for orphan photos — they were processed, cost is incurred
 
     console.log(`[Batch] Photo ${photoId}: processing complete (${photoIndex + 1}/${totalPhotos})`);
   } catch (error) {
@@ -275,6 +210,7 @@ export async function POST(request: NextRequest) {
     const autoRetouch = formData.get("autoRetouch") === "true";
     const smartCrop = formData.get("smartCrop") === "true";
     const removeDuplicates = formData.get("removeDuplicates") === "true";
+    const removeBlurry = formData.get("removeBlurry") === "true";
     const processingOptions = { autoRetouch, smartCrop };
 
     if (!eventId) {
@@ -485,7 +421,46 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Enqueue unique photos for processing
+    // Blur pre-filter: detect and remove blurry photos BEFORE AWS processing
+    // Credits already deducted for ALL photos — no refund
+    let blurryCount = 0;
+
+    if (removeBlurry && photosToProcess.length > 0) {
+      updateUploadProgress(sessionId, {
+        currentStep: `Détection photos floues...`,
+      });
+
+      try {
+        const blurryIds: string[] = [];
+
+        for (const photo of photosToProcess) {
+          const quality = await analyzeQuality(photo.jpegBuffer);
+          if (quality.isBlurry) {
+            blurryIds.push(photo.id);
+          }
+        }
+
+        if (blurryIds.length > 0) {
+          blurryCount = blurryIds.length;
+          const blurrySet = new Set(blurryIds);
+
+          await prisma.photo.deleteMany({
+            where: { id: { in: blurryIds } },
+          });
+
+          photosToProcess = photosToProcess.filter((p) => !blurrySet.has(p.id));
+          console.log(`[Batch] Removed ${blurryCount} blurry photo(s), processing ${photosToProcess.length} sharp photos`);
+
+          updateUploadProgress(sessionId, {
+            currentStep: `${blurryCount} photo${blurryCount > 1 ? "s" : ""} floue${blurryCount > 1 ? "s" : ""} supprimée${blurryCount > 1 ? "s" : ""}`,
+          });
+        }
+      } catch (blurErr) {
+        console.error("[Batch] Blur detection error:", blurErr);
+      }
+    }
+
+    // Enqueue remaining photos for processing
     const totalToProcess = photosToProcess.length;
     let processedCount = 0;
     for (const photo of photosToProcess) {
@@ -536,6 +511,9 @@ export async function POST(request: NextRequest) {
       creditsRemaining,
       ...(duplicateCount > 0 && {
         duplicatesRemoved: duplicateCount,
+      }),
+      ...(blurryCount > 0 && {
+        blurryRemoved: blurryCount,
       }),
       ...(failedFiles.length > 0 && {
         warnings: `${failedFiles.length} fichier(s) non traite(s)`,
