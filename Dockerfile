@@ -54,6 +54,12 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=deps /app/node_modules/prisma ./node_modules/prisma
 COPY --from=deps /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=deps /app/node_modules/.bin ./node_modules/.bin
+# bcryptjs needed for seed script
+COPY --from=deps /app/node_modules/bcryptjs ./node_modules/bcryptjs
+# Seed script
+COPY --from=builder /app/prisma/seed.ts ./prisma/seed.ts
+COPY --from=deps /app/node_modules/tsx ./node_modules/tsx
+COPY --from=deps /app/node_modules/esbuild ./node_modules/esbuild
 
 # Create uploads directory with correct permissions
 RUN mkdir -p /app/public/uploads && chown -R nextjs:nodejs /app/public/uploads
@@ -63,4 +69,4 @@ USER nextjs
 EXPOSE 3000
 
 # Run database migration then start the server
-CMD ["sh", "-c", "echo 'Starting Focus Racer...' && echo 'Running Prisma migrations...' && npx prisma migrate deploy 2>&1 && echo 'Migrations done. Starting server...' && node server.js"]
+CMD ["sh", "-c", "echo 'Starting Focus Racer...' && echo 'Running Prisma migrations...' && npx prisma migrate deploy 2>&1 && echo 'Migrations done. Running seed...' && npx prisma db seed 2>&1 && echo 'Seed done. Starting server...' && node server.js"]
