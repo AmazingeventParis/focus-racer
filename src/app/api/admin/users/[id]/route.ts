@@ -104,6 +104,10 @@ export async function PATCH(
     const data: Record<string, unknown> = {};
     if (typeof body.isActive === "boolean") data.isActive = body.isActive;
     if (body.role) data.role = body.role;
+    if (typeof body.name === "string") data.name = body.name;
+    if (typeof body.email === "string") data.email = body.email;
+    if (typeof body.phone === "string") data.phone = body.phone || null;
+    if (typeof body.company === "string") data.company = body.company || null;
 
     const user = await prisma.user.update({
       where: { id },
@@ -133,17 +137,29 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    const { searchParams } = new URL(request.url);
+    const hard = searchParams.get("hard") === "true";
 
-    await prisma.user.update({
-      where: { id },
-      data: { isActive: false },
-    });
+    if (hard) {
+      // Hard delete: cascade related data
+      await prisma.$transaction([
+        prisma.creditTransaction.deleteMany({ where: { userId: id } }),
+        prisma.supportMessage.deleteMany({ where: { userId: id } }),
+        prisma.order.deleteMany({ where: { userId: id } }),
+        prisma.user.delete({ where: { id } }),
+      ]);
+    } else {
+      await prisma.user.update({
+        where: { id },
+        data: { isActive: false },
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deactivating user:", error);
+    console.error("Error deleting user:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la desactivation" },
+      { error: "Erreur lors de la suppression" },
       { status: 500 }
     );
   }

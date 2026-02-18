@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -69,10 +70,21 @@ export default function AdminUserDetailPage({
   params: { id: string };
 }) {
   const { id } = params;
+  const router = useRouter();
   const { toast } = useToast();
   const [user, setUser] = useState<UserDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [tempPassword, setTempPassword] = useState<string | null>(null);
+
+  // Editable profile fields
+  const [editMode, setEditMode] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+  });
+  const [isSaving, setIsSaving] = useState(false);
 
   // Credit management state
   const [creditAmount, setCreditAmount] = useState<string>("");
@@ -89,6 +101,12 @@ export default function AdminUserDetailPage({
       if (response.ok) {
         const data = await response.json();
         setUser(data);
+        setEditForm({
+          name: data.name || "",
+          email: data.email || "",
+          phone: data.phone || "",
+          company: data.company || "",
+        });
       }
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -116,6 +134,38 @@ export default function AdminUserDetailPage({
     fetchUser();
     fetchCredits();
   }, [fetchUser, fetchCredits]);
+
+  const saveProfile = async () => {
+    setIsSaving(true);
+    try {
+      const res = await fetch(`/api/admin/users/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editForm),
+      });
+      if (res.ok) {
+        setUser((prev) =>
+          prev
+            ? {
+                ...prev,
+                name: editForm.name,
+                email: editForm.email,
+                phone: editForm.phone || null,
+                company: editForm.company || null,
+              }
+            : null
+        );
+        setEditMode(false);
+        toast({ title: "Profil mis à jour" });
+      } else {
+        toast({ title: "Erreur", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Erreur", variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const toggleActive = async () => {
     if (!user) return;
@@ -178,6 +228,35 @@ export default function AdminUserDetailPage({
     }
   };
 
+  const handleDelete = async () => {
+    if (!user) return;
+    if (
+      !confirm(
+        `Supprimer définitivement ${user.name} (${user.email}) ?\n\nCette action est irréversible et supprimera toutes les données associées.`
+      )
+    ) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/admin/users/${id}?hard=true`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        toast({ title: "Utilisateur supprimé" });
+        router.push("/focus-mgr-7k9x/users");
+      } else {
+        const data = await res.json();
+        toast({
+          title: "Erreur",
+          description: data.error || "Impossible de supprimer",
+          variant: "destructive",
+        });
+      }
+    } catch {
+      toast({ title: "Erreur", variant: "destructive" });
+    }
+  };
+
   const submitCreditChange = async () => {
     const amount = parseInt(creditAmount);
     if (isNaN(amount) || amount === 0) {
@@ -208,7 +287,6 @@ export default function AdminUserDetailPage({
           title: "Crédits mis à jour",
           description: `${amount > 0 ? "+" : ""}${amount} crédits appliqués`,
         });
-        // Refresh transaction history
         fetchCredits();
       } else {
         const error = await response.json();
@@ -310,17 +388,26 @@ export default function AdminUserDetailPage({
       </Link>
 
       {/* Header */}
-      <div className="flex items-center gap-4 mb-8">
-        <h1 className="text-3xl font-bold text-navy">{user.name}</h1>
-        <Badge
-          variant={user.isActive ? "default" : "destructive"}
-          className={user.isActive ? "bg-emerald-500" : ""}
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <h1 className="text-3xl font-bold text-navy">{user.name}</h1>
+          <Badge
+            variant={user.isActive ? "default" : "destructive"}
+            className={user.isActive ? "bg-emerald-500" : ""}
+          >
+            {user.isActive ? "Actif" : "Inactif"}
+          </Badge>
+          <Badge variant="outline" className="border-emerald text-emerald">
+            {getRoleLabel(user.role)}
+          </Badge>
+        </div>
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={handleDelete}
         >
-          {user.isActive ? "Actif" : "Inactif"}
-        </Badge>
-        <Badge variant="outline" className="border-emerald text-emerald">
-          {getRoleLabel(user.role)}
-        </Badge>
+          Supprimer le compte
+        </Button>
       </div>
 
       {/* User Activity Stats */}
@@ -370,28 +457,103 @@ export default function AdminUserDetailPage({
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 mb-8">
-        {/* User Information */}
+        {/* User Information - editable */}
         <Card className="glass-card rounded-2xl">
           <CardHeader>
-            <CardTitle className="text-navy">Informations</CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle className="text-navy">Informations</CardTitle>
+              {!editMode ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setEditMode(true)}
+                >
+                  Modifier
+                </Button>
+              ) : (
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEditMode(false);
+                      setEditForm({
+                        name: user.name || "",
+                        email: user.email || "",
+                        phone: user.phone || "",
+                        company: user.company || "",
+                      });
+                    }}
+                  >
+                    Annuler
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={saveProfile}
+                    disabled={isSaving}
+                    className="bg-emerald hover:bg-emerald-dark text-white"
+                  >
+                    {isSaving ? "..." : "Enregistrer"}
+                  </Button>
+                </div>
+              )}
+            </div>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div>
-              <p className="text-sm text-muted-foreground">Email</p>
-              <p className="font-medium text-navy">{user.email}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Téléphone</p>
-              <p className="font-medium text-navy">
-                {user.phone || "Non renseigné"}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Société</p>
-              <p className="font-medium text-navy">
-                {user.company || "Non renseigné"}
-              </p>
-            </div>
+            {editMode ? (
+              <>
+                <div>
+                  <label className="text-sm text-muted-foreground mb-1 block">Nom</label>
+                  <Input
+                    value={editForm.name}
+                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-muted-foreground mb-1 block">Email</label>
+                  <Input
+                    type="email"
+                    value={editForm.email}
+                    onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-muted-foreground mb-1 block">Téléphone</label>
+                  <Input
+                    value={editForm.phone}
+                    onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                    placeholder="Non renseigné"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-muted-foreground mb-1 block">Société</label>
+                  <Input
+                    value={editForm.company}
+                    onChange={(e) => setEditForm({ ...editForm, company: e.target.value })}
+                    placeholder="Non renseigné"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <p className="text-sm text-muted-foreground">Email</p>
+                  <p className="font-medium text-navy">{user.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Téléphone</p>
+                  <p className="font-medium text-navy">
+                    {user.phone || "Non renseigné"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Société</p>
+                  <p className="font-medium text-navy">
+                    {user.company || "Non renseigné"}
+                  </p>
+                </div>
+              </>
+            )}
             <div>
               <p className="text-sm text-muted-foreground">Inscrit le</p>
               <p className="font-medium text-navy">
@@ -454,7 +616,7 @@ export default function AdminUserDetailPage({
           <CardContent className="space-y-4">
             <div>
               <p className="text-sm text-muted-foreground mb-2">
-                Changer le role
+                Changer le rôle
               </p>
               <Select value={user.role} onValueChange={changeRole}>
                 <SelectTrigger className="border-gray-200 focus:border-emerald focus:ring-emerald">
@@ -531,6 +693,19 @@ export default function AdminUserDetailPage({
                   Envoyer un message
                 </Button>
               </Link>
+            </div>
+
+            <div className="pt-2 border-t">
+              <p className="text-sm text-muted-foreground mb-2">
+                Zone dangereuse
+              </p>
+              <Button
+                variant="destructive"
+                onClick={handleDelete}
+                className="w-full"
+              >
+                Supprimer définitivement
+              </Button>
             </div>
           </CardContent>
         </Card>
