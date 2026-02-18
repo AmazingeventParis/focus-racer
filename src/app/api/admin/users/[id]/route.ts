@@ -141,63 +141,61 @@ export async function DELETE(
     const hard = searchParams.get("hard") === "true";
 
     if (hard) {
-      // Hard delete: cascade all related data in correct order
-      await prisma.$transaction(async (tx) => {
-        // Get user's event IDs
-        const eventIds = (
-          await tx.event.findMany({
-            where: { userId: id },
-            select: { id: true },
-          })
-        ).map((e) => e.id);
+      // Get user's event IDs first
+      const eventIds = (
+        await prisma.event.findMany({
+          where: { userId: id },
+          select: { id: true },
+        })
+      ).map((e) => e.id);
 
-        // 1. OrderItems (references Order + Photo, no cascade)
-        if (eventIds.length > 0) {
-          await tx.orderItem.deleteMany({
-            where: {
-              OR: [
-                { order: { eventId: { in: eventIds } } },
-                { order: { userId: id } },
-              ],
-            },
-          });
-        } else {
-          await tx.orderItem.deleteMany({
-            where: { order: { userId: id } },
-          });
-        }
-
-        // 2. Orders (on user's events + buyer orders)
-        await tx.order.deleteMany({
-          where: {
-            OR: [
-              ...(eventIds.length > 0
-                ? [{ eventId: { in: eventIds } }]
-                : []),
-              { userId: id },
-            ],
-          },
-        });
-
-        // 3. Events (cascades: Photos→BibNumbers+PhotoFaces, StartListEntries, PricePacks)
-        if (eventIds.length > 0) {
-          await tx.event.deleteMany({ where: { userId: id } });
-        }
-
-        // 4. Marketplace
-        await tx.marketplaceApplication.deleteMany({ where: { photographerId: id } });
-        await tx.marketplaceListing.deleteMany({ where: { creatorId: id } });
-        await tx.marketplaceReview.deleteMany({
-          where: { OR: [{ authorId: id }, { targetId: id }] },
-        });
-
-        // 5. Credits & support
-        await tx.creditTransaction.deleteMany({ where: { userId: id } });
-        await tx.supportMessage.deleteMany({ where: { userId: id } });
-
-        // 6. User
-        await tx.user.delete({ where: { id } });
+      // Sequential deletes in correct dependency order
+      // 1. OrderItems referencing photos/orders from user's events + buyer orders
+      await prisma.orderItem.deleteMany({
+        where: {
+          OR: [
+            ...(eventIds.length > 0
+              ? [{ order: { eventId: { in: eventIds } } }]
+              : []),
+            { order: { userId: id } },
+          ],
+        },
       });
+
+      // 2. Orders on user's events + buyer orders
+      await prisma.order.deleteMany({
+        where: {
+          OR: [
+            ...(eventIds.length > 0
+              ? [{ eventId: { in: eventIds } }]
+              : []),
+            { userId: id },
+          ],
+        },
+      });
+
+      // 3. Events (cascades: Photos→BibNumbers+PhotoFaces, StartListEntries, PricePacks)
+      if (eventIds.length > 0) {
+        await prisma.event.deleteMany({ where: { userId: id } });
+      }
+
+      // 4. Marketplace
+      await prisma.marketplaceApplication.deleteMany({
+        where: { photographerId: id },
+      });
+      await prisma.marketplaceListing.deleteMany({
+        where: { creatorId: id },
+      });
+      await prisma.marketplaceReview.deleteMany({
+        where: { OR: [{ authorId: id }, { targetId: id }] },
+      });
+
+      // 5. Credits & support
+      await prisma.creditTransaction.deleteMany({ where: { userId: id } });
+      await prisma.supportMessage.deleteMany({ where: { userId: id } });
+
+      // 6. User
+      await prisma.user.delete({ where: { id } });
     } else {
       await prisma.user.update({
         where: { id },
@@ -208,9 +206,8 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting user:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la suppression" },
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error ? error.message : "Erreur lors de la suppression";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
