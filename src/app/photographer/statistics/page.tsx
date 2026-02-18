@@ -822,8 +822,8 @@ export default function StatisticsPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                 </svg>
                 <div>
-                  <p className="font-medium text-gray-900 text-sm">Mode Premium pour la reconnaissance faciale</p>
-                  <p className="text-xs text-gray-600 mt-1">Le mode Premium (2 crédits/photo) permet la reconnaissance faciale pour lier automatiquement les photos orphelines.</p>
+                  <p className="font-medium text-gray-900 text-sm">Reconnaissance faciale incluse</p>
+                  <p className="text-xs text-gray-600 mt-1">Le traitement IA (1 crédit/photo) inclut l&apos;OCR dossards et la reconnaissance faciale pour lier automatiquement les photos orphelines.</p>
                 </div>
               </div>
             </CardContent>

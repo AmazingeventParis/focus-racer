@@ -751,8 +751,8 @@ export default function AdminDataPage() {
             </Card>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
-            <KPICard label="Credits debites" value={fmt(data.photos.creditDeducted)} borderColor="border-l-amber-400" subtitle="Photos facturees" />
-            <KPICard label="Credits rembourses" value={fmt(data.photos.creditRefunded)} borderColor="border-l-red-400" subtitle="Credits restitues (0 dossard)" />
+            <KPICard label="Credits debites" value={fmt(data.photos.creditDeducted)} borderColor="border-l-amber-400" subtitle="1 credit/photo importee" />
+            <KPICard label="Credits rembourses (ancien)" value={fmt(data.photos.creditRefunded)} borderColor="border-l-red-400" subtitle="Historique uniquement" />
           </div>
         </section>
 

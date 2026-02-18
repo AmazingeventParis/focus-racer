@@ -6,7 +6,7 @@
 
 ## 1. Vue d'ensemble
 
-**Version** : 0.9.6
+**Version** : 0.9.8
 **URL** : https://focusracer.swipego.app
 **Type** : Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 
@@ -59,7 +59,7 @@ Focus Racer/
 │   │   ├── s3.ts            # AWS S3 + CloudFront
 │   │   ├── watermark.ts     # Watermarking Sharp
 │   │   ├── sharp-config.ts       # Config Sharp centralisée (concurrency, cache)
-│   │   ├── image-processing.ts  # Auto-edit, qualité
+│   │   ├── image-processing.ts  # Auto-retouch, qualité, smart crop, pHash duplicates
 │   │   ├── processing-queue.ts  # File d'attente bornée (16 workers)
 │   │   ├── auto-cluster.ts      # Clustering debounced 30s
 │   │   ├── ai-config.ts         # Config IA centralisée
@@ -88,7 +88,11 @@ Focus Racer/
 
 **Photo** : path (HD), webPath (1600px optimisée), thumbnailPath (watermark), s3Key, qualityScore, isBlurry, autoEdited, labels (JSON), faceIndexed, ocrProvider, creditDeducted, creditRefunded
 
+**PhotoFace** : photoId, faceId, confidence, boundingBox (JSON), cropPath (smart crop WebP)
+
 **User** : 7 rôles (PHOTOGRAPHER, ORGANIZER, AGENCY, CLUB, FEDERATION, ADMIN, RUNNER), stripeAccountId, stripeOnboarded, credits
+
+**SupportMessage** : userId, subject, message, category (BILLING/SORTING/GDPR/ACCOUNT/TECHNICAL/EVENT/OTHER), status (OPEN/IN_PROGRESS/RESOLVED/CLOSED), adminReply
 
 ---
 
@@ -102,14 +106,15 @@ Focus Racer/
 - Admin dashboard + KPIs + paiements + analytics + litiges + export CSV
 - AWS Rekognition OCR + reconnaissance faciale + label detection + auto-editing + filtrage qualité + S3 + admin IA
 
-### ✅ Phase 7 (6/11 features)
+### ✅ Phase 7 (7/11 features)
 - [x] Apple Pay / Google Pay
 - [x] Notifications email coureurs
 - [x] RGPD complet (formulaire, suppression cascade, audit)
 - [x] Upload Live SSE temps réel
 - [x] Marketplace photographes ↔ organisateurs
 - [x] Connecteurs API (Njuko, KMS, CSV)
-- [ ] Sync Chrono • Détection émotions • Smart Crop • Social Teaser • QR Codes
+- [x] Smart Crop (recadrage individuel par visage détecté)
+- [ ] Sync Chrono • Détection émotions • Social Teaser • QR Codes
 
 ### ✅ Optimisations (Session 3+)
 - Version web optimisée (1600px, JPEG q80, ~200-400KB)
@@ -145,6 +150,24 @@ Focus Racer/
 - **Lien automatique par visage Premium** : orphelines auto-liées si visage reconnu avec dossard existant
 - Source trackée : "face_recognition" (confidence 95%)
 - Bouton manuel "Lier par visage" retiré (100% automatique)
+
+### ✅ Admin complet + Messagerie (Session 15)
+- **Gestion utilisateurs admin** : liste, recherche, filtre par rôle, activation/désactivation, modification crédits manuels
+- **Messagerie support** : API CRUD, page admin avec réponse, page utilisateur avec formulaire catégorisé
+- **Gestion événements admin** : vue globale, stats par événement, actions modération
+- **Paiements détaillés** : page admin avec vue par transaction, export CSV
+- **Pages agence/fédération** : interface dédiée pour gestion équipes et photographes
+- **Statistiques photographe** : KPIs, graphiques, historique crédits, performance par événement
+
+### ✅ Options import + Facturation (Session 16)
+- **Smart Crop** : recadrage individuel par visage (bbox Rekognition → Sharp extract, padding généreux, 800px WebP)
+- **Auto-retouch** : normalize + brightness/saturation boost + sharpen sur version web (Sharp, gratuit)
+- **Suppression doublons** : pHash 8x8 (hamming ≤5), AVANT appels AWS, crédits conservés — option cochée par défaut
+- **Filtre photos floues** : Laplacian variance (seuil 30), AVANT appels AWS, crédits conservés — option cochée par défaut
+- **Mode Lite supprimé** : un seul mode avec IA complète (OCR + faces + watermark + qualité)
+- **Remboursement orphelines supprimé** : photos sans dossard restent facturées
+- **Facturation : 1 crédit/photo** (anciennement 2 en Premium)
+- **PhotoFace.cropPath** : nouveau champ pour stocker le chemin du smart crop
 
 ### ✅ Migration serveur dédié (Session 10)
 - **Migration** : Render.com (512MB) → Serveur dédié OVH via Coolify
@@ -189,33 +212,42 @@ Focus Racer/
 | **12** | 2026-02-17 | Optimisation pipeline serveur dédié : Sharp centralisé + cache 2GB, 12 workers, pipeline parallélisé (Promise.all), BATCH_SIZE=15, body limit 100MB, heap 16GB, UV_THREADPOOL_SIZE=16, connection_limit=40, suppression vestiges Render |
 | **13** | 2026-02-17 | Workers 16, WebP web versions, chunks 25, watermark admin custom (PlatformSettings, API, page admin /admin/settings) |
 | **14** | 2026-02-17 | Performances (buffer direct, pagination, micro-thumbnails, streaming, Brotli, compression parallèle) + Sécurité médias (ProtectedImage, hotlink, rate limiting, anti-theft CSS, security headers, DMCA/legal) |
+| **15** | 2026-02-18 | Admin complet : gestion utilisateurs + crédits manuels, messagerie support (API + admin + user), gestion événements admin, paiements détaillés, pages agence/fédération, statistiques photographe |
+| **16** | 2026-02-18 | Options import : Smart Crop (par visage), Auto-retouch, suppression doublons (pHash), filtre flou (Laplacian). Suppression mode Lite (1 seul mode). Suppression remboursement orphelines. Facturation 1 crédit/photo |
 
-**Fichiers clés créés** : `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`
+**Fichiers clés créés** : `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`
 
 ---
 
 ## 8. Notes techniques essentielles
 
 ### Pipeline IA (état réel vérifié — `batch-upload/route.ts`)
+- **Facturation** : 1 crédit/photo (mode unique, pas de Lite/Premium)
 - **3 versions photo** : HD originale (achat) • web WebP (1600px, q80, galerie) + JPEG buffer (pipeline IA) • thumbnail watermarkée WebP (galerie)
 - **Sharp config** : centralisée dans `src/lib/sharp-config.ts` — concurrency(1) par worker, cache 2 GB activé
+- **Pré-filtrage AVANT appels AWS** (économie de coûts API, crédits NON remboursés) :
+  1. **Suppression doublons** : pHash (8x8 grayscale → hamming distance ≤5) — option cochée par défaut
+  2. **Filtre photos floues** : Laplacian variance (256x256, seuil 30/100) — option cochée par défaut
+  3. Photos supprimées de la DB, crédits déjà déduits conservés
 - **Pipeline par photo** (fonction `processPhotoWithProgress`) :
-  1. **En parallèle (Promise.all)** : `analyzeQuality()` + `generateWatermarkedThumbnail()` + `detectTextFromImage()` (OCR) + `indexFaces()` (premium)
+  1. **En parallèle (Promise.all)** : `analyzeQuality()` + `generateWatermarkedThumbnail()` + `detectTextFromImage()` (OCR) + `indexFaces()`
   2. DB update batch unique (qualityScore, thumbnailPath, ocrProvider, faceIndexed)
-  3. `searchFaceByImage()` — auto-link orphelines si OCR=0 bibs ET premium (seuil 85%, source "face_recognition")
-  4. Remboursement crédit si aucun dossard détecté (ni OCR, ni face)
-- **NON utilisés dans le pipeline** : `autoEditImage()` (existe dans `image-processing.ts` mais jamais appelé), `detectLabels()` (importé dans `rekognition.ts` mais pas dans batch-upload)
-- **2 modes** : Lite (1 crédit/photo, OCR seul) • Premium (2 crédits/photo, OCR + face index + face search)
+  3. **Smart Crop** (option) : recadrage individuel par visage (bbox Rekognition → Sharp extract, padding 80% côtés / 50% haut / 200% bas, 800px max WebP) → `PhotoFace.cropPath`
+  4. **Auto-retouch** (option) : normalize + brightness 1.02 + saturation 1.05 + sharpen σ0.8 → overwrite webPath
+  5. `searchFaceByImage()` — auto-link orphelines si OCR=0 bibs (seuil 85%, source "face_recognition")
+- **Pas de remboursement** : les photos orphelines (sans dossard) restent facturées (coût AWS engagé)
+- **NON utilisés dans le pipeline** : `autoEditImage()` (ancienne fonction, remplacée par `autoRetouchWebVersion`), `detectLabels()` (flag activé mais non branché)
 - **OCR** : AWS Rekognition prod (85-95%, 0.3s) • Tesseract dev-only (retiré du Dockerfile)
 - **Queue** : 16 workers parallèles (AI_MAX_CONCURRENT=16 via env), GC tous les 10 traitements
-- **Upload** : client chunke 25 photos → serveur BATCH_SIZE=15 → enqueue processing queue
+- **Upload** : client chunke 25 photos → serveur BATCH_SIZE=15 → pré-filtre → enqueue processing queue
 - **Watermark** : custom PNG uploadable via admin (`/admin/settings`), cache mémoire, fallback SVG "FOCUS RACER"
 - **Auto-clustering** : debounced 30s après dernier traitement (`scheduleAutoClustering`)
+- **4 options photographe** (avant import) : Suppression doublons (ON), Filtre flou (ON), Retouche auto (OFF), Smart Crop (OFF)
 
 ### Optimisations restantes (non critiques)
 | Sujet | Détails |
 |-------|---------|
-| **autoEdit non branché** | `image-processing.ts:60` — fonction morte, à intégrer ou supprimer |
+| **autoEditImage() morte** | `image-processing.ts:60` — ancienne fonction, remplacée par `autoRetouchWebVersion()` |
 | **detectLabels absent** | `ai-config.ts:38` — flag activé mais non utilisé dans le pipeline |
 | **Build checks off** | `next.config.mjs:5-9` — TS + ESLint désactivés (réactiver si souhaité) |
 
@@ -328,14 +360,15 @@ orga@test.com / orga123
 
 ### ~~Priorité 2 — Nettoyage~~ ✅ (Session 12)
 - [x] Supprimé `render.yaml`, `nginx.conf`, `docker-compose.prod.yml`, `.github/workflows/keep-alive.yml`
-- [ ] Décider : brancher `autoEditImage()` dans le pipeline ou supprimer la fonction
+- [x] `autoEditImage()` remplacée par `autoRetouchWebVersion()` branchée dans le pipeline (option photographe)
 - [ ] Décider : brancher `detectLabels()` dans le pipeline ou retirer le flag `AI_LABEL_DETECTION_ENABLED`
 
 ### Priorité 3 — Fonctionnel
 - [ ] Configurer Stripe webhook sur serveur dédié
 - [ ] Activer Stripe Connect pour split payment réel
-- [ ] Implémenter features Phase 7 restantes (Sync Chrono, Détection émotions, Smart Crop, Social Teaser, QR Codes)
+- [ ] Implémenter features Phase 7 restantes (Sync Chrono, Détection émotions, Social Teaser, QR Codes)
+- [ ] Supprimer `autoEditImage()` morte dans `image-processing.ts`
 
 ---
 
-**Dernière mise à jour** : Session 14, 2026-02-17 (performances + protection médias anti-vol)
+**Dernière mise à jour** : Session 16, 2026-02-18 (options import + facturation 1 crédit/photo)

@@ -209,9 +209,9 @@ export default function EventAnalyticsPage({
               <CreditCard className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{summary.netCreditsUsed}</div>
+              <div className="text-2xl font-bold">{summary.creditsDeducted}</div>
               <p className="text-xs text-muted-foreground mt-1">
-                {summary.creditsDeducted} déduits, {summary.creditsRefunded} remboursés
+                1 crédit/photo importée
               </p>
             </CardContent>
           </Card>

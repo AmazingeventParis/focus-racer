@@ -198,14 +198,7 @@ export default function ProcessingScreen({
         </div>
       )}
 
-      {/* Credits refunded */}
-      {progress.creditsRefunded > 0 && (
-        <div className="text-center mb-6 relative z-10">
-          <p className="text-sm text-emerald-400">
-            {progress.creditsRefunded} crédit{progress.creditsRefunded > 1 ? "s" : ""} remboursé{progress.creditsRefunded > 1 ? "s" : ""} (photos sans dossard)
-          </p>
-        </div>
-      )}
+      {/* Duplicates/blurry removed info */}
 
       {/* Complete actions */}
       {progress.complete && (

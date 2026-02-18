@@ -203,10 +203,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const eventId = formData.get("eventId") as string | null;
     const sessionIdParam = formData.get("sessionId") as string | null;
-    const processingModeParam = formData.get("processingMode") as string | null;
-    const processingMode = (processingModeParam === "lite" || processingModeParam === "premium")
-      ? processingModeParam
-      : "lite"; // Default to lite
+    const processingMode = "premium" as const; // Single mode: full AI processing
     const autoRetouch = formData.get("autoRetouch") === "true";
     const smartCrop = formData.get("smartCrop") === "true";
     const removeDuplicates = formData.get("removeDuplicates") === "true";
@@ -240,9 +237,9 @@ export async function POST(request: NextRequest) {
 
     // Check and deduct credits atomically
     const nbPhotos = files.length;
-    const creditsPerPhoto = processingMode === "premium" ? 2 : 1; // Lite: 1 credit, Premium: 2 credits
+    const creditsPerPhoto = 1;
     const totalCredits = nbPhotos * creditsPerPhoto;
-    const planLabel = processingMode === "premium" ? "Premium" : "Lite";
+    const planLabel = "Standard";
     let creditsRemaining = 0;
 
     if (totalCredits > 0) {

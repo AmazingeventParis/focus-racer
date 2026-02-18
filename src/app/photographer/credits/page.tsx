@@ -127,7 +127,7 @@ export default function CreditsPage() {
             <CardHeader>
               <CardTitle className="text-lg font-display text-gray-900">Packs crédits</CardTitle>
               <CardDescription className="text-gray-500">
-                1 crédit = 1 photo importée. Crédits remboursés si aucun dossard détecté.
+                1 crédit = 1 photo importée (OCR + reconnaissance faciale + watermark inclus).
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -367,8 +367,8 @@ export default function CreditsPage() {
                 <p>L&apos;IA analyse automatiquement vos photos</p>
               </div>
               <div className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">↩</span>
-                <p>Crédits remboursés si aucun dossard détecté</p>
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">4</span>
+                <p>Vos coureurs trouvent et achètent leurs photos</p>
               </div>
             </CardContent>
           </Card>

@@ -560,7 +560,7 @@ export default function UploadPage({
 
   // Phase: Confirm
   if (phase === "confirm") {
-    const creditsPerPhoto = 2; // Always Premium
+    const creditsPerPhoto = 1;
     const totalCreditsNeeded = selectedFiles.length * creditsPerPhoto;
     const hasEnoughCredits = credits >= totalCreditsNeeded;
 
@@ -586,7 +586,7 @@ export default function UploadPage({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Plan summary (always Premium) */}
+            {/* Plan summary */}
             <div className="p-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center shrink-0">
@@ -598,7 +598,7 @@ export default function UploadPage({
                   <p className="text-sm font-bold text-gray-900">Traitement IA complet</p>
                   <p className="text-xs text-gray-500">OCR dossards + reconnaissance faciale + watermark + analyse qualité</p>
                 </div>
-                <Badge className="bg-amber-100 text-amber-700 border-0 text-xs ml-auto shrink-0">2 crédits/photo</Badge>
+                <Badge className="bg-amber-100 text-amber-700 border-0 text-xs ml-auto shrink-0">1 crédit/photo</Badge>
               </div>
             </div>
 
@@ -906,7 +906,7 @@ export default function UploadPage({
 
             <div className="flex justify-between items-center pt-4 border-t border-gray-100">
               <p className="text-sm text-gray-500">
-                {selectedFiles.length} photo{selectedFiles.length > 1 ? "s" : ""} = {selectedFiles.length * 2} crédits
+                {selectedFiles.length} photo{selectedFiles.length > 1 ? "s" : ""} = {selectedFiles.length} crédit{selectedFiles.length > 1 ? "s" : ""}
               </p>
               <Button
                 onClick={goToConfirm}
