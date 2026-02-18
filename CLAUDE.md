@@ -6,7 +6,7 @@
 
 ## 1. Vue d'ensemble
 
-**Version** : 0.9.8
+**Version** : 0.9.10
 **URL** : https://focusracer.swipego.app
 **Type** : Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 
@@ -28,7 +28,7 @@
 
 **IA** : AWS Rekognition (OCR, faces, labels) • Tesseract.js (fallback dev) • Sharp (auto-editing, watermark)
 
-**Storage** : AWS S3 (`focusracer-1771162064453`) • CloudFront CDN (optionnel) • Stockage local persistant (volume Docker)
+**Storage** : AWS S3 (`focusracer-1771162064453`) — stockage exclusif (pas de disque local) • CloudFront CDN (optionnel)
 
 **Déploiement** : Serveur dédié OVH (`217.182.89.133`) • Coolify (PaaS) • Docker multi-stage • Caddy reverse proxy (auto-SSL) • PostgreSQL Docker
 
@@ -55,8 +55,8 @@ Focus Racer/
 │   │   ├── auth.ts          # NextAuth multi-rôles
 │   │   ├── ocr.ts           # AWS Rekognition + Tesseract fallback
 │   │   ├── rekognition.ts   # AWS Rekognition API
-│   │   ├── storage.ts       # Upload local + version web WebP (JPEG buffer pour IA)
-│   │   ├── s3.ts            # AWS S3 + CloudFront
+│   │   ├── storage.ts       # Upload S3 + version web WebP (JPEG buffer pour IA)
+│   │   ├── s3.ts            # AWS S3 + helpers (s3KeyToPublicPath, publicPathToS3Key)
 │   │   ├── watermark.ts     # Watermarking Sharp
 │   │   ├── sharp-config.ts       # Config Sharp centralisée (concurrency, cache)
 │   │   ├── image-processing.ts  # Auto-retouch, qualité, smart crop, pHash duplicates
@@ -92,7 +92,9 @@ Focus Racer/
 
 **User** : 7 rôles (PHOTOGRAPHER, ORGANIZER, AGENCY, CLUB, FEDERATION, ADMIN, RUNNER), stripeAccountId, stripeOnboarded, credits
 
-**SupportMessage** : userId, subject, message, category (BILLING/SORTING/GDPR/ACCOUNT/TECHNICAL/EVENT/OTHER), status (OPEN/IN_PROGRESS/RESOLVED/CLOSED), adminReply
+**Order** : serviceFee, stripeFee, photographerPayout, stripeTransferId (champs Stripe Connect)
+
+**SupportMessage** : userId, subject, message, category (BILLING/SORTING/GDPR/ACCOUNT/TECHNICAL/EVENT/OTHER), status (OPEN/IN_PROGRESS/RESOLVED/CLOSED), adminReply, readByUser
 
 ---
 
@@ -169,6 +171,36 @@ Focus Racer/
 - **Facturation : 1 crédit/photo** (anciennement 2 en Premium)
 - **PhotoFace.cropPath** : nouveau champ pour stocker le chemin du smart crop
 
+### ✅ Migration S3-only (Session 17)
+- **Stockage 100% S3** : plus aucune écriture disque local, DB fields `path`/`webPath`/`thumbnailPath` stockent des clés S3
+- **Helpers S3** : `s3KeyToPublicPath()` (S3 key → URL `/uploads/...`), `publicPathToS3Key()` (reverse)
+- **Proxy upload** : `/api/uploads/[...path]` fetch depuis S3 au lieu du disque local
+- **Backward compat** : `getPhotoS3Key()` gère clés S3 et legacy `/uploads/...` paths
+- **storage.ts** : `saveFile()` upload HD + web vers S3, retourne clés S3
+- **watermark.ts** : upload thumb + micro vers S3, lecture watermark custom depuis S3
+- **image-processing.ts** : `autoRetouchWebVersion()` lit/écrit S3, `smartCropFace()` upload S3, `autoEditImage()` supprimé
+- **Docker** : volume upload supprimé, `UPLOAD_DIR` env var supprimé
+
+### ✅ Stripe Connect Express + Frais de service (Session 17-18)
+- **Stripe Connect Express** : photographe connecte son Stripe en ~3 min, reçoit paiements directement
+- **1€ frais de service** : ajouté au total coureur, encaissé par plateforme via `application_fee_amount`
+- **Flux** : Pack 15€ → coureur paie 16€ → plateforme 1€ → photographe ~14.46€ (15€ − frais Stripe)
+- **API Connect** : onboarding (`/api/stripe/connect`), status (`/api/stripe/connect/status`), dashboard (`/api/stripe/connect/dashboard`)
+- **Checkout modifié** : si photographe connecté → `transfer_data` + `application_fee_amount: 100` (1€)
+- **Webhook enrichi** : `account.updated` + tracking fees sur `payment_intent.succeeded`
+- **Page photographe** : `/photographer/payments` — section Connect (onboarding/dashboard) + statistiques revenus
+- **Admin enrichi** : KPIs revenus plateforme, reversé photographes, colonnes commandes enrichies
+
+### ✅ Admin utilisateurs CRUD + Messagerie améliorée (Session 18)
+- **Création utilisateurs** : modal création (nom, email, MDP, rôle) avec hash bcrypt
+- **Suppression utilisateurs** : hard delete avec cascade complète de toutes les relations (séquentiel, pas de transaction)
+- **Édition profil** : inline edit sur page détail (nom, email, téléphone, société)
+- **Toggle actif/inactif** : bouton rapide dans la liste
+- **Pastille messages non lus** : badge rouge admin (OPEN) + badge rouge user (messages avec réponse non lue)
+- **Tracking lecture** : champ `readByUser` sur SupportMessage, marqué `false` quand admin répond, `true` quand user visite la page
+- **Workflow simplifié** : message reçu = OPEN → admin répond = IN_PROGRESS → bouton "Clôturer" = CLOSED
+- **Filtre par défaut** : admin voit uniquement les messages actifs (OPEN + IN_PROGRESS), fermés masqués
+
 ### ✅ Migration serveur dédié (Session 10)
 - **Migration** : Render.com (512MB) → Serveur dédié OVH via Coolify
 - **Serveur** : AMD EPYC 4344P, 64 GB RAM, 2x NVMe 960 GB
@@ -186,8 +218,7 @@ Focus Racer/
 
 **Database** : `DATABASE_URL`, `DB_PASSWORD`
 **NextAuth** : `NEXTAUTH_SECRET`, `NEXTAUTH_URL` (https://focusracer.swipego.app)
-**Upload** : `UPLOAD_DIR` (./public/uploads)
-**Stripe** : `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `PLATFORM_FEE_PERCENT`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+**Stripe** : `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
 **Email** : `RESEND_API_KEY`, `EMAIL_FROM`
 **AWS** : `AWS_REGION` (eu-west-1), `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REKOGNITION_COLLECTION_ID`, `AWS_S3_BUCKET` (focusracer-1771162064453), `AWS_CLOUDFRONT_URL`
 **IA** : `AI_OCR_CONFIDENCE_THRESHOLD` (70), `AI_QUALITY_THRESHOLD` (30), `AI_AUTO_EDIT_ENABLED`, `AI_FACE_INDEX_ENABLED`, `AI_LABEL_DETECTION_ENABLED`, `AI_MAX_CONCURRENT` (16)
@@ -214,8 +245,10 @@ Focus Racer/
 | **14** | 2026-02-17 | Performances (buffer direct, pagination, micro-thumbnails, streaming, Brotli, compression parallèle) + Sécurité médias (ProtectedImage, hotlink, rate limiting, anti-theft CSS, security headers, DMCA/legal) |
 | **15** | 2026-02-18 | Admin complet : gestion utilisateurs + crédits manuels, messagerie support (API + admin + user), gestion événements admin, paiements détaillés, pages agence/fédération, statistiques photographe |
 | **16** | 2026-02-18 | Options import : Smart Crop (par visage), Auto-retouch, suppression doublons (pHash), filtre flou (Laplacian). Suppression mode Lite (1 seul mode). Suppression remboursement orphelines. Facturation 1 crédit/photo |
+| **17** | 2026-02-18 | Migration S3-only (plus de disque local), Stripe Connect Express + 1€ frais service, page photographe paiements, admin paiements enrichi, checkout avec frais service |
+| **18** | 2026-02-18 | Admin CRUD utilisateurs (créer/supprimer/éditer/toggle), pastilles messages non lus (admin + user), workflow messagerie simplifié (OPEN→IN_PROGRESS→CLOSED), filtre actifs par défaut |
 
-**Fichiers clés créés** : `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`
+**Fichiers clés créés** : `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/photographer/payments/page.tsx`, `src/app/api/admin/payments-stats/route.ts`
 
 ---
 
@@ -236,7 +269,7 @@ Focus Racer/
   4. **Auto-retouch** (option) : normalize + brightness 1.02 + saturation 1.05 + sharpen σ0.8 → overwrite webPath
   5. `searchFaceByImage()` — auto-link orphelines si OCR=0 bibs (seuil 85%, source "face_recognition")
 - **Pas de remboursement** : les photos orphelines (sans dossard) restent facturées (coût AWS engagé)
-- **NON utilisés dans le pipeline** : `autoEditImage()` (ancienne fonction, remplacée par `autoRetouchWebVersion`), `detectLabels()` (flag activé mais non branché)
+- **NON utilisé dans le pipeline** : `detectLabels()` (flag activé mais non branché)
 - **OCR** : AWS Rekognition prod (85-95%, 0.3s) • Tesseract dev-only (retiré du Dockerfile)
 - **Queue** : 16 workers parallèles (AI_MAX_CONCURRENT=16 via env), GC tous les 10 traitements
 - **Upload** : client chunke 25 photos → serveur BATCH_SIZE=15 → pré-filtre → enqueue processing queue
@@ -247,7 +280,6 @@ Focus Racer/
 ### Optimisations restantes (non critiques)
 | Sujet | Détails |
 |-------|---------|
-| **autoEditImage() morte** | `image-processing.ts:60` — ancienne fonction, remplacée par `autoRetouchWebVersion()` |
 | **detectLabels absent** | `ai-config.ts:38` — flag activé mais non utilisé dans le pipeline |
 | **Build checks off** | `next.config.mjs:5-9` — TS + ESLint désactivés (réactiver si souhaité) |
 
@@ -257,17 +289,24 @@ Focus Racer/
 - **Après** : ~0,003€/photo OCR + ~0,50€/mois pour 10 000 photos stockées
 - **IAM user** : `focusracer-rekognition` avec Rekognition + S3 FullAccess
 
-### Stockage
-- **Serveur dédié** : stockage local persistant via volume Docker (`focusracer-uploads:/app/public/uploads`)
-- **S3** : bucket `focusracer-1771162064453` (eu-west-1), structure `events/{eventId}/originals|thumbs|branding/`
-- **URLs** : signées 24h pour téléchargements sécurisés
+### Stockage (S3-only depuis Session 17)
+- **S3 exclusif** : bucket `focusracer-1771162064453` (eu-west-1), plus aucun stockage disque local
+- **Structure S3** : `events/{eventId}/{originals|web|thumbs|crops|branding}/`, `platform/watermark.png`
+- **DB fields** : `path`, `webPath`, `thumbnailPath` stockent des clés S3 (pas des chemins fichiers)
+- **Helpers** : `s3KeyToPublicPath()` (clé S3 → URL `/uploads/...`), `publicPathToS3Key()` (reverse)
+- **Proxy** : `/api/uploads/[...path]` fetch depuis S3 (backward compat URLs)
+- **URLs signées** : 24h pour téléchargements sécurisés
 - **CDN** : CloudFront optionnel (non configuré actuellement)
 
-### Stripe
+### Stripe (Connect Express depuis Session 17)
 - Payment Element embarqué (Apple Pay, Google Pay, Link, SEPA, CB)
-- Commission plateforme calculée (10% défaut) mais Connect non activé
+- **Stripe Connect Express** : photographe connecte son Stripe, reçoit paiements directement
+- **1€ frais de service** : `application_fee_amount: 100` (centimes), encaissé par plateforme
+- **Flux** : prix photos + 1€ → `transfer_data.destination` = photographe, `application_fee_amount` = 1€
+- **Fallback** : si photographe non connecté, paiement classique (tout va à la plateforme, pas de frais service)
+- **Constantes** : `SERVICE_FEE_CENTS = 100`, `SERVICE_FEE_DISPLAY = "1,00 €"` (dans `src/lib/stripe.ts`)
 - Checkout guest avec guestEmail/guestName
-- Webhooks : payment_intent.succeeded
+- Webhooks : payment_intent.succeeded, account.updated (Connect)
 
 ### Performance (optimisé Session 14)
 - **Queue** : 16 workers parallèles (AI_MAX_CONCURRENT=16), Sharp concurrency(1)/worker + cache 2 GB
@@ -309,7 +348,7 @@ Focus Racer/
 - **Coolify** : PaaS sur `217.182.89.133`, app UUID `ms440oowockwkso0k0c8okgc`
 - **Docker** : `docker-compose.production.yml` (PostgreSQL + App + Caddy)
 - **SSL** : automatique via Caddy + Let's Encrypt
-- **Volume uploads** : `focusracer-uploads:/app/public/uploads`
+- **Stockage** : S3 uniquement (pas de volume upload Docker)
 - **Domaine** : `focusracer.swipego.app` (wildcard `*.swipego.app` → 217.182.89.133)
 
 ### UX Upload
@@ -364,11 +403,11 @@ orga@test.com / orga123
 - [ ] Décider : brancher `detectLabels()` dans le pipeline ou retirer le flag `AI_LABEL_DETECTION_ENABLED`
 
 ### Priorité 3 — Fonctionnel
-- [ ] Configurer Stripe webhook sur serveur dédié
-- [ ] Activer Stripe Connect pour split payment réel
+- [x] Activer Stripe Connect Express pour split payment réel (Session 17)
+- [x] Supprimer `autoEditImage()` morte dans `image-processing.ts` (Session 17)
+- [ ] Configurer Stripe webhook sur serveur dédié (env `STRIPE_WEBHOOK_SECRET`)
 - [ ] Implémenter features Phase 7 restantes (Sync Chrono, Détection émotions, Social Teaser, QR Codes)
-- [ ] Supprimer `autoEditImage()` morte dans `image-processing.ts`
 
 ---
 
-**Dernière mise à jour** : Session 16, 2026-02-18 (options import + facturation 1 crédit/photo)
+**Dernière mise à jour** : Session 18, 2026-02-18 (S3-only, Stripe Connect Express, admin CRUD users, messagerie améliorée)

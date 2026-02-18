@@ -37,6 +37,13 @@ interface MessageUser {
   role: string;
 }
 
+interface Reply {
+  role: "user" | "admin";
+  content: string;
+  date: string;
+  author?: string;
+}
+
 interface MessageRow {
   id: string;
   userId: string;
@@ -49,6 +56,7 @@ interface MessageRow {
   adminReply: string | null;
   repliedBy: string | null;
   repliedAt: string | null;
+  replies: Reply[];
   createdAt: string;
   updatedAt: string;
   user: MessageUser;
@@ -288,9 +296,8 @@ export default function AdminMessagesPage() {
       setExpandedId(null);
       setReplyText("");
     } else {
-      const msg = messages.find((m) => m.id === id);
       setExpandedId(id);
-      setReplyText(msg?.adminReply ?? "");
+      setReplyText("");
     }
   };
 
@@ -522,70 +529,113 @@ export default function AdminMessagesPage() {
                 </div>
 
                 {/* Expanded detail */}
-                {isExpanded && (
+                {isExpanded && (() => {
+                  const replies: Reply[] = Array.isArray(msg.replies) ? msg.replies : [];
+                  return (
                   <CardContent className="pt-0 border-t border-gray-100">
-                    {/* Full message */}
-                    <div className="mt-4 mb-6">
+                    {/* Conversation thread */}
+                    <div className="mt-4 mb-6 space-y-3">
                       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-                        Message complet
+                        Conversation
                       </p>
-                      <div className="bg-white/60 rounded-xl p-4 text-sm text-navy leading-relaxed whitespace-pre-wrap">
-                        {msg.message}
+
+                      {/* Initial user message */}
+                      <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 rounded-full bg-blue-200 flex items-center justify-center">
+                            <svg className="w-3.5 h-3.5 text-blue-700" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                            </svg>
+                          </div>
+                          <span className="text-sm font-medium text-blue-700">{msg.user.name || msg.user.email}</span>
+                          <span className="text-xs text-blue-500">{formatDate(msg.createdAt)}</span>
+                        </div>
+                        <p className="text-sm text-blue-800 leading-relaxed whitespace-pre-wrap ml-8">{msg.message}</p>
                       </div>
-                      <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                        <span>Envoyé le {formatDate(msg.createdAt)}</span>
-                        {msg.eventId && (
-                          <span>Événement : {msg.eventId}</span>
-                        )}
-                        {msg.orderId && (
-                          <span>Commande : {msg.orderId}</span>
-                        )}
-                      </div>
+
+                      {/* Legacy admin reply (if no replies array entries) */}
+                      {msg.adminReply && replies.length === 0 && msg.repliedAt && (
+                        <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-6 h-6 rounded-full bg-emerald-200 flex items-center justify-center">
+                              <svg className="w-3.5 h-3.5 text-emerald-700" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                            </div>
+                            <span className="text-sm font-medium text-emerald-700">Admin{msg.repliedBy && ` (${msg.repliedBy})`}</span>
+                            <span className="text-xs text-emerald-500">{formatDate(msg.repliedAt)}</span>
+                          </div>
+                          <p className="text-sm text-emerald-800 leading-relaxed whitespace-pre-wrap ml-8">{msg.adminReply}</p>
+                        </div>
+                      )}
+
+                      {/* Replies thread */}
+                      {replies.map((reply, i) => (
+                        <div
+                          key={i}
+                          className={`rounded-xl p-4 border ${
+                            reply.role === "admin"
+                              ? "bg-emerald-50 border-emerald-100"
+                              : "bg-blue-50 border-blue-100"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                              reply.role === "admin" ? "bg-emerald-200" : "bg-blue-200"
+                            }`}>
+                              <svg className={`w-3.5 h-3.5 ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                {reply.role === "admin" ? (
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                ) : (
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                )}
+                              </svg>
+                            </div>
+                            <span className={`text-sm font-medium ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`}>
+                              {reply.role === "admin" ? `Admin${reply.author ? ` (${reply.author})` : ""}` : (reply.author || msg.user.name || "Utilisateur")}
+                            </span>
+                            <span className={`text-xs ${reply.role === "admin" ? "text-emerald-500" : "text-blue-500"}`}>
+                              {formatDate(reply.date)}
+                            </span>
+                          </div>
+                          <p className={`text-sm leading-relaxed whitespace-pre-wrap ml-8 ${reply.role === "admin" ? "text-emerald-800" : "text-blue-800"}`}>
+                            {reply.content}
+                          </p>
+                        </div>
+                      ))}
+
+                      {msg.eventId && (
+                        <p className="text-xs text-muted-foreground">Événement : {msg.eventId}</p>
+                      )}
                     </div>
 
-                    {/* Previous admin reply */}
-                    {msg.adminReply && msg.repliedAt && (
-                      <div className="mb-6">
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-                          Réponse précédente
-                        </p>
-                        <div className="bg-emerald-50 rounded-xl p-4 text-sm text-navy leading-relaxed whitespace-pre-wrap border border-emerald-100">
-                          {msg.adminReply}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Répondu le {formatDate(msg.repliedAt)}
-                          {msg.repliedBy && ` par ${msg.repliedBy}`}
-                        </p>
-                      </div>
-                    )}
-
                     {/* Reply form */}
-                    <div className="bg-white/40 rounded-xl p-4 border border-gray-100">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
-                        {msg.adminReply ? "Modifier la réponse" : "Répondre"}
-                      </p>
+                    {msg.status !== "CLOSED" ? (
+                      <div className="bg-white/40 rounded-xl p-4 border border-gray-100">
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
+                          Répondre
+                        </p>
 
-                      <textarea
-                        value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
-                        placeholder="Saisissez votre réponse..."
-                        rows={4}
-                        className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-y min-h-[100px]"
-                      />
+                        <textarea
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          placeholder="Saisissez votre réponse..."
+                          rows={4}
+                          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-y min-h-[100px]"
+                        />
 
-                      <div className="flex items-center gap-2 mt-3 justify-end">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setExpandedId(null);
-                            setReplyText("");
-                          }}
-                          disabled={isSubmitting}
-                        >
-                          Annuler
-                        </Button>
-                        {msg.status !== "CLOSED" && (
+                        <div className="flex items-center gap-2 mt-3 justify-end">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setExpandedId(null);
+                              setReplyText("");
+                            }}
+                            disabled={isSubmitting}
+                          >
+                            Annuler
+                          </Button>
                           <Button
                             variant="outline"
                             size="sm"
@@ -595,19 +645,24 @@ export default function AdminMessagesPage() {
                           >
                             {closingId === msg.id ? "..." : "Clôturer"}
                           </Button>
-                        )}
-                        <Button
-                          size="sm"
-                          className="bg-emerald hover:bg-emerald-dark text-white"
-                          onClick={() => handleReply(msg.id)}
-                          disabled={isSubmitting}
-                        >
-                          {isSubmitting ? "Envoi..." : "Répondre"}
-                        </Button>
+                          <Button
+                            size="sm"
+                            className="bg-emerald hover:bg-emerald-dark text-white"
+                            onClick={() => handleReply(msg.id)}
+                            disabled={isSubmitting || !replyText.trim()}
+                          >
+                            {isSubmitting ? "Envoi..." : "Répondre"}
+                          </Button>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="bg-gray-50 rounded-xl p-3 text-center border border-gray-200">
+                        <p className="text-sm text-gray-500">Conversation clôturée</p>
+                      </div>
+                    )}
                   </CardContent>
-                )}
+                  );
+                })()}
               </Card>
             );
           })}

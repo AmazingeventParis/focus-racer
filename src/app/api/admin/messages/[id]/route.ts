@@ -41,6 +41,19 @@ export async function PATCH(
   const data: any = {};
   if (status) data.status = status;
   if (adminReply) {
+    // Fetch current message to get existing replies
+    const current = await prisma.supportMessage.findUnique({
+      where: { id: params.id },
+    });
+    const currentReplies = (current?.replies as any[]) || [];
+    const newReply = {
+      role: "admin",
+      content: adminReply,
+      date: new Date().toISOString(),
+      author: session.user.name || session.user.email,
+    };
+
+    data.replies = [...currentReplies, newReply];
     data.adminReply = adminReply;
     data.repliedBy = session.user.name || session.user.email;
     data.repliedAt = new Date();

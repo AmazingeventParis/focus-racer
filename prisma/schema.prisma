@@ -407,6 +407,7 @@ model SupportMessage {
   repliedBy  String?
   repliedAt  DateTime?
   readByUser Boolean         @default(true)
+  replies    Json            @default("[]")
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
 
