@@ -1,0 +1,1 @@
+ALTER TABLE "SupportMessage" ADD COLUMN "readByUser" BOOLEAN NOT NULL DEFAULT true;

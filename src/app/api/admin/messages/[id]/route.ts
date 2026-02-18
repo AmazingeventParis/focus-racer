@@ -44,6 +44,7 @@ export async function PATCH(
     data.adminReply = adminReply;
     data.repliedBy = session.user.name || session.user.email;
     data.repliedAt = new Date();
+    data.readByUser = false;
     if (!status) data.status = "RESOLVED";
   }
 

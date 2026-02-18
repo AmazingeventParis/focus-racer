@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { getRoleLabel } from "@/lib/role-helpers";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface NavItem {
   href: string;
@@ -122,6 +122,25 @@ const allNavItems: NavItem[] = [
 export default function ClientSidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUnread = async () => {
+      try {
+        const res = await fetch("/api/support/unread-count");
+        if (res.ok) {
+          const data = await res.json();
+          setUnreadCount(data.count);
+        }
+      } catch {
+        // silently ignore
+      }
+    };
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const userName = session?.user?.name || "Utilisateur";
   const userRole = session?.user?.role || "PHOTOGRAPHER";
@@ -178,6 +197,11 @@ export default function ClientSidebar() {
                     {item.icon}
                   </span>
                   {item.label}
+                  {item.href === "/photographer/support" && unreadCount > 0 && (
+                    <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-xs font-bold">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
               </li>
             );

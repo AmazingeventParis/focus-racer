@@ -108,6 +108,8 @@ export default function PhotographerSupportPage() {
   useEffect(() => {
     if (session) {
       fetchMessages(page);
+      // Mark all messages as read when user visits support page
+      fetch("/api/support/mark-read", { method: "POST" }).catch(() => {});
     }
   }, [session, page, fetchMessages]);
 
