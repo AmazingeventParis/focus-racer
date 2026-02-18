@@ -1,5 +1,6 @@
-﻿"use client";
+"use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -64,6 +65,7 @@ const navItems = [
   {
     href: "/focus-mgr-7k9x/messages",
     label: "Messagerie",
+    badge: true,
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
@@ -84,6 +86,25 @@ const navItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUnread = async () => {
+      try {
+        const res = await fetch("/api/admin/messages/unread-count");
+        if (res.ok) {
+          const data = await res.json();
+          setUnreadCount(data.count);
+        }
+      } catch {
+        // silently ignore
+      }
+    };
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <aside className="w-64 gradient-navy text-white min-h-screen flex flex-col">
@@ -118,6 +139,11 @@ export default function AdminSidebar() {
                     {item.icon}
                   </span>
                   {item.label}
+                  {"badge" in item && item.badge && unreadCount > 0 && (
+                    <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-xs font-bold">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
               </li>
             );
