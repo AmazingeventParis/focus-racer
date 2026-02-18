@@ -586,6 +586,52 @@ export default function UploadPage({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Actions + balance (top) */}
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={goBackToSelect}
+                className="border-gray-200 text-gray-700 rounded-xl"
+              >
+                Retour
+              </Button>
+              <Button
+                onClick={startUpload}
+                disabled={!hasEnoughCredits || isUploading}
+                className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-500/20 disabled:opacity-50"
+              >
+                {isUploading ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Upload en cours...
+                  </span>
+                ) : (
+                  `Valider l'import (${selectedFiles.length} photo${selectedFiles.length > 1 ? "s" : ""} · ${totalCreditsNeeded} crédit${totalCreditsNeeded > 1 ? "s" : ""})`
+                )}
+              </Button>
+              <div className="text-right shrink-0">
+                <p className="text-sm font-bold text-gray-900">{credits.toLocaleString("fr-FR")}</p>
+                <p className="text-[11px] text-gray-500">crédits{isTestMode ? " (test)" : ""}</p>
+              </div>
+            </div>
+
+            {/* Insufficient credits warning */}
+            {!hasEnoughCredits && (
+              <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-sm text-red-700">
+                <p className="font-medium mb-1">Crédits insuffisants</p>
+                <p>Il vous manque {totalCreditsNeeded - credits} crédits.</p>
+                <Link
+                  href="/photographer/credits"
+                  className="inline-block mt-2 text-red-800 underline font-medium"
+                >
+                  Recharger vos crédits
+                </Link>
+              </div>
+            )}
+
             {/* Plan summary */}
             <div className="p-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200">
               <div className="flex items-center gap-3">
@@ -701,77 +747,6 @@ export default function UploadPage({
                   </div>
                 </label>
               </div>
-            </div>
-
-            {/* Summary */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-gray-50 text-center">
-                <p className="text-3xl font-bold text-gray-900">{selectedFiles.length}</p>
-                <p className="text-sm text-gray-500 mt-1">photo{selectedFiles.length > 1 ? "s" : ""}</p>
-              </div>
-              <div className="p-4 rounded-xl bg-gray-50 text-center">
-                <p className="text-3xl font-bold text-emerald-500">{totalCreditsNeeded}</p>
-                <p className="text-sm text-gray-500 mt-1">crédits nécessaires</p>
-              </div>
-            </div>
-
-            {/* Balance */}
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-700">Votre solde</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-gray-900">
-                    {credits.toLocaleString("fr-FR")} crédits
-                  </span>
-                  {isTestMode && (
-                    <Badge className="bg-emerald-100 text-emerald-700 border-0 text-xs">
-                      Mode test
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Insufficient credits warning */}
-            {!hasEnoughCredits && (
-              <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-sm text-red-700">
-                <p className="font-medium mb-1">Crédits insuffisants</p>
-                <p>Il vous manque {totalCreditsNeeded - credits} crédits.</p>
-                <Link
-                  href="/photographer/credits"
-                  className="inline-block mt-2 text-red-800 underline font-medium"
-                >
-                  Recharger vos crédits
-                </Link>
-              </div>
-            )}
-
-            {/* Actions */}
-            <div className="flex gap-3 pt-2">
-              <Button
-                variant="outline"
-                onClick={goBackToSelect}
-                className="flex-1 border-gray-200 text-gray-700 rounded-xl"
-              >
-                Retour
-              </Button>
-              <Button
-                onClick={startUpload}
-                disabled={!hasEnoughCredits || isUploading}
-                className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-500/20 disabled:opacity-50"
-              >
-                {isUploading ? (
-                  <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Upload en cours...
-                  </span>
-                ) : (
-                  `Valider l'import (${totalCreditsNeeded} crédits)`
-                )}
-              </Button>
             </div>
           </CardContent>
         </Card>
