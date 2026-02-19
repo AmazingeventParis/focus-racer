@@ -61,7 +61,7 @@ function SkeletonListingCard() {
   );
 }
 
-export default function PhotographerMarketplacePage() {
+export default function OrganizerMarketplacePage() {
   const { toast } = useToast();
   const [listings, setListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -238,7 +238,7 @@ export default function PhotographerMarketplacePage() {
                           <Label className="text-gray-700">Message de candidature</Label>
                           <textarea
                             className="flex min-h-[100px] w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald transition-all"
-                            placeholder="Présentez-vous et expliquez pourquoi vous êtes le bon photographe pour cette mission..."
+                            placeholder="Présentez-vous et expliquez pourquoi vous êtes le bon organisateur pour cette mission..."
                             value={applyMessage}
                             onChange={(e) => setApplyMessage(e.target.value)}
                           />

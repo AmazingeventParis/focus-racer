@@ -208,7 +208,7 @@ export default function CreditsPage() {
             <CardHeader>
               <CardTitle className="text-lg font-display text-gray-900">Abonnements annuels</CardTitle>
               <CardDescription className="text-gray-500">
-                Crédits rechargés automatiquement chaque mois. Ideal pour les photographes réguliers.
+                Crédits rechargés automatiquement chaque mois. Ideal pour les organisateurs réguliers.
               </CardDescription>
             </CardHeader>
             <CardContent>

@@ -71,7 +71,7 @@ const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   CLOSED: { label: "Fermé", className: "bg-gray-100 text-gray-600 border-gray-200" },
 };
 
-export default function PhotographerSupportPage() {
+export default function OrganizerSupportPage() {
   const { data: session } = useSession();
   const { toast } = useToast();
 

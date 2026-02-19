@@ -86,7 +86,7 @@ export default function DashboardPage() {
           Bonjour {session?.user?.name?.split(" ")[0]} !
         </h1>
         <p className="text-gray-500 mt-1">
-          Bienvenue sur Focus Racer - Votre espace photographe
+          Bienvenue sur Focus Racer - Votre espace organisateur
         </p>
       </div>
 

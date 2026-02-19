@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function PhotographerLoginPage() {
+export default function OrganizerLoginPage() {
   redirect("/login");
 }

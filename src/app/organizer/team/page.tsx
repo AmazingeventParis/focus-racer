@@ -144,7 +144,7 @@ export default function TeamPage() {
       if (res.ok) {
         setInviteResult(data);
         toast({
-          title: "Photographe trouvé",
+          title: "Organisateur trouvé",
           description: data.message,
         });
         setInviteEmail("");
@@ -173,8 +173,8 @@ export default function TeamPage() {
       setTeam((prev) => prev.filter((m) => m.id !== id));
       setRemovingId(null);
       toast({
-        title: "Photographe retiré",
-        description: "Le photographe a été retiré de votre équipe.",
+        title: "Organisateur retiré",
+        description: "L'organisateur a été retiré de votre équipe.",
       });
     } else {
       setRemovingId(id);
@@ -198,7 +198,7 @@ export default function TeamPage() {
             Mon équipe
           </h1>
           <p className="text-gray-500 mt-1">
-            Gérez les photographes de votre agence
+            Gérez les organisateurs de votre équipe
           </p>
         </div>
         <Card className="glass-card rounded-2xl border-0 shadow-card">
@@ -223,7 +223,7 @@ export default function TeamPage() {
             </p>
             <p className="text-sm text-gray-500">
               Cette page est réservée aux comptes de type Agence pour la gestion
-              de leur équipe de photographes.
+              de leur équipe d'organisateurs.
             </p>
           </CardContent>
         </Card>
@@ -240,7 +240,7 @@ export default function TeamPage() {
             Mon équipe
           </h1>
           <p className="text-gray-500 mt-1">
-            Gérez les photographes de votre agence
+            Gérez les organisateurs de votre équipe
           </p>
         </div>
         <Button
@@ -286,7 +286,7 @@ export default function TeamPage() {
                   d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z"
                 />
               </svg>
-              Rechercher un photographe
+              Rechercher un organisateur
             </>
           )}
         </Button>
@@ -314,7 +314,7 @@ export default function TeamPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900">{team.length}</p>
-                <p className="text-sm text-gray-500">Photographe{team.length !== 1 ? "s" : ""}</p>
+                <p className="text-sm text-gray-500">Organisateur{team.length !== 1 ? "s" : ""}</p>
               </div>
             </div>
           </CardContent>
@@ -380,14 +380,14 @@ export default function TeamPage() {
         <Card className="glass-card rounded-2xl mb-8 border-0 shadow-card">
           <CardHeader>
             <CardTitle className="text-lg font-display text-gray-900">
-              Rechercher un photographe
+              Rechercher un organisateur
             </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleInvite} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="invite-email" className="text-gray-700">
-                  Email du photographe
+                  Email de l'organisateur
                 </Label>
                 <div className="flex gap-3">
                   <Input
@@ -395,7 +395,7 @@ export default function TeamPage() {
                     type="email"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
-                    placeholder="photographe@example.com"
+                    placeholder="organisateur@example.com"
                     className="flex-1 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
                     required
                   />
@@ -471,7 +471,7 @@ export default function TeamPage() {
               )}
 
               <p className="text-xs text-gray-400">
-                Recherchez un photographe inscrit sur Focus Racer par son email.
+                Recherchez un organisateur inscrit sur Focus Racer par son email.
                 Pour l&apos;ajouter à votre équipe, créez une mission sur la Marketplace
                 et acceptez sa candidature.
               </p>
@@ -522,13 +522,13 @@ export default function TeamPage() {
             </div>
             <p className="text-gray-700 font-medium mb-2">
               {team.length === 0
-                ? "Aucun photographe dans votre équipe"
+                ? "Aucun organisateur dans votre équipe"
                 : "Aucun résultat"}
             </p>
             <p className="text-sm text-gray-500 mb-6">
               {team.length === 0
-                ? "Publiez une mission sur la Marketplace pour recruter des photographes."
-                : "Aucun photographe ne correspond à votre recherche."}
+                ? "Publiez une mission sur la Marketplace pour recruter des organisateurs."
+                : "Aucun organisateur ne correspond à votre recherche."}
             </p>
             {team.length === 0 && (
               <Button

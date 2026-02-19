@@ -118,7 +118,7 @@ function SkeletonKPI() {
 // Main page
 // ---------------------------------------------------------------------------
 
-export default function PhotographerPaymentsPage() {
+export default function OrganizerPaymentsPage() {
   const { data: session } = useSession();
   const { toast } = useToast();
   const [revenue, setRevenue] = useState<RevenueData | null>(null);
