@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,28 @@ export default function CreditsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loadingPack, setLoadingPack] = useState<number | null>(null);
 
+  const searchParams = useSearchParams();
+
+  // Show success toast on redirect back from Stripe
+  useEffect(() => {
+    if (searchParams.get("success") === "true") {
+      toast({
+        title: "Paiement confirmé",
+        description: "Vos crédits seront ajoutés sous quelques instants.",
+      });
+      // Clean up URL
+      window.history.replaceState({}, "", "/photographer/credits");
+      // Refresh balance after a short delay (webhook processing)
+      const timer = setTimeout(() => {
+        fetchCredits();
+        fetchTransactions(1);
+        setPage(1);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
   const fetchCredits = useCallback(async () => {
     try {
       const res = await fetch("/api/credits");
@@ -76,34 +99,56 @@ export default function CreditsPage() {
     fetchTransactions(1);
   }, [fetchCredits, fetchTransactions]);
 
-  const buyCredits = async (amount: number) => {
-    setLoadingPack(amount);
+  const buyCredits = async (pack: typeof CREDIT_PACKS[number]) => {
+    setLoadingPack(pack.amount);
     try {
-      const res = await fetch("/api/credits", {
+      const res = await fetch("/api/credits/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount }),
+        body: JSON.stringify({ type: "pack", amount: pack.amount, priceValue: pack.priceValue }),
       });
 
       if (res.ok) {
         const data = await res.json();
-        setCredits(data.credits);
-        toast({
-          title: "Crédits ajoutés",
-          description: `${amount} crédits ont été ajoutés à votre compte.`,
-        });
-        fetchTransactions(1);
-        setPage(1);
-      } else {
-        throw new Error("Erreur");
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
       }
+      throw new Error("Erreur");
     } catch {
       toast({
         title: "Erreur",
-        description: "Impossible d'ajouter les crédits.",
+        description: "Impossible de lancer le paiement.",
         variant: "destructive",
       });
-    } finally {
+      setLoadingPack(null);
+    }
+  };
+
+  const buySubscription = async (sub: typeof SUBSCRIPTIONS[number]) => {
+    setLoadingPack(sub.credits);
+    try {
+      const res = await fetch("/api/credits/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "subscription", amount: sub.credits, priceValue: sub.priceValue }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
+      }
+      throw new Error("Erreur");
+    } catch {
+      toast({
+        title: "Erreur",
+        description: "Impossible de lancer le paiement.",
+        variant: "destructive",
+      });
       setLoadingPack(null);
     }
   };
@@ -137,7 +182,7 @@ export default function CreditsPage() {
                     key={pack.amount}
                     variant="outline"
                     className="h-auto py-5 flex flex-col gap-1.5 border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 rounded-xl transition-all"
-                    onClick={() => buyCredits(pack.amount)}
+                    onClick={() => buyCredits(pack)}
                     disabled={loadingPack !== null}
                   >
                     {loadingPack === pack.amount ? (
@@ -172,12 +217,7 @@ export default function CreditsPage() {
                   <div
                     key={sub.id}
                     className="relative border border-gray-200 rounded-xl p-5 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all cursor-pointer group"
-                    onClick={() => {
-                      toast({
-                        title: "Abonnement",
-                        description: "Le paiement par abonnement sera bientôt disponible via Stripe.",
-                      });
-                    }}
+                    onClick={() => buySubscription(sub)}
                   >
                     <div className="flex flex-col items-center text-center gap-2">
                       <span className="text-2xl font-bold text-gray-900">{sub.credits.toLocaleString("fr-FR")}</span>

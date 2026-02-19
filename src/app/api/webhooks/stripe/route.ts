@@ -76,9 +76,68 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Helper to fulfill a credit purchase
+  async function fulfillCreditPurchase(userId: string, creditAmount: number, reason: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { credits: true },
+    });
+    if (!user) {
+      console.error("Credit fulfillment: user not found", userId);
+      return;
+    }
+    const balanceBefore = user.credits;
+    const balanceAfter = balanceBefore + creditAmount;
+    await prisma.user.update({
+      where: { id: userId },
+      data: { credits: balanceAfter },
+    });
+    await prisma.creditTransaction.create({
+      data: {
+        userId,
+        type: "PURCHASE",
+        amount: creditAmount,
+        balanceBefore,
+        balanceAfter,
+        reason,
+      },
+    });
+    console.log(`Credits fulfilled: +${creditAmount} for user ${userId} (${balanceBefore} -> ${balanceAfter})`);
+  }
+
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
+
+      // Credit purchase fulfillment
+      if (session.metadata?.type === "credit_purchase") {
+        const userId = session.metadata.userId;
+        const creditAmount = parseInt(session.metadata.creditAmount, 10);
+        if (userId && creditAmount > 0) {
+          await fulfillCreditPurchase(
+            userId,
+            creditAmount,
+            `Achat de ${creditAmount.toLocaleString("fr-FR")} credits`
+          );
+        }
+        break;
+      }
+
+      // Credit subscription first payment (checkout completed)
+      if (session.metadata?.type === "credit_subscription") {
+        const userId = session.metadata.userId;
+        const creditAmount = parseInt(session.metadata.creditAmount, 10);
+        if (userId && creditAmount > 0) {
+          await fulfillCreditPurchase(
+            userId,
+            creditAmount,
+            `Abonnement ${creditAmount.toLocaleString("fr-FR")} credits/mois - premier mois`
+          );
+        }
+        break;
+      }
+
+      // Photo order fulfillment
       const orderId = session.metadata?.orderId;
       if (!orderId) {
         console.error("No orderId in session metadata");
@@ -142,6 +201,23 @@ export async function POST(request: NextRequest) {
           where: { stripeAccountId: account.id, stripeOnboarded: false },
           data: { stripeOnboarded: true },
         });
+      }
+      break;
+    }
+
+    case "invoice.payment_succeeded": {
+      const invoice = event.data.object as Stripe.Invoice;
+      const subMeta = invoice.subscription_details?.metadata;
+      if (subMeta?.type === "credit_subscription") {
+        const userId = subMeta.userId;
+        const creditAmount = parseInt(subMeta.creditAmount, 10);
+        if (userId && creditAmount > 0) {
+          await fulfillCreditPurchase(
+            userId,
+            creditAmount,
+            `Abonnement ${creditAmount.toLocaleString("fr-FR")} credits/mois - renouvellement`
+          );
+        }
       }
       break;
     }
