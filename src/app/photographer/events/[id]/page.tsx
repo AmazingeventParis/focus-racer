@@ -293,7 +293,48 @@ export default function EventDetailPage({
         {/* Event header card */}
         <Card className="mb-8 bg-white border-0 shadow-sm rounded-2xl">
           <CardHeader>
-            <div className="flex justify-between items-start">
+            <div className="flex gap-6 items-start">
+              {/* Poster / Affiche */}
+              <div className="flex-shrink-0 w-40">
+                <label className="block cursor-pointer group relative">
+                  {event.coverImage ? (
+                    <div className="relative w-40 h-24 rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                      <Image
+                        src={event.coverImage}
+                        alt="Affiche"
+                        fill
+                        className="object-cover"
+                        sizes="160px"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                        <span className="text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">Changer</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-40 h-24 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center gap-1 group-hover:border-emerald group-hover:bg-emerald-50/50 transition-all">
+                      <svg className="w-6 h-6 text-gray-400 group-hover:text-emerald transition-colors" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
+                      </svg>
+                      <span className="text-xs text-gray-400 group-hover:text-emerald transition-colors">Ajouter une affiche</span>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    disabled={isUploadingBranding}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleBrandingUpload("coverImage", file);
+                    }}
+                  />
+                </label>
+                {isUploadingBranding && (
+                  <p className="text-xs text-emerald mt-1 text-center">Upload...</p>
+                )}
+              </div>
+
+              <div className="flex-1 flex justify-between items-start">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <CardTitle className="text-2xl text-navy">{event.name}</CardTitle>
@@ -364,6 +405,7 @@ export default function EventDetailPage({
                   </Button>
                 </Link>
               </div>
+            </div>
             </div>
           </CardHeader>
           <CardContent>

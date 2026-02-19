@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { HomeEvents } from "@/components/home-events";
 
 export default function HomePage() {
   return (
@@ -117,6 +118,9 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* Recent events */}
+        <HomeEvents />
 
         {/* Features */}
         <section className="py-20 md:py-28">

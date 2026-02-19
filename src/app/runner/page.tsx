@@ -117,11 +117,9 @@ export default function RunnerPage() {
                         />
                       </div>
                     ) : (
-                      <div
-                        className="aspect-video flex items-center justify-center bg-gradient-to-br from-emerald-50 to-emerald-100"
-                      >
-                        <span className="text-4xl font-bold text-emerald/40">
-                          {SPORT_LABELS[event.sportType]?.[0] || "E"}
+                      <div className="aspect-video flex items-center justify-center bg-white border-b border-gray-100 px-4">
+                        <span className="text-lg font-bold text-gray-800 text-center leading-tight">
+                          {event.name}
                         </span>
                       </div>
                     )}
