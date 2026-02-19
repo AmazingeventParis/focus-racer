@@ -84,6 +84,7 @@ model User {
   reviewsGiven       MarketplaceReview[]  @relation("ReviewAuthor")
   reviewsReceived    MarketplaceReview[]  @relation("ReviewTarget")
   supportMessages    SupportMessage[]
+  apiKeys            ApiKey[]
 
   @@index([role])
   @@index([isActive])
@@ -415,6 +416,23 @@ model SupportMessage {
   @@index([status])
   @@index([category])
   @@index([createdAt])
+}
+
+// =========== API KEYS ===========
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  keyHash    String    @unique
+  keyPrefix  String
+  isActive   Boolean   @default(true)
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@index([keyHash])
 }
 
 // =========== PLATFORM SETTINGS ===========
