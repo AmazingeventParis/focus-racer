@@ -46,17 +46,19 @@ export async function POST() {
 
     const accountLink = await stripe.accountLinks.create({
       account: accountId,
-      refresh_url: `${APP_URL}/photographer/credits`,
-      return_url: `${APP_URL}/photographer/credits?stripe=complete`,
+      refresh_url: `${APP_URL}/photographer/payments`,
+      return_url: `${APP_URL}/photographer/payments?stripe=complete`,
       type: "account_onboarding",
     });
 
     return NextResponse.json({ url: accountLink.url });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Stripe Connect onboarding error:", error);
+    const message = error?.message || "Erreur lors de la configuration Stripe";
+    const stripeCode = error?.code || error?.type || "";
     return NextResponse.json(
-      { error: "Erreur lors de la configuration Stripe" },
-      { status: 500 }
+      { error: message, code: stripeCode },
+      { status: error?.statusCode || 500 }
     );
   }
 }

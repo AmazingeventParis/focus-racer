@@ -166,15 +166,18 @@ export default function PhotographerPaymentsPage() {
     setConnectLoading(true);
     try {
       const res = await fetch("/api/stripe/connect", { method: "POST" });
-      if (res.ok) {
-        const data = await res.json();
+      const data = await res.json();
+      if (res.ok && data.url) {
         window.location.href = data.url;
       } else {
-        const data = await res.json();
-        toast({ title: "Erreur", description: data.error || "Erreur Stripe", variant: "destructive" });
+        toast({
+          title: "Erreur Stripe",
+          description: data.error || "Impossible de configurer Stripe",
+          variant: "destructive",
+        });
       }
     } catch {
-      toast({ title: "Erreur", description: "Erreur de connexion.", variant: "destructive" });
+      toast({ title: "Erreur", description: "Erreur de connexion au serveur.", variant: "destructive" });
     } finally {
       setConnectLoading(false);
     }
