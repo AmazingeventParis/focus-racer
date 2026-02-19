@@ -76,6 +76,11 @@ interface TopEvent {
   orders: number;
 }
 
+interface CreditBreakdownItem {
+  total: number;
+  count: number;
+}
+
 interface PaymentStats {
   revenue: {
     total: number;
@@ -94,6 +99,13 @@ interface PaymentStats {
     totalPhotographerPayouts: number;
     onboardedAccounts: number;
     totalAccounts: number;
+  };
+  credits: {
+    inCirculation: number;
+    purchases: CreditBreakdownItem;
+    importDeductions: CreditBreakdownItem;
+    apiDeductions: CreditBreakdownItem;
+    adminGrants: CreditBreakdownItem;
   };
 }
 
@@ -133,6 +145,50 @@ function dateFR(dateStr: string): string {
     month: "2-digit",
     year: "numeric",
   });
+}
+
+function pct(value: number, total: number): string {
+  if (total === 0) return "0%";
+  return ((value / total) * 100).toFixed(1) + "%";
+}
+
+// SVG Donut Pie Chart
+interface PieSlice { value: number; color: string; label: string }
+
+function PieChart({ slices, size = 160 }: { slices: PieSlice[]; size?: number }) {
+  const total = slices.reduce((s, sl) => s + sl.value, 0);
+  if (total === 0) {
+    return (
+      <div className="flex items-center justify-center" style={{ width: size, height: size }}>
+        <div className="w-full h-full rounded-full bg-gray-100 flex items-center justify-center">
+          <span className="text-xs text-gray-400">N/A</span>
+        </div>
+      </div>
+    );
+  }
+  const r = size / 2;
+  const innerR = r * 0.55;
+  let cumAngle = -90;
+  const paths = slices.filter(s => s.value > 0).map((slice) => {
+    const angle = (slice.value / total) * 360;
+    const startAngle = cumAngle;
+    const endAngle = cumAngle + angle;
+    cumAngle = endAngle;
+    const startRad = (startAngle * Math.PI) / 180;
+    const endRad = (endAngle * Math.PI) / 180;
+    const largeArc = angle > 180 ? 1 : 0;
+    const x1 = r + r * Math.cos(startRad);
+    const y1 = r + r * Math.sin(startRad);
+    const x2 = r + r * Math.cos(endRad);
+    const y2 = r + r * Math.sin(endRad);
+    const ix1 = r + innerR * Math.cos(startRad);
+    const iy1 = r + innerR * Math.sin(startRad);
+    const ix2 = r + innerR * Math.cos(endRad);
+    const iy2 = r + innerR * Math.sin(endRad);
+    const d = `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerR} ${innerR} 0 ${largeArc} 0 ${ix1} ${iy1} Z`;
+    return <path key={slice.label} d={d} fill={slice.color} className="transition-all duration-500"><title>{slice.label}: {pct(slice.value, total)}</title></path>;
+  });
+  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>{paths}</svg>;
 }
 
 function monthLabel(ym: string): string {
@@ -426,6 +482,166 @@ export default function AdminPaymentsPage() {
           </Card>
         </div>
       ) : null}
+
+      {/* ============================================================ */}
+      {/*  1b) Revenue Sources Pie Charts                              */}
+      {/* ============================================================ */}
+      {stats && (() => {
+        const salesAmount = stats.connect.totalPhotographerPayouts;
+        const creditPurchaseAmount = stats.credits.purchases.total;
+        const apiAmount = Math.abs(stats.credits.apiDeductions.total);
+        const totalSources = salesAmount + creditPurchaseAmount + apiAmount;
+
+        const revenueSlices: PieSlice[] = [
+          { value: salesAmount, color: "#059669", label: "Commissions ventes" },
+          { value: creditPurchaseAmount, color: "#2563eb", label: "Achats credits" },
+          { value: apiAmount, color: "#ea580c", label: "API" },
+        ];
+
+        const feeSlices: PieSlice[] = [
+          { value: stats.connect.totalPhotographerPayouts, color: "#059669", label: "Reverse photographes" },
+          { value: stats.connect.totalStripeFees, color: "#7c3aed", label: "Frais Stripe" },
+          { value: stats.connect.totalServiceFees, color: "#6b7280", label: "Frais plateforme" },
+        ];
+
+        return (
+          <>
+            {/* Pie Charts Row */}
+            <div className="grid lg:grid-cols-2 gap-6">
+              <Card className="glass-card rounded-2xl">
+                <CardHeader>
+                  <CardTitle className="text-navy">Sources de revenus</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-6">
+                    <PieChart slices={revenueSlices} size={160} />
+                    <div className="flex-1 space-y-3">
+                      {revenueSlices.map(slice => (
+                        <div key={slice.label} className="flex items-center gap-3">
+                          <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: slice.color }} />
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-navy">{slice.label}</p>
+                            <p className="text-xs text-muted-foreground">{pct(slice.value, totalSources)}</p>
+                          </div>
+                          <p className="font-semibold text-sm text-navy">{euro(slice.value)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card rounded-2xl">
+                <CardHeader>
+                  <CardTitle className="text-navy">Repartition du CA brut</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-6">
+                    <PieChart slices={feeSlices} size={160} />
+                    <div className="flex-1 space-y-3">
+                      {feeSlices.map(slice => (
+                        <div key={slice.label} className="flex items-center gap-3">
+                          <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: slice.color }} />
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-navy">{slice.label}</p>
+                            <p className="text-xs text-muted-foreground">{pct(slice.value, stats.revenue.total)}</p>
+                          </div>
+                          <p className="font-semibold text-sm text-navy">{euro(slice.value)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Source Detail Cards */}
+            <div className="grid md:grid-cols-3 gap-4">
+              <Card className="glass-card rounded-2xl border-l-4 border-l-emerald overflow-hidden">
+                <CardContent className="pt-5 pb-4 px-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v13.5A1.5 1.5 0 003.75 21z" /></svg>
+                    </div>
+                    <span className="text-xl font-bold text-navy">{pct(salesAmount, totalSources)}</span>
+                  </div>
+                  <h3 className="font-semibold text-navy">Commissions ventes</h3>
+                  <p className="text-xl font-bold text-emerald mt-1">{euro(salesAmount)}</p>
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
+                    <span className="text-xs text-muted-foreground">{stats.revenue.paidOrders} commandes</span>
+                    <span className="text-xs text-muted-foreground">Panier moy. {euro(stats.revenue.avgBasket)}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card rounded-2xl border-l-4 border-l-blue-500 overflow-hidden">
+                <CardContent className="pt-5 pb-4 px-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>
+                    </div>
+                    <span className="text-xl font-bold text-navy">{pct(creditPurchaseAmount, totalSources)}</span>
+                  </div>
+                  <h3 className="font-semibold text-navy">Achats credits</h3>
+                  <p className="text-xl font-bold text-blue-600 mt-1">{stats.credits.purchases.total} credits</p>
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
+                    <span className="text-xs text-muted-foreground">{stats.credits.purchases.count} transactions</span>
+                    <span className="text-xs text-muted-foreground">En circulation: {stats.credits.inCirculation}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card rounded-2xl border-l-4 border-l-orange-500 overflow-hidden">
+                <CardContent className="pt-5 pb-4 px-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-9 h-9 rounded-lg bg-orange-100 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-orange-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>
+                    </div>
+                    <span className="text-xl font-bold text-navy">{pct(apiAmount, totalSources)}</span>
+                  </div>
+                  <h3 className="font-semibold text-navy">API</h3>
+                  <p className="text-xl font-bold text-orange-600 mt-1">{Math.abs(stats.credits.apiDeductions.total)} credits</p>
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
+                    <span className="text-xs text-muted-foreground">{stats.credits.apiDeductions.count} appels</span>
+                    <span className="text-xs text-muted-foreground">1 credit/appel</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Credits Summary */}
+            <Card className="glass-card rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-navy">Resume credits plateforme</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                  <div className="text-center p-4 bg-gray-50 rounded-xl">
+                    <p className="text-2xl font-bold text-navy">{stats.credits.inCirculation}</p>
+                    <p className="text-xs text-muted-foreground mt-1">En circulation</p>
+                  </div>
+                  <div className="text-center p-4 bg-blue-50 rounded-xl">
+                    <p className="text-2xl font-bold text-blue-600">+{stats.credits.purchases.total}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Achetes ({stats.credits.purchases.count})</p>
+                  </div>
+                  <div className="text-center p-4 bg-red-50 rounded-xl">
+                    <p className="text-2xl font-bold text-red-600">{stats.credits.importDeductions.total}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Import ({stats.credits.importDeductions.count})</p>
+                  </div>
+                  <div className="text-center p-4 bg-orange-50 rounded-xl">
+                    <p className="text-2xl font-bold text-orange-600">{stats.credits.apiDeductions.total}</p>
+                    <p className="text-xs text-muted-foreground mt-1">API ({stats.credits.apiDeductions.count})</p>
+                  </div>
+                  <div className="text-center p-4 bg-emerald-50 rounded-xl">
+                    <p className="text-2xl font-bold text-emerald-600">+{stats.credits.adminGrants.total}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Offerts ({stats.credits.adminGrants.count})</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        );
+      })()}
 
       {/* ============================================================ */}
       {/*  2) Revenue Chart + Pack Breakdown + Top Events              */}

@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const whereDate: Record<string, unknown> = {};
     if (from || to) whereDate.createdAt = dateFilter;
 
-    const [totalRevenue, totalOrders, refundedOrders, monthlyRevenue, packBreakdown, topEvents, connectStats, feeStats] =
+    const [totalRevenue, totalOrders, refundedOrders, monthlyRevenue, packBreakdown, topEvents, connectStats, feeStats, creditPurchases, creditImportDeductions, creditApiDeductions, creditAdminGrants, totalCreditsInCirculation] =
       await Promise.all([
         // Total revenue from paid orders (with optional date filter)
         prisma.order.aggregate({
@@ -91,6 +91,32 @@ export async function GET(request: NextRequest) {
           where: { ...whereDate, status: "PAID" },
           _sum: { serviceFee: true, stripeFee: true, photographerPayout: true },
         }),
+        // Credit purchases (all users)
+        prisma.creditTransaction.aggregate({
+          where: { type: "PURCHASE" },
+          _sum: { amount: true },
+          _count: true,
+        }),
+        // Credit deductions (import photos, not API)
+        prisma.creditTransaction.aggregate({
+          where: { type: "DEDUCTION", NOT: { reason: { contains: "API" } } },
+          _sum: { amount: true },
+          _count: true,
+        }),
+        // Credit deductions (API)
+        prisma.creditTransaction.aggregate({
+          where: { type: "DEDUCTION", reason: { contains: "API" } },
+          _sum: { amount: true },
+          _count: true,
+        }),
+        // Credit admin grants
+        prisma.creditTransaction.aggregate({
+          where: { type: "ADMIN_GRANT" },
+          _sum: { amount: true },
+          _count: true,
+        }),
+        // Total credits in circulation
+        prisma.user.aggregate({ _sum: { credits: true } }),
       ]);
 
     // Parse connect stats
@@ -118,6 +144,25 @@ export async function GET(request: NextRequest) {
         totalPhotographerPayouts: feeStats._sum.photographerPayout || 0,
         onboardedAccounts: onboardedCount,
         totalAccounts: onboardedCount + notOnboardedCount,
+      },
+      credits: {
+        inCirculation: totalCreditsInCirculation._sum.credits || 0,
+        purchases: {
+          total: creditPurchases._sum.amount || 0,
+          count: creditPurchases._count,
+        },
+        importDeductions: {
+          total: creditImportDeductions._sum.amount || 0,
+          count: creditImportDeductions._count,
+        },
+        apiDeductions: {
+          total: creditApiDeductions._sum.amount || 0,
+          count: creditApiDeductions._count,
+        },
+        adminGrants: {
+          total: creditAdminGrants._sum.amount || 0,
+          count: creditAdminGrants._count,
+        },
       },
     });
   } catch (error) {

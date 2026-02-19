@@ -98,44 +98,6 @@ export async function GET() {
       WHERE e."userId" = ${userId}
     ` as { count: number }[];
 
-    // Credit breakdown by type
-    const [creditPurchases, creditDeductions, creditApiDeductions, creditAdminGrants, recentOrders] = await Promise.all([
-      prisma.creditTransaction.aggregate({
-        where: { userId, type: "PURCHASE" },
-        _sum: { amount: true },
-        _count: true,
-      }),
-      prisma.creditTransaction.aggregate({
-        where: { userId, type: "DEDUCTION", NOT: { reason: { contains: "API" } } },
-        _sum: { amount: true },
-        _count: true,
-      }),
-      prisma.creditTransaction.aggregate({
-        where: { userId, type: "DEDUCTION", reason: { contains: "API" } },
-        _sum: { amount: true },
-        _count: true,
-      }),
-      prisma.creditTransaction.aggregate({
-        where: { userId, type: "ADMIN_GRANT" },
-        _sum: { amount: true },
-        _count: true,
-      }),
-      // Recent orders for this photographer's events
-      prisma.order.findMany({
-        where: { event: { userId } },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-        select: {
-          id: true, totalAmount: true, serviceFee: true, stripeFee: true,
-          photographerPayout: true, status: true, createdAt: true,
-          guestEmail: true, guestName: true,
-          user: { select: { name: true, email: true } },
-          event: { select: { id: true, name: true } },
-          _count: { select: { items: true } },
-        },
-      }),
-    ]);
-
     const publishedEvents = events.filter(e => e.status === "PUBLISHED").length;
     const totalRunners = events.reduce((sum, e) => sum + e._count.startListEntries, 0);
 
@@ -169,24 +131,6 @@ export async function GET() {
         balance: user?.credits || 0,
         totalTransactions: creditStats._count,
         totalSpent: creditStats._sum.amount || 0,
-        breakdown: {
-          purchases: {
-            total: creditPurchases._sum.amount || 0,
-            count: creditPurchases._count,
-          },
-          importDeductions: {
-            total: creditDeductions._sum.amount || 0,
-            count: creditDeductions._count,
-          },
-          apiDeductions: {
-            total: creditApiDeductions._sum.amount || 0,
-            count: creditApiDeductions._count,
-          },
-          adminGrants: {
-            total: creditAdminGrants._sum.amount || 0,
-            count: creditAdminGrants._count,
-          },
-        },
       },
       detection: {
         totalBibs: bibDetected,
@@ -196,7 +140,6 @@ export async function GET() {
       monthlyRevenue: monthlyData,
       topEvents,
       sportBreakdown,
-      recentOrders,
       events: events.slice(0, 20),
     });
   } catch (error) {

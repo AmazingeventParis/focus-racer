@@ -22,20 +22,6 @@ interface RevenueData {
   photographerPayout: number;
 }
 
-interface CreditBreakdown {
-  purchases: { total: number; count: number };
-  importDeductions: { total: number; count: number };
-  apiDeductions: { total: number; count: number };
-  adminGrants: { total: number; count: number };
-}
-
-interface CreditsData {
-  balance: number;
-  totalTransactions: number;
-  totalSpent: number;
-  breakdown: CreditBreakdown;
-}
-
 interface MonthlyRevenue {
   month: string;
   revenue: number;
@@ -85,78 +71,6 @@ function euro(amount: number): string {
   return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(amount);
 }
 
-function pct(value: number, total: number): string {
-  if (total === 0) return "0%";
-  return ((value / total) * 100).toFixed(1) + "%";
-}
-
-// ---------------------------------------------------------------------------
-// SVG Pie Chart Component
-// ---------------------------------------------------------------------------
-
-interface PieSlice {
-  value: number;
-  color: string;
-  label: string;
-}
-
-function PieChart({ slices, size = 180 }: { slices: PieSlice[]; size?: number }) {
-  const total = slices.reduce((s, sl) => s + sl.value, 0);
-  if (total === 0) {
-    return (
-      <div className="flex items-center justify-center" style={{ width: size, height: size }}>
-        <div className="w-full h-full rounded-full bg-gray-100 flex items-center justify-center">
-          <span className="text-sm text-gray-400">Aucune donnee</span>
-        </div>
-      </div>
-    );
-  }
-
-  const r = size / 2;
-  const innerR = r * 0.55;
-  let cumAngle = -90;
-
-  const paths = slices.filter(s => s.value > 0).map((slice) => {
-    const angle = (slice.value / total) * 360;
-    const startAngle = cumAngle;
-    const endAngle = cumAngle + angle;
-    cumAngle = endAngle;
-
-    const startRad = (startAngle * Math.PI) / 180;
-    const endRad = (endAngle * Math.PI) / 180;
-    const largeArc = angle > 180 ? 1 : 0;
-
-    const x1 = r + r * Math.cos(startRad);
-    const y1 = r + r * Math.sin(startRad);
-    const x2 = r + r * Math.cos(endRad);
-    const y2 = r + r * Math.sin(endRad);
-    const ix1 = r + innerR * Math.cos(startRad);
-    const iy1 = r + innerR * Math.sin(startRad);
-    const ix2 = r + innerR * Math.cos(endRad);
-    const iy2 = r + innerR * Math.sin(endRad);
-
-    const d = [
-      `M ${x1} ${y1}`,
-      `A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`,
-      `L ${ix2} ${iy2}`,
-      `A ${innerR} ${innerR} 0 ${largeArc} 0 ${ix1} ${iy1}`,
-      "Z",
-    ].join(" ");
-
-    return (
-      <path key={slice.label} d={d} fill={slice.color} className="transition-all duration-500">
-        <title>{slice.label}: {pct(slice.value, total)}</title>
-      </path>
-    );
-  });
-
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      {paths}
-    </svg>
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
@@ -200,49 +114,14 @@ function SkeletonKPI() {
   );
 }
 
-function SourceCard({
-  title, amount, count, percentage, color, icon, subtitle,
-}: {
-  title: string; amount: string; count: number; percentage: string;
-  color: string; icon: React.ReactNode; subtitle: string;
-}) {
-  return (
-    <Card className="bg-white border-0 shadow-card rounded-2xl hover:shadow-lg transition-all duration-200">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center`}>
-            {icon}
-          </div>
-          <span className="text-2xl font-bold text-gray-900">{percentage}</span>
-        </div>
-        <h3 className="font-semibold text-gray-900 text-lg">{title}</h3>
-        <p className="text-2xl font-bold mt-1" style={{ color: color.includes("emerald") ? "#059669" : color.includes("blue") ? "#2563eb" : color.includes("orange") ? "#ea580c" : "#6b7280" }}>
-          {amount}
-        </p>
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-          <span className="text-sm text-gray-500">{subtitle}</span>
-          <Badge className="bg-gray-100 text-gray-600 border-0 text-xs">{count} tx</Badge>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-// Icons
-const IconMoney = <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>;
-const IconPayout = <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
-const IconFees = <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
-const IconCart = <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>;
-
 // ---------------------------------------------------------------------------
 // Main page
 // ---------------------------------------------------------------------------
 
-export default function PhotographerPaymentsPage() {
+export default function OrganizerPaymentsPage() {
   const { data: session } = useSession();
   const { toast } = useToast();
   const [revenue, setRevenue] = useState<RevenueData | null>(null);
-  const [credits, setCredits] = useState<CreditsData | null>(null);
   const [monthlyRevenue, setMonthlyRevenue] = useState<MonthlyRevenue[]>([]);
   const [topEvents, setTopEvents] = useState<TopEvent[]>([]);
   const [orders, setOrders] = useState<OrderRow[]>([]);
@@ -253,21 +132,24 @@ export default function PhotographerPaymentsPage() {
   const fetchData = useCallback(async () => {
     try {
       setIsLoading(true);
-      const [statsRes, connectRes] = await Promise.all([
-        fetch("/api/stats/photographer"),
+      const [statsRes, connectRes, ordersRes] = await Promise.all([
+        fetch("/api/stats/organizer"),
         fetch("/api/stripe/connect/status"),
+        fetch("/api/orders?limit=10"),
       ]);
 
       if (statsRes.ok) {
         const data = await statsRes.json();
         setRevenue(data.revenue);
-        setCredits(data.credits);
         setMonthlyRevenue(data.monthlyRevenue || []);
         setTopEvents(data.topEvents || []);
-        setOrders(data.recentOrders || []);
       }
       if (connectRes.ok) {
         setConnectStatus(await connectRes.json());
+      }
+      if (ordersRes.ok) {
+        const data = await ordersRes.json();
+        setOrders(data.orders || []);
       }
     } catch (error) {
       console.error("Error fetching payment data:", error);
@@ -316,28 +198,9 @@ export default function PhotographerPaymentsPage() {
     }
   };
 
-  // Derived data
+  // Chart data
   const sortedMonthly = [...monthlyRevenue].sort((a, b) => a.month.localeCompare(b.month));
   const maxMonthlyRevenue = Math.max(...sortedMonthly.map(d => d.revenue), 1);
-
-  // Revenue sources for pie chart
-  const creditPurchaseAmount = credits?.breakdown.purchases.total || 0;
-  const salesCommissionAmount = revenue?.photographerPayout || 0;
-  const apiAmount = Math.abs(credits?.breakdown.apiDeductions.total || 0);
-  const totalSourceRevenue = creditPurchaseAmount + salesCommissionAmount + apiAmount;
-
-  const pieSlices: PieSlice[] = [
-    { value: salesCommissionAmount, color: "#059669", label: "Ventes photos" },
-    { value: creditPurchaseAmount, color: "#2563eb", label: "Achats credits" },
-    { value: apiAmount, color: "#ea580c", label: "API" },
-  ];
-
-  // Fee breakdown pie
-  const feeSlices: PieSlice[] = revenue ? [
-    { value: revenue.photographerPayout, color: "#059669", label: "Vous recevez" },
-    { value: revenue.stripeFees, color: "#7c3aed", label: "Frais Stripe" },
-    { value: revenue.serviceFees, color: "#6b7280", label: "Frais plateforme" },
-  ] : [];
 
   const STATUS_LABELS: Record<string, { label: string; className: string }> = {
     PENDING: { label: "En attente", className: "bg-yellow-100 text-yellow-800" },
@@ -351,8 +214,8 @@ export default function PhotographerPaymentsPage() {
     <div className="p-4 md:p-8 animate-fade-in max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold font-display text-gray-900">Paiements & Revenus</h1>
-        <p className="text-gray-500 mt-1">Vue complete de vos sources de revenus, frais et transactions</p>
+        <h1 className="text-2xl font-bold font-display text-gray-900">Paiements</h1>
+        <p className="text-gray-500 mt-1">Revenus, frais et historique des transactions</p>
       </div>
 
       {/* Stripe Connect Status Card */}
@@ -415,147 +278,81 @@ export default function PhotographerPaymentsPage() {
               label="Revenu brut"
               value={euro(revenue?.total || 0)}
               subtitle={`${revenue?.paidOrders || 0} commandes`}
-              iconBg="bg-emerald-50" iconColor="text-emerald-600" valueColor="text-emerald-600"
-              icon={IconMoney}
+              iconBg="bg-emerald-50"
+              iconColor="text-emerald-600"
+              valueColor="text-emerald-600"
+              icon={<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>}
             />
             <KPICard
               label="Vous recevez"
               value={euro(revenue?.photographerPayout || 0)}
               subtitle="Net apres frais Stripe"
-              iconBg="bg-blue-50" iconColor="text-blue-600" valueColor="text-blue-600"
-              icon={IconPayout}
+              iconBg="bg-blue-50"
+              iconColor="text-blue-600"
+              valueColor="text-blue-600"
+              icon={<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
             />
             <KPICard
-              label="Frais totaux"
-              value={euro((revenue?.stripeFees || 0) + (revenue?.serviceFees || 0))}
-              subtitle={`Stripe ${euro(revenue?.stripeFees || 0)} + Service ${euro(revenue?.serviceFees || 0)}`}
-              iconBg="bg-violet-50" iconColor="text-violet-600"
-              icon={IconFees}
+              label="Frais Stripe"
+              value={euro(revenue?.stripeFees || 0)}
+              subtitle="~1,5% + 0,25 EUR/transaction"
+              iconBg="bg-violet-50"
+              iconColor="text-violet-600"
+              icon={<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
             />
             <KPICard
               label="Panier moyen"
               value={euro(revenue?.avgBasket || 0)}
               subtitle={`${revenue?.paidOrders || 0} commandes payees`}
-              iconBg="bg-amber-50" iconColor="text-amber-600"
-              icon={IconCart}
+              iconBg="bg-amber-50"
+              iconColor="text-amber-600"
+              icon={<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>}
             />
           </>
         )}
       </div>
 
-      {/* Revenue Sources Section */}
-      {!isLoading && (
-        <div className="grid lg:grid-cols-2 gap-6 mb-8">
-          {/* Pie Chart: Sources de revenus */}
-          <Card className="bg-white border-0 shadow-card rounded-2xl">
-            <CardHeader>
-              <CardTitle className="text-lg font-display text-gray-900">Sources de revenus</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-8">
-                <PieChart slices={pieSlices} size={180} />
-                <div className="flex-1 space-y-4">
-                  {pieSlices.map(slice => (
-                    <div key={slice.label} className="flex items-center gap-3">
-                      <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: slice.color }} />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{slice.label}</p>
-                        <p className="text-xs text-gray-500">{pct(slice.value, totalSourceRevenue)}</p>
-                      </div>
-                      <p className="font-semibold text-gray-900 text-sm">{euro(slice.value)}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Pie Chart: Repartition des frais */}
-          <Card className="bg-white border-0 shadow-card rounded-2xl">
-            <CardHeader>
-              <CardTitle className="text-lg font-display text-gray-900">Repartition du CA brut</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-8">
-                <PieChart slices={feeSlices} size={180} />
-                <div className="flex-1 space-y-4">
-                  {feeSlices.map(slice => (
-                    <div key={slice.label} className="flex items-center gap-3">
-                      <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: slice.color }} />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{slice.label}</p>
-                        <p className="text-xs text-gray-500">{pct(slice.value, revenue?.total || 0)}</p>
-                      </div>
-                      <p className="font-semibold text-gray-900 text-sm">{euro(slice.value)}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Source Detail Cards */}
-      {!isLoading && credits && (
-        <div className="grid md:grid-cols-3 gap-4 mb-8">
-          <SourceCard
-            title="Ventes photos"
-            amount={euro(salesCommissionAmount)}
-            count={revenue?.paidOrders || 0}
-            percentage={pct(salesCommissionAmount, totalSourceRevenue)}
-            color="bg-emerald-100"
-            icon={<svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v13.5A1.5 1.5 0 003.75 21z" /></svg>}
-            subtitle="Commissions sur ventes"
-          />
-          <SourceCard
-            title="Achats credits"
-            amount={`${credits.breakdown.purchases.total} credits`}
-            count={credits.breakdown.purchases.count}
-            percentage={pct(creditPurchaseAmount, totalSourceRevenue)}
-            color="bg-blue-100"
-            icon={<svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>}
-            subtitle="Credits achetes"
-          />
-          <SourceCard
-            title="API"
-            amount={`${Math.abs(credits.breakdown.apiDeductions.total)} credits`}
-            count={credits.breakdown.apiDeductions.count}
-            percentage={pct(apiAmount, totalSourceRevenue)}
-            color="bg-orange-100"
-            icon={<svg className="w-5 h-5 text-orange-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>}
-            subtitle="Appels API (1 credit/appel)"
-          />
-        </div>
-      )}
-
-      {/* Credits Summary */}
-      {!isLoading && credits && (
+      {/* Revenue Breakdown Bar */}
+      {!isLoading && revenue && revenue.total > 0 && (
         <Card className="bg-white border-0 shadow-card rounded-2xl mb-8">
           <CardHeader>
-            <CardTitle className="text-lg font-display text-gray-900">Resume credits</CardTitle>
+            <CardTitle className="text-lg font-display text-gray-900">Repartition des revenus</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-              <div className="text-center p-4 bg-gray-50 rounded-xl">
-                <p className="text-2xl font-bold text-gray-900">{credits.balance}</p>
-                <p className="text-sm text-gray-500 mt-1">Solde actuel</p>
+            <div className="space-y-4">
+              <div className="h-6 bg-gray-100 rounded-full overflow-hidden flex">
+                <div
+                  className="h-full bg-blue-500 transition-all duration-700"
+                  style={{ width: `${Math.max((revenue.photographerPayout / revenue.total) * 100, 2)}%` }}
+                  title={`Vous recevez: ${euro(revenue.photographerPayout)}`}
+                />
+                <div
+                  className="h-full bg-violet-400 transition-all duration-700"
+                  style={{ width: `${Math.max((revenue.stripeFees / revenue.total) * 100, 1)}%` }}
+                  title={`Frais Stripe: ${euro(revenue.stripeFees)}`}
+                />
+                <div
+                  className="h-full bg-gray-400 transition-all duration-700"
+                  style={{ width: `${Math.max((revenue.serviceFees / revenue.total) * 100, 1)}%` }}
+                  title={`Frais de service: ${euro(revenue.serviceFees)}`}
+                />
               </div>
-              <div className="text-center p-4 bg-blue-50 rounded-xl">
-                <p className="text-2xl font-bold text-blue-600">+{credits.breakdown.purchases.total}</p>
-                <p className="text-sm text-gray-500 mt-1">Achetes ({credits.breakdown.purchases.count})</p>
-              </div>
-              <div className="text-center p-4 bg-red-50 rounded-xl">
-                <p className="text-2xl font-bold text-red-600">{credits.breakdown.importDeductions.total}</p>
-                <p className="text-sm text-gray-500 mt-1">Import photos ({credits.breakdown.importDeductions.count})</p>
-              </div>
-              <div className="text-center p-4 bg-orange-50 rounded-xl">
-                <p className="text-2xl font-bold text-orange-600">{credits.breakdown.apiDeductions.total}</p>
-                <p className="text-sm text-gray-500 mt-1">API ({credits.breakdown.apiDeductions.count})</p>
-              </div>
-              <div className="text-center p-4 bg-emerald-50 rounded-xl">
-                <p className="text-2xl font-bold text-emerald-600">+{credits.breakdown.adminGrants.total}</p>
-                <p className="text-sm text-gray-500 mt-1">Offerts ({credits.breakdown.adminGrants.count})</p>
+              <div className="flex flex-wrap gap-6 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-blue-500" />
+                  <span className="text-gray-600">Vous recevez</span>
+                  <span className="font-semibold text-gray-900">{euro(revenue.photographerPayout)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-violet-400" />
+                  <span className="text-gray-600">Frais Stripe</span>
+                  <span className="font-semibold text-gray-900">{euro(revenue.stripeFees)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-gray-400" />
+                  <span className="text-gray-600">Frais de service</span>
+                  <span className="font-semibold text-gray-900">{euro(revenue.serviceFees)}</span>
+                </div>
               </div>
             </div>
           </CardContent>
