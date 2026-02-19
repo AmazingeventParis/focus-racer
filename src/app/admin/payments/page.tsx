@@ -474,8 +474,8 @@ export default function AdminPaymentsPage() {
       {/*  1) KPI Cards — CA, Commission ventes, Vente credits          */}
       {/* ============================================================ */}
       {isStatsLoading ? (
-        <div className="grid md:grid-cols-3 gap-4">
-          {Array.from({ length: 3 }).map((_, i) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
             <Card key={i} className="glass-card rounded-2xl animate-pulse">
               <CardContent className="pt-6">
                 <div className="h-4 bg-gray-200 rounded w-2/3 mb-3" />
@@ -485,7 +485,7 @@ export default function AdminPaymentsPage() {
           ))}
         </div>
       ) : stats ? (
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* CA total */}
           <Card className="glass-card rounded-2xl border-l-4 border-l-emerald overflow-hidden">
             <CardHeader className="pb-1 pt-4 px-4">
@@ -533,6 +533,23 @@ export default function AdminPaymentsPage() {
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
                 {stats.credits.purchases.total.toLocaleString("fr-FR")} credits &middot; {stats.credits.purchases.count} transactions
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* CA API */}
+          <Card className="glass-card rounded-2xl border-l-4 border-l-orange-500 overflow-hidden">
+            <CardHeader className="pb-1 pt-4 px-4">
+              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                CA API
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 pb-4">
+              <p className="text-2xl font-bold text-orange-600">
+                {euro(Math.abs(stats.credits.apiDeductions.total) * avgCreditPrice)}
+              </p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                {Math.abs(stats.credits.apiDeductions.total).toLocaleString("fr-FR")} credits &middot; {stats.credits.apiDeductions.count} appels
               </p>
             </CardContent>
           </Card>
@@ -606,69 +623,6 @@ export default function AdminPaymentsPage() {
                         </div>
                       ))}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Source Detail Cards with units + euros */}
-            <div className="grid md:grid-cols-3 gap-4">
-              {/* Commission ventes */}
-              <Card className="glass-card rounded-2xl border-l-4 border-l-violet-500 overflow-hidden">
-                <CardContent className="pt-5 pb-4 px-4">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-9 h-9 rounded-lg bg-violet-100 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-violet-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
-                    </div>
-                    <span className="text-xl font-bold text-navy">{pct(salesAmount, totalSources)}</span>
-                  </div>
-                  <h3 className="font-semibold text-navy">Commission ventes</h3>
-                  <p className="text-xl font-bold text-violet-600 mt-1">{euro(salesAmount)}</p>
-                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
-                    <span className="text-xs text-muted-foreground">{stats.revenue.paidOrders} commandes</span>
-                    <span className="text-xs text-muted-foreground">Panier moy. {euro(stats.revenue.avgBasket)}</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Achats credits */}
-              <Card className="glass-card rounded-2xl border-l-4 border-l-blue-500 overflow-hidden">
-                <CardContent className="pt-5 pb-4 px-4">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>
-                    </div>
-                    <span className="text-xl font-bold text-navy">{pct(creditPurchaseAmount, totalSources)}</span>
-                  </div>
-                  <h3 className="font-semibold text-navy">Achats credits</h3>
-                  <p className="text-xl font-bold text-blue-600 mt-1">
-                    {stats.credits.purchases.total.toLocaleString("fr-FR")} credits
-                  </p>
-                  <p className="text-sm text-blue-500 font-medium">{euro(creditPurchaseAmount)}</p>
-                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
-                    <span className="text-xs text-muted-foreground">{stats.credits.purchases.count} transactions</span>
-                    <span className="text-xs text-muted-foreground">En circulation: {stats.credits.inCirculation.toLocaleString("fr-FR")}</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* API */}
-              <Card className="glass-card rounded-2xl border-l-4 border-l-orange-500 overflow-hidden">
-                <CardContent className="pt-5 pb-4 px-4">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-9 h-9 rounded-lg bg-orange-100 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-orange-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>
-                    </div>
-                    <span className="text-xl font-bold text-navy">{pct(apiAmount, totalSources)}</span>
-                  </div>
-                  <h3 className="font-semibold text-navy">API</h3>
-                  <p className="text-xl font-bold text-orange-600 mt-1">
-                    {Math.abs(stats.credits.apiDeductions.total).toLocaleString("fr-FR")} credits
-                  </p>
-                  <p className="text-sm text-orange-500 font-medium">{euro(apiAmount)}</p>
-                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
-                    <span className="text-xs text-muted-foreground">{stats.credits.apiDeductions.count} appels</span>
-                    <span className="text-xs text-muted-foreground">1 credit/appel</span>
                   </div>
                 </CardContent>
               </Card>
