@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import type { DateRange } from "react-day-picker";
 import {
   Table,
   TableBody,
@@ -102,6 +106,7 @@ interface PaymentStats {
   };
   credits: {
     inCirculation: number;
+    purchaseRevenue: number;
     purchases: CreditBreakdownItem;
     importDeductions: CreditBreakdownItem;
     apiDeductions: CreditBreakdownItem;
@@ -127,6 +132,13 @@ const PACK_LABELS: Record<string, string> = {
   PACK_10: "Pack 10",
   ALL_INCLUSIVE: "All inclusive",
 };
+
+const QUICK_RANGES = [
+  { label: "7 jours", days: 7 },
+  { label: "30 jours", days: 30 },
+  { label: "90 jours", days: 90 },
+  { label: "Tout", days: -1 },
+];
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -215,11 +227,52 @@ export default function AdminPaymentsPage() {
   const [stats, setStats] = useState<PaymentStats | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const calendarRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isStatsLoading, setIsStatsLoading] = useState(true);
   const [refundingId, setRefundingId] = useState<string | null>(null);
+
+  // Derived date strings for API calls
+  const dateFrom = dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : "";
+  const dateTo = dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : "";
+
+  const dateRangeLabel = dateRange?.from
+    ? dateRange.to
+      ? `${format(dateRange.from, "dd MMM yyyy", { locale: fr })} - ${format(dateRange.to, "dd MMM yyyy", { locale: fr })}`
+      : format(dateRange.from, "dd MMM yyyy", { locale: fr })
+    : "Toutes les periodes";
+
+  /* ----- calendar handlers ----- */
+  const applyQuickRange = (days: number) => {
+    if (days === -1) {
+      setDateRange(undefined);
+    } else {
+      const now = new Date();
+      const from = new Date(now.getTime() - days * 86400000);
+      setDateRange({ from, to: now });
+    }
+    setCalendarOpen(false);
+  };
+
+  useEffect(() => {
+    if (!calendarOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (calendarRef.current && !calendarRef.current.contains(e.target as Node)) {
+        setCalendarOpen(false);
+      }
+    };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setCalendarOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [calendarOpen]);
 
   /* ----- data fetching ----- */
   const fetchStats = useCallback(async () => {
@@ -326,13 +379,20 @@ export default function AdminPaymentsPage() {
       ? stats.packBreakdown.reduce((s, p) => s + p.revenue, 0)
       : 1;
 
+  // Average credit price based on actual purchase revenue
+  const avgCreditPrice = stats && stats.credits.purchases.total > 0
+    ? stats.credits.purchaseRevenue / stats.credits.purchases.total
+    : 0.019;
+
   /* ---------------------------------------------------------------- */
   /*  Render                                                           */
   /* ---------------------------------------------------------------- */
 
   return (
     <div className="animate-fade-in space-y-8">
-      {/* Header */}
+      {/* ============================================================ */}
+      {/*  Header + Date Picker + Export                                */}
+      {/* ============================================================ */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-navy">Paiements</h1>
@@ -341,33 +401,81 @@ export default function AdminPaymentsPage() {
             commandes
           </p>
         </div>
-        <Button
-          onClick={handleExport}
-          className="gradient-emerald text-white hover:opacity-90 rounded-xl gap-2"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
+        <div className="flex items-center gap-3">
+          {/* Date range picker */}
+          <div className="relative" ref={calendarRef}>
+            <Button
+              variant="outline"
+              className="min-w-[240px] justify-start text-left font-normal rounded-xl"
+              onClick={() => setCalendarOpen((v) => !v)}
+            >
+              <svg className="h-4 w-4 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+              </svg>
+              <span className="truncate">{dateRangeLabel}</span>
+            </Button>
+            {calendarOpen && (
+              <div className="absolute right-0 top-full mt-2 z-50 rounded-lg border bg-white shadow-lg">
+                <div className="flex">
+                  <div className="border-r p-3 space-y-1">
+                    <p className="text-xs font-medium text-muted-foreground mb-2 px-2">Raccourcis</p>
+                    {QUICK_RANGES.map((qr) => (
+                      <button
+                        key={qr.label}
+                        onClick={() => applyQuickRange(qr.days)}
+                        className="block w-full text-left text-sm px-3 py-1.5 rounded-md hover:bg-emerald-50 hover:text-emerald-700 transition-colors whitespace-nowrap"
+                      >
+                        {qr.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="p-3">
+                    <Calendar
+                      mode="range"
+                      selected={dateRange}
+                      onSelect={(range) => {
+                        setDateRange(range);
+                        if (range?.from && range?.to) {
+                          setTimeout(() => setCalendarOpen(false), 400);
+                        }
+                      }}
+                      numberOfMonths={2}
+                      defaultMonth={dateRange?.from || new Date()}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          {/* Export CSV */}
+          <Button
+            onClick={handleExport}
+            className="gradient-emerald text-white hover:opacity-90 rounded-xl gap-2"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
-            />
-          </svg>
-          Exporter CSV
-        </Button>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+              />
+            </svg>
+            Exporter CSV
+          </Button>
+        </div>
       </div>
 
       {/* ============================================================ */}
-      {/*  1) Revenue KPI Cards (6 cards)                              */}
+      {/*  1) KPI Cards — CA, Commission ventes, Vente credits          */}
       {/* ============================================================ */}
       {isStatsLoading ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => (
+        <div className="grid md:grid-cols-3 gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (
             <Card key={i} className="glass-card rounded-2xl animate-pulse">
               <CardContent className="pt-6">
                 <div className="h-4 bg-gray-200 rounded w-2/3 mb-3" />
@@ -377,7 +485,7 @@ export default function AdminPaymentsPage() {
           ))}
         </div>
       ) : stats ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-3 gap-4">
           {/* CA total */}
           <Card className="glass-card rounded-2xl border-l-4 border-l-emerald overflow-hidden">
             <CardHeader className="pb-1 pt-4 px-4">
@@ -390,16 +498,16 @@ export default function AdminPaymentsPage() {
                 {euro(stats.revenue.total)}
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Total commandes payées
+                {stats.revenue.paidOrders} commandes &middot; Panier moy. {euro(stats.revenue.avgBasket)}
               </p>
             </CardContent>
           </Card>
 
-          {/* Revenus plateforme (frais de service) */}
+          {/* Commission ventes (frais de service) */}
           <Card className="glass-card rounded-2xl border-l-4 border-l-violet-500 overflow-hidden">
             <CardHeader className="pb-1 pt-4 px-4">
               <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Revenus plateforme
+                Commission ventes
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
@@ -407,76 +515,24 @@ export default function AdminPaymentsPage() {
                 {euro(stats.connect.totalServiceFees)}
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Frais de service (1&euro;/commande)
+                1&euro; / commande &middot; {stats.revenue.paidOrders} commandes
               </p>
             </CardContent>
           </Card>
 
-          {/* Reversé photographes */}
+          {/* Vente de credits */}
           <Card className="glass-card rounded-2xl border-l-4 border-l-blue-500 overflow-hidden">
             <CardHeader className="pb-1 pt-4 px-4">
               <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Reversé photographes
+                Vente de credits
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
               <p className="text-2xl font-bold text-blue-600">
-                {euro(stats.connect.totalPhotographerPayouts)}
+                {euro(stats.credits.purchaseRevenue)}
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Net après frais Stripe ({euro(stats.connect.totalStripeFees)} de frais)
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Panier moyen */}
-          <Card className="glass-card rounded-2xl border-l-4 border-l-amber-500 overflow-hidden">
-            <CardHeader className="pb-1 pt-4 px-4">
-              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Panier moyen
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <p className="text-2xl font-bold text-amber-600">
-                {euro(stats.revenue.avgBasket)}
-              </p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Par commande payée
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Commandes payées */}
-          <Card className="glass-card rounded-2xl border-l-4 border-l-navy overflow-hidden">
-            <CardHeader className="pb-1 pt-4 px-4">
-              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Commandes payées
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <p className="text-2xl font-bold text-navy">
-                {stats.revenue.paidOrders}
-              </p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                sur {stats.totalOrders} total
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Taux de remboursement */}
-          <Card className="glass-card rounded-2xl border-l-4 border-l-red-400 overflow-hidden">
-            <CardHeader className="pb-1 pt-4 px-4">
-              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Taux remboursement
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <p className="text-2xl font-bold text-red-500">
-                {stats.refundRate}%
-              </p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                {stats.refundedOrders} remboursée
-                {stats.refundedOrders > 1 ? "s" : ""}
+                {stats.credits.purchases.total.toLocaleString("fr-FR")} credits &middot; {stats.credits.purchases.count} transactions
               </p>
             </CardContent>
           </Card>
@@ -484,24 +540,24 @@ export default function AdminPaymentsPage() {
       ) : null}
 
       {/* ============================================================ */}
-      {/*  1b) Revenue Sources Pie Charts                              */}
+      {/*  2) Revenue Sources Pie Charts                                */}
       {/* ============================================================ */}
       {stats && (() => {
-        const salesAmount = stats.connect.totalPhotographerPayouts;
-        const creditPurchaseAmount = stats.credits.purchases.total;
-        const apiAmount = Math.abs(stats.credits.apiDeductions.total);
+        const salesAmount = stats.connect.totalServiceFees;
+        const creditPurchaseAmount = stats.credits.purchaseRevenue;
+        const apiAmount = Math.abs(stats.credits.apiDeductions.total) * avgCreditPrice;
         const totalSources = salesAmount + creditPurchaseAmount + apiAmount;
 
         const revenueSlices: PieSlice[] = [
-          { value: salesAmount, color: "#059669", label: "Commissions ventes" },
-          { value: creditPurchaseAmount, color: "#2563eb", label: "Achats credits" },
+          { value: salesAmount, color: "#8b5cf6", label: "Commission ventes" },
+          { value: creditPurchaseAmount, color: "#2563eb", label: "Vente credits" },
           { value: apiAmount, color: "#ea580c", label: "API" },
         ];
 
         const feeSlices: PieSlice[] = [
           { value: stats.connect.totalPhotographerPayouts, color: "#059669", label: "Reverse photographes" },
           { value: stats.connect.totalStripeFees, color: "#7c3aed", label: "Frais Stripe" },
-          { value: stats.connect.totalServiceFees, color: "#6b7280", label: "Frais plateforme" },
+          { value: stats.connect.totalServiceFees, color: "#6b7280", label: "Commission plateforme" },
         ];
 
         return (
@@ -510,7 +566,7 @@ export default function AdminPaymentsPage() {
             <div className="grid lg:grid-cols-2 gap-6">
               <Card className="glass-card rounded-2xl">
                 <CardHeader>
-                  <CardTitle className="text-navy">Sources de revenus</CardTitle>
+                  <CardTitle className="text-navy">Sources de revenus plateforme</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-6">
@@ -555,18 +611,19 @@ export default function AdminPaymentsPage() {
               </Card>
             </div>
 
-            {/* Source Detail Cards */}
+            {/* Source Detail Cards with units + euros */}
             <div className="grid md:grid-cols-3 gap-4">
-              <Card className="glass-card rounded-2xl border-l-4 border-l-emerald overflow-hidden">
+              {/* Commission ventes */}
+              <Card className="glass-card rounded-2xl border-l-4 border-l-violet-500 overflow-hidden">
                 <CardContent className="pt-5 pb-4 px-4">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v13.5A1.5 1.5 0 003.75 21z" /></svg>
+                    <div className="w-9 h-9 rounded-lg bg-violet-100 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-violet-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
                     </div>
                     <span className="text-xl font-bold text-navy">{pct(salesAmount, totalSources)}</span>
                   </div>
-                  <h3 className="font-semibold text-navy">Commissions ventes</h3>
-                  <p className="text-xl font-bold text-emerald mt-1">{euro(salesAmount)}</p>
+                  <h3 className="font-semibold text-navy">Commission ventes</h3>
+                  <p className="text-xl font-bold text-violet-600 mt-1">{euro(salesAmount)}</p>
                   <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
                     <span className="text-xs text-muted-foreground">{stats.revenue.paidOrders} commandes</span>
                     <span className="text-xs text-muted-foreground">Panier moy. {euro(stats.revenue.avgBasket)}</span>
@@ -574,6 +631,7 @@ export default function AdminPaymentsPage() {
                 </CardContent>
               </Card>
 
+              {/* Achats credits */}
               <Card className="glass-card rounded-2xl border-l-4 border-l-blue-500 overflow-hidden">
                 <CardContent className="pt-5 pb-4 px-4">
                   <div className="flex items-start justify-between mb-3">
@@ -583,14 +641,18 @@ export default function AdminPaymentsPage() {
                     <span className="text-xl font-bold text-navy">{pct(creditPurchaseAmount, totalSources)}</span>
                   </div>
                   <h3 className="font-semibold text-navy">Achats credits</h3>
-                  <p className="text-xl font-bold text-blue-600 mt-1">{stats.credits.purchases.total} credits</p>
+                  <p className="text-xl font-bold text-blue-600 mt-1">
+                    {stats.credits.purchases.total.toLocaleString("fr-FR")} credits
+                  </p>
+                  <p className="text-sm text-blue-500 font-medium">{euro(creditPurchaseAmount)}</p>
                   <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
                     <span className="text-xs text-muted-foreground">{stats.credits.purchases.count} transactions</span>
-                    <span className="text-xs text-muted-foreground">En circulation: {stats.credits.inCirculation}</span>
+                    <span className="text-xs text-muted-foreground">En circulation: {stats.credits.inCirculation.toLocaleString("fr-FR")}</span>
                   </div>
                 </CardContent>
               </Card>
 
+              {/* API */}
               <Card className="glass-card rounded-2xl border-l-4 border-l-orange-500 overflow-hidden">
                 <CardContent className="pt-5 pb-4 px-4">
                   <div className="flex items-start justify-between mb-3">
@@ -600,7 +662,10 @@ export default function AdminPaymentsPage() {
                     <span className="text-xl font-bold text-navy">{pct(apiAmount, totalSources)}</span>
                   </div>
                   <h3 className="font-semibold text-navy">API</h3>
-                  <p className="text-xl font-bold text-orange-600 mt-1">{Math.abs(stats.credits.apiDeductions.total)} credits</p>
+                  <p className="text-xl font-bold text-orange-600 mt-1">
+                    {Math.abs(stats.credits.apiDeductions.total).toLocaleString("fr-FR")} credits
+                  </p>
+                  <p className="text-sm text-orange-500 font-medium">{euro(apiAmount)}</p>
                   <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
                     <span className="text-xs text-muted-foreground">{stats.credits.apiDeductions.count} appels</span>
                     <span className="text-xs text-muted-foreground">1 credit/appel</span>
@@ -617,23 +682,27 @@ export default function AdminPaymentsPage() {
               <CardContent>
                 <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                   <div className="text-center p-4 bg-gray-50 rounded-xl">
-                    <p className="text-2xl font-bold text-navy">{stats.credits.inCirculation}</p>
+                    <p className="text-2xl font-bold text-navy">{stats.credits.inCirculation.toLocaleString("fr-FR")}</p>
                     <p className="text-xs text-muted-foreground mt-1">En circulation</p>
                   </div>
                   <div className="text-center p-4 bg-blue-50 rounded-xl">
-                    <p className="text-2xl font-bold text-blue-600">+{stats.credits.purchases.total}</p>
+                    <p className="text-2xl font-bold text-blue-600">+{stats.credits.purchases.total.toLocaleString("fr-FR")}</p>
+                    <p className="text-xs text-blue-500 font-medium">{euro(stats.credits.purchaseRevenue)}</p>
                     <p className="text-xs text-muted-foreground mt-1">Achetes ({stats.credits.purchases.count})</p>
                   </div>
                   <div className="text-center p-4 bg-red-50 rounded-xl">
-                    <p className="text-2xl font-bold text-red-600">{stats.credits.importDeductions.total}</p>
+                    <p className="text-2xl font-bold text-red-600">{stats.credits.importDeductions.total.toLocaleString("fr-FR")}</p>
+                    <p className="text-xs text-red-400 font-medium">{euro(Math.abs(stats.credits.importDeductions.total) * avgCreditPrice)}</p>
                     <p className="text-xs text-muted-foreground mt-1">Import ({stats.credits.importDeductions.count})</p>
                   </div>
                   <div className="text-center p-4 bg-orange-50 rounded-xl">
-                    <p className="text-2xl font-bold text-orange-600">{stats.credits.apiDeductions.total}</p>
+                    <p className="text-2xl font-bold text-orange-600">{stats.credits.apiDeductions.total.toLocaleString("fr-FR")}</p>
+                    <p className="text-xs text-orange-400 font-medium">{euro(Math.abs(stats.credits.apiDeductions.total) * avgCreditPrice)}</p>
                     <p className="text-xs text-muted-foreground mt-1">API ({stats.credits.apiDeductions.count})</p>
                   </div>
                   <div className="text-center p-4 bg-emerald-50 rounded-xl">
-                    <p className="text-2xl font-bold text-emerald-600">+{stats.credits.adminGrants.total}</p>
+                    <p className="text-2xl font-bold text-emerald-600">+{stats.credits.adminGrants.total.toLocaleString("fr-FR")}</p>
+                    <p className="text-xs text-emerald-400 font-medium">{euro(stats.credits.adminGrants.total * avgCreditPrice)}</p>
                     <p className="text-xs text-muted-foreground mt-1">Offerts ({stats.credits.adminGrants.count})</p>
                   </div>
                 </div>
@@ -644,7 +713,7 @@ export default function AdminPaymentsPage() {
       })()}
 
       {/* ============================================================ */}
-      {/*  2) Revenue Chart + Pack Breakdown + Top Events              */}
+      {/*  3) Revenue Chart + Pack Breakdown                            */}
       {/* ============================================================ */}
       {stats && (
         <div className="grid lg:grid-cols-3 gap-6">
@@ -676,31 +745,27 @@ export default function AdminPaymentsPage() {
               ) : (
                 <div className="flex items-end gap-3 h-48">
                   {stats.monthlyRevenue.map((m) => {
-                    const pct = (m.revenue / maxMonthlyRevenue) * 100;
+                    const barPct = (m.revenue / maxMonthlyRevenue) * 100;
                     return (
                       <div
                         key={m.month}
                         className="flex-1 flex flex-col items-center gap-1"
                       >
-                        {/* Value label */}
                         <span className="text-xs font-semibold text-navy whitespace-nowrap">
                           {euro(m.revenue)}
                         </span>
-                        {/* Bar */}
                         <div className="w-full bg-emerald-50 rounded-t-lg relative flex-1 flex items-end">
                           <div
                             className="w-full gradient-emerald rounded-t-lg transition-all duration-700 ease-out"
                             style={{
-                              height: `${Math.max(pct, 4)}%`,
+                              height: `${Math.max(barPct, 4)}%`,
                               minHeight: "4px",
                             }}
                           />
                         </div>
-                        {/* Month label */}
                         <span className="text-[11px] text-muted-foreground font-medium whitespace-nowrap">
                           {monthLabel(m.month)}
                         </span>
-                        {/* Orders count */}
                         <span className="text-[10px] text-muted-foreground">
                           {m.orders} cmd{m.orders > 1 ? "s" : ""}
                         </span>
@@ -744,7 +809,7 @@ export default function AdminPaymentsPage() {
                       PACK_LABELS[pack.pack_type || ""] ||
                       pack.pack_type ||
                       "Sans pack";
-                    const pct =
+                    const packPct =
                       totalPackRevenue > 0
                         ? ((pack.revenue / totalPackRevenue) * 100).toFixed(1)
                         : "0";
@@ -756,14 +821,14 @@ export default function AdminPaymentsPage() {
                           </span>
                           <span className="text-sm text-muted-foreground">
                             {euro(pack.revenue)}{" "}
-                            <span className="text-xs">({pct}%)</span>
+                            <span className="text-xs">({packPct}%)</span>
                           </span>
                         </div>
                         <div className="w-full bg-emerald-50 rounded-full h-2.5">
                           <div
                             className="gradient-emerald h-2.5 rounded-full transition-all duration-500"
                             style={{
-                              width: `${Math.max(parseFloat(pct), 2)}%`,
+                              width: `${Math.max(parseFloat(packPct), 2)}%`,
                             }}
                           />
                         </div>
@@ -808,7 +873,6 @@ export default function AdminPaymentsPage() {
                   key={evt.id}
                   className="relative p-4 rounded-xl bg-white/60 hover:bg-white/80 transition-colors border border-white/40"
                 >
-                  {/* Rank badge */}
                   <div
                     className={`absolute -top-2 -left-2 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white ${
                       idx === 0
@@ -854,7 +918,7 @@ export default function AdminPaymentsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-6">
+            <div className="flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
                   <span className="text-lg font-bold text-emerald-700">{stats.connect.onboardedAccounts}</span>
@@ -874,13 +938,23 @@ export default function AdminPaymentsPage() {
                   <p className="text-xs text-muted-foreground">Photographes, organisateurs, agences</p>
                 </div>
               </div>
+              <div className="ml-auto flex gap-6 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Reverse :</span>{" "}
+                  <span className="font-semibold text-navy">{euro(stats.connect.totalPhotographerPayouts)}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Frais Stripe :</span>{" "}
+                  <span className="font-semibold text-navy">{euro(stats.connect.totalStripeFees)}</span>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
       )}
 
       {/* ============================================================ */}
-      {/*  3) Filters Row                                              */}
+      {/*  4) Orders Table                                              */}
       {/* ============================================================ */}
       <Card className="glass-card rounded-2xl">
         <CardHeader className="pb-4">
@@ -925,33 +999,8 @@ export default function AdminPaymentsPage() {
                 </SelectContent>
               </Select>
 
-              {/* Date from */}
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs text-muted-foreground">Du</span>
-                <Input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className="w-40 rounded-xl"
-                />
-              </div>
-
-              {/* Date to */}
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs text-muted-foreground">Au</span>
-                <Input
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="w-40 rounded-xl"
-                />
-              </div>
-
               {/* Clear filters */}
-              {(search ||
-                statusFilter !== "all" ||
-                dateFrom ||
-                dateTo) && (
+              {(search || statusFilter !== "all") && (
                 <Button
                   variant="ghost"
                   size="sm"
@@ -959,8 +1008,6 @@ export default function AdminPaymentsPage() {
                   onClick={() => {
                     setSearch("");
                     setStatusFilter("all");
-                    setDateFrom("");
-                    setDateTo("");
                   }}
                 >
                   <svg
@@ -983,9 +1030,6 @@ export default function AdminPaymentsPage() {
           </div>
         </CardHeader>
 
-        {/* ============================================================ */}
-        {/*  4) Orders Table                                             */}
-        {/* ============================================================ */}
         <CardContent>
           {isLoading ? (
             <div className="py-12 text-center">
@@ -1075,12 +1119,10 @@ export default function AdminPaymentsPage() {
                           key={order.id}
                           className="hover:bg-white/50 transition-colors"
                         >
-                          {/* ID */}
                           <TableCell className="font-mono text-xs text-muted-foreground">
                             #{order.id.slice(-8).toUpperCase()}
                           </TableCell>
 
-                          {/* Client */}
                           <TableCell>
                             <div className="max-w-[180px]">
                               <p className="font-medium text-sm text-navy truncate">
@@ -1092,7 +1134,6 @@ export default function AdminPaymentsPage() {
                             </div>
                           </TableCell>
 
-                          {/* Event */}
                           <TableCell>
                             <Link
                               href={`/focus-mgr-7k9x/events?id=${order.event.id}`}
@@ -1102,19 +1143,16 @@ export default function AdminPaymentsPage() {
                             </Link>
                           </TableCell>
 
-                          {/* Pack type */}
                           <TableCell>
                             <span className="text-xs font-medium text-navy/70 bg-white/60 px-2 py-0.5 rounded-full">
                               {packLabel}
                             </span>
                           </TableCell>
 
-                          {/* Photos count */}
                           <TableCell className="text-center text-sm">
                             {order._count.items}
                           </TableCell>
 
-                          {/* Photographer */}
                           <TableCell>
                             <div className="max-w-[140px]">
                               <p className="text-sm text-navy truncate">{order.event.user?.name || "-"}</p>
@@ -1124,22 +1162,18 @@ export default function AdminPaymentsPage() {
                             </div>
                           </TableCell>
 
-                          {/* Amount */}
                           <TableCell className="text-right font-semibold text-sm text-navy">
                             {euro(order.totalAmount)}
                           </TableCell>
 
-                          {/* Service fee */}
                           <TableCell className="text-right text-sm text-muted-foreground">
                             {order.serviceFee > 0 ? euro(order.serviceFee) : "-"}
                           </TableCell>
 
-                          {/* Photographer payout */}
                           <TableCell className="text-right text-sm text-blue-600">
                             {order.photographerPayout > 0 ? euro(order.photographerPayout) : "-"}
                           </TableCell>
 
-                          {/* Status */}
                           <TableCell className="text-center">
                             <Badge
                               className={`${statusCfg.color} rounded-full text-xs px-2.5`}
@@ -1148,17 +1182,14 @@ export default function AdminPaymentsPage() {
                             </Badge>
                           </TableCell>
 
-                          {/* Date */}
                           <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
                             {dateFR(order.createdAt)}
                           </TableCell>
 
-                          {/* Download count */}
                           <TableCell className="text-center text-sm text-muted-foreground">
                             {order.downloadCount || 0}
                           </TableCell>
 
-                          {/* Actions */}
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-1.5">
                               <Link
@@ -1194,9 +1225,7 @@ export default function AdminPaymentsPage() {
                 </Table>
               </div>
 
-              {/* ============================================================ */}
-              {/*  5) Pagination                                               */}
-              {/* ============================================================ */}
+              {/* Pagination */}
               <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-3">
                 <p className="text-sm text-muted-foreground">
                   {pagination.total} commande

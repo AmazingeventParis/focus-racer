@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const whereDate: Record<string, unknown> = {};
     if (from || to) whereDate.createdAt = dateFilter;
 
-    const [totalRevenue, totalOrders, refundedOrders, monthlyRevenue, packBreakdown, topEvents, connectStats, feeStats, creditPurchases, creditImportDeductions, creditApiDeductions, creditAdminGrants, totalCreditsInCirculation] =
+    const [totalRevenue, totalOrders, refundedOrders, monthlyRevenue, packBreakdown, topEvents, connectStats, feeStats, creditPurchases, creditImportDeductions, creditApiDeductions, creditAdminGrants, totalCreditsInCirculation, creditPurchaseRevenueResult] =
       await Promise.all([
         // Total revenue from paid orders (with optional date filter)
         prisma.order.aggregate({
@@ -91,32 +91,47 @@ export async function GET(request: NextRequest) {
           where: { ...whereDate, status: "PAID" },
           _sum: { serviceFee: true, stripeFee: true, photographerPayout: true },
         }),
-        // Credit purchases (all users)
+        // Credit purchases (all users, with date filter)
         prisma.creditTransaction.aggregate({
-          where: { type: "PURCHASE" },
+          where: { type: "PURCHASE", ...whereDate },
           _sum: { amount: true },
           _count: true,
         }),
-        // Credit deductions (import photos, not API)
+        // Credit deductions (import photos, not API, with date filter)
         prisma.creditTransaction.aggregate({
-          where: { type: "DEDUCTION", NOT: { reason: { contains: "API" } } },
+          where: { type: "DEDUCTION", NOT: { reason: { contains: "API" } }, ...whereDate },
           _sum: { amount: true },
           _count: true,
         }),
-        // Credit deductions (API)
+        // Credit deductions (API, with date filter)
         prisma.creditTransaction.aggregate({
-          where: { type: "DEDUCTION", reason: { contains: "API" } },
+          where: { type: "DEDUCTION", reason: { contains: "API" }, ...whereDate },
           _sum: { amount: true },
           _count: true,
         }),
-        // Credit admin grants
+        // Credit admin grants (with date filter)
         prisma.creditTransaction.aggregate({
-          where: { type: "ADMIN_GRANT" },
+          where: { type: "ADMIN_GRANT", ...whereDate },
           _sum: { amount: true },
           _count: true,
         }),
-        // Total credits in circulation
+        // Total credits in circulation (current state, no date filter)
         prisma.user.aggregate({ _sum: { credits: true } }),
+        // Estimated revenue from credit purchases (based on known pack prices)
+        prisma.$queryRaw<{ total: number }[]>`
+          SELECT COALESCE(SUM(
+            CASE
+              WHEN "amount" = 1000 THEN 19.0
+              WHEN "amount" = 5000 THEN 85.0
+              WHEN "amount" = 15000 THEN 225.0
+              WHEN "amount" = 20000 THEN 199.0
+              WHEN "amount" = 50000 THEN 399.0
+              ELSE "amount" * 0.019
+            END
+          ), 0)::float as total
+          FROM "CreditTransaction"
+          WHERE "type" = 'PURCHASE'
+        `,
       ]);
 
     // Parse connect stats
@@ -147,6 +162,7 @@ export async function GET(request: NextRequest) {
       },
       credits: {
         inCirculation: totalCreditsInCirculation._sum.credits || 0,
+        purchaseRevenue: creditPurchaseRevenueResult[0]?.total || 0,
         purchases: {
           total: creditPurchases._sum.amount || 0,
           count: creditPurchases._count,
