@@ -17,7 +17,7 @@ export default withAuth(
     }
 
     // Photographer/Pro routes: Pro roles + ADMIN
-    if (pathname.startsWith("/photographer")) {
+    if (pathname.startsWith("/photographer") || pathname.startsWith("/organizer")) {
       if (!role || (!PRO_ROLES.includes(role) && role !== "ADMIN")) {
         return NextResponse.redirect(new URL("/login", req.url));
       }
@@ -44,6 +44,7 @@ export const config = {
     // Secret admin slug
     "/focus-mgr-7k9x/:path*",
     "/photographer/:path*",
+    "/organizer/:path*",
     "/api/admin/:path*",
     "/account/:path*",
   ],

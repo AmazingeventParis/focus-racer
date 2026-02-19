@@ -1,0 +1,552 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { PhotoWithBibNumbers, Event } from "@/types";
+import { EventAnalytics } from "@/components/event-analytics";
+
+const SPORT_LABELS: Record<string, string> = {
+  RUNNING: "Course à pied",
+  TRAIL: "Trail",
+  TRIATHLON: "Triathlon",
+  CYCLING: "Cyclisme",
+  SWIMMING: "Natation",
+  OBSTACLE: "Course à obstacles",
+  OTHER: "Autre",
+};
+
+const STATUS_LABELS: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
+  DRAFT: { label: "Brouillon", variant: "secondary" },
+  PUBLISHED: { label: "Publié", variant: "default" },
+  ARCHIVED: { label: "Archivé", variant: "outline" },
+};
+
+const SPORT_TYPES = [
+  { value: "RUNNING", label: "Course à pied" },
+  { value: "TRAIL", label: "Trail" },
+  { value: "TRIATHLON", label: "Triathlon" },
+  { value: "CYCLING", label: "Cyclisme" },
+  { value: "SWIMMING", label: "Natation" },
+  { value: "OBSTACLE", label: "Course à obstacles" },
+  { value: "OTHER", label: "Autre" },
+];
+
+interface EventDetail extends Event {
+  photos: PhotoWithBibNumbers[];
+  _count: { photos: number; startListEntries: number };
+}
+
+export default function EventDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const { id } = params;
+  const { status } = useSession();
+  const router = useRouter();
+  const { toast } = useToast();
+  const [event, setEvent] = useState<EventDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [editOpen, setEditOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingBranding, setIsUploadingBranding] = useState(false);
+  const [isNotifying, setIsNotifying] = useState(false);
+  const [notifyStatus, setNotifyStatus] = useState<{ pending: number; notified: number; withEmail: number } | null>(null);
+  // isClustering removed: face linking is now automatic during Premium upload
+  const [clusteringStats, setClusteringStats] = useState<{
+    totalPhotos: number;
+    photosWithBibs: number;
+    photosWithFaces: number;
+    orphanPhotos: number;
+    lastClusteredAt: string | null;
+    needsClustering: boolean;
+  } | null>(null);
+
+  // Edit form state
+  const [editName, setEditName] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editLocation, setEditLocation] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editSportType, setEditSportType] = useState("RUNNING");
+  const [editStatus, setEditStatus] = useState("DRAFT");
+  const [editColor, setEditColor] = useState("#14B8A6");
+
+  const fetchEvent = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/events/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setEvent(data);
+        // Populate edit form
+        setEditName(data.name);
+        setEditDate(new Date(data.date).toISOString().split("T")[0]);
+        setEditLocation(data.location || "");
+        setEditDescription(data.description || "");
+        setEditSportType(data.sportType || "RUNNING");
+        setEditStatus(data.status || "DRAFT");
+        setEditColor(data.primaryColor || "#14B8A6");
+      } else {
+        toast({
+          title: "Erreur",
+          description: "Événement non trouvé",
+          variant: "destructive",
+        });
+        router.push("/organizer/dashboard");
+      }
+    } catch (error) {
+      console.error("Error fetching event:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [id, router, toast]);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  const fetchNotifyStatus = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/events/${id}/notify-runners`);
+      if (response.ok) {
+        setNotifyStatus(await response.json());
+      }
+    } catch {
+      // ignore
+    }
+  }, [id]);
+
+  const fetchClusteringStats = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/events/${id}/cluster-faces`);
+      if (response.ok) {
+        setClusteringStats(await response.json());
+      }
+    } catch {
+      // ignore
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchEvent();
+      fetchNotifyStatus();
+      fetchClusteringStats();
+    }
+  }, [status, fetchEvent, fetchNotifyStatus, fetchClusteringStats]);
+
+  const handleStatusChange = async (newStatus: string) => {
+    try {
+      const response = await fetch(`/api/events/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (response.ok) {
+        const updated = await response.json();
+        setEvent((prev) => prev ? { ...prev, ...updated } : prev);
+        setEditStatus(newStatus);
+        toast({ title: "Statut mis a jour" });
+      }
+    } catch {
+      toast({ title: "Erreur", description: "Impossible de changer le statut", variant: "destructive" });
+    }
+  };
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    try {
+      const response = await fetch(`/api/events/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: editName,
+          date: editDate,
+          location: editLocation || null,
+          description: editDescription || null,
+          sportType: editSportType,
+          status: editStatus,
+          primaryColor: editColor,
+        }),
+      });
+      if (response.ok) {
+        await fetchEvent();
+        setEditOpen(false);
+        toast({ title: "Evenement mis a jour" });
+      } else {
+        const data = await response.json();
+        toast({ title: "Erreur", description: data.error, variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Erreur", description: "Impossible de sauvegarder", variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Supprimer cet evenement et toutes ses photos ? Cette action est irreversible.")) return;
+    try {
+      const response = await fetch(`/api/events/${id}`, { method: "DELETE" });
+      if (response.ok) {
+        toast({ title: "Evenement supprime" });
+        router.push("/organizer/dashboard");
+      }
+    } catch {
+      toast({ title: "Erreur", description: "Impossible de supprimer", variant: "destructive" });
+    }
+  };
+
+  const handleNotifyRunners = async () => {
+    if (!confirm(
+      notifyStatus?.pending
+        ? `Envoyer un email a ${notifyStatus.pending} coureur${notifyStatus.pending > 1 ? "s" : ""} pour les informer que leurs photos sont disponibles ?`
+        : "Envoyer les notifications par email aux coureurs ?"
+    )) return;
+
+    setIsNotifying(true);
+    try {
+      const response = await fetch(`/api/events/${id}/notify-runners`, {
+        method: "POST",
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast({
+          title: "Notifications envoyees",
+          description: data.message,
+        });
+        fetchNotifyStatus();
+      } else {
+        toast({
+          title: "Erreur",
+          description: data.error,
+          variant: "destructive",
+        });
+      }
+    } catch {
+      toast({ title: "Erreur", description: "Impossible d'envoyer les notifications", variant: "destructive" });
+    } finally {
+      setIsNotifying(false);
+    }
+  };
+
+  // handleClusterFaces removed: face linking is now automatic during Premium upload pipeline
+
+  const handleBrandingUpload = async (imageType: string, file: File) => {
+    setIsUploadingBranding(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", imageType);
+      const response = await fetch(`/api/events/${id}/branding`, {
+        method: "POST",
+        body: formData,
+      });
+      if (response.ok) {
+        await fetchEvent();
+        toast({ title: "Image mise a jour" });
+      } else {
+        toast({ title: "Erreur d'upload", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Erreur", variant: "destructive" });
+    } finally {
+      setIsUploadingBranding(false);
+    }
+  };
+
+  if (status === "loading" || isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <p className="text-muted-foreground">Chargement...</p>
+      </div>
+    );
+  }
+
+  if (!event) return null;
+
+  const statusInfo = STATUS_LABELS[event.status || "DRAFT"];
+
+  return (
+    <div className="p-8 animate-fade-in">
+      <Link
+        href="/organizer/events"
+        className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
+      >
+        &larr; Retour aux evenements
+      </Link>
+
+        {/* Event header card */}
+        <Card className="mb-8 bg-white border-0 shadow-sm rounded-2xl">
+          <CardHeader>
+            <div className="flex gap-6 items-start">
+              {/* Poster / Affiche */}
+              <div className="flex-shrink-0 w-40">
+                <label className="block cursor-pointer group relative">
+                  {event.coverImage ? (
+                    <div className="relative w-40 h-24 rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                      <Image
+                        src={event.coverImage}
+                        alt="Affiche"
+                        fill
+                        className="object-cover"
+                        sizes="160px"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                        <span className="text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">Changer</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-40 h-24 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center gap-1 group-hover:border-emerald group-hover:bg-emerald-50/50 transition-all">
+                      <svg className="w-6 h-6 text-gray-400 group-hover:text-emerald transition-colors" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
+                      </svg>
+                      <span className="text-xs text-gray-400 group-hover:text-emerald transition-colors">Ajouter une affiche</span>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    disabled={isUploadingBranding}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleBrandingUpload("coverImage", file);
+                    }}
+                  />
+                </label>
+                {isUploadingBranding && (
+                  <p className="text-xs text-emerald mt-1 text-center">Upload...</p>
+                )}
+              </div>
+
+              <div className="flex-1 flex justify-between items-start">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-2xl text-navy">{event.name}</CardTitle>
+                  <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
+                </div>
+                <CardDescription className="flex items-center gap-2 text-sm">
+                  {new Date(event.date).toLocaleDateString("fr-FR", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                  {event.location && ` \u2022 ${event.location}`}
+                  {" \u2022 "}
+                  {SPORT_LABELS[event.sportType || "RUNNING"]}
+                </CardDescription>
+                {event.description && (
+                  <p className="text-sm text-muted-foreground mt-2">{event.description}</p>
+                )}
+              </div>
+              <div className="flex gap-2">
+                {/* Quick status toggle */}
+                {event.status === "DRAFT" && (
+                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => handleStatusChange("PUBLISHED")}>
+                    Publier
+                  </Button>
+                )}
+                {event.status === "PUBLISHED" && (
+                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => handleStatusChange("ARCHIVED")}>
+                    Archiver
+                  </Button>
+                )}
+                {event.status === "ARCHIVED" && (
+                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => handleStatusChange("DRAFT")}>
+                    Remettre en brouillon
+                  </Button>
+                )}
+                <Link href={`/organizer/events/${id}/start-list`}>
+                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200">Start-List</Button>
+                </Link>
+                <Link href={`/organizer/events/${id}/packs`}>
+                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200">Tarifs</Button>
+                </Link>
+                {notifyStatus && notifyStatus.pending > 0 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleNotifyRunners}
+                    disabled={isNotifying}
+                    className="text-emerald border-emerald/30 hover:bg-emerald-50 transition-all duration-200"
+                  >
+                    {isNotifying
+                      ? "Envoi en cours..."
+                      : `Notifier ${notifyStatus.pending} coureur${notifyStatus.pending > 1 ? "s" : ""}`}
+                  </Button>
+                )}
+                {notifyStatus && notifyStatus.pending === 0 && notifyStatus.notified > 0 && (
+                  <Badge variant="outline" className="text-emerald border-emerald/30 py-1.5">
+                    {notifyStatus.notified} notifie{notifyStatus.notified > 1 ? "s" : ""}
+                  </Badge>
+                )}
+                {/* Clustering button removed: face linking is now automatic during Premium upload pipeline */}
+                <Link href={`/organizer/events/${id}/upload`}>
+                  <Button size="sm" className="bg-emerald hover:bg-emerald-hover text-white shadow-emerald transition-all duration-200">Ajouter des photos</Button>
+                </Link>
+                <Link href={`/organizer/events/${id}/live`}>
+                  <Button size="sm" variant="outline" className="text-emerald border-emerald/30 hover:bg-emerald-50 transition-all duration-200">
+                    Mode Live
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4 flex-wrap items-center">
+              <Dialog open={editOpen} onOpenChange={setEditOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="sm">Modifier</Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle className="text-navy">Modifier l&apos;evenement</DialogTitle>
+                    <DialogDescription>Modifiez les informations de votre evenement</DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleEdit} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-name">Nom *</Label>
+                      <Input id="edit-name" value={editName} onChange={(e) => setEditName(e.target.value)} required />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-date">Date *</Label>
+                        <Input id="edit-date" type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} required />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Sport</Label>
+                        <Select value={editSportType} onValueChange={setEditSportType}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {SPORT_TYPES.map((s) => (
+                              <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-location">Lieu</Label>
+                      <Input id="edit-location" value={editLocation} onChange={(e) => setEditLocation(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-description">Description</Label>
+                      <textarea
+                        id="edit-description"
+                        value={editDescription}
+                        onChange={(e) => setEditDescription(e.target.value)}
+                        className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Statut</Label>
+                        <Select value={editStatus} onValueChange={setEditStatus}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="DRAFT">Brouillon</SelectItem>
+                            <SelectItem value="PUBLISHED">Publié</SelectItem>
+                            <SelectItem value="ARCHIVED">Archive</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-color">Couleur principale</Label>
+                        <div className="flex gap-2 items-center">
+                          <input
+                            id="edit-color"
+                            type="color"
+                            value={editColor}
+                            onChange={(e) => setEditColor(e.target.value)}
+                            className="h-9 w-12 rounded border border-input cursor-pointer"
+                          />
+                          <Input
+                            value={editColor}
+                            onChange={(e) => setEditColor(e.target.value)}
+                            className="flex-1"
+                            maxLength={7}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Branding images */}
+                    <Separator />
+                    <p className="text-sm font-medium text-navy">Branding visuel</p>
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { key: "coverImage", label: "Couverture" },
+                        { key: "bannerImage", label: "Banniere" },
+                        { key: "logoImage", label: "Logo" },
+                      ].map(({ key, label }) => (
+                        <div key={key} className="space-y-1">
+                          <Label className="text-xs">{label}</Label>
+                          {event && (event as unknown as Record<string, unknown>)[key] ? (
+                            <div className="relative aspect-video rounded border overflow-hidden">
+                              <Image
+                                src={(event as unknown as Record<string, unknown>)[key] as string}
+                                alt={label}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="aspect-video rounded border border-dashed flex items-center justify-center text-xs text-muted-foreground">
+                              Aucune
+                            </div>
+                          )}
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            className="text-xs h-8"
+                            disabled={isUploadingBranding}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleBrandingUpload(key, file);
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-2 justify-end">
+                      <Button type="button" variant="outline" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => setEditOpen(false)}>Annuler</Button>
+                      <Button type="submit" className="bg-emerald hover:bg-emerald-hover text-white shadow-emerald transition-all duration-200" disabled={isSaving}>
+                        {isSaving ? "Enregistrement..." : "Enregistrer"}
+                      </Button>
+                    </div>
+                  </form>
+                </DialogContent>
+              </Dialog>
+              <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700" onClick={handleDelete}>
+                Supprimer
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Analytics Section */}
+        <EventAnalytics eventId={id} />
+    </div>
+  );
+}
