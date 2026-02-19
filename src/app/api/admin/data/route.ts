@@ -119,6 +119,16 @@ export async function GET(request: NextRequest) {
       neverDownloaded,
       expiredOrders,
       downloadDistribution,
+
+      // --- API KEYS ---
+      totalApiKeys,
+      activeApiKeys,
+      apiKeyCreationTrend,
+      uniqueApiUsers,
+      totalApiCalls,
+      totalApiCredits,
+      apiUsageTrend,
+      topApiUsers,
     ] = await Promise.all([
       // --- USERS ---
       prisma.user.count(),
@@ -387,6 +397,53 @@ export async function GET(request: NextRequest) {
         GROUP BY range
         ORDER BY range ASC
       `,
+
+      // --- API KEYS ---
+      prisma.apiKey.count(),
+      prisma.apiKey.count({ where: { isActive: true } }),
+      prisma.$queryRaw<{ month: string; count: number }[]>`
+        SELECT TO_CHAR(DATE_TRUNC('month', "createdAt"), 'YYYY-MM') as month,
+               COUNT(*)::int as count
+        FROM "ApiKey"
+        WHERE "createdAt" >= NOW() - INTERVAL '12 months'
+        GROUP BY DATE_TRUNC('month', "createdAt")
+        ORDER BY month ASC
+      `,
+      prisma.$queryRaw<[{ count: number }]>`
+        SELECT COUNT(DISTINCT "userId")::int as count FROM "ApiKey" WHERE "isActive" = true
+      `,
+      prisma.creditTransaction.count({ where: { type: "DEDUCTION", reason: { contains: "API" } } }),
+      prisma.creditTransaction.aggregate({
+        where: { type: "DEDUCTION", reason: { contains: "API" } },
+        _sum: { amount: true },
+      }),
+      prisma.$queryRaw<{ month: string; calls: number; credits: number }[]>`
+        SELECT
+          TO_CHAR(DATE_TRUNC('month', "createdAt"), 'YYYY-MM') as month,
+          COUNT(*)::int as calls,
+          COALESCE(SUM(ABS(amount)), 0)::int as credits
+        FROM "CreditTransaction"
+        WHERE type = 'DEDUCTION' AND reason LIKE '%API%'
+          AND "createdAt" >= NOW() - INTERVAL '12 months'
+        GROUP BY DATE_TRUNC('month', "createdAt")
+        ORDER BY month ASC
+      `,
+      prisma.$queryRaw<{ userName: string; userEmail: string; keyCount: number; apiCalls: number }[]>`
+        SELECT
+          u.name as "userName",
+          u.email as "userEmail",
+          COUNT(DISTINCT ak.id)::int as "keyCount",
+          COALESCE((
+            SELECT COUNT(*)::int FROM "CreditTransaction" ct
+            WHERE ct."userId" = u.id AND ct.type = 'DEDUCTION' AND ct.reason LIKE '%API%'
+          ), 0)::int as "apiCalls"
+        FROM "User" u
+        JOIN "ApiKey" ak ON ak."userId" = u.id
+        WHERE ak."isActive" = true
+        GROUP BY u.id, u.name, u.email
+        ORDER BY "apiCalls" DESC
+        LIMIT 10
+      `,
     ]);
 
     // Helpers
@@ -558,6 +615,17 @@ export async function GET(request: NextRequest) {
         expiredOrders,
         neverDownloaded,
         downloadDistribution,
+      },
+
+      api: {
+        totalKeys: totalApiKeys,
+        activeKeys: activeApiKeys,
+        uniqueUsers: (uniqueApiUsers as any)[0]?.count || 0,
+        totalCalls: totalApiCalls,
+        totalCreditsUsed: Math.abs(totalApiCredits._sum.amount || 0),
+        creationTrend: apiKeyCreationTrend,
+        usageTrend: apiUsageTrend,
+        topUsers: topApiUsers,
       },
     });
   } catch (error) {

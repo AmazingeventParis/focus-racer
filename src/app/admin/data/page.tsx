@@ -138,6 +138,16 @@ interface DataResponse {
     neverDownloaded: number;
     downloadDistribution: { range: string; count: number }[];
   };
+  api: {
+    totalKeys: number;
+    activeKeys: number;
+    uniqueUsers: number;
+    totalCalls: number;
+    totalCreditsUsed: number;
+    creationTrend: TrendItem[];
+    usageTrend: { month: string; calls: number; credits: number }[];
+    topUsers: { userName: string; userEmail: string; keyCount: number; apiCalls: number }[];
+  };
 }
 
 // ─── Constants ───────────────────────────────────────────────────────────
@@ -153,6 +163,7 @@ const SECTIONS = [
   { id: "gdpr", label: "RGPD" },
   { id: "storage", label: "Stockage" },
   { id: "downloads", label: "Downloads" },
+  { id: "api", label: "API" },
 ];
 
 const QUICK_RANGES = [
@@ -265,6 +276,7 @@ const SECTION_COLORS: Record<string, { bg: string; text: string; border: string;
   gdpr:        { bg: "bg-red-50",     text: "text-red-600",     border: "border-red-200",     bar: "bg-red-500",     borderL: "border-l-red-400" },
   storage:     { bg: "bg-slate-50",   text: "text-slate-600",   border: "border-slate-200",   bar: "bg-slate-500",   borderL: "border-l-slate-500" },
   downloads:   { bg: "bg-cyan-50",    text: "text-cyan-600",    border: "border-cyan-200",    bar: "bg-cyan-500",    borderL: "border-l-cyan-500" },
+  api:         { bg: "bg-orange-50",  text: "text-orange-600",  border: "border-orange-200",  bar: "bg-orange-500",  borderL: "border-l-orange-500" },
 };
 
 // ─── Sub-components ─────────────────────────────────────────────────────
@@ -1126,6 +1138,96 @@ export default function AdminDataPage() {
               </CardHeader>
               <CardContent>
                 <ArrayBars data={data.downloads.downloadDistribution} barClass="bg-cyan-500" />
+              </CardContent>
+            </Card>
+          )}
+        </section>}
+
+        {/* ────── S11: API ────── */}
+        {activeSection === "api" && <section id="api">
+          <SectionHeader sectionId="api" label="API & Cles" />
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <KPICard label="Total cles" value={fmt(data.api.totalKeys)} borderColor="border-l-orange-500" />
+            <KPICard label="Cles actives" value={fmt(data.api.activeKeys)} borderColor="border-l-orange-400" subtitle={data.api.totalKeys > 0 ? fmtPct((data.api.activeKeys / data.api.totalKeys) * 100) : "0 %"} />
+            <KPICard label="Utilisateurs API" value={fmt(data.api.uniqueUsers)} borderColor="border-l-orange-300" subtitle="Avec au moins 1 cle active" />
+            <KPICard label="Appels API total" value={fmt(data.api.totalCalls)} borderColor="border-l-orange-500" />
+          </div>
+          <div className="grid md:grid-cols-2 gap-4 mb-6">
+            <KPICard label="Credits consommes (API)" value={fmt(data.api.totalCreditsUsed)} borderColor="border-l-amber-500" subtitle="1 credit/appel analyse" />
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <Card className="glass-card">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Creation de cles (12 mois)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {data.api.creationTrend.length > 0 ? (
+                  <TrendBars data={data.api.creationTrend} barClass="bg-orange-400" />
+                ) : (
+                  <p className="text-sm text-muted-foreground">Aucune donnee</p>
+                )}
+              </CardContent>
+            </Card>
+            <Card className="glass-card">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Utilisation API (12 mois)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {data.api.usageTrend.length > 0 ? (
+                  <div className="space-y-3">
+                    {data.api.usageTrend.map((m) => {
+                      const monthLabel = new Date(m.month + "-01").toLocaleDateString("fr-FR", {
+                        month: "short",
+                        year: "2-digit",
+                      });
+                      return (
+                        <div key={m.month} className="flex items-center justify-between py-1.5 border-b border-slate-100 last:border-0">
+                          <span className="text-sm text-muted-foreground w-20">{monthLabel}</span>
+                          <div className="flex items-center gap-4">
+                            <Badge variant="outline" className="text-xs">{m.calls} appels</Badge>
+                            <span className="text-sm font-medium text-navy">{m.credits} credits</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">Aucune donnee</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+          {data.api.topUsers.length > 0 && (
+            <Card className="glass-card">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Top utilisateurs API</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-slate-100">
+                        <th className="text-left py-2 text-muted-foreground font-medium">Utilisateur</th>
+                        <th className="text-center py-2 text-muted-foreground font-medium">Cles</th>
+                        <th className="text-right py-2 text-muted-foreground font-medium">Appels API</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.api.topUsers.map((u, i) => (
+                        <tr key={`${u.userEmail}-${i}`} className="border-b border-slate-50 last:border-0">
+                          <td className="py-2">
+                            <p className="font-medium text-navy">{u.userName || "Sans nom"}</p>
+                            <p className="text-xs text-muted-foreground">{u.userEmail}</p>
+                          </td>
+                          <td className="py-2 text-center">
+                            <Badge variant="outline">{u.keyCount}</Badge>
+                          </td>
+                          <td className="py-2 text-right font-semibold text-navy">{fmt(u.apiCalls)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </CardContent>
             </Card>
           )}
