@@ -448,7 +448,6 @@ export default function AdminDataPage() {
   const [activeSection, setActiveSection] = useState("users");
   const [calendarOpen, setCalendarOpen] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
-  const sectionsRef = useRef<Record<string, HTMLDivElement | null>>({});
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -506,29 +505,6 @@ export default function AdminDataPage() {
       ? `${format(dateRange.from, "dd MMM yyyy", { locale: fr })} - ${format(dateRange.to, "dd MMM yyyy", { locale: fr })}`
       : format(dateRange.from, "dd MMM yyyy", { locale: fr })
     : "Toutes les donnees";
-
-  // IntersectionObserver for sticky nav
-  useEffect(() => {
-    if (!data) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        }
-      },
-      { rootMargin: "-80px 0px -60% 0px" }
-    );
-    Object.values(sectionsRef.current).forEach((el) => {
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, [data]);
-
-  const scrollToSection = (id: string) => {
-    sectionsRef.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
 
   if (isLoading && !data) {
     return (
@@ -629,7 +605,7 @@ export default function AdminDataPage() {
           {SECTIONS.map((s) => (
             <button
               key={s.id}
-              onClick={() => scrollToSection(s.id)}
+              onClick={() => setActiveSection(s.id)}
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors",
                 activeSection === s.id
@@ -643,10 +619,10 @@ export default function AdminDataPage() {
         </div>
       </div>
 
-      {/* ─── Sections ─── */}
-      <div className="space-y-16">
+      {/* ─── Active Section ─── */}
+      <div>
         {/* ────── S1: COMPTES / UTILISATEURS ────── */}
-        <section id="users" ref={(el) => { sectionsRef.current["users"] = el; }}>
+        {activeSection === "users" && <section id="users">
           <SectionHeader sectionId="users" label="Comptes / Utilisateurs" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total comptes" value={fmt(data.users.total)} borderColor="border-l-emerald-500" />
@@ -692,10 +668,10 @@ export default function AdminDataPage() {
               )}
             </CardContent>
           </Card>
-        </section>
+        </section>}
 
         {/* ────── S2: EVENEMENTS ────── */}
-        <section id="events" ref={(el) => { sectionsRef.current["events"] = el; }}>
+        {activeSection === "events" && <section id="events">
           <SectionHeader sectionId="events" label="Evenements" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total" value={fmt(data.events.total)} borderColor="border-l-teal-500" />
@@ -730,10 +706,10 @@ export default function AdminDataPage() {
               </CardContent>
             </Card>
           </div>
-        </section>
+        </section>}
 
         {/* ────── S3: PHOTOS & IA ────── */}
-        <section id="photos" ref={(el) => { sectionsRef.current["photos"] = el; }}>
+        {activeSection === "photos" && <section id="photos">
           <SectionHeader sectionId="photos" label="Photos & Traitement IA" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total photos" value={fmt(data.photos.total)} borderColor="border-l-blue-500" />
@@ -777,10 +753,10 @@ export default function AdminDataPage() {
             <KPICard label="Credits debites" value={fmt(data.photos.creditDeducted)} borderColor="border-l-amber-400" subtitle="1 credit/photo importee" />
             <KPICard label="Credits rembourses (ancien)" value={fmt(data.photos.creditRefunded)} borderColor="border-l-red-400" subtitle="Historique uniquement" />
           </div>
-        </section>
+        </section>}
 
         {/* ────── S4: DOSSARDS ────── */}
-        <section id="bibs" ref={(el) => { sectionsRef.current["bibs"] = el; }}>
+        {activeSection === "bibs" && <section id="bibs">
           <SectionHeader sectionId="bibs" label="Dossards & Detection" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total detections" value={fmt(data.bibs.totalDetections)} borderColor="border-l-purple-500" />
@@ -842,10 +818,10 @@ export default function AdminDataPage() {
               </CardContent>
             </Card>
           )}
-        </section>
+        </section>}
 
         {/* ────── S5: VENTES & FINANCES ────── */}
-        <section id="sales" ref={(el) => { sectionsRef.current["sales"] = el; }}>
+        {activeSection === "sales" && <section id="sales">
           <SectionHeader sectionId="sales" label="Ventes & Finances" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Chiffre d'affaires" value={fmtEur(data.sales.totalRevenue)} borderColor="border-l-emerald-500" />
@@ -941,10 +917,10 @@ export default function AdminDataPage() {
               </CardContent>
             </Card>
           )}
-        </section>
+        </section>}
 
         {/* ────── S6: CREDITS ────── */}
-        <section id="credits" ref={(el) => { sectionsRef.current["credits"] = el; }}>
+        {activeSection === "credits" && <section id="credits">
           <SectionHeader sectionId="credits" label="Credits" />
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             <KPICard label="Total en circulation" value={fmt(data.credits.totalInCirculation)} borderColor="border-l-amber-500" subtitle="Solde cumule tous utilisateurs" />
@@ -1016,10 +992,10 @@ export default function AdminDataPage() {
               </CardContent>
             </Card>
           </div>
-        </section>
+        </section>}
 
         {/* ────── S7: MARKETPLACE ────── */}
-        <section id="marketplace" ref={(el) => { sectionsRef.current["marketplace"] = el; }}>
+        {activeSection === "marketplace" && <section id="marketplace">
           <SectionHeader sectionId="marketplace" label="Marketplace" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Annonces" value={fmt(data.marketplace.totalListings)} borderColor="border-l-indigo-500" />
@@ -1056,10 +1032,10 @@ export default function AdminDataPage() {
               </CardContent>
             </Card>
           </div>
-        </section>
+        </section>}
 
         {/* ────── S8: RGPD ────── */}
-        <section id="gdpr" ref={(el) => { sectionsRef.current["gdpr"] = el; }}>
+        {activeSection === "gdpr" && <section id="gdpr">
           <SectionHeader sectionId="gdpr" label="RGPD / Conformite" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total demandes" value={fmt(data.gdpr.totalRequests)} borderColor="border-l-red-400" />
@@ -1088,10 +1064,10 @@ export default function AdminDataPage() {
               </CardContent>
             </Card>
           </div>
-        </section>
+        </section>}
 
         {/* ────── S9: STOCKAGE ────── */}
-        <section id="storage" ref={(el) => { sectionsRef.current["storage"] = el; }}>
+        {activeSection === "storage" && <section id="storage">
           <SectionHeader sectionId="storage" label="Stockage" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total photos" value={fmt(data.storage.totalPhotos)} borderColor="border-l-slate-500" />
@@ -1129,10 +1105,10 @@ export default function AdminDataPage() {
               </div>
             </CardContent>
           </Card>
-        </section>
+        </section>}
 
         {/* ────── S10: TELECHARGEMENTS ────── */}
-        <section id="downloads" ref={(el) => { sectionsRef.current["downloads"] = el; }}>
+        {activeSection === "downloads" && <section id="downloads">
           <SectionHeader sectionId="downloads" label="Telechargements" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total downloads" value={fmt(data.downloads.totalDownloads)} borderColor="border-l-cyan-500" />
@@ -1153,7 +1129,7 @@ export default function AdminDataPage() {
               </CardContent>
             </Card>
           )}
-        </section>
+        </section>}
       </div>
     </div>
   );
