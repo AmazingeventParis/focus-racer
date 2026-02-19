@@ -91,7 +91,7 @@ export default function AdminSidebar() {
 
   const fetchUnread = useCallback(async () => {
     try {
-      const res = await fetch("/api/admin/messages/unread-count");
+      const res = await fetch("/api/admin/messages/unread-count", { cache: "no-store" });
       if (res.ok) {
         const data = await res.json();
         setUnreadCount(data.count);

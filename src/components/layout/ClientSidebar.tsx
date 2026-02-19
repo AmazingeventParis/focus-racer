@@ -127,7 +127,7 @@ export default function ClientSidebar() {
 
   const fetchUnread = useCallback(async () => {
     try {
-      const res = await fetch("/api/support/unread-count");
+      const res = await fetch("/api/support/unread-count", { cache: "no-store" });
       if (res.ok) {
         const data = await res.json();
         setUnreadCount(data.count);
