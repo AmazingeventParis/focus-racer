@@ -25,29 +25,27 @@ export default function HomePage() {
 
     const runSlot = async () => {
       while (!cancelled) {
-        // Pick a random target word (different from current visible)
         const targetIdx = Math.floor(Math.random() * totalWords);
-        // Spin through 2-3 full cycles + land on target
-        const fullSpins = 2 + Math.floor(Math.random() * 2); // 2 or 3 full cycles
-        const totalSteps = fullSpins * totalWords + targetIdx;
+        // Fast constant spin for 1 second, then hard stop
+        const stepDelay = 50; // ms between each word
+        const spinDuration = 1000; // 1 second of spinning
+        const steps = Math.floor(spinDuration / stepDelay);
 
-        // Animate step by step with deceleration
-        for (let i = 0; i <= totalSteps; i++) {
+        for (let i = 0; i < steps; i++) {
           if (cancelled) return;
           const wordIdx = i % totalWords;
+          el.style.transition = "none";
           el.style.transform = `translateY(-${wordIdx * itemH}em)`;
-
-          // Speed: fast at start, slow at end (easeOutQuart curve)
-          const progress = i / totalSteps;
-          const eased = 1 - Math.pow(1 - progress, 4);
-          const delay = 30 + eased * 220; // 30ms fast → 250ms slow
-          el.style.transition = `transform ${delay}ms cubic-bezier(0.1, 0, 0.3, 1)`;
-
-          await new Promise((r) => setTimeout(r, delay + 10));
+          await new Promise((r) => setTimeout(r, stepDelay));
         }
 
-        // Pause on the selected word before next spin
-        if (!cancelled) await new Promise((r) => setTimeout(r, 2500 + Math.random() * 1500));
+        // Hard stop on target word — no transition
+        if (cancelled) return;
+        el.style.transition = "none";
+        el.style.transform = `translateY(-${targetIdx * itemH}em)`;
+
+        // Pause before next spin
+        await new Promise((r) => setTimeout(r, 2500 + Math.random() * 1500));
       }
     };
 
