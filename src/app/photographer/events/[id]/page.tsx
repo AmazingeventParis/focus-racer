@@ -360,65 +360,32 @@ export default function EventDetailPage({
                   eventName={event.name}
                 />
               </div>
-              <div className="flex gap-2">
-                {/* Quick status toggle */}
-                {event.status === "DRAFT" && (
-                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => handleStatusChange("PUBLISHED")}>
-                    Publier
-                  </Button>
-                )}
-                {event.status === "PUBLISHED" && (
-                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => handleStatusChange("ARCHIVED")}>
-                    Archiver
-                  </Button>
-                )}
-                {event.status === "ARCHIVED" && (
-                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => handleStatusChange("DRAFT")}>
-                    Remettre en brouillon
-                  </Button>
-                )}
-                <Link href={`/photographer/events/${id}/start-list`}>
-                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200">Start-List</Button>
-                </Link>
-                <Link href={`/photographer/events/${id}/packs`}>
-                  <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200">Tarifs</Button>
-                </Link>
-                {notifyStatus && notifyStatus.pending > 0 && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleNotifyRunners}
-                    disabled={isNotifying}
-                    className="text-emerald border-emerald/30 hover:bg-emerald-50 transition-all duration-200"
-                  >
-                    {isNotifying
-                      ? "Envoi en cours..."
-                      : `Notifier ${notifyStatus.pending} coureur${notifyStatus.pending > 1 ? "s" : ""}`}
-                  </Button>
-                )}
-                {notifyStatus && notifyStatus.pending === 0 && notifyStatus.notified > 0 && (
-                  <Badge variant="outline" className="text-emerald border-emerald/30 py-1.5">
-                    {notifyStatus.notified} notifie{notifyStatus.notified > 1 ? "s" : ""}
-                  </Badge>
-                )}
-                {/* Clustering button removed: face linking is now automatic during Premium upload pipeline */}
-                <Link href={`/photographer/events/${id}/upload`}>
-                  <Button size="sm" className="bg-emerald hover:bg-emerald-hover text-white shadow-emerald transition-all duration-200">Ajouter des photos</Button>
-                </Link>
-                <Link href={`/photographer/events/${id}/live`}>
-                  <Button size="sm" variant="outline" className="text-emerald border-emerald/30 hover:bg-emerald-50 transition-all duration-200">
-                    Mode Live
-                  </Button>
-                </Link>
-              </div>
             </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4 flex-wrap items-center">
+            <div className="flex gap-2 flex-wrap items-center">
+              <Link href={`/photographer/events/${id}/upload`}>
+                <Button size="sm" className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200 gap-1.5">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                  Ajouter des photos
+                </Button>
+              </Link>
+              <Link href={`/photographer/events/${id}/live`}>
+                <Button size="sm" variant="outline" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200">
+                  Mode Live
+                </Button>
+              </Link>
+              <Separator orientation="vertical" className="h-6 mx-1" />
+              <Link href={`/photographer/events/${id}/start-list`}>
+                <Button variant="outline" size="sm" className="border-gray-200 text-navy hover:bg-gray-50 transition-all duration-200">Start-List</Button>
+              </Link>
+              <Link href={`/photographer/events/${id}/packs`}>
+                <Button variant="outline" size="sm" className="border-gray-200 text-navy hover:bg-gray-50 transition-all duration-200">Tarifs</Button>
+              </Link>
               <Dialog open={editOpen} onOpenChange={setEditOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="ghost" size="sm">Modifier</Button>
+                  <Button variant="outline" size="sm" className="border-gray-200 text-navy hover:bg-gray-50 transition-all duration-200">Modifier</Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-lg">
                   <DialogHeader>
@@ -544,7 +511,41 @@ export default function EventDetailPage({
                   </form>
                 </DialogContent>
               </Dialog>
-              <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700" onClick={handleDelete}>
+              <Separator orientation="vertical" className="h-6 mx-1" />
+              {event.status === "DRAFT" && (
+                <Button variant="outline" size="sm" className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200" onClick={() => handleStatusChange("PUBLISHED")}>
+                  Publier
+                </Button>
+              )}
+              {event.status === "PUBLISHED" && (
+                <Button variant="outline" size="sm" className="border-gray-200 text-navy hover:bg-gray-50 transition-all duration-200" onClick={() => handleStatusChange("ARCHIVED")}>
+                  Archiver
+                </Button>
+              )}
+              {event.status === "ARCHIVED" && (
+                <Button variant="outline" size="sm" className="border-gray-200 text-navy hover:bg-gray-50 transition-all duration-200" onClick={() => handleStatusChange("DRAFT")}>
+                  Remettre en brouillon
+                </Button>
+              )}
+              {notifyStatus && notifyStatus.pending > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleNotifyRunners}
+                  disabled={isNotifying}
+                  className="border-emerald/30 text-emerald hover:bg-emerald-50 transition-all duration-200"
+                >
+                  {isNotifying
+                    ? "Envoi en cours..."
+                    : `Notifier ${notifyStatus.pending} coureur${notifyStatus.pending > 1 ? "s" : ""}`}
+                </Button>
+              )}
+              {notifyStatus && notifyStatus.pending === 0 && notifyStatus.notified > 0 && (
+                <Badge variant="outline" className="text-emerald border-emerald/30 py-1.5">
+                  {notifyStatus.notified} notifie{notifyStatus.notified > 1 ? "s" : ""}
+                </Badge>
+              )}
+              <Button variant="outline" size="sm" className="border-red-200 text-red-600 hover:bg-red-50 transition-all duration-200" onClick={handleDelete}>
                 Supprimer
               </Button>
             </div>
