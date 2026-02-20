@@ -32,7 +32,6 @@ const footerLinks = {
     links: [
       { href: "/faq", label: "Centre d'aide" },
       { href: "/contact", label: "Contact" },
-      { href: "/gdpr", label: "RGPD" },
     ],
   },
 };
