@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import QRCode from "qrcode";
 
+// Ultra HD export: 4096px for print-quality output
+const EXPORT_SIZE = 4096;
+
 interface EventQRCodeProps {
   eventUrl: string;
   eventName: string;
@@ -17,20 +20,21 @@ export function EventQRCode({ eventUrl, eventName }: EventQRCodeProps) {
   const [copied, setCopied] = useState(false);
 
   const generateQR = useCallback(async () => {
-    // Generate SVG for display
+    // Generate SVG for display (crisp at any zoom)
     const svg = await QRCode.toString(eventUrl, {
       type: "svg",
-      width: 400,
       margin: 2,
+      errorCorrectionLevel: "H", // Highest error correction (30%)
       color: { dark: "#0f172a", light: "#ffffff" },
     });
     setSvgData(svg);
 
-    // Generate canvas for downloads
+    // Generate ultra HD canvas for bitmap downloads
     if (canvasRef.current) {
       await QRCode.toCanvas(canvasRef.current, eventUrl, {
-        width: 1024,
-        margin: 3,
+        width: EXPORT_SIZE,
+        margin: 4,
+        errorCorrectionLevel: "H",
         color: { dark: "#0f172a", light: "#ffffff" },
       });
     }
@@ -92,7 +96,7 @@ export function EventQRCode({ eventUrl, eventName }: EventQRCodeProps) {
               <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
-              Copié
+              Copie
             </>
           ) : (
             <>
@@ -119,20 +123,20 @@ export function EventQRCode({ eventUrl, eventName }: EventQRCodeProps) {
 
       {/* QR Code Modal */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-sm sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-navy">QR Code — {eventName}</DialogTitle>
+            <DialogTitle className="text-navy text-center">QR Code — {eventName}</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col items-center gap-6 py-4">
-            {/* QR Code SVG display */}
+          <div className="flex flex-col items-center gap-5 py-4">
+            {/* QR Code SVG display — centered, fixed size */}
             <div
-              className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm"
+              className="w-64 h-64 mx-auto bg-white p-3 rounded-xl border border-gray-200 shadow-sm [&>svg]:w-full [&>svg]:h-full [&>svg]:block"
               dangerouslySetInnerHTML={{ __html: svgData }}
             />
             {/* URL */}
-            <p className="text-xs text-muted-foreground font-mono text-center break-all">{eventUrl}</p>
+            <p className="text-xs text-muted-foreground font-mono text-center break-all px-4">{eventUrl}</p>
             {/* Download buttons */}
-            <div className="flex gap-3 w-full">
+            <div className="flex gap-3 w-full px-2">
               <Button
                 className="flex-1 gradient-emerald text-white rounded-xl gap-2"
                 onClick={() => downloadAs("png")}
@@ -163,11 +167,11 @@ export function EventQRCode({ eventUrl, eventName }: EventQRCodeProps) {
                 SVG
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground text-center">
-              Telechargez en haute qualite (1024px) pour impression
+            <p className="text-[11px] text-muted-foreground text-center">
+              Ultra HD 4096px &middot; Correction d&apos;erreur maximale (niveau H)
             </p>
           </div>
-          {/* Hidden canvas for HD export */}
+          {/* Hidden canvas for ultra HD export */}
           <canvas ref={canvasRef} className="hidden" />
         </DialogContent>
       </Dialog>
