@@ -20,6 +20,7 @@ interface StartListEntry {
   firstName: string;
   lastName: string;
   email: string | null;
+  sportifId?: string | null;
 }
 
 interface ParsedEntry {
@@ -487,6 +488,7 @@ export default function StartListPage({
                         <TableHead>Prénom</TableHead>
                         <TableHead>Nom</TableHead>
                         <TableHead>Email</TableHead>
+                        <TableHead>ID Sportif</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -496,11 +498,12 @@ export default function StartListPage({
                           <TableCell>{entry.firstName}</TableCell>
                           <TableCell>{entry.lastName}</TableCell>
                           <TableCell className="text-muted-foreground">{entry.email || "-"}</TableCell>
+                          <TableCell className="text-xs font-mono text-emerald">{entry.sportifId || "—"}</TableCell>
                         </TableRow>
                       ))}
                       {filteredEntries.length === 0 && (
                         <TableRow>
-                          <TableCell colSpan={4} className="text-center text-muted-foreground">
+                          <TableCell colSpan={5} className="text-center text-muted-foreground">
                             Aucun résultat
                           </TableCell>
                         </TableRow>

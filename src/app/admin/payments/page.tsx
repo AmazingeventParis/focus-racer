@@ -43,7 +43,7 @@ interface OrderRow {
   stripePaymentId: string | null;
   downloadCount: number;
   createdAt: string;
-  user: { id: string; name: string; email: string } | null;
+  user: { id: string; name: string; email: string; sportifId?: string | null } | null;
   event: {
     id: string;
     name: string;
@@ -1085,6 +1085,9 @@ export default function AdminPaymentsPage() {
                               <p className="text-xs text-muted-foreground truncate">
                                 {clientEmail}
                               </p>
+                              {order.user?.sportifId && (
+                                <p className="text-xs font-mono text-emerald">{order.user.sportifId}</p>
+                              )}
                             </div>
                           </TableCell>
 

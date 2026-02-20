@@ -48,13 +48,13 @@ export async function GET(request: NextRequest) {
         where,
         include: {
           user: {
-            select: { id: true, name: true, email: true },
+            select: { id: true, name: true, email: true, sportifId: true },
           },
           event: {
             select: {
               id: true,
               name: true,
-              user: { select: { id: true, name: true, stripeOnboarded: true } },
+              user: { select: { id: true, name: true, sportifId: true, stripeOnboarded: true } },
             },
           },
           pack: {

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     const orders = await prisma.order.findMany({
       where,
       include: {
-        user: { select: { name: true, email: true } },
+        user: { select: { name: true, email: true, sportifId: true } },
         event: { select: { name: true } },
         _count: { select: { items: true } },
       },
@@ -43,6 +43,7 @@ export async function GET(request: NextRequest) {
       "Commission Plateforme",
       "Reversement Photographe",
       "Stripe Payment ID",
+      "ID Sportif Acheteur",
     ];
 
     const rows = orders.map((order) => [
@@ -57,6 +58,7 @@ export async function GET(request: NextRequest) {
       order.platformFee.toFixed(2),
       (order.totalAmount - order.platformFee).toFixed(2),
       order.stripePaymentId || "",
+      order.user?.sportifId || "",
     ]);
 
     const csvContent = [

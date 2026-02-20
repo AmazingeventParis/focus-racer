@@ -40,6 +40,7 @@ interface UserDetail {
   role: string;
   phone: string | null;
   company: string | null;
+  sportifId: string | null;
   isActive: boolean;
   credits: number;
   stripeAccountId: string | null;
@@ -552,6 +553,12 @@ export default function AdminUserDetailPage({
                     {user.company || "Non renseigné"}
                   </p>
                 </div>
+                {user.sportifId && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">ID Sportif</p>
+                    <p className="font-mono font-medium text-emerald">{user.sportifId}</p>
+                  </div>
+                )}
               </>
             )}
             <div>

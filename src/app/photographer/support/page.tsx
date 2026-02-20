@@ -437,6 +437,9 @@ export default function PhotographerSupportPage() {
                           <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
                             Sportif{msg.user?.name ? ` — ${msg.user.name}` : ""}
                           </Badge>
+                          {msg.user?.sportifId && (
+                            <span className="text-xs font-mono text-muted-foreground">{msg.user.sportifId}</span>
+                          )}
                         )}
                         {hasConversation && (
                           <span className="flex items-center gap-1 text-xs text-blue-600">

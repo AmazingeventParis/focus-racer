@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     prisma.supportMessage.findMany({
       where,
       include: {
-        user: { select: { id: true, name: true, email: true, role: true } },
+        user: { select: { id: true, name: true, email: true, role: true, sportifId: true } },
       },
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,

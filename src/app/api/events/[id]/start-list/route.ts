@@ -25,7 +25,22 @@ export async function GET(
       orderBy: { bibNumber: "asc" },
     });
 
-    return NextResponse.json(entries);
+    // Enrich with sportifId via email lookup
+    const emails = entries.map((e) => e.email).filter(Boolean) as string[];
+    const users = emails.length > 0
+      ? await prisma.user.findMany({
+          where: { email: { in: emails } },
+          select: { email: true, sportifId: true },
+        })
+      : [];
+    const emailToSportifId = new Map(users.map((u) => [u.email, u.sportifId]));
+
+    const enriched = entries.map((e) => ({
+      ...e,
+      sportifId: e.email ? emailToSportifId.get(e.email) || null : null,
+    }));
+
+    return NextResponse.json(enriched);
   } catch (error) {
     console.error("Error fetching start list:", error);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });

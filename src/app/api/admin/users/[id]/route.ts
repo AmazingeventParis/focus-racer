@@ -15,6 +15,7 @@ export async function GET(
         email: true,
         name: true,
         role: true,
+        sportifId: true,
         phone: true,
         company: true,
         isActive: true,
@@ -117,6 +118,7 @@ export async function PATCH(
         email: true,
         name: true,
         role: true,
+        sportifId: true,
         isActive: true,
       },
     });

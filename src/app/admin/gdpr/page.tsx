@@ -27,6 +27,7 @@ interface GdprRequest {
   eventId: string | null;
   reason: string | null;
   adminNote: string | null;
+  sportifId: string | null;
   photosDeleted: number;
   facesDeleted: number;
   createdAt: string;
@@ -194,6 +195,9 @@ export default function AdminGdprPage() {
                       <div>
                         <CardTitle className="text-base flex items-center gap-2">
                           {req.name} — {req.email}
+                          {req.sportifId && (
+                            <span className="text-xs font-mono text-emerald">{req.sportifId}</span>
+                          )}
                           <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
                           <Badge variant="outline">{TYPE_LABELS[req.type] || req.type}</Badge>
                         </CardTitle>

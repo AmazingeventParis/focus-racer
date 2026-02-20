@@ -31,6 +31,7 @@ interface UserRow {
   role: string;
   phone: string | null;
   company: string | null;
+  sportifId: string | null;
   isActive: boolean;
   createdAt: string;
   _count: { events: number };
@@ -331,6 +332,7 @@ export default function AdminUsersPage() {
                       <TableHead>Nom</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Rôle</TableHead>
+                      <TableHead>ID Sportif</TableHead>
                       <TableHead>Événements</TableHead>
                       <TableHead>Statut</TableHead>
                       <TableHead>Inscrit le</TableHead>
@@ -344,6 +346,9 @@ export default function AdminUsersPage() {
                         <TableCell className="text-sm">{user.email}</TableCell>
                         <TableCell>
                           <Badge variant="outline">{getRoleLabel(user.role)}</Badge>
+                        </TableCell>
+                        <TableCell className="text-xs font-mono text-muted-foreground">
+                          {user.sportifId || "—"}
                         </TableCell>
                         <TableCell>{user._count.events}</TableCell>
                         <TableCell>

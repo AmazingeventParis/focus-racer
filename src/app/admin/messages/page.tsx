@@ -36,6 +36,7 @@ interface MessageUser {
   name: string;
   email: string;
   role: string;
+  sportifId?: string | null;
 }
 
 interface Reply {
@@ -526,12 +527,17 @@ export default function AdminMessagesPage() {
                             {msg.user?.email || msg.guestEmail || ""}
                           </span>
                           {msg.user ? (
-                            <Badge
-                              variant="outline"
-                              className="border-emerald/30 text-emerald text-xs"
-                            >
-                              {getRoleLabel(msg.user.role)}
-                            </Badge>
+                            <>
+                              <Badge
+                                variant="outline"
+                                className="border-emerald/30 text-emerald text-xs"
+                              >
+                                {getRoleLabel(msg.user.role)}
+                              </Badge>
+                              {msg.user.sportifId && (
+                                <span className="text-xs font-mono text-muted-foreground">{msg.user.sportifId}</span>
+                              )}
+                            </>
                           ) : (
                             <Badge
                               variant="outline"

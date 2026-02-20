@@ -44,7 +44,7 @@ interface EventRow {
   location: string | null;
   sportType: string;
   status: string;
-  user: { id: string; name: string; email: string };
+  user: { id: string; name: string; email: string; sportifId?: string | null };
   photoCount: number;
   runnerCount: number;
   orderCount: number;
@@ -690,6 +690,9 @@ export default function AdminEventsPage() {
                             <p className="text-xs text-muted-foreground">Photographe</p>
                             <p className="text-sm font-medium">{event.user.name}</p>
                             <p className="text-xs text-muted-foreground">{event.user.email}</p>
+                            {event.user.sportifId && (
+                              <p className="text-xs font-mono text-emerald">{event.user.sportifId}</p>
+                            )}
                           </div>
                         </div>
                       </div>

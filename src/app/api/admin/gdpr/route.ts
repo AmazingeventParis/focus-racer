@@ -24,7 +24,20 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(requests);
+    // Enrich with sportifId via email lookup
+    const emails = [...new Set(requests.map((r) => r.email))];
+    const users = await prisma.user.findMany({
+      where: { email: { in: emails } },
+      select: { email: true, sportifId: true },
+    });
+    const emailToSportifId = new Map(users.map((u) => [u.email, u.sportifId]));
+
+    const enriched = requests.map((r) => ({
+      ...r,
+      sportifId: emailToSportifId.get(r.email) || null,
+    }));
+
+    return NextResponse.json(enriched);
   } catch (error) {
     console.error("GDPR list error:", error);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });

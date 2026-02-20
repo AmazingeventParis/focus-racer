@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 
 interface Order {
@@ -12,7 +13,7 @@ interface Order {
   status: string;
   createdAt: string;
   guestEmail: string | null;
-  user: { name: string; email: string } | null;
+  user: { name: string; email: string; sportifId?: string | null } | null;
   event: { id: string; name: string };
   _count: { items: number };
 }
@@ -156,6 +157,9 @@ export default function OrdersPage() {
                     <div>
                       <p className="font-medium text-gray-900">
                         {order.user?.name || order.guestEmail || "Client anonyme"}
+                        {order.user?.sportifId && (
+                          <Badge variant="outline" className="ml-2 text-xs font-mono">{order.user.sportifId}</Badge>
+                        )}
                       </p>
                       <p className="text-sm text-gray-500">
                         {order.event.name} • {order._count.items} photo{order._count.items > 1 ? "s" : ""}
