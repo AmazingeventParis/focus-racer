@@ -12,46 +12,15 @@ export default function HomePage() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [searchInputValue, setSearchInputValue] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const slotRef = useRef<HTMLSpanElement>(null);
   const slotWords = ["marathon", "trail", "triathlon", "cyclisme", "natation", "ski", "running", "duathlon", "canicross", "obstacle", "swimrun"];
 
-  // Slot machine effect for rotating words
+  // Simple rotating words — 1 word every 0.5s
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
   useEffect(() => {
-    const el = slotRef.current;
-    if (!el) return;
-    const itemH = 1.15; // em — matches CSS height
-    const totalWords = slotWords.length;
-    let cancelled = false;
-
-    const runSlot = async () => {
-      while (!cancelled) {
-        const targetIdx = Math.floor(Math.random() * totalWords);
-        // Fast constant spin for 1 second, then hard stop
-        const stepDelay = 50; // ms between each word
-        const spinDuration = 1000; // 1 second of spinning
-        const steps = Math.floor(spinDuration / stepDelay);
-
-        for (let i = 0; i < steps; i++) {
-          if (cancelled) return;
-          const wordIdx = i % totalWords;
-          el.style.transition = "none";
-          el.style.transform = `translateY(-${wordIdx * itemH}em)`;
-          await new Promise((r) => setTimeout(r, stepDelay));
-        }
-
-        // Hard stop on target word — no transition
-        if (cancelled) return;
-        el.style.transition = "none";
-        el.style.transform = `translateY(-${targetIdx * itemH}em)`;
-
-        // Pause before next spin
-        await new Promise((r) => setTimeout(r, 2500 + Math.random() * 1500));
-      }
-    };
-
-    // Small initial delay before first spin
-    const startTimeout = setTimeout(runSlot, 800);
-    return () => { cancelled = true; clearTimeout(startTimeout); };
+    const interval = setInterval(() => {
+      setCurrentWordIndex((prev) => (prev + 1) % slotWords.length);
+    }, 500);
+    return () => clearInterval(interval);
   }, []);
 
   // Navbar scroll effect
@@ -330,13 +299,7 @@ export default function HomePage() {
             <h1>
               Retrouvez vos photos de
               <span className="line-accent">
-                <span className="rotating-words-wrapper">
-                  <span className="rotating-words slot-machine" ref={slotRef}>
-                    {slotWords.map((word) => (
-                      <span key={word}>{word}</span>
-                    ))}
-                  </span>
-                </span>
+                <span className="rotating-word-single">{slotWords[currentWordIndex]}</span>
               </span>
               en un clic.
             </h1>

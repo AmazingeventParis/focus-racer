@@ -422,26 +422,8 @@
     position: relative;
 }
 
-.rotating-words-wrapper {
+.rotating-word-single {
     display: inline-block;
-    height: 1.15em;
-    overflow: hidden;
-    vertical-align: bottom;
-    position: relative;
-}
-
-.rotating-words {
-    display: flex;
-    flex-direction: column;
-}
-
-.rotating-words.slot-machine {
-    transition: transform 30ms cubic-bezier(0.1, 0, 0.3, 1);
-}
-
-.rotating-words span {
-    display: block;
-    height: 1.15em;
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
