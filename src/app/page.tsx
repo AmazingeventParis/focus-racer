@@ -12,7 +12,7 @@ export default function HomePage() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [searchInputValue, setSearchInputValue] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const slotWords = ["marathon", "trail", "triathlon", "cyclisme", "natation", "ski", "running", "duathlon", "canicross", "obstacle", "swimrun"];
+  const slotWords = ["marathon", "trail", "triathlon", "cyclisme", "natation", "ski", "running", "duathlon", "canicross", "obstacle", "swimrun", "motocross", "aviron", "rallye", "ironman", "équitation", "kayak", "escalade", "rugby", "football", "handball", "voile", "CrossFit", "paddle", "biathlon", "enduro", "karting", "surf", "boxe", "judo", "athlétisme"];
 
   // Simple rotating words — 1 word every 0.5s
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
