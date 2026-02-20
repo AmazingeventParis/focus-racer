@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import Script from "next/script";
+import Footer from "@/components/layout/Footer";
 import "./homepage.css";
 
 export default function HomePage() {
@@ -926,84 +927,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════ FOOTER ═══════════ */}
-      <footer className="homepage-footer">
-        <div className="footer-grid">
-          <div className="footer-brand">
-            <h3>
-              <span
-                className="nav-logo-icon"
-                style={{ width: "28px", height: "28px", borderRadius: "8px", fontSize: "0.9rem" }}
-              >
-                📷
-              </span>{" "}
-              Focus Racer
-            </h3>
-            <p>
-              La plateforme de r&eacute;f&eacute;rence pour retrouver et acheter vos photos de courses sportives
-              gr&acirc;ce &agrave; l&apos;intelligence artificielle.
-            </p>
-          </div>
-          <div className="footer-col">
-            <h4>Produit</h4>
-            <ul>
-              <li>
-                <Link href="/runner">Trouver mes photos</Link>
-              </li>
-              <li>
-                <Link href="/runner">&Eacute;v&eacute;nements</Link>
-              </li>
-              <li>
-                <Link href="/pricing">Tarifs</Link>
-              </li>
-              <li>
-                <Link href="/marketplace">Marketplace</Link>
-              </li>
-            </ul>
-          </div>
-          <div className="footer-col">
-            <h4>D&eacute;couvrir</h4>
-            <ul>
-              <li>
-                <Link href="/register">Devenir photographe</Link>
-              </li>
-              <li>
-                <Link href="/register">Cr&eacute;er un compte</Link>
-              </li>
-              <li>
-                <Link href="/faq">FAQ</Link>
-              </li>
-              <li>
-                <Link href="/contact">Contact</Link>
-              </li>
-            </ul>
-          </div>
-          <div className="footer-col">
-            <h4>L&eacute;gal</h4>
-            <ul>
-              <li>
-                <Link href="/legal">Mentions l&eacute;gales</Link>
-              </li>
-              <li>
-                <Link href="/legal/cgu">CGU</Link>
-              </li>
-              <li>
-                <Link href="/legal/confidentialite">Confidentialit&eacute;</Link>
-              </li>
-              <li>
-                <Link href="/gdpr">RGPD</Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          <span>&copy; 2026 Focus Racer. Tous droits r&eacute;serv&eacute;s.</span>
-          <div className="footer-legal-links">
-            <Link href="/legal/cookies">Cookies</Link>
-            <Link href="/legal/confidentialite">Politique de confidentialit&eacute;</Link>
-            <Link href="/legal/cgu">Conditions d&apos;utilisation</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
