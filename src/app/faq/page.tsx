@@ -122,11 +122,11 @@ const faqSections: FaqSection[] = [
     items: [
       {
         q: "Comment fonctionne la détection de dossards ?",
-        a: "Nous utilisons AWS Rekognition, un service d'IA d'Amazon, pour détecter automatiquement les numéros de dossard sur les photos. La précision est de 85 à 95 % selon la lisibilité du dossard (taille, angle, conditions).",
+        a: "Notre technologie d'intelligence artificielle analyse chaque photo pour détecter automatiquement les numéros de dossard grâce à la reconnaissance optique de caractères (OCR). La précision est de 85 à 95 % selon la lisibilité du dossard (taille, angle, conditions d'éclairage).",
       },
       {
         q: "La reconnaissance faciale est-elle fiable ?",
-        a: "Oui, notre système utilise AWS Rekognition avec un seuil de confiance de 95 %. La reconnaissance faciale permet de retrouver des photos même quand le dossard n'est pas visible. Les données biométriques sont traitées conformément au RGPD.",
+        a: "Oui, notre système utilise une technologie avancée de reconnaissance faciale avec un seuil de confiance de 95 %. Cela permet de retrouver vos photos même lorsque le dossard n'est pas visible. Les données biométriques sont traitées conformément au RGPD.",
       },
       {
         q: "Pourquoi certaines photos sont-elles filtrées ?",
