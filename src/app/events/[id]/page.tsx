@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useSession } from "next-auth/react";
+import Footer from "@/components/layout/Footer";
 
 const SPORT_LABELS: Record<string, string> = {
   RUNNING: "Course à pied",
@@ -599,15 +600,8 @@ export default function PublicEventPage({
         </div>
       )}
 
-      {/* Copyright footer */}
-      <div className="py-8 text-center text-xs text-muted-foreground border-t border-gray-200 mt-8">
-        <p>
-          Photos protégées par le droit d&apos;auteur. Toute reproduction interdite.{" "}
-          <Link href="/legal#protection-photos" className="underline hover:text-navy">
-            En savoir plus
-          </Link>
-        </p>
-      </div>
+      {/* Footer */}
+      <Footer />
 
       {/* Photo Viewer / Lightbox */}
       {viewerPhoto && (
