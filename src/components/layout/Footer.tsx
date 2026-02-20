@@ -22,9 +22,9 @@ const footerLinks = {
     title: "Légal",
     links: [
       { href: "/legal", label: "Mentions légales" },
-      { href: "/legal#cgu", label: "CGU" },
-      { href: "/legal#confidentialite", label: "Politique de confidentialité" },
-      { href: "/legal#cookies", label: "Cookies" },
+      { href: "/legal/cgu", label: "CGU" },
+      { href: "/legal/confidentialite", label: "Politique de confidentialité" },
+      { href: "/legal/cookies", label: "Cookies" },
     ],
   },
   support: {
@@ -33,7 +33,7 @@ const footerLinks = {
       { href: "/contact", label: "Centre d'aide" },
       { href: "/contact", label: "Contact" },
       { href: "/gdpr", label: "RGPD" },
-      { href: "/legal#faq", label: "FAQ" },
+      { href: "/legal/cgu", label: "FAQ" },
     ],
   },
 };
