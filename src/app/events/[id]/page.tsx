@@ -72,6 +72,7 @@ export default function PublicEventPage({
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem(`favorites_${id}`);
@@ -218,8 +219,8 @@ export default function PublicEventPage({
     setSearchResult(null);
   };
 
-  // Photo viewer navigation
-  const displayPhotos = searchResult ? searchResult.photos : event?.photos || [];
+  // Photos only shown on search results — no default gallery
+  const displayPhotos = searchResult ? searchResult.photos : [];
 
   const openViewer = (photo: PublicPhoto, index: number) => {
     setViewerPhoto(photo);
@@ -276,15 +277,18 @@ export default function PublicEventPage({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen gradient-bg-subtle flex items-center justify-center">
-        <p className="text-muted-foreground">Chargement...</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-10 h-10 border-4 border-emerald/30 border-t-emerald rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Chargement...</p>
+        </div>
       </div>
     );
   }
 
   if (!event) {
     return (
-      <div className="min-h-screen gradient-bg-subtle flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground mb-4">Événement non trouvé ou non publié</p>
           <Link href="/runner">
@@ -299,106 +303,125 @@ export default function PublicEventPage({
   const favCount = favorites.size;
 
   return (
-    <div className="min-h-screen gradient-bg-subtle gallery-protected">
-      {/* Header with branding */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+    <div className="min-h-screen bg-gray-50 gallery-protected">
+      {/* Header sticky */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link href="/" className="text-xl font-bold text-navy">
             Focus Racer
           </Link>
           <div className="flex items-center gap-3">
             {favCount > 0 && (
               <Link href={`/events/${id}/favorites`}>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="rounded-xl">
                   <span className="text-emerald mr-1">&hearts;</span> {favCount} favori{favCount > 1 ? "s" : ""}
                 </Button>
               </Link>
             )}
             <Link href="/runner">
-              <Button variant="outline" size="sm">Tous les événements</Button>
+              <Button variant="outline" size="sm" className="rounded-xl">Tous les événements</Button>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Banner */}
-      {event.bannerImage && (
-        <div className="relative h-48 md:h-64 overflow-hidden">
-          <Image src={event.bannerImage} alt={event.name} fill className="object-cover" />
-          <div className="absolute inset-0 bg-navy/30" />
-        </div>
-      )}
+      {/* Hero Event — full width banner */}
+      <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
+        {event.bannerImage ? (
+          <>
+            <Image src={event.bannerImage} alt={event.name} fill className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/40 to-transparent" />
+          </>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy/90 to-emerald" />
+        )}
 
-      <main className="container mx-auto px-4 py-8">
-        {/* Event info */}
-        <div className="mb-8">
-          <div className="flex items-start gap-4 mb-4">
-            {event.logoImage && (
-              <div className="relative w-16 h-16 rounded-lg overflow-hidden border flex-shrink-0">
-                <Image src={event.logoImage} alt="Logo" fill className="object-contain" />
+        {/* Event info positioned at bottom of hero */}
+        <div className="absolute bottom-0 left-0 right-0 pb-20 pt-8 px-4 md:px-8">
+          <div className="container mx-auto">
+            <div className="flex items-end gap-4">
+              {event.logoImage && (
+                <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 border-white/80 flex-shrink-0 shadow-lg">
+                  <Image src={event.logoImage} alt="Logo" fill className="object-contain bg-white" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-lg truncate">{event.name}</h1>
+                <p className="text-white/80 mt-1 text-base md:text-lg">
+                  {new Date(event.date).toLocaleDateString("fr-FR", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                  {event.location && ` \u2022 ${event.location}`}
+                </p>
+                <div className="flex flex-wrap items-center gap-2 mt-3">
+                  <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                    {SPORT_LABELS[event.sportType] || event.sportType}
+                  </Badge>
+                  <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                    {event.photoCount} photos
+                  </Badge>
+                  {event.runnerCount > 0 && (
+                    <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                      {event.runnerCount} coureurs
+                    </Badge>
+                  )}
+                  <span className="text-white/60 text-sm">par {event.photographer}</span>
+                </div>
+              </div>
+            </div>
+            {session?.user && (
+              <div className="mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={followLoading}
+                  onClick={toggleFollow}
+                  className={isFollowing
+                    ? "bg-emerald/20 border-emerald/50 text-white hover:bg-emerald/30 rounded-xl"
+                    : "bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-xl"
+                  }
+                >
+                  {isFollowing ? "\u2605 Événement suivi" : "\u2606 Suivre cet événement"}
+                </Button>
               </div>
             )}
-            <div>
-              <h1 className="text-3xl font-bold text-navy">{event.name}</h1>
-              <p className="text-muted-foreground">
-                {new Date(event.date).toLocaleDateString("fr-FR", {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-                {event.location && ` \u2022 ${event.location}`}
-              </p>
-            </div>
           </div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <Badge variant="outline" className="border-emerald/30 text-emerald">{SPORT_LABELS[event.sportType] || event.sportType}</Badge>
-            <Badge variant="secondary" className="bg-emerald/10 text-emerald">{event.photoCount} photos</Badge>
-            {event.runnerCount > 0 && (
-              <Badge variant="secondary" className="bg-emerald/10 text-emerald">{event.runnerCount} coureurs</Badge>
-            )}
-            <span className="text-sm text-muted-foreground">par {event.photographer}</span>
-          </div>
-          {event.description && (
-            <p className="text-muted-foreground max-w-2xl">{event.description}</p>
-          )}
-          {/* Follow event button for logged-in users */}
-          {session?.user && (
-            <div className="mt-3">
-              <Button
-                variant={isFollowing ? "default" : "outline"}
-                size="sm"
-                disabled={followLoading}
-                onClick={toggleFollow}
-                className={isFollowing ? "bg-emerald hover:bg-emerald-dark text-white" : "border-emerald/30 text-emerald hover:bg-emerald-50"}
-              >
-                {isFollowing ? "\u2605 Événement suivi" : "\u2606 Suivre cet événement"}
-              </Button>
-              {!isFollowing && (
-                <span className="ml-2 text-xs text-muted-foreground">Recevez une alerte quand de nouvelles photos sont disponibles</span>
-              )}
-            </div>
-          )}
         </div>
+      </div>
 
-        {/* Search bar */}
-        <Card className="mb-8 glass-card rounded-2xl">
-          <CardContent className="pt-6">
-            <form onSubmit={handleSearch} className="flex gap-3 items-end flex-wrap">
-              <div className="flex-1 min-w-[200px]">
-                <p className="text-sm text-muted-foreground mb-2">
-                  Recherchez par numéro de dossard{event.runnerCount > 0 ? ", nom" : ""} ou selfie
-                </p>
+      {/* Search block — raised over hero */}
+      <div className="-mt-14 relative z-10 px-4">
+        <Card className="max-w-2xl mx-auto bg-white shadow-2xl rounded-3xl border-0">
+          <CardContent className="p-6 md:p-8">
+            <h2 className="text-xl md:text-2xl font-bold text-navy text-center">Retrouvez vos photos</h2>
+            <p className="text-muted-foreground text-center mt-1 text-sm md:text-base">
+              Entrez votre numéro de dossard{event.runnerCount > 0 ? ", nom" : ""} ou prenez un selfie
+            </p>
+
+            <form onSubmit={handleSearch} className="mt-6">
+              <div className="flex gap-3">
                 <Input
+                  ref={searchInputRef}
                   placeholder={event.runnerCount > 0 ? "N° de dossard ou nom..." : "N° de dossard..."}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-white/90 backdrop-blur-sm border-white/30 shadow-glass-lg"
+                  className="flex-1 text-lg h-14 rounded-xl border-gray-200 focus:border-emerald focus:ring-emerald"
                 />
+                <Button
+                  type="submit"
+                  disabled={isSearching || !searchQuery.trim()}
+                  className="h-14 px-6 md:px-8 bg-emerald hover:bg-emerald-dark text-white rounded-xl text-base md:text-lg shadow-emerald transition-all duration-200"
+                  style={{ backgroundColor: primaryColor }}
+                >
+                  {isSearching ? "..." : "Rechercher"}
+                </Button>
               </div>
-              <Button type="submit" disabled={isSearching || !searchQuery.trim()} className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200" style={{ backgroundColor: primaryColor }}>
-                {isSearching ? "Recherche..." : "Rechercher"}
-              </Button>
+            </form>
+
+            <div className="flex justify-center gap-6 mt-4">
               {/* Selfie search */}
               <label className="cursor-pointer">
                 <input
@@ -429,127 +452,162 @@ export default function PublicEventPage({
                     }
                   }}
                 />
-                <span
-                  className="inline-flex items-center gap-1 px-4 py-2 rounded-md border border-emerald/30 text-sm font-medium hover:bg-emerald-50 transition-colors"
-                  title="Rechercher par selfie"
-                >
-                  &#128247; Selfie
+                <span className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-emerald transition-colors">
+                  <span className="w-8 h-8 rounded-full bg-emerald/10 flex items-center justify-center text-base">&#128247;</span>
+                  Recherche par selfie
                 </span>
               </label>
-              {searchResult && (
-                <Button type="button" variant="outline" onClick={clearSearch}>
-                  Tout voir
-                </Button>
-              )}
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* Search result info */}
-        {searchResult && (
-          <div className="mb-6">
-            {searchResult.runner && (
-              <div className="bg-white rounded-lg p-4 mb-4 border" style={{ borderLeftColor: primaryColor, borderLeftWidth: 4 }}>
-                <p className="font-semibold">
-                  {searchResult.runner.firstName} {searchResult.runner.lastName}
-                  <Badge variant="secondary" className="ml-2 bg-emerald/10 text-emerald">#{searchResult.runner.bibNumber}</Badge>
-                </p>
-              </div>
-            )}
-            {searchResult.matchedRunners && searchResult.matchedRunners.length > 1 && (
-              <p className="text-sm text-muted-foreground mb-2">
-                {searchResult.matchedRunners.length} coureurs correspondent
-              </p>
-            )}
-            <p className="text-navy">
-              {searchResult.count > 0
-                ? `${searchResult.count} photo${searchResult.count > 1 ? "s" : ""} trouvée${searchResult.count > 1 ? "s" : ""}`
-                : "Aucune photo trouvée"}
-            </p>
-          </div>
-        )}
-
-        {/* Photo gallery grid */}
-        {displayPhotos.length === 0 && !searchResult ? (
-          <Card className="glass-card rounded-2xl">
-            <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground">Aucune photo disponible</p>
-            </CardContent>
-          </Card>
-        ) : displayPhotos.length === 0 && searchResult ? null : (
-          <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            {displayPhotos.map((photo, index) => (
-              <div
-                key={photo.id}
-                className="group relative bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-glass-lg transition-shadow cursor-pointer"
-                onClick={() => openViewer(photo, index)}
-                onMouseEnter={() => prefetchImage(index)}
-              >
-                <div className="aspect-[4/3] relative">
-                  <ProtectedImage
-                    src={photo.src}
-                    alt={photo.originalName}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    loading="lazy"
-                  />
-                  <button
-                    onClick={(e) => { e.stopPropagation(); toggleFavorite(photo.id); }}
-                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center hover:bg-white transition-colors z-10"
-                  >
-                    <span className={favorites.has(photo.id) ? "text-emerald fill-emerald" : "text-muted-foreground"}>
-                      {favorites.has(photo.id) ? "\u2665" : "\u2661"}
-                    </span>
-                  </button>
-                </div>
-                {photo.bibNumbers.length > 0 && (
-                  <div className="p-2 flex flex-wrap gap-1">
-                    {photo.bibNumbers.map((bib) => (
-                      <span key={bib.id} className="inline-flex items-center gap-0.5">
-                        <Badge variant="secondary" className="text-xs bg-emerald/10 text-emerald">
-                          #{bib.number}
-                        </Badge>
-                        {searchResult && session?.user && (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); reportWrongBib(photo.id, bib.number); }}
-                            className="text-[10px] text-muted-foreground hover:text-red-500 transition-colors px-1"
-                            title="Ce n'est pas moi"
-                          >
-                            &times;
-                          </button>
-                        )}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-          {/* Infinite scroll sentinel */}
-          {!searchResult && event?.hasMore && (
-            <div ref={loadMoreRef} className="flex justify-center py-8">
-              {isLoadingMore ? (
-                <p className="text-muted-foreground text-sm">Chargement...</p>
-              ) : (
-                <p className="text-muted-foreground text-xs">Scroll pour plus de photos</p>
+              {event.runnerCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => searchInputRef.current?.focus()}
+                  className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-emerald transition-colors"
+                >
+                  <span className="w-8 h-8 rounded-full bg-emerald/10 flex items-center justify-center text-base">&#128269;</span>
+                  Recherche par nom
+                </button>
               )}
             </div>
-          )}
-          </>
-        )}
 
-        {/* Copyright notice */}
-        <div className="mt-8 pb-4 text-center text-xs text-muted-foreground">
-          <p>
-            Photos protegees par le droit d&apos;auteur. Toute reproduction interdite.{" "}
-            <Link href="/legal#protection-photos" className="underline hover:text-navy">
-              En savoir plus
-            </Link>
-          </p>
+            {event.description && (
+              <p className="text-sm text-muted-foreground mt-4 text-center">{event.description}</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Search results — only visible after search */}
+      {searchResult && (
+        <div className="container mx-auto px-4 py-8">
+          {/* Result header */}
+          <div className="flex items-start justify-between mb-6 gap-4">
+            <div className="flex-1">
+              {searchResult.runner && (
+                <div className="bg-white rounded-xl p-4 mb-3 border-l-4 shadow-sm" style={{ borderLeftColor: primaryColor }}>
+                  <p className="font-semibold text-navy">
+                    {searchResult.runner.firstName} {searchResult.runner.lastName}
+                    <Badge variant="secondary" className="ml-2 bg-emerald/10 text-emerald">#{searchResult.runner.bibNumber}</Badge>
+                  </p>
+                </div>
+              )}
+              {searchResult.matchedRunners && searchResult.matchedRunners.length > 1 && (
+                <p className="text-sm text-muted-foreground mb-2">
+                  {searchResult.matchedRunners.length} coureurs correspondent
+                </p>
+              )}
+              <p className="text-navy font-medium">
+                {searchResult.count > 0
+                  ? `${searchResult.count} photo${searchResult.count > 1 ? "s" : ""} trouvée${searchResult.count > 1 ? "s" : ""}`
+                  : "Aucune photo trouvée pour cette recherche"}
+              </p>
+            </div>
+            <Button variant="outline" onClick={clearSearch} className="rounded-xl flex-shrink-0">
+              Nouvelle recherche
+            </Button>
+          </div>
+
+          {/* Photo grid */}
+          {displayPhotos.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+              {displayPhotos.map((photo, index) => (
+                <div
+                  key={photo.id}
+                  className="group relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 cursor-pointer"
+                  onClick={() => openViewer(photo, index)}
+                  onMouseEnter={() => prefetchImage(index)}
+                >
+                  <div className="aspect-[4/3] relative">
+                    <ProtectedImage
+                      src={photo.src}
+                      alt={photo.originalName}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      loading="lazy"
+                    />
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleFavorite(photo.id); }}
+                      className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center hover:bg-white transition-colors z-10"
+                    >
+                      <span className={favorites.has(photo.id) ? "text-emerald fill-emerald" : "text-muted-foreground"}>
+                        {favorites.has(photo.id) ? "\u2665" : "\u2661"}
+                      </span>
+                    </button>
+                  </div>
+                  {photo.bibNumbers.length > 0 && (
+                    <div className="p-2 flex flex-wrap gap-1">
+                      {photo.bibNumbers.map((bib) => (
+                        <span key={bib.id} className="inline-flex items-center gap-0.5">
+                          <Badge variant="secondary" className="text-xs bg-emerald/10 text-emerald">
+                            #{bib.number}
+                          </Badge>
+                          {session?.user && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); reportWrongBib(photo.id, bib.number); }}
+                              className="text-[10px] text-muted-foreground hover:text-red-500 transition-colors px-1"
+                              title="Ce n'est pas moi"
+                            >
+                              &times;
+                            </button>
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      </main>
+      )}
+
+      {/* Empty state — no search yet */}
+      {!searchResult && (
+        <div className="container mx-auto px-4 py-12">
+          {/* Stats cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-3xl mx-auto">
+            <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-emerald/10 flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">&#128247;</span>
+              </div>
+              <p className="text-2xl font-bold text-navy">{event.photoCount}</p>
+              <p className="text-sm text-muted-foreground">photos disponibles</p>
+            </div>
+            <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-emerald/10 flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">&#127939;</span>
+              </div>
+              <p className="text-2xl font-bold text-navy">{event.runnerCount}</p>
+              <p className="text-sm text-muted-foreground">coureurs identifiés</p>
+            </div>
+            <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-emerald/10 flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">&#9889;</span>
+              </div>
+              <p className="text-2xl font-bold text-navy">Instantanée</p>
+              <p className="text-sm text-muted-foreground">recherche par IA</p>
+            </div>
+          </div>
+
+          {/* Call to action */}
+          <div className="text-center mt-10">
+            <p className="text-xl md:text-2xl font-semibold text-navy">Vos photos vous attendent !</p>
+            <p className="text-muted-foreground mt-2 max-w-md mx-auto">
+              Tapez votre numéro de dossard ci-dessus pour retrouver toutes vos photos de course.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Copyright footer */}
+      <div className="py-8 text-center text-xs text-muted-foreground border-t border-gray-200 mt-8">
+        <p>
+          Photos protégées par le droit d&apos;auteur. Toute reproduction interdite.{" "}
+          <Link href="/legal#protection-photos" className="underline hover:text-navy">
+            En savoir plus
+          </Link>
+        </p>
+      </div>
 
       {/* Photo Viewer / Lightbox */}
       {viewerPhoto && (
