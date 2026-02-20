@@ -72,8 +72,11 @@ export default function PublicEventPage({
   const [viewerIndex, setViewerIndex] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem(`favorites_${id}`);
@@ -220,6 +223,75 @@ export default function PublicEventPage({
     setSearchResult(null);
   };
 
+  // Shared selfie search logic
+  const handleSelfieSearch = async (file: File | Blob) => {
+    setIsSearching(true);
+    try {
+      const formData = new FormData();
+      formData.append("selfie", file);
+      formData.append("eventId", id);
+      const res = await fetch("/api/photos/search-face", {
+        method: "POST",
+        body: formData,
+      });
+      if (res.ok) {
+        setSearchResult(await res.json());
+      }
+    } catch (err) {
+      console.error("Selfie search error:", err);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // Camera functions
+  const openCamera = async () => {
+    setShowCamera(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 960 } },
+      });
+      streamRef.current = stream;
+      // Wait for video element to mount
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play();
+        }
+      }, 100);
+    } catch (err) {
+      console.error("Camera error:", err);
+      alert("Impossible d'accéder à la caméra. Vérifiez les permissions.");
+      setShowCamera(false);
+    }
+  };
+
+  const closeCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+    setShowCamera(false);
+  };
+
+  const capturePhoto = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    // Mirror the capture to match the preview
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0);
+    closeCamera();
+    canvas.toBlob((blob) => {
+      if (blob) handleSelfieSearch(blob);
+    }, "image/jpeg", 0.9);
+  };
+
   // Photos only shown on search results — no default gallery
   const displayPhotos = searchResult ? searchResult.photos : [];
 
@@ -328,9 +400,9 @@ export default function PublicEventPage({
 
       {/* Hero Event — full width banner */}
       <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
-        {event.bannerImage ? (
+        {(event.coverImage || event.bannerImage) ? (
           <>
-            <Image src={event.bannerImage} alt={event.name} fill className="object-cover" />
+            <Image src={(event.coverImage || event.bannerImage)!} alt={event.name} fill className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/40 to-transparent" />
           </>
         ) : (
@@ -422,49 +494,49 @@ export default function PublicEventPage({
               </div>
             </form>
 
-            <div className="flex justify-center gap-6 mt-4">
-              {/* Selfie search */}
+            <div className="flex flex-wrap justify-center gap-4 mt-4">
+              {/* Import selfie from gallery */}
               <label className="cursor-pointer">
                 <input
                   type="file"
                   accept="image/*"
-                  capture="user"
                   className="hidden"
                   onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    setIsSearching(true);
-                    try {
-                      const formData = new FormData();
-                      formData.append("selfie", file);
-                      formData.append("eventId", id);
-                      const res = await fetch("/api/photos/search-face", {
-                        method: "POST",
-                        body: formData,
-                      });
-                      if (res.ok) {
-                        setSearchResult(await res.json());
-                      }
-                    } catch (err) {
-                      console.error("Selfie search error:", err);
-                    } finally {
-                      setIsSearching(false);
-                      e.target.value = "";
-                    }
+                    await handleSelfieSearch(file);
+                    e.target.value = "";
                   }}
                 />
-                <span className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-emerald transition-colors">
-                  <span className="w-8 h-8 rounded-full bg-emerald/10 flex items-center justify-center text-base">&#128247;</span>
-                  Recherche par selfie
+                <span className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                  </svg>
+                  Importer un selfie
                 </span>
               </label>
+              {/* Take selfie with camera */}
+              <button
+                type="button"
+                onClick={openCamera}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                </svg>
+                Prendre un selfie
+              </button>
+              {/* Search by name */}
               {event.runnerCount > 0 && (
                 <button
                   type="button"
                   onClick={() => searchInputRef.current?.focus()}
-                  className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-emerald transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5"
                 >
-                  <span className="w-8 h-8 rounded-full bg-emerald/10 flex items-center justify-center text-base">&#128269;</span>
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
                   Recherche par nom
                 </button>
               )}
@@ -602,6 +674,43 @@ export default function PublicEventPage({
 
       {/* Footer */}
       <Footer />
+
+      {/* Camera modal */}
+      {showCamera && (
+        <div className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center" onClick={closeCamera}>
+          <div className="relative w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+            <p className="text-white text-center mb-4 text-lg font-medium">Prenez un selfie</p>
+            <div className="relative rounded-2xl overflow-hidden bg-black aspect-[4/3]">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="w-full h-full object-cover"
+                style={{ transform: "scaleX(-1)" }}
+              />
+              {/* Face guide overlay */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-48 h-48 md:w-56 md:h-56 rounded-full border-2 border-white/40 border-dashed" />
+              </div>
+            </div>
+            <div className="flex justify-center gap-4 mt-6">
+              <button
+                onClick={closeCamera}
+                className="px-6 py-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={capturePhoto}
+                className="px-8 py-3 rounded-xl bg-emerald text-white hover:bg-emerald-dark transition-colors font-medium shadow-emerald"
+              >
+                Capturer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Photo Viewer / Lightbox */}
       {viewerPhoto && (
