@@ -103,6 +103,13 @@ async function extractWithTesseract(
       return n >= 1 && n <= 99999 && !(n >= 1900 && n <= 2100);
     });
 
+    // Remove subsumed numbers (e.g. "3" found in "350")
+    bibNumbers = bibNumbers.filter((bib) => {
+      return !bibNumbers.some(
+        (other) => other.length > bib.length && (other.startsWith(bib) || other.endsWith(bib))
+      );
+    });
+
     if (validBibs && validBibs.size > 0) {
       const validated = bibNumbers.filter((b) => validBibs.has(b));
       if (validated.length > 0) bibNumbers = validated;

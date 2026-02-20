@@ -85,6 +85,9 @@ model User {
   reviewsReceived    MarketplaceReview[]  @relation("ReviewTarget")
   supportMessages    SupportMessage[]
   apiKeys            ApiKey[]
+  faceImagePath      String?
+  eventFavorites     EventFavorite[]
+  notifications      Notification[]
 
   @@index([role])
   @@index([isActive])
@@ -113,6 +116,8 @@ model Event {
   uploadCompletedAt DateTime? // When the last photo was processed
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+  favorites    EventFavorite[]
+  notifications Notification[]
 
   @@index([userId])
   @@index([status])
@@ -457,4 +462,38 @@ model MarketplaceReview {
 
   @@index([authorId])
   @@index([targetId])
+}
+
+// =========== EVENT FAVORITES ===========
+
+model EventFavorite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+}
+
+// =========== NOTIFICATIONS ===========
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // PHOTOS_AVAILABLE, EVENT_PUBLISHED, WRONG_MATCH_RESOLVED
+  title     String
+  message   String
+  eventId   String?
+  event     Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([eventId])
+  @@index([read])
 }

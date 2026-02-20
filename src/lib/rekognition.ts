@@ -36,12 +36,42 @@ export interface RekognitionOCRResult {
 
 const BIB_NUMBER_REGEX = /\b\d{1,5}\b/g;
 
+// Higher confidence threshold for single-digit numbers (most prone to false positives)
+const SMALL_BIB_CONFIDENCE = 90;
+
+/**
+ * Remove bib numbers that are substrings of other detected numbers.
+ * E.g. if we detect "3" and "350", remove "3" (likely a partial read).
+ * Also handles: "1" + "18" → keep only "18", "8" + "18" → keep only "18".
+ */
+function removeSubsumedBibs(bibs: { number: string; confidence: number }[]): { number: string; confidence: number }[] {
+  if (bibs.length <= 1) return bibs;
+
+  // Sort by length descending (longest first = most likely complete reads)
+  const sorted = [...bibs].sort((a, b) => b.number.length - a.number.length);
+  const kept: { number: string; confidence: number }[] = [];
+
+  for (const bib of sorted) {
+    // Check if this number is a prefix or suffix of any already-kept longer number
+    const isSubsumed = kept.some((longer) => {
+      if (longer.number.length <= bib.number.length) return false;
+      return longer.number.startsWith(bib.number) || longer.number.endsWith(bib.number);
+    });
+    if (!isSubsumed) {
+      kept.push(bib);
+    }
+  }
+
+  return kept;
+}
+
 export async function detectTextFromImage(
   imageInput: string | Buffer,
   validBibs?: Set<string>
 ): Promise<RekognitionOCRResult> {
   const imageBytes = typeof imageInput === "string" ? readFileSync(imageInput) : imageInput;
   const rekognition = getClient();
+  const minConfidence = aiConfig.ocrConfidenceThreshold; // default 70%
 
   const response = await rekognition.send(
     new DetectTextCommand({
@@ -55,22 +85,51 @@ export async function detectTextFromImage(
     type: d.Type || "",
   }));
 
-  // Extract all potential bib numbers from LINE detections (more reliable)
-  const allText = detections
-    .filter((d) => d.type === "LINE")
-    .map((d) => d.text)
-    .join(" ");
-
-  const matches = allText.match(BIB_NUMBER_REGEX) || [];
   const avgConfidence =
     detections.length > 0
       ? detections.reduce((sum, d) => sum + d.confidence, 0) / detections.length
       : 0;
 
-  let bibNumbers = [...new Set(matches)].filter((num) => {
-    const n = parseInt(num, 10);
-    return n >= 1 && n <= 99999 && !(n >= 1900 && n <= 2100);
-  });
+  // Extract bib numbers from WORD-level detections (each carries its own confidence)
+  // This is more precise than joining LINE texts where confidence is lost per-token
+  const wordDetections = detections.filter((d) => d.type === "WORD");
+
+  const candidates: { number: string; confidence: number }[] = [];
+  for (const det of wordDetections) {
+    // Skip low-confidence detections
+    if (det.confidence < minConfidence) continue;
+
+    const matches = det.text.match(BIB_NUMBER_REGEX) || [];
+    for (const match of matches) {
+      const n = parseInt(match, 10);
+      if (n < 1 || n > 99999) continue;
+      if (n >= 1900 && n <= 2100) continue; // Filter years
+
+      // Single-digit numbers require higher confidence (most false positives)
+      if (n <= 9 && det.confidence < SMALL_BIB_CONFIDENCE) continue;
+
+      candidates.push({ number: match, confidence: det.confidence });
+    }
+  }
+
+  // Deduplicate: keep highest confidence per number
+  const bestByNumber = new Map<string, number>();
+  for (const c of candidates) {
+    const existing = bestByNumber.get(c.number);
+    if (!existing || c.confidence > existing) {
+      bestByNumber.set(c.number, c.confidence);
+    }
+  }
+
+  let bibsWithConf = Array.from(bestByNumber.entries()).map(([number, confidence]) => ({
+    number,
+    confidence,
+  }));
+
+  // Remove subsumed numbers (e.g. "3" from "350", "1" from "18")
+  bibsWithConf = removeSubsumedBibs(bibsWithConf);
+
+  let bibNumbers = bibsWithConf.map((b) => b.number);
 
   // If start-list provided, filter to only valid bibs
   if (validBibs && validBibs.size > 0) {

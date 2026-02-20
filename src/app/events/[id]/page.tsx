@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { useSession } from "next-auth/react";
 
 const SPORT_LABELS: Record<string, string> = {
   RUNNING: "Course à pied",
@@ -58,6 +59,7 @@ export default function PublicEventPage({
   params: { id: string };
 }) {
   const { id } = params;
+  const { data: session } = useSession();
   const [event, setEvent] = useState<PublicEvent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -67,6 +69,8 @@ export default function PublicEventPage({
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [viewerPhoto, setViewerPhoto] = useState<PublicPhoto | null>(null);
   const [viewerIndex, setViewerIndex] = useState(0);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -106,6 +110,54 @@ export default function PublicEventPage({
     };
     fetchEvent();
   }, [id]);
+
+  // Check if user follows this event
+  useEffect(() => {
+    if (!session?.user) return;
+    fetch(`/api/events/${id}/favorite`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data) setIsFollowing(data.isFavorite); })
+      .catch(() => {});
+  }, [id, session?.user]);
+
+  const toggleFollow = async () => {
+    if (!session?.user) return;
+    setFollowLoading(true);
+    try {
+      const res = await fetch(`/api/events/${id}/favorite`, { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        setIsFollowing(data.isFavorite);
+      }
+    } catch {}
+    setFollowLoading(false);
+  };
+
+  const reportWrongBib = async (photoId: string, bibNumber: string) => {
+    if (!confirm(`Signaler que le dossard #${bibNumber} ne vous correspond pas ?`)) return;
+    try {
+      const res = await fetch(`/api/photos/${photoId}/report-wrong`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bibNumber }),
+      });
+      if (res.ok) {
+        // Remove bib from local state
+        const updatePhotos = (photos: PublicPhoto[]) =>
+          photos.map((p) =>
+            p.id === photoId
+              ? { ...p, bibNumbers: p.bibNumbers.filter((b) => b.number !== bibNumber) }
+              : p
+          );
+        if (searchResult) {
+          setSearchResult({ ...searchResult, photos: updatePhotos(searchResult.photos) });
+        }
+        if (event) {
+          setEvent({ ...event, photos: updatePhotos(event.photos) });
+        }
+      }
+    } catch {}
+  };
 
   // Infinite scroll: load more photos when sentinel enters viewport
   const loadMorePhotos = useCallback(async () => {
@@ -310,6 +362,23 @@ export default function PublicEventPage({
           {event.description && (
             <p className="text-muted-foreground max-w-2xl">{event.description}</p>
           )}
+          {/* Follow event button for logged-in users */}
+          {session?.user && (
+            <div className="mt-3">
+              <Button
+                variant={isFollowing ? "default" : "outline"}
+                size="sm"
+                disabled={followLoading}
+                onClick={toggleFollow}
+                className={isFollowing ? "bg-emerald hover:bg-emerald-dark text-white" : "border-emerald/30 text-emerald hover:bg-emerald-50"}
+              >
+                {isFollowing ? "\u2605 Événement suivi" : "\u2606 Suivre cet événement"}
+              </Button>
+              {!isFollowing && (
+                <span className="ml-2 text-xs text-muted-foreground">Recevez une alerte quand de nouvelles photos sont disponibles</span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Search bar */}
@@ -438,9 +507,20 @@ export default function PublicEventPage({
                 {photo.bibNumbers.length > 0 && (
                   <div className="p-2 flex flex-wrap gap-1">
                     {photo.bibNumbers.map((bib) => (
-                      <Badge key={bib.id} variant="secondary" className="text-xs bg-emerald/10 text-emerald">
-                        #{bib.number}
-                      </Badge>
+                      <span key={bib.id} className="inline-flex items-center gap-0.5">
+                        <Badge variant="secondary" className="text-xs bg-emerald/10 text-emerald">
+                          #{bib.number}
+                        </Badge>
+                        {searchResult && session?.user && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); reportWrongBib(photo.id, bib.number); }}
+                            className="text-[10px] text-muted-foreground hover:text-red-500 transition-colors px-1"
+                            title="Ce n'est pas moi"
+                          >
+                            &times;
+                          </button>
+                        )}
+                      </span>
                     ))}
                   </div>
                 )}
@@ -533,9 +613,20 @@ export default function PublicEventPage({
               <>
                 <span className="text-white/40">|</span>
                 {viewerPhoto.bibNumbers.map((bib) => (
-                  <Badge key={bib.id} variant="secondary" className="text-xs bg-emerald/10 text-emerald">
-                    #{bib.number}
-                  </Badge>
+                  <span key={bib.id} className="inline-flex items-center gap-1">
+                    <Badge variant="secondary" className="text-xs bg-emerald/10 text-emerald">
+                      #{bib.number}
+                    </Badge>
+                    {searchResult && session?.user && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); reportWrongBib(viewerPhoto.id, bib.number); }}
+                        className="text-xs text-white/50 hover:text-red-400 transition-colors"
+                        title="Ce n'est pas moi"
+                      >
+                        Pas moi
+                      </button>
+                    )}
+                  </span>
                 ))}
               </>
             )}

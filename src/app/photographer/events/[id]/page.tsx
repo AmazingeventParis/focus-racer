@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { PhotoWithBibNumbers, Event } from "@/types";
 import { EventAnalytics } from "@/components/event-analytics";
+import { EventQRCode } from "@/components/event-qr-code";
 
 const SPORT_LABELS: Record<string, string> = {
   RUNNING: "Course à pied",
@@ -352,6 +353,13 @@ export default function EventDetailPage({
                 </CardDescription>
                 {event.description && (
                   <p className="text-sm text-muted-foreground mt-2">{event.description}</p>
+                )}
+                {/* Public URL + QR Code */}
+                {event.status === "PUBLISHED" && (
+                  <EventQRCode
+                    eventUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/events/${id}`}
+                    eventName={event.name}
+                  />
                 )}
               </div>
               <div className="flex gap-2">

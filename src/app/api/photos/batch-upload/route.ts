@@ -496,6 +496,31 @@ export async function POST(request: NextRequest) {
               data: { uploadCompletedAt: new Date() },
             });
             scheduleAutoClustering(eventId);
+
+            // Notify runners who favorited this event
+            try {
+              const eventInfo = await prisma.event.findUnique({
+                where: { id: eventId },
+                select: { name: true },
+              });
+              const followers = await prisma.eventFavorite.findMany({
+                where: { eventId },
+                select: { userId: true },
+              });
+              if (followers.length > 0) {
+                await prisma.notification.createMany({
+                  data: followers.map((f) => ({
+                    userId: f.userId,
+                    type: "PHOTOS_AVAILABLE",
+                    title: "Photos disponibles !",
+                    message: `De nouvelles photos sont disponibles pour ${eventInfo?.name || "votre evenement"}.`,
+                    eventId,
+                  })),
+                });
+              }
+            } catch (notifErr) {
+              console.error("Error creating notifications:", notifErr);
+            }
           }
         }
       });
