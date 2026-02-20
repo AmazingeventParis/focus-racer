@@ -434,12 +434,14 @@ export default function PhotographerSupportPage() {
                       <div className="flex items-center gap-3">
                         <h3 className="font-medium text-gray-900">{msg.subject}</h3>
                         {msg.recipientId && msg.userId !== session?.user?.id && (
-                          <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
-                            Sportif{msg.user?.name ? ` — ${msg.user.name}` : ""}
-                          </Badge>
-                          {msg.user?.sportifId && (
-                            <span className="text-xs font-mono text-muted-foreground">{msg.user.sportifId}</span>
-                          )}
+                          <>
+                            <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                              Sportif{msg.user?.name ? ` — ${msg.user.name}` : ""}
+                            </Badge>
+                            {msg.user?.sportifId && (
+                              <span className="text-xs font-mono text-muted-foreground">{msg.user.sportifId}</span>
+                            )}
+                          </>
                         )}
                         {hasConversation && (
                           <span className="flex items-center gap-1 text-xs text-blue-600">
