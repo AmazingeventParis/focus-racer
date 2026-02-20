@@ -401,8 +401,10 @@ enum MessageStatus {
 
 model SupportMessage {
   id         String          @id @default(cuid())
-  userId     String
-  user       User            @relation(fields: [userId], references: [id])
+  userId     String?
+  user       User?           @relation(fields: [userId], references: [id])
+  guestName  String?
+  guestEmail String?
   subject    String
   message    String
   category   MessageCategory @default(OTHER)

@@ -47,7 +47,9 @@ interface Reply {
 
 interface MessageRow {
   id: string;
-  userId: string;
+  userId: string | null;
+  guestName: string | null;
+  guestEmail: string | null;
   subject: string;
   message: string;
   category: MessageCategory;
@@ -60,7 +62,7 @@ interface MessageRow {
   replies: Reply[];
   createdAt: string;
   updatedAt: string;
-  user: MessageUser;
+  user: MessageUser | null;
 }
 
 interface Pagination {
@@ -518,17 +520,26 @@ export default function AdminMessagesPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-1">
                           <span className="font-semibold text-navy text-sm">
-                            {msg.user.name}
+                            {msg.user?.name || msg.guestName || "Anonyme"}
                           </span>
                           <span className="text-xs text-muted-foreground">
-                            {msg.user.email}
+                            {msg.user?.email || msg.guestEmail || ""}
                           </span>
-                          <Badge
-                            variant="outline"
-                            className="border-emerald/30 text-emerald text-xs"
-                          >
-                            {getRoleLabel(msg.user.role)}
-                          </Badge>
+                          {msg.user ? (
+                            <Badge
+                              variant="outline"
+                              className="border-emerald/30 text-emerald text-xs"
+                            >
+                              {getRoleLabel(msg.user.role)}
+                            </Badge>
+                          ) : (
+                            <Badge
+                              variant="outline"
+                              className="border-gray-300 text-gray-500 text-xs"
+                            >
+                              Visiteur
+                            </Badge>
+                          )}
                         </div>
                         <CardTitle className="text-base text-navy leading-snug">
                           {msg.subject}
@@ -588,7 +599,7 @@ export default function AdminMessagesPage() {
                               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                             </svg>
                           </div>
-                          <span className="text-sm font-medium text-blue-700">{msg.user.name || msg.user.email}</span>
+                          <span className="text-sm font-medium text-blue-700">{msg.user?.name || msg.guestName || msg.user?.email || msg.guestEmail || "Visiteur"}</span>
                           <span className="text-xs text-blue-500">{formatDate(msg.createdAt)}</span>
                         </div>
                         <p className="text-sm text-blue-800 leading-relaxed whitespace-pre-wrap ml-8">{msg.message}</p>
@@ -633,7 +644,7 @@ export default function AdminMessagesPage() {
                               </svg>
                             </div>
                             <span className={`text-sm font-medium ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`}>
-                              {reply.role === "admin" ? `Admin${reply.author ? ` (${reply.author})` : ""}` : (reply.author || msg.user.name || "Utilisateur")}
+                              {reply.role === "admin" ? `Admin${reply.author ? ` (${reply.author})` : ""}` : (reply.author || msg.user?.name || msg.guestName || "Utilisateur")}
                             </span>
                             <span className={`text-xs ${reply.role === "admin" ? "text-emerald-500" : "text-blue-500"}`}>
                               {formatDate(reply.date)}

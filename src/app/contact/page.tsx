@@ -1,6 +1,8 @@
-﻿"use client";
+"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,24 +11,69 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
+const categories = [
+  { value: "OTHER", label: "Question generale" },
+  { value: "BILLING", label: "Facturation" },
+  { value: "TECHNICAL", label: "Probleme technique" },
+  { value: "EVENT", label: "Evenement" },
+  { value: "GDPR", label: "RGPD / Donnees personnelles" },
+  { value: "ACCOUNT", label: "Mon compte" },
+];
+
+const faqTeaser = [
+  { q: "Comment retrouver mes photos de course ?", href: "/faq#coureurs" },
+  { q: "Quels moyens de paiement acceptez-vous ?", href: "/faq#paiements" },
+  { q: "Comment devenir photographe sur la plateforme ?", href: "/faq#photographes" },
+];
+
 export default function ContactPage() {
   const { toast } = useToast();
+  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [category, setCategory] = useState("OTHER");
+
+  useEffect(() => {
+    if (session?.user) {
+      if (session.user.name) setName(session.user.name);
+      if (session.user.email) setEmail(session.user.email);
+    }
+  }, [session]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate sending - in production this would call an API
-    await new Promise((r) => setTimeout(r, 1000));
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, subject, message, category }),
+      });
 
-    setSent(true);
-    toast({
-      title: "Message envoye",
-      description: "Nous vous repondrons dans les plus brefs delais.",
-    });
-    setIsLoading(false);
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Erreur lors de l'envoi");
+      }
+
+      setSent(true);
+      toast({
+        title: "Message envoye",
+        description: "Nous vous repondrons dans les plus brefs delais.",
+      });
+    } catch (err: any) {
+      toast({
+        title: "Erreur",
+        description: err.message || "Impossible d'envoyer le message.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -101,6 +148,35 @@ export default function ContactPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* FAQ teaser */}
+                <div className="pt-4">
+                  <h3 className="text-lg font-semibold text-navy mb-3">Questions frequentes</h3>
+                  <ul className="space-y-2">
+                    {faqTeaser.map((item) => (
+                      <li key={item.q}>
+                        <Link
+                          href={item.href}
+                          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-emerald transition-colors group"
+                        >
+                          <svg className="w-4 h-4 text-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                          </svg>
+                          <span className="group-hover:underline">{item.q}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="/faq"
+                    className="inline-flex items-center gap-1 text-sm text-emerald hover:text-emerald-dark font-medium mt-3 transition-colors"
+                  >
+                    Voir toutes les FAQ
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </Link>
+                </div>
               </div>
 
               {/* Contact form */}
@@ -134,7 +210,8 @@ export default function ContactPage() {
                             <Label htmlFor="name">Nom *</Label>
                             <Input
                               id="name"
-                              name="name"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
                               required
                               className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                             />
@@ -143,18 +220,35 @@ export default function ContactPage() {
                             <Label htmlFor="email">Email *</Label>
                             <Input
                               id="email"
-                              name="email"
                               type="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
                               required
                               className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                             />
                           </div>
                         </div>
                         <div className="space-y-2">
+                          <Label htmlFor="category">Categorie</Label>
+                          <select
+                            id="category"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                            className="flex h-9 w-full rounded-xl border border-white/30 bg-white/50 px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
+                          >
+                            {categories.map((cat) => (
+                              <option key={cat.value} value={cat.value}>
+                                {cat.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="space-y-2">
                           <Label htmlFor="subject">Sujet *</Label>
                           <Input
                             id="subject"
-                            name="subject"
+                            value={subject}
+                            onChange={(e) => setSubject(e.target.value)}
                             required
                             className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
                           />
@@ -163,8 +257,9 @@ export default function ContactPage() {
                           <Label htmlFor="message">Message *</Label>
                           <textarea
                             id="message"
-                            name="message"
                             rows={5}
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
                             required
                             className="flex w-full rounded-xl border border-white/30 bg-white/50 px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
                           />

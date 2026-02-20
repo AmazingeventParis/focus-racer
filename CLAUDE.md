@@ -6,7 +6,7 @@
 
 ## 1. Vue d'ensemble
 
-**Version** : 0.9.10
+**Version** : 0.9.11
 **URL** : https://focusracer.swipego.app
 **Type** : Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 
@@ -14,7 +14,8 @@
 
 | Espace | Rôle | Fonctionnalités clés |
 |--------|------|----------------------|
-| **Pro** | Photographe, Organisateur, Agence, Club, Fédération | Upload, gestion événements, triage, stats, packs de vente |
+| **Pro (Photographe)** | Photographe, Agence, Club, Fédération | Upload, gestion événements, triage, stats, packs de vente |
+| **Pro (Organisateur)** | Organisateur | Espace dédié `/organizer/`, copie de l'espace photographe (à différencier) |
 | **Public** | Coureur / Acheteur | Recherche dossard/selfie/nom, achat, téléchargement |
 | **Admin** | Administrateur plateforme | Gestion comptes, stats globales, paiements, RGPD, pilotage IA |
 
@@ -45,7 +46,8 @@ Focus Racer/
 ├── src/
 │   ├── app/
 │   │   ├── api/              # Auth, Events, Photos, Checkout, Admin, Marketplace, Webhooks
-│   │   ├── photographer/     # Interface pro (events, live, marketplace)
+│   │   ├── photographer/     # Interface pro photographe (events, live, marketplace)
+│   │   ├── organizer/        # Interface pro organisateur (copie photographe, labels adaptés)
 │   │   ├── admin/           # Panel admin (dashboard, paiements, RGPD, IA)
 │   │   ├── events/          # Pages publiques + checkout
 │   │   ├── account/         # Espace coureur
@@ -201,6 +203,25 @@ Focus Racer/
 - **Workflow simplifié** : message reçu = OPEN → admin répond = IN_PROGRESS → bouton "Clôturer" = CLOSED
 - **Filtre par défaut** : admin voit uniquement les messages actifs (OPEN + IN_PROGRESS), fermés masqués
 
+### ✅ Stripe Checkout Crédits + Affiche événement + Espace Organisateur (Session 19)
+- **Stripe Checkout Crédits** : achat de packs et abonnements via Stripe Checkout Sessions (redirect vers page Stripe hébergée)
+  - `POST /api/credits/checkout` : crée une Checkout Session (mode `payment` pour packs, `subscription` pour abonnements)
+  - Fulfillment via webhook `checkout.session.completed` + `invoice.payment_succeeded` (abonnements récurrents)
+  - `POST /api/credits` supprimé (plus d'ajout gratuit de crédits)
+  - Page `/photographer/credits` : redirect vers Stripe Checkout, gestion `?success=true`
+- **Affiche événement** : upload poster image (JPG/PNG/WebP) sur la page événement photographe
+  - Zone d'upload proéminente sur le header de la page événement (avec hover "Changer")
+  - Fallback : fond blanc + nom de l'événement si pas d'affiche
+  - Ajout à postériori de la création de l'événement
+- **Événements récents sur homepage** : composant `HomeEvents` affichant les 6 derniers événements publics
+- **Sidebar photographe simplifiée** : suppression onglets Commandes et Marketplace, renommage Paiements→Commandes, Statistiques→Data
+- **Espace Organisateur** : duplication complète de `/photographer/` vers `/organizer/`
+  - `OrganizerSidebar` dédié avec chemins `/organizer/...`
+  - Middleware protège `/organizer/:path*` (mêmes rôles PRO)
+  - Tous les labels "photographe" remplacés par "organisateur" dans l'UI
+  - API partagées (mêmes endpoints que photographe)
+- **Déploiement** : migration repo vers `AmazingeventParis/focus-racer` (public), remote `amazingevent`
+
 ### ✅ Migration serveur dédié (Session 10)
 - **Migration** : Render.com (512MB) → Serveur dédié OVH via Coolify
 - **Serveur** : AMD EPYC 4344P, 64 GB RAM, 2x NVMe 960 GB
@@ -247,8 +268,9 @@ Focus Racer/
 | **16** | 2026-02-18 | Options import : Smart Crop (par visage), Auto-retouch, suppression doublons (pHash), filtre flou (Laplacian). Suppression mode Lite (1 seul mode). Suppression remboursement orphelines. Facturation 1 crédit/photo |
 | **17** | 2026-02-18 | Migration S3-only (plus de disque local), Stripe Connect Express + 1€ frais service, page photographe paiements, admin paiements enrichi, checkout avec frais service |
 | **18** | 2026-02-18 | Admin CRUD utilisateurs (créer/supprimer/éditer/toggle), pastilles messages non lus (admin + user), workflow messagerie simplifié (OPEN→IN_PROGRESS→CLOSED), filtre actifs par défaut |
+| **19** | 2026-02-19 | Stripe Checkout crédits (packs + abonnements), affiche événement (upload poster), événements récents homepage, sidebar simplifiée, espace organisateur (duplication complète /photographer/ → /organizer/), migration repo GitHub |
 
-**Fichiers clés créés** : `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/photographer/payments/page.tsx`, `src/app/api/admin/payments-stats/route.ts`
+**Fichiers clés créés** : `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/photographer/payments/page.tsx`, `src/app/api/admin/payments-stats/route.ts`
 
 ---
 
@@ -306,7 +328,10 @@ Focus Racer/
 - **Fallback** : si photographe non connecté, paiement classique (tout va à la plateforme, pas de frais service)
 - **Constantes** : `SERVICE_FEE_CENTS = 100`, `SERVICE_FEE_DISPLAY = "1,00 €"` (dans `src/lib/stripe.ts`)
 - Checkout guest avec guestEmail/guestName
-- Webhooks : payment_intent.succeeded, account.updated (Connect)
+- Webhooks : payment_intent.succeeded, account.updated (Connect), checkout.session.completed (crédits), invoice.payment_succeeded (abonnements)
+- **Stripe Checkout Crédits** : `POST /api/credits/checkout` → Checkout Session → fulfillment via webhook
+- **Packs valides** : 1000 crédits (19€), 5000 (85€), 15000 (225€)
+- **Abonnements** : 20000 crédits/mois (199€), 50000 crédits/mois (399€)
 
 ### Performance (optimisé Session 14)
 - **Queue** : 16 workers parallèles (AI_MAX_CONCURRENT=16), Sharp concurrency(1)/worker + cache 2 GB
@@ -350,6 +375,8 @@ Focus Racer/
 - **SSL** : automatique via Caddy + Let's Encrypt
 - **Stockage** : S3 uniquement (pas de volume upload Docker)
 - **Domaine** : `focusracer.swipego.app` (wildcard `*.swipego.app` → 217.182.89.133)
+- **Git remote** : `amazingevent` → `https://github.com/AmazingeventParis/focus-racer.git` (public)
+- **Deploy** : `git push amazingevent master` puis `curl` API Coolify deploy
 
 ### UX Upload
 - **Timeline visuelle** : 4 étapes avec progress rings (Compression → Upload → Traitement → Terminé)
@@ -405,9 +432,12 @@ orga@test.com / orga123
 ### Priorité 3 — Fonctionnel
 - [x] Activer Stripe Connect Express pour split payment réel (Session 17)
 - [x] Supprimer `autoEditImage()` morte dans `image-processing.ts` (Session 17)
+- [x] Stripe Checkout pour achat crédits (packs + abonnements) (Session 19)
+- [x] Espace organisateur dupliqué depuis photographe (Session 19)
 - [ ] Configurer Stripe webhook sur serveur dédié (env `STRIPE_WEBHOOK_SECRET`)
+- [ ] Différencier espace organisateur vs photographe (dashboard, upload, marketplace, crédits, branding, équipe)
 - [ ] Implémenter features Phase 7 restantes (Sync Chrono, Détection émotions, Social Teaser, QR Codes)
 
 ---
 
-**Dernière mise à jour** : Session 18, 2026-02-18 (S3-only, Stripe Connect Express, admin CRUD users, messagerie améliorée)
+**Dernière mise à jour** : Session 19, 2026-02-19 (Stripe Checkout crédits, affiche événement, espace organisateur, migration repo GitHub)

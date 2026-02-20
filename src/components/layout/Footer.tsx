@@ -16,6 +16,7 @@ const footerLinks = {
       { href: "/runner", label: "Trouver mes photos" },
       { href: "/runner", label: "Événements" },
       { href: "/register", label: "Créer un compte" },
+      { href: "/faq", label: "FAQ" },
     ],
   },
   legal: {
@@ -23,17 +24,16 @@ const footerLinks = {
     links: [
       { href: "/legal", label: "Mentions légales" },
       { href: "/legal/cgu", label: "CGU" },
-      { href: "/legal/confidentialite", label: "Politique de confidentialité" },
+      { href: "/legal/confidentialite", label: "Confidentialité" },
       { href: "/legal/cookies", label: "Cookies" },
     ],
   },
   support: {
     title: "Support",
     links: [
-      { href: "/contact", label: "Centre d'aide" },
+      { href: "/faq", label: "Centre d'aide" },
       { href: "/contact", label: "Contact" },
       { href: "/gdpr", label: "RGPD" },
-      { href: "/legal/cgu", label: "FAQ" },
     ],
   },
 };

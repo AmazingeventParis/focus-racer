@@ -29,6 +29,8 @@ export async function GET(request: NextRequest) {
       { message: { contains: search, mode: "insensitive" } },
       { user: { name: { contains: search, mode: "insensitive" } } },
       { user: { email: { contains: search, mode: "insensitive" } } },
+      { guestName: { contains: search, mode: "insensitive" } },
+      { guestEmail: { contains: search, mode: "insensitive" } },
     ];
   }
 
