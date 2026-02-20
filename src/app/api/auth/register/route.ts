@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
+import { generateSportifId } from "@/lib/sportif-id";
 
 const registerSchema = z.object({
   firstName: z.string().min(1, "Le prénom est requis"),
@@ -43,6 +44,17 @@ export async function POST(request: NextRequest) {
 
     const WELCOME_CREDITS = 100;
 
+    // Generate unique sportifId with retry
+    let sportifId: string | null = null;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const candidate = generateSportifId();
+      const exists = await prisma.user.findUnique({ where: { sportifId: candidate }, select: { id: true } });
+      if (!exists) {
+        sportifId = candidate;
+        break;
+      }
+    }
+
     const user = await prisma.$transaction(async (tx) => {
       const newUser = await tx.user.create({
         data: {
@@ -61,6 +73,7 @@ export async function POST(request: NextRequest) {
           acceptedCguAt: new Date(),
           newsletterOptIn: newsletterOptIn || false,
           credits: WELCOME_CREDITS,
+          sportifId,
         },
       });
 

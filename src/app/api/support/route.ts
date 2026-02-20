@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { notificationEmitter } from "@/lib/notification-emitter";
 
-// GET - List user's support messages
+// GET - List user's support messages (sent + received)
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -15,14 +15,25 @@ export async function GET(request: NextRequest) {
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "20");
 
+  const whereClause = {
+    OR: [
+      { userId: session.user.id },
+      { recipientId: session.user.id },
+    ],
+  };
+
   const [messages, total] = await Promise.all([
     prisma.supportMessage.findMany({
-      where: { userId: session.user.id },
+      where: whereClause,
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
+      include: {
+        user: { select: { id: true, name: true, sportifId: true } },
+        recipient: { select: { id: true, name: true } },
+      },
     }),
-    prisma.supportMessage.count({ where: { userId: session.user.id } }),
+    prisma.supportMessage.count({ where: whereClause }),
   ]);
 
   return NextResponse.json({

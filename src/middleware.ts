@@ -23,6 +23,11 @@ export default withAuth(
       }
     }
 
+    // Sportif routes: any authenticated user
+    if (pathname.startsWith("/sportif")) {
+      // Already authenticated via withAuth — no role restriction
+    }
+
     // Admin API routes: ADMIN only
     if (pathname.startsWith("/api/admin")) {
       if (role !== "ADMIN") {
@@ -47,5 +52,6 @@ export const config = {
     "/organizer/:path*",
     "/api/admin/:path*",
     "/account/:path*",
+    "/sportif/:path*",
   ],
 };

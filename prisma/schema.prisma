@@ -74,6 +74,7 @@ model User {
   credits          Int       @default(0)
   avgRating        Float     @default(0)
   totalReviews     Int       @default(0)
+  sportifId        String?   @unique
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   events           Event[]
@@ -84,10 +85,13 @@ model User {
   reviewsGiven       MarketplaceReview[]  @relation("ReviewAuthor")
   reviewsReceived    MarketplaceReview[]  @relation("ReviewTarget")
   supportMessages    SupportMessage[]
+  receivedMessages   SupportMessage[]    @relation("MessageRecipient")
   apiKeys            ApiKey[]
   faceImagePath      String?
   eventFavorites     EventFavorite[]
   notifications      Notification[]
+  hordeOwned         Horde?              @relation("HordeOwner")
+  hordeMemberships   HordeMember[]       @relation("HordeMemberUser")
 
   @@index([role])
   @@index([isActive])
@@ -400,26 +404,29 @@ enum MessageStatus {
 }
 
 model SupportMessage {
-  id         String          @id @default(cuid())
-  userId     String?
-  user       User?           @relation(fields: [userId], references: [id])
-  guestName  String?
-  guestEmail String?
-  subject    String
-  message    String
-  category   MessageCategory @default(OTHER)
-  status     MessageStatus   @default(OPEN)
-  eventId    String?
-  orderId    String?
-  adminReply String?
-  repliedBy  String?
-  repliedAt  DateTime?
-  readByUser Boolean         @default(true)
-  replies    Json            @default("[]")
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
+  id           String          @id @default(cuid())
+  userId       String?
+  user         User?           @relation(fields: [userId], references: [id])
+  recipientId  String?
+  recipient    User?           @relation("MessageRecipient", fields: [recipientId], references: [id])
+  guestName    String?
+  guestEmail   String?
+  subject      String
+  message      String
+  category     MessageCategory @default(OTHER)
+  status       MessageStatus   @default(OPEN)
+  eventId      String?
+  orderId      String?
+  adminReply   String?
+  repliedBy    String?
+  repliedAt    DateTime?
+  readByUser   Boolean         @default(true)
+  replies      Json            @default("[]")
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 
   @@index([userId])
+  @@index([recipientId])
   @@index([status])
   @@index([category])
   @@index([createdAt])
@@ -479,6 +486,38 @@ model EventFavorite {
   @@unique([userId, eventId])
   @@index([userId])
   @@index([eventId])
+}
+
+// =========== HORDE (SPORTIF GROUPS) ===========
+
+enum HordeMemberStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model Horde {
+  id        String        @id @default(cuid())
+  ownerId   String        @unique
+  owner     User          @relation("HordeOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  name      String        @default("Ma Horde")
+  members   HordeMember[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model HordeMember {
+  id        String            @id @default(cuid())
+  hordeId   String
+  horde     Horde             @relation(fields: [hordeId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User              @relation("HordeMemberUser", fields: [userId], references: [id], onDelete: Cascade)
+  status    HordeMemberStatus @default(PENDING)
+  invitedAt DateTime          @default(now())
+  joinedAt  DateTime?
+
+  @@unique([hordeId, userId])
+  @@index([userId])
 }
 
 // =========== NOTIFICATIONS ===========

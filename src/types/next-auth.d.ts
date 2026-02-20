@@ -9,6 +9,7 @@ declare module "next-auth" {
       role: string;
       stripeAccountId?: string | null;
       stripeOnboarded?: boolean;
+      sportifId?: string | null;
     };
   }
 
@@ -24,5 +25,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     role: string;
+    sportifId?: string | null;
   }
 }

@@ -44,6 +44,7 @@ export const authOptions: NextAuthOptions = {
           role: user.role,
           stripeAccountId: user.stripeAccountId ?? null,
           stripeOnboarded: user.stripeOnboarded ?? false,
+          sportifId: user.sportifId ?? null,
         };
       },
     }),
@@ -61,6 +62,7 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role;
         token.stripeAccountId = (user as unknown as { stripeAccountId?: string | null }).stripeAccountId ?? null;
         token.stripeOnboarded = (user as unknown as { stripeOnboarded?: boolean }).stripeOnboarded ?? false;
+        token.sportifId = (user as unknown as { sportifId?: string | null }).sportifId ?? null;
       }
       return token;
     },
@@ -70,6 +72,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string;
         session.user.stripeAccountId = token.stripeAccountId as string | null;
         session.user.stripeOnboarded = token.stripeOnboarded as boolean;
+        session.user.sportifId = token.sportifId as string | null;
       }
       return session;
     },

@@ -34,6 +34,9 @@ interface SupportMessage {
   repliedAt: string | null;
   repliedBy: string | null;
   replies: Reply[];
+  recipientId: string | null;
+  userId: string | null;
+  user?: { id: string; name: string; sportifId?: string | null } | null;
   createdAt: string;
 }
 
@@ -430,6 +433,11 @@ export default function PhotographerSupportPage() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-3">
                         <h3 className="font-medium text-gray-900">{msg.subject}</h3>
+                        {msg.recipientId && msg.userId !== session?.user?.id && (
+                          <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                            Sportif{msg.user?.name ? ` — ${msg.user.name}` : ""}
+                          </Badge>
+                        )}
                         {hasConversation && (
                           <span className="flex items-center gap-1 text-xs text-blue-600">
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">

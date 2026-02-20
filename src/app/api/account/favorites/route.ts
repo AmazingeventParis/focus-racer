@@ -7,7 +7,7 @@ import prisma from "@/lib/prisma";
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
   const favorites = await prisma.eventFavorite.findMany({
@@ -20,6 +20,10 @@ export async function GET() {
           date: true,
           location: true,
           sportType: true,
+          coverImage: true,
+          userId: true,
+          user: { select: { id: true, name: true } },
+          _count: { select: { photos: true } },
         },
       },
     },
