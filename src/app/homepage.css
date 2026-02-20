@@ -98,12 +98,18 @@
 }
 
 @keyframes rotate-words {
-    0%, 16% { transform: translateY(0); }
-    20%, 36% { transform: translateY(-100%); }
-    40%, 56% { transform: translateY(-200%); }
-    60%, 76% { transform: translateY(-300%); }
-    80%, 96% { transform: translateY(-400%); }
-    100% { transform: translateY(-500%); }
+    0%, 7% { transform: translateY(0); }
+    9.09%, 16% { transform: translateY(-100%); }
+    18.18%, 25% { transform: translateY(-200%); }
+    27.27%, 34% { transform: translateY(-300%); }
+    36.36%, 43% { transform: translateY(-400%); }
+    45.45%, 52% { transform: translateY(-500%); }
+    54.54%, 61% { transform: translateY(-600%); }
+    63.63%, 70% { transform: translateY(-700%); }
+    72.72%, 79% { transform: translateY(-800%); }
+    81.81%, 88% { transform: translateY(-900%); }
+    90.9%, 97% { transform: translateY(-1000%); }
+    100% { transform: translateY(-1100%); }
 }
 
 @keyframes grain {
@@ -440,7 +446,7 @@
 .rotating-words {
     display: flex;
     flex-direction: column;
-    animation: rotate-words 12s infinite cubic-bezier(0.68, -0.15, 0.27, 1.15);
+    animation: rotate-words 27.5s infinite cubic-bezier(0.68, -0.15, 0.27, 1.15);
 }
 
 .rotating-words span {

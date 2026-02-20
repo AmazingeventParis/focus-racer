@@ -294,8 +294,14 @@ export default function HomePage() {
                     <span>marathon</span>
                     <span>trail</span>
                     <span>triathlon</span>
-                    <span>course</span>
                     <span>cyclisme</span>
+                    <span>natation</span>
+                    <span>ski</span>
+                    <span>running</span>
+                    <span>duathlon</span>
+                    <span>canicross</span>
+                    <span>obstacle</span>
+                    <span>swimrun</span>
                     <span>marathon</span>
                   </span>
                 </span>
