@@ -136,19 +136,19 @@ export async function GET(
     const blurryCount = photos.filter((p) => p.isBlurry === true).length;
     const autoEditedCount = photos.filter((p) => p.autoEdited === true).length;
 
-    // Revenue stats
-    const completedOrders = photos.flatMap((p) =>
-      p.orderItems
-        .filter((item) => item.order.status === "PAID")
-        .map((item) => ({
-          amount: item.unitPrice,
-          orderId: item.order.id,
-        }))
-    );
+    // Revenue stats — query Orders directly for accurate financial breakdown
+    const orders = await prisma.order.findMany({
+      where: { eventId, status: "PAID" },
+      include: { _count: { select: { items: true } } },
+    });
 
-    const uniqueOrders = new Set(completedOrders.map((o) => o.orderId));
-    const totalRevenue = completedOrders.reduce((sum, o) => sum + o.amount, 0);
-    const avgOrderValue = uniqueOrders.size > 0 ? totalRevenue / uniqueOrders.size : 0;
+    const totalRevenue = orders.reduce((sum, o) => sum + o.totalAmount, 0);
+    const totalServiceFee = orders.reduce((sum, o) => sum + (o.serviceFee || 0), 0);
+    const totalStripeFee = orders.reduce((sum, o) => sum + (o.stripeFee || 0), 0);
+    const totalPhotographerPayout = orders.reduce((sum, o) => sum + (o.photographerPayout || 0), 0);
+    const totalPlatformFee = orders.reduce((sum, o) => sum + (o.platformFee || 0), 0);
+    const soldPhotos = orders.reduce((sum, o) => sum + o._count.items, 0);
+    const avgOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
 
     // Uploads timeline (group by day)
     const uploadsByDay: Record<string, number> = {};
@@ -217,12 +217,16 @@ export async function GET(
         },
       },
       revenue: {
-        totalRevenue: totalRevenue / 100, // cents to euros
-        totalOrders: uniqueOrders.size,
+        totalRevenue: totalRevenue / 100,
+        totalOrders: orders.length,
         avgOrderValue: avgOrderValue / 100,
-        soldPhotos: completedOrders.length,
+        soldPhotos,
+        serviceFee: totalServiceFee / 100,
+        stripeFee: totalStripeFee / 100,
+        photographerPayout: totalPhotographerPayout / 100,
+        platformFee: totalPlatformFee / 100,
         conversionRate:
-          totalPhotos > 0 ? Math.round((completedOrders.length / totalPhotos) * 100) : 0,
+          totalPhotos > 0 ? Math.round((soldPhotos / totalPhotos) * 100) : 0,
       },
       timeline: {
         uploadsByDay: Object.entries(uploadsByDay).map(([day, count]) => ({
