@@ -107,7 +107,7 @@ const faqSections: FaqSection[] = [
       },
       {
         q: "Puis-je obtenir un remboursement ?",
-        a: "Les photos numériques étant des biens dématérialisés, les remboursements sont traités au cas par cas. Contactez-nous via le formulaire de contact en précisant votre numéro de commande et le motif de votre demande.",
+        a: "Focus Racer est une plateforme technique qui facilite la mise en relation entre sportifs et photographes. Nous ne prenons aucune commission sur les ventes de photos. Pour toute demande de remboursement, veuillez vous rapprocher directement du photographe concerné, qui est le vendeur et seul responsable de la transaction.",
       },
     ],
   },
