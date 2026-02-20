@@ -97,20 +97,7 @@
     100% { background-position: 200% 0; }
 }
 
-@keyframes rotate-words {
-    0%, 8.3%      { transform: translateY(0); }
-    9.09%, 17.3%  { transform: translateY(-1.15em); }
-    18.18%, 26.3% { transform: translateY(-2.3em); }
-    27.27%, 35.3% { transform: translateY(-3.45em); }
-    36.36%, 44.3% { transform: translateY(-4.6em); }
-    45.45%, 53.3% { transform: translateY(-5.75em); }
-    54.54%, 62.3% { transform: translateY(-6.9em); }
-    63.63%, 71.3% { transform: translateY(-8.05em); }
-    72.72%, 80.3% { transform: translateY(-9.2em); }
-    81.81%, 89.3% { transform: translateY(-10.35em); }
-    90.9%, 98.3%  { transform: translateY(-11.5em); }
-    100%          { transform: translateY(-11.5em); }
-}
+/* rotate-words keyframes removed — now JS-driven slot machine */
 
 @keyframes grain {
     0%, 100% { transform: translate(0, 0); }
@@ -446,7 +433,10 @@
 .rotating-words {
     display: flex;
     flex-direction: column;
-    animation: rotate-words 27.5s infinite ease-in-out;
+}
+
+.rotating-words.slot-machine {
+    transition: transform 30ms cubic-bezier(0.1, 0, 0.3, 1);
 }
 
 .rotating-words span {

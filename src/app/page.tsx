@@ -12,6 +12,49 @@ export default function HomePage() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [searchInputValue, setSearchInputValue] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const slotRef = useRef<HTMLSpanElement>(null);
+  const slotWords = ["marathon", "trail", "triathlon", "cyclisme", "natation", "ski", "running", "duathlon", "canicross", "obstacle", "swimrun"];
+
+  // Slot machine effect for rotating words
+  useEffect(() => {
+    const el = slotRef.current;
+    if (!el) return;
+    const itemH = 1.15; // em — matches CSS height
+    const totalWords = slotWords.length;
+    let cancelled = false;
+
+    const runSlot = async () => {
+      while (!cancelled) {
+        // Pick a random target word (different from current visible)
+        const targetIdx = Math.floor(Math.random() * totalWords);
+        // Spin through 2-3 full cycles + land on target
+        const fullSpins = 2 + Math.floor(Math.random() * 2); // 2 or 3 full cycles
+        const totalSteps = fullSpins * totalWords + targetIdx;
+
+        // Animate step by step with deceleration
+        for (let i = 0; i <= totalSteps; i++) {
+          if (cancelled) return;
+          const wordIdx = i % totalWords;
+          el.style.transform = `translateY(-${wordIdx * itemH}em)`;
+
+          // Speed: fast at start, slow at end (easeOutQuart curve)
+          const progress = i / totalSteps;
+          const eased = 1 - Math.pow(1 - progress, 4);
+          const delay = 30 + eased * 220; // 30ms fast → 250ms slow
+          el.style.transition = `transform ${delay}ms cubic-bezier(0.1, 0, 0.3, 1)`;
+
+          await new Promise((r) => setTimeout(r, delay + 10));
+        }
+
+        // Pause on the selected word before next spin
+        if (!cancelled) await new Promise((r) => setTimeout(r, 2500 + Math.random() * 1500));
+      }
+    };
+
+    // Small initial delay before first spin
+    const startTimeout = setTimeout(runSlot, 800);
+    return () => { cancelled = true; clearTimeout(startTimeout); };
+  }, []);
 
   // Navbar scroll effect
   useEffect(() => {
@@ -290,19 +333,10 @@ export default function HomePage() {
               Retrouvez vos photos de
               <span className="line-accent">
                 <span className="rotating-words-wrapper">
-                  <span className="rotating-words">
-                    <span>marathon</span>
-                    <span>trail</span>
-                    <span>triathlon</span>
-                    <span>cyclisme</span>
-                    <span>natation</span>
-                    <span>ski</span>
-                    <span>running</span>
-                    <span>duathlon</span>
-                    <span>canicross</span>
-                    <span>obstacle</span>
-                    <span>swimrun</span>
-                    <span>marathon</span>
+                  <span className="rotating-words slot-machine" ref={slotRef}>
+                    {slotWords.map((word) => (
+                      <span key={word}>{word}</span>
+                    ))}
                   </span>
                 </span>
               </span>
