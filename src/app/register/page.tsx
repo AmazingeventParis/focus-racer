@@ -161,7 +161,7 @@ export default function RegisterPage() {
         });
         if (!result?.error) {
           if (selectedRole === "RUNNER") {
-            router.push("/runner");
+            router.push("/sportif/dashboard");
           } else {
             router.push("/photographer/dashboard");
           }

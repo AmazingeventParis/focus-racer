@@ -47,7 +47,7 @@ export default function LoginPage() {
         } else if (["PHOTOGRAPHER", "ORGANIZER", "AGENCY", "CLUB", "FEDERATION"].includes(role)) {
           router.push("/photographer/dashboard");
         } else {
-          router.push("/runner");
+          router.push("/sportif/dashboard");
         }
       }
     } catch {
