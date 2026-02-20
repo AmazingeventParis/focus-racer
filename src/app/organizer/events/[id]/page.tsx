@@ -355,12 +355,10 @@ export default function EventDetailPage({
                   <p className="text-sm text-muted-foreground mt-2">{event.description}</p>
                 )}
                 {/* Public URL + QR Code */}
-                {event.status === "PUBLISHED" && (
-                  <EventQRCode
-                    eventUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/events/${id}`}
-                    eventName={event.name}
-                  />
-                )}
+                <EventQRCode
+                  eventUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/events/${id}`}
+                  eventName={event.name}
+                />
               </div>
               <div className="flex gap-2">
                 {/* Quick status toggle */}
