@@ -224,6 +224,28 @@ Focus Racer/
   - API partagées (mêmes endpoints que photographe)
 - **Déploiement** : migration repo vers `AmazingeventParis/focus-racer` (public), remote `amazingevent`
 
+### ✅ Chat Horde + Demandes d'ami + Nouvelle Homepage (Session 21)
+- **Chat Horde** : module de chat temps réel dans Ma Horde (conversations de groupe + messages directs 1-to-1)
+  - Schema Prisma : `ConversationType` enum (GROUP/DM), `HordeConversation`, `HordeConversationParticipant`, `HordeMessage`
+  - Relations ajoutées sur `User` (conversationsCreated, conversationMemberships, hordeMessages) et `Horde` (conversations)
+  - `GET/POST /api/sportif/horde/conversations` : liste/crée conversations (DM dédupliqué automatiquement)
+  - `GET/POST /api/sportif/horde/conversations/[id]/messages` : messages paginés (cursor-based, 50/page) + envoi
+  - `PATCH /api/sportif/horde/conversations/[id]/read` : marquer conversation lue
+  - `GET /api/sportif/horde/conversations/unread-total` : total non lus (badge sidebar)
+  - `notifyUserChat(userId, conversationId)` ajouté à `notification-emitter.ts` (SSE `horde_message`)
+  - 5 composants : `HordeChat` (2 colonnes desktop / 1 mobile), `ConversationList`, `MessageThread` (bulles, date separators, optimistic update), `CreateGroupDialog`, `CreateDMDialog`
+- **Page Ma Horde restructurée** : 3 onglets (Tabs shadcn/ui) — Membres, Chat, Demandes d'ami
+  - Onglet Membres : invite, liste, activité horde, comment ça marche
+  - Onglet Chat : composant `<HordeChat>` pleine largeur
+  - Onglet Demandes : invitations reçues (accepter/décliner) + envoyées (annuler) + état vide
+  - **Renommage supprimé** : titre fixe "Ma Horde", PATCH handler retiré de l'API
+- **Badge sidebar** : pastille rouge non lus sur "Ma Horde" (SSE `horde_message` + polling)
+- **Nouvelle Homepage** : conversion de `homepage.html` (statique) en React page.tsx
+  - 12 sections : navbar, hero (mots rotatifs), social proof (logos défilants), stats animés, how-it-works, features, onglets audience, tech/IA, témoignages, FAQ accordéon, CTA, footer
+  - CSS extrait dans `src/app/homepage.css` (1643 lignes)
+  - Interactions JS converties en React hooks (scroll, reveal, counters, tabs, FAQ, typing)
+  - `public/homepage.html` supprimé (doublon)
+
 ### ✅ Footer + FAQ + Contact API (Session 20)
 - **Page FAQ** : `/faq` — 18 questions/réponses en 6 sections accordéon (Coureurs, Photographes, Organisateurs, Paiements, Technique & IA, RGPD)
 - **API Contact** : `POST /api/contact` — pas d'auth requise, guest OK (guestName + guestEmail), crée un SupportMessage
@@ -280,8 +302,9 @@ Focus Racer/
 | **18** | 2026-02-18 | Admin CRUD utilisateurs (créer/supprimer/éditer/toggle), pastilles messages non lus (admin + user), workflow messagerie simplifié (OPEN→IN_PROGRESS→CLOSED), filtre actifs par défaut |
 | **19** | 2026-02-19 | Stripe Checkout crédits (packs + abonnements), affiche événement (upload poster), événements récents homepage, sidebar simplifiée, espace organisateur (duplication complète /photographer/ → /organizer/), migration repo GitHub |
 | **20** | 2026-02-20 | Page FAQ (18 Q&A, 6 sections accordéon), API contact guest+auth, refonte page contact (catégories, pré-remplissage), footer restructuré, admin messages guest |
+| **21** | 2026-02-20 | Chat Horde (groupe + DM, SSE temps réel, 5 composants), page Ma Horde restructurée (3 onglets : Membres/Chat/Demandes), badge non lus sidebar, nouvelle homepage React (12 sections, conversion HTML→JSX) |
 
-**Fichiers clés créés** : `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/photographer/payments/page.tsx`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`
+**Fichiers clés créés** : `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/photographer/payments/page.tsx`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`, `src/app/api/sportif/horde/conversations/route.ts`, `src/app/api/sportif/horde/conversations/[id]/messages/route.ts`, `src/app/api/sportif/horde/conversations/[id]/read/route.ts`, `src/app/api/sportif/horde/conversations/unread-total/route.ts`, `src/components/horde/HordeChat.tsx`, `src/components/horde/ConversationList.tsx`, `src/components/horde/MessageThread.tsx`, `src/components/horde/CreateGroupDialog.tsx`, `src/components/horde/CreateDMDialog.tsx`, `src/app/homepage.css`
 
 ---
 
