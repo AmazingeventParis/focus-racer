@@ -757,75 +757,92 @@ export default function UploadPage({
         &larr; Retour a l&apos;evenement
       </Link>
 
-      <Card className="mb-6 bg-white border-0 shadow-sm rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-gray-900">Ajouter des photos</CardTitle>
-          <CardDescription>
-            {event.name} •{" "}
-            {new Date(event.date).toLocaleDateString("fr-FR", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div
-            className={`border-2 border-dashed rounded-2xl p-12 text-center transition-colors ${
-              isDragging
-                ? "border-emerald-500 bg-emerald-50"
-                : "border-emerald-200 hover:border-emerald-300"
-            }`}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              id="file-input"
-              className="hidden"
-              multiple
-              accept="image/*"
-              onChange={handleFileInput}
-            />
-            <label htmlFor="file-input" className="cursor-pointer block">
-              <div className="text-muted-foreground mb-4">
-                <svg
-                  className="mx-auto h-12 w-12"
-                  stroke="currentColor"
-                  fill="none"
-                  viewBox="0 0 48 48"
-                >
-                  <path
-                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <p className="text-lg font-medium text-gray-900 mb-2">
-                Glissez-deposez vos photos ici
-              </p>
-              <p className="text-muted-foreground mb-4">ou cliquez pour sélectionner</p>
-              <Button type="button" variant="outline" className="border-emerald-200 text-emerald-500 hover:bg-emerald-50">
-                Selectionner des fichiers
-              </Button>
-            </label>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Hidden file input — always accessible for "+ Ajouter" button */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        id="file-input"
+        className="hidden"
+        multiple
+        accept="image/*"
+        onChange={handleFileInput}
+      />
 
-      {/* Selected files grid */}
+      {/* Drop zone — hidden once files are selected */}
+      {selectedFiles.length === 0 && (
+        <Card className="mb-6 bg-white border-0 shadow-sm rounded-2xl">
+          <CardHeader>
+            <CardTitle className="text-gray-900">Ajouter des photos</CardTitle>
+            <CardDescription>
+              {event.name} •{" "}
+              {new Date(event.date).toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div
+              className={`border-2 border-dashed rounded-2xl p-12 text-center transition-colors ${
+                isDragging
+                  ? "border-emerald-500 bg-emerald-50"
+                  : "border-emerald-200 hover:border-emerald-300"
+              }`}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+            >
+              <label htmlFor="file-input" className="cursor-pointer block">
+                <div className="text-muted-foreground mb-4">
+                  <svg
+                    className="mx-auto h-12 w-12"
+                    stroke="currentColor"
+                    fill="none"
+                    viewBox="0 0 48 48"
+                  >
+                    <path
+                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <p className="text-lg font-medium text-gray-900 mb-2">
+                  Glissez-deposez vos photos ici
+                </p>
+                <p className="text-muted-foreground mb-4">ou cliquez pour sélectionner</p>
+                <Button type="button" variant="outline" className="border-emerald-200 text-emerald-500 hover:bg-emerald-50">
+                  Selectionner des fichiers
+                </Button>
+              </label>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Selected files summary */}
       {selectedFiles.length > 0 && (
         <Card className="bg-white border-0 shadow-sm rounded-2xl">
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle className="text-gray-900">
-                {selectedFiles.length} photo{selectedFiles.length > 1 ? "s" : ""} sélectionnée{selectedFiles.length > 1 ? "s" : ""}
-              </CardTitle>
-              <div className="flex gap-2">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-gray-900">
+                    {selectedFiles.length} photo{selectedFiles.length > 1 ? "s" : ""} sélectionnée{selectedFiles.length > 1 ? "s" : ""}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {selectedFiles.length} crédit{selectedFiles.length > 1 ? "s" : ""} requis
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
@@ -845,43 +862,13 @@ export default function UploadPage({
                 >
                   Tout retirer
                 </Button>
+                <Button
+                  onClick={goToConfirm}
+                  className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl px-6 shadow-lg shadow-emerald-500/20"
+                >
+                  Continuer
+                </Button>
               </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-6">
-              {selectedFiles.map((sf, index) => (
-                <div key={index} className="relative group aspect-square rounded-xl overflow-hidden bg-gray-100">
-                  <Image
-                    src={sf.previewUrl}
-                    alt={sf.file.name}
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
-                  <button
-                    onClick={() => removeFile(index)}
-                    className="absolute top-1 right-1 w-6 h-6 bg-black/60 hover:bg-red-500 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    ✕
-                  </button>
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-1">
-                    <p className="text-[10px] text-white truncate">{sf.file.name}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-              <p className="text-sm text-gray-500">
-                {selectedFiles.length} photo{selectedFiles.length > 1 ? "s" : ""} = {selectedFiles.length} crédit{selectedFiles.length > 1 ? "s" : ""}
-              </p>
-              <Button
-                onClick={goToConfirm}
-                className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl px-8 shadow-lg shadow-emerald-500/20"
-              >
-                Continuer
-              </Button>
             </div>
           </CardContent>
         </Card>
