@@ -16,7 +16,7 @@ export function getRoleLabel(role: string): string {
     CLUB: "Club",
     FEDERATION: "Fédération",
     ADMIN: "Administrateur",
-    RUNNER: "Coureur",
+    RUNNER: "Sportif",
   };
   return labels[role] || role;
 }

@@ -82,11 +82,11 @@ export async function POST(request: NextRequest) {
       name: session.user.name || "",
       bibNumber: bibNumber.toString(),
       eventId,
-      reason: reason || "Demande de suppression RGPD par le coureur",
+      reason: reason || "Demande de suppression RGPD par le sportif",
       auditLogs: {
         create: {
           action: "REQUEST_CREATED",
-          details: `Demande créée par le coureur (self-service). Dossard: ${bibNumber}`,
+          details: `Demande créée par le sportif (self-service). Dossard: ${bibNumber}`,
           performedBy: session.user.email,
         },
       },

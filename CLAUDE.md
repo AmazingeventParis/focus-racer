@@ -6,7 +6,7 @@
 
 ## 1. Vue d'ensemble
 
-**Version** : 0.9.11
+**Version** : 0.9.12
 **URL** : https://focusracer.swipego.app
 **Type** : Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 
@@ -222,6 +222,14 @@ Focus Racer/
   - API partagées (mêmes endpoints que photographe)
 - **Déploiement** : migration repo vers `AmazingeventParis/focus-racer` (public), remote `amazingevent`
 
+### ✅ Footer + FAQ + Contact API (Session 20)
+- **Page FAQ** : `/faq` — 18 questions/réponses en 6 sections accordéon (Coureurs, Photographes, Organisateurs, Paiements, Technique & IA, RGPD)
+- **API Contact** : `POST /api/contact` — pas d'auth requise, guest OK (guestName + guestEmail), crée un SupportMessage
+- **Page Contact refonte** : connectée au vrai backend (plus de faux setTimeout), sélecteur de catégorie (6 catégories), pré-remplissage nom/email si connecté, section FAQ teaser
+- **Schema Prisma** : `SupportMessage.userId` rendu optionnel (`String?`), ajout `guestName` et `guestEmail` (`String?`)
+- **Admin messages** : gestion des messages guest (affichage "Visiteur" badge, recherche par guestName/guestEmail)
+- **Footer restructuré** : liens corrigés — FAQ → `/faq`, Centre d'aide → `/faq`, Contact → `/contact`, suppression liens morts
+
 ### ✅ Migration serveur dédié (Session 10)
 - **Migration** : Render.com (512MB) → Serveur dédié OVH via Coolify
 - **Serveur** : AMD EPYC 4344P, 64 GB RAM, 2x NVMe 960 GB
@@ -269,8 +277,9 @@ Focus Racer/
 | **17** | 2026-02-18 | Migration S3-only (plus de disque local), Stripe Connect Express + 1€ frais service, page photographe paiements, admin paiements enrichi, checkout avec frais service |
 | **18** | 2026-02-18 | Admin CRUD utilisateurs (créer/supprimer/éditer/toggle), pastilles messages non lus (admin + user), workflow messagerie simplifié (OPEN→IN_PROGRESS→CLOSED), filtre actifs par défaut |
 | **19** | 2026-02-19 | Stripe Checkout crédits (packs + abonnements), affiche événement (upload poster), événements récents homepage, sidebar simplifiée, espace organisateur (duplication complète /photographer/ → /organizer/), migration repo GitHub |
+| **20** | 2026-02-20 | Page FAQ (18 Q&A, 6 sections accordéon), API contact guest+auth, refonte page contact (catégories, pré-remplissage), footer restructuré, admin messages guest |
 
-**Fichiers clés créés** : `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/photographer/payments/page.tsx`, `src/app/api/admin/payments-stats/route.ts`
+**Fichiers clés créés** : `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/photographer/payments/page.tsx`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`
 
 ---
 
@@ -440,4 +449,4 @@ orga@test.com / orga123
 
 ---
 
-**Dernière mise à jour** : Session 19, 2026-02-19 (Stripe Checkout crédits, affiche événement, espace organisateur, migration repo GitHub)
+**Dernière mise à jour** : Session 20, 2026-02-20 (FAQ, contact API guest, footer restructuré, admin messages guest)

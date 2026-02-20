@@ -65,7 +65,7 @@ export default function ConfidentialitePage() {
             {/* Données des Utilisateurs */}
             <Card className="glass-card rounded-2xl">
               <CardHeader>
-                <CardTitle className="text-navy">Données des Utilisateurs (coureurs / acheteurs)</CardTitle>
+                <CardTitle className="text-navy">Données des Utilisateurs (sportifs / acheteurs)</CardTitle>
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none space-y-4">
                 <p className="text-navy/80">

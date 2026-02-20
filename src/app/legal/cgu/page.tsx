@@ -67,7 +67,7 @@ export default function CguPage() {
                   </li>
                   <li>
                     <strong>« Utilisateur(s) »</strong> : désigne les visiteurs et acheteurs sur la Plateforme
-                    (coureurs, participants d&apos;événements sportifs) susceptibles de rechercher, consulter et
+                    (sportifs, participants d&apos;événements sportifs) susceptibles de rechercher, consulter et
                     acquérir des photographies publiées par les Professionnels.
                   </li>
                   <li>

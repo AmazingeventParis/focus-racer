@@ -108,7 +108,7 @@ export function AnalyticsVisual({
               <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Dossards</span>
             </div>
             <p className="text-3xl font-bold text-blue-600 mb-1">{uniqueBibs}</p>
-            <p className="text-xs text-slate-500">{avgPhotosPerBib.toFixed(1)} photos/coureur</p>
+            <p className="text-xs text-slate-500">{avgPhotosPerBib.toFixed(1)} photos/sportif</p>
           </div>
 
           {/* Processing Time */}

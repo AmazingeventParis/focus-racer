@@ -159,7 +159,7 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold font-display text-gray-900">{totalRunners}</p>
-                    <p className="text-sm text-gray-500">Coureurs</p>
+                    <p className="text-sm text-gray-500">Sportifs</p>
                   </div>
                 </div>
               </CardContent>

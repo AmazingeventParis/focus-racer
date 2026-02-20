@@ -262,7 +262,7 @@ export default function AdminUsersPage() {
                     <SelectItem value="AGENCY">Agence</SelectItem>
                     <SelectItem value="CLUB">Club</SelectItem>
                     <SelectItem value="FEDERATION">Fédération</SelectItem>
-                    <SelectItem value="RUNNER">Coureur</SelectItem>
+                    <SelectItem value="RUNNER">Sportif</SelectItem>
                     <SelectItem value="ADMIN">Admin</SelectItem>
                   </SelectContent>
                 </Select>
@@ -310,7 +310,7 @@ export default function AdminUsersPage() {
                   <SelectItem value="AGENCY">Agence</SelectItem>
                   <SelectItem value="CLUB">Club</SelectItem>
                   <SelectItem value="FEDERATION">Fédération</SelectItem>
-                  <SelectItem value="RUNNER">Coureur</SelectItem>
+                  <SelectItem value="RUNNER">Sportif</SelectItem>
                   <SelectItem value="ADMIN">Admin</SelectItem>
                 </SelectContent>
               </Select>

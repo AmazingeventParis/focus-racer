@@ -93,7 +93,7 @@ export default function HomePage() {
                 {
                   step: "3",
                   title: "Recherche",
-                  desc: "Les coureurs retrouvent et achètent leurs photos instantanément",
+                  desc: "Les sportifs retrouvent et achètent leurs photos instantanément",
                   icon: (
                     <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -130,7 +130,7 @@ export default function HomePage() {
                 Tout ce dont vous avez besoin
               </h2>
               <p className="text-muted-foreground max-w-lg mx-auto">
-                Une plateforme complète pour les coureurs, photographes et organisateurs
+                Une plateforme complète pour les sportifs, photographes et organisateurs
               </p>
             </div>
 
@@ -195,7 +195,7 @@ export default function HomePage() {
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {[
                 {
-                  title: "Coureurs",
+                  title: "Sportifs",
                   desc: "Retrouvez toutes vos photos de course en quelques secondes. Recherchez par dossard, par nom ou même par selfie.",
                   cta: "Trouver mes photos",
                   href: "/runner",
@@ -210,7 +210,7 @@ export default function HomePage() {
                 },
                 {
                   title: "Organisateurs",
-                  desc: "Offrez une expérience photo complète à vos coureurs. Trouvez des photographes via la marketplace.",
+                  desc: "Offrez une expérience photo complète à vos sportifs. Trouvez des photographes via la marketplace.",
                   cta: "Créer un compte Pro",
                   href: "/register",
                   accent: false,
@@ -261,7 +261,7 @@ export default function HomePage() {
                 {
                   quote: "J&apos;ai retrouvé toutes mes photos du marathon en moins de 30 secondes. Incroyable !",
                   name: "Sophie M.",
-                  role: "Coureuse",
+                  role: "Sportive",
                 },
                 {
                   quote: "Le tri automatique par dossard me fait gagner des heures de travail après chaque course.",
@@ -305,7 +305,7 @@ export default function HomePage() {
                   Prêt à retrouver vos photos ?
                 </h2>
                 <p className="text-white/75 text-lg max-w-xl mx-auto mb-10">
-                  Rejoignez des milliers de coureurs et photographes qui utilisent Focus Racer
+                  Rejoignez des milliers de sportifs et photographes qui utilisent Focus Racer
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link href="/runner">

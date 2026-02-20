@@ -363,7 +363,7 @@ export default function UploadPage({
           xhr.onload = () => {
             try {
               if (!xhr.responseText || xhr.responseText.trim() === "") {
-                throw new Error("Le serveur n'a pas retourne de reponse.");
+                throw new Error("Le serveur n'a pas retourné de réponse.");
               }
 
               let data;
@@ -371,7 +371,7 @@ export default function UploadPage({
                 data = JSON.parse(xhr.responseText);
               } catch {
                 console.error("Failed to parse response:", xhr.responseText);
-                throw new Error("Reponse invalide du serveur.");
+                throw new Error("Réponse invalide du serveur.");
               }
 
               if (xhr.status >= 400) {
@@ -396,7 +396,7 @@ export default function UploadPage({
             }
           };
 
-          xhr.onerror = () => reject(new Error("Erreur reseau"));
+          xhr.onerror = () => reject(new Error("Erreur réseau"));
           xhr.ontimeout = () => reject(new Error("Timeout"));
 
           xhr.open("POST", "/api/photos/batch-upload");
@@ -408,8 +408,8 @@ export default function UploadPage({
 
       if (error instanceof Error && error.message === "INSUFFICIENT_CREDITS") {
         toast({
-          title: "Credits insuffisants",
-          description: `Vous avez ${credits} credits, il en faut ${selectedFiles.length}.`,
+          title: "Crédits insuffisants",
+          description: `Vous avez ${credits} crédits, il en faut ${selectedFiles.length}.`,
           variant: "destructive",
         });
       } else {
@@ -666,7 +666,7 @@ export default function UploadPage({
                       <Badge className="bg-emerald-100 text-emerald-700 border-0 text-[9px]">Recommandé</Badge>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
-                      Détecte et supprime automatiquement les photos en double (rafales identiques). Votre galerie est plus propre, vos coureurs trouvent leurs photos plus vite.
+                      Détecte et supprime automatiquement les photos en double (rafales identiques). Votre galerie est plus propre, vos sportifs trouvent leurs photos plus vite.
                     </p>
                   </div>
                 </label>
@@ -735,7 +735,7 @@ export default function UploadPage({
                       <span className="text-sm font-medium text-gray-900">Smart Crop</span>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
-                      Génère un recadrage individuel par coureur détecté. Chaque visage reçoit un crop centré avec le buste et le dossard visible.
+                      Génère un recadrage individuel par sportif détecté. Chaque visage reçoit un crop centré avec le buste et le dossard visible.
                     </p>
                   </div>
                 </label>
@@ -754,7 +754,7 @@ export default function UploadPage({
         href={`/organizer/events/${id}`}
         className="text-emerald-500 hover:text-emerald-600 transition-colors mb-4 inline-block"
       >
-        &larr; Retour a l&apos;evenement
+        &larr; Retour à l&apos;événement
       </Link>
 
       <Card className="mb-6 bg-white border-0 shadow-sm rounded-2xl">
@@ -806,11 +806,11 @@ export default function UploadPage({
                 </svg>
               </div>
               <p className="text-lg font-medium text-gray-900 mb-2">
-                Glissez-deposez vos photos ici
+                Glissez-déposez vos photos ici
               </p>
               <p className="text-muted-foreground mb-4">ou cliquez pour sélectionner</p>
               <Button type="button" variant="outline" className="border-emerald-200 text-emerald-500 hover:bg-emerald-50">
-                Selectionner des fichiers
+                Sélectionner des fichiers
               </Button>
             </label>
           </div>

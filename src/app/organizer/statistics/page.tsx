@@ -342,7 +342,7 @@ export default function StatisticsPage() {
                   icon={<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" /></svg>}
                 />
                 <KPICard
-                  label="Coureurs inscrits"
+                  label="Sportifs inscrits"
                   value={overview?.totalRunners || 0}
                   subtitle={`~${avgRunnersPerEvent} par événement`}
                   iconBg="bg-purple-50"
@@ -378,7 +378,7 @@ export default function StatisticsPage() {
                   <div className="grid grid-cols-2 gap-6">
                     <div className="text-center p-4 rounded-xl bg-gray-50">
                       <p className="text-2xl font-bold font-display text-gray-900">{avgRunnersPerEvent}</p>
-                      <p className="text-sm text-gray-500 mt-1">Coureurs / événement</p>
+                      <p className="text-sm text-gray-500 mt-1">Sportifs / événement</p>
                     </div>
                     <div className="text-center p-4 rounded-xl bg-gray-50">
                       <p className="text-2xl font-bold font-display text-gray-900">{avgPhotosPerEvent}</p>
@@ -541,7 +541,7 @@ export default function StatisticsPage() {
                 </svg>
                 <div>
                   <p className="font-medium text-gray-900 text-sm">Dossards bien visibles</p>
-                  <p className="text-xs text-gray-600 mt-1">Photographiez les coureurs de face ou de 3/4 pour maximiser la détection des dossards par l&apos;IA.</p>
+                  <p className="text-xs text-gray-600 mt-1">Photographiez les sportifs de face ou de 3/4 pour maximiser la détection des dossards par l&apos;IA.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-50">

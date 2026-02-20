@@ -208,7 +208,7 @@ export default function CreditsPage() {
             <CardHeader>
               <CardTitle className="text-lg font-display text-gray-900">Abonnements annuels</CardTitle>
               <CardDescription className="text-gray-500">
-                Crédits rechargés automatiquement chaque mois. Ideal pour les organisateurs réguliers.
+                Crédits rechargés automatiquement chaque mois. Idéal pour les organisateurs réguliers.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -373,7 +373,7 @@ export default function CreditsPage() {
               </div>
               <div className="flex gap-3">
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">4</span>
-                <p>Vos coureurs trouvent et achètent leurs photos</p>
+                <p>Vos sportifs trouvent et achètent leurs photos</p>
               </div>
             </CardContent>
           </Card>

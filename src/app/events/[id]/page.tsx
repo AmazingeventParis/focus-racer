@@ -438,7 +438,7 @@ export default function PublicEventPage({
                   </Badge>
                   {event.runnerCount > 0 && (
                     <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                      {event.runnerCount} coureurs
+                      {event.runnerCount} sportifs
                     </Badge>
                   )}
                   <span className="text-white/60 text-sm">par {event.photographer}</span>
@@ -565,7 +565,7 @@ export default function PublicEventPage({
               )}
               {searchResult.matchedRunners && searchResult.matchedRunners.length > 1 && (
                 <p className="text-sm text-muted-foreground mb-2">
-                  {searchResult.matchedRunners.length} coureurs correspondent
+                  {searchResult.matchedRunners.length} sportifs correspondent
                 </p>
               )}
               <p className="text-navy font-medium">
@@ -651,7 +651,7 @@ export default function PublicEventPage({
                 <span className="text-2xl">&#127939;</span>
               </div>
               <p className="text-2xl font-bold text-navy">{event.runnerCount}</p>
-              <p className="text-sm text-muted-foreground">coureurs identifiés</p>
+              <p className="text-sm text-muted-foreground">sportifs identifiés</p>
             </div>
             <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
               <div className="w-12 h-12 rounded-full bg-emerald/10 flex items-center justify-center mx-auto mb-3">

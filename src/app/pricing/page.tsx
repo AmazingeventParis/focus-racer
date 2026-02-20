@@ -7,15 +7,15 @@ import Footer from "@/components/layout/Footer";
 
 const plans = [
   {
-    name: "Coureur",
+    name: "Sportif",
     description: "Retrouvez et achetez vos photos de course",
     price: "Gratuit",
-    priceDetail: "Paiement a la photo",
+    priceDetail: "Paiement à la photo",
     features: [
-      "Recherche par dossard illimitee",
+      "Recherche par dossard illimitée",
       "Recherche par selfie (IA)",
-      "Telechargement HD sans filigrane",
-      "Acces a vie aux photos achetees",
+      "Téléchargement HD sans filigrane",
+      "Accès à vie aux photos achetées",
     ],
     cta: "Trouver mes photos",
     href: "/runner",
@@ -25,13 +25,13 @@ const plans = [
     name: "Photographe",
     description: "Vendez vos photos de courses sportives",
     price: "0€",
-    priceDetail: "Systeme de credits",
+    priceDetail: "Système de crédits",
     features: [
-      "Upload illimite de photos",
-      "Detection automatique des dossards",
-      "Galerie personnalisee",
+      "Upload illimité de photos",
+      "Détection automatique des dossards",
+      "Galerie personnalisée",
       "Mode Live pour upload en direct",
-      "Statistiques detaillees",
+      "Statistiques détaillées",
       "Paiement via Stripe Connect",
     ],
     cta: "Commencer gratuitement",
@@ -40,14 +40,14 @@ const plans = [
   },
   {
     name: "Organisateur",
-    description: "Gerez les photos de vos evenements",
+    description: "Gérez les photos de vos événements",
     price: "Sur mesure",
     priceDetail: "Contactez-nous",
     features: [
       "Tout ce que Photographe inclut",
       "Multi-photographes par event",
-      "Branding personnalise",
-      "Acces a la marketplace",
+      "Branding personnalisé",
+      "Accès à la marketplace",
       "Support prioritaire",
       "Facturation entreprise",
     ],
@@ -70,7 +70,7 @@ export default function PricingPage() {
               Tarifs simples et transparents
             </h1>
             <p className="text-white/70 max-w-lg mx-auto animate-fade-in animation-delay-100">
-              Pas d&apos;abonnement, pas de frais caches. Payez uniquement ce que vous utilisez.
+              Pas d&apos;abonnement, pas de frais cachés. Payez uniquement ce que vous utilisez.
             </p>
           </div>
         </section>
@@ -143,7 +143,7 @@ export default function PricingPage() {
               Des questions ?
             </h2>
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
-              Notre equipe est la pour vous aider. N&apos;hesitez pas a nous contacter.
+              Notre équipe est là pour vous aider. N&apos;hésitez pas à nous contacter.
             </p>
             <Link href="/contact">
               <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">

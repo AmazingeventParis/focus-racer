@@ -19,8 +19,8 @@ interface FaqSection {
 
 const faqSections: FaqSection[] = [
   {
-    id: "coureurs",
-    title: "Coureurs",
+    id: "sportifs",
+    title: "Sportifs",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -29,15 +29,15 @@ const faqSections: FaqSection[] = [
     items: [
       {
         q: "Comment retrouver mes photos de course ?",
-        a: "Rendez-vous sur la page de l'evenement et entrez votre numero de dossard dans la barre de recherche. Notre IA detecte automatiquement les dossards sur les photos. Vous pouvez aussi rechercher par nom si la start-list est disponible.",
+        a: "Rendez-vous sur la page de l'événement et entrez votre numéro de dossard dans la barre de recherche. Notre IA détecte automatiquement les dossards sur les photos. Vous pouvez aussi rechercher par nom si la start-list est disponible.",
       },
       {
-        q: "La recherche par selfie, comment ca marche ?",
-        a: "Prenez un selfie ou importez une photo de votre visage. Notre technologie de reconnaissance faciale compare votre visage avec ceux detectes sur les photos de course et vous propose les correspondances. La precision est d'environ 95%.",
+        q: "La recherche par selfie, comment ça marche ?",
+        a: "Prenez un selfie ou importez une photo de votre visage. Notre technologie de reconnaissance faciale compare votre visage avec ceux détectés sur les photos de course et vous propose les correspondances. La précision est d'environ 95%.",
       },
       {
-        q: "Mon dossard n'a pas ete detecte, que faire ?",
-        a: "Il arrive que l'IA ne detecte pas certains dossards (caches, plies, boue...). Essayez la recherche par nom si la start-list est disponible, ou par selfie. Vous pouvez aussi contacter le photographe de l'evenement.",
+        q: "Mon dossard n'a pas été détecté, que faire ?",
+        a: "Il arrive que l'IA ne détecte pas certains dossards (cachés, pliés, boue…). Essayez la recherche par nom si la start-list est disponible, ou par selfie. Vous pouvez aussi contacter le photographe de l'événement.",
       },
     ],
   },
@@ -53,15 +53,15 @@ const faqSections: FaqSection[] = [
     items: [
       {
         q: "Comment devenir photographe sur Focus Racer ?",
-        a: "Creez un compte gratuit en choisissant le profil 'Photographe'. Vous pourrez ensuite creer des evenements, uploader vos photos et definir vos tarifs. L'inscription est ouverte a tous les photographes professionnels et amateurs.",
+        a: "Créez un compte gratuit en choisissant le profil « Photographe ». Vous pourrez ensuite créer des événements, uploader vos photos et définir vos tarifs. L'inscription est ouverte à tous les photographes professionnels et amateurs.",
       },
       {
-        q: "Comment fonctionne le systeme de credits ?",
-        a: "Chaque photo uploadee consomme 1 credit. Les credits couvrent le traitement IA (detection de dossard, reconnaissance faciale, watermark). Vous pouvez acheter des packs de credits : 1 000 credits (19 EUR), 5 000 credits (85 EUR) ou 15 000 credits (225 EUR).",
+        q: "Comment fonctionne le système de crédits ?",
+        a: "Chaque photo uploadée consomme 1 crédit. Les crédits couvrent le traitement IA (détection de dossard, reconnaissance faciale, watermark). Vous pouvez acheter des packs de crédits : 1 000 crédits (19 €), 5 000 crédits (85 €) ou 15 000 crédits (225 €).",
       },
       {
         q: "Comment recevoir mes paiements ?",
-        a: "Connectez votre compte Stripe via l'espace photographe (onglet Commandes > Stripe Connect). L'onboarding prend environ 3 minutes. Les paiements des coureurs sont verses directement sur votre compte Stripe, moins les frais Stripe (~1,4% + 0,25 EUR).",
+        a: "Connectez votre compte Stripe via l'espace photographe (onglet Commandes > Stripe Connect). L'onboarding prend environ 3 minutes. Les paiements des sportifs sont versés directement sur votre compte Stripe, moins les frais Stripe (~1,4 % + 0,25 €).",
       },
     ],
   },
@@ -75,16 +75,16 @@ const faqSections: FaqSection[] = [
     ),
     items: [
       {
-        q: "Comment publier un evenement sur la marketplace ?",
-        a: "Depuis votre espace organisateur, creez une annonce sur la marketplace en precisant la date, le lieu, le type de sport et votre budget. Les photographes pourront candidater et vous choisissez celui qui correspond le mieux.",
+        q: "Comment publier un événement sur la marketplace ?",
+        a: "Depuis votre espace organisateur, créez une annonce sur la marketplace en précisant la date, le lieu, le type de sport et votre budget. Les photographes pourront candidater et vous choisissez celui qui correspond le mieux.",
       },
       {
-        q: "Puis-je avoir plusieurs photographes sur un evenement ?",
-        a: "Oui, chaque photographe cree son propre evenement sur la plateforme et gere ses photos independamment. A terme, nous prevoyons un systeme d'accreditations pour que l'organisateur puisse assigner plusieurs photographes a un meme evenement.",
+        q: "Puis-je avoir plusieurs photographes sur un événement ?",
+        a: "Oui, chaque photographe crée son propre événement sur la plateforme et gère ses photos indépendamment. À terme, nous prévoyons un système d'accréditations pour que l'organisateur puisse assigner plusieurs photographes à un même événement.",
       },
       {
         q: "Comment importer ma start-list ?",
-        a: "Vous pouvez importer votre start-list au format CSV, ou via les connecteurs API (Njuko, KMS). Cela permet aux coureurs de retrouver leurs photos par nom en plus du numero de dossard.",
+        a: "Vous pouvez importer votre start-list au format CSV, ou via les connecteurs API (Njuko, KMS). Cela permet aux sportifs de retrouver leurs photos par nom en plus du numéro de dossard.",
       },
     ],
   },
@@ -99,15 +99,15 @@ const faqSections: FaqSection[] = [
     items: [
       {
         q: "Quels moyens de paiement acceptez-vous ?",
-        a: "Nous acceptons les cartes bancaires (Visa, Mastercard, Amex), Apple Pay, Google Pay, Link (paiement en un clic) et les virements SEPA. Tous les paiements sont securises par Stripe.",
+        a: "Nous acceptons les cartes bancaires (Visa, Mastercard, Amex), Apple Pay, Google Pay, Link (paiement en un clic) et les virements SEPA. Tous les paiements sont sécurisés par Stripe.",
       },
       {
-        q: "A quoi correspondent les frais de service de 1 EUR ?",
-        a: "Des frais de service de 1 EUR sont ajoutes a chaque commande pour couvrir les couts de fonctionnement de la plateforme (hebergement, IA, support). Ce montant est fixe quelle que soit la taille de la commande.",
+        q: "À quoi correspondent les frais de service de 1 € ?",
+        a: "Des frais de service de 1 € sont ajoutés à chaque commande pour couvrir les coûts de fonctionnement de la plateforme (hébergement, IA, support). Ce montant est fixe quelle que soit la taille de la commande.",
       },
       {
         q: "Puis-je obtenir un remboursement ?",
-        a: "Les photos numeriques etant des biens dematerialises, les remboursements sont traites au cas par cas. Contactez-nous via le formulaire de contact en precisant votre numero de commande et le motif de votre demande.",
+        a: "Les photos numériques étant des biens dématérialisés, les remboursements sont traités au cas par cas. Contactez-nous via le formulaire de contact en précisant votre numéro de commande et le motif de votre demande.",
       },
     ],
   },
@@ -121,22 +121,22 @@ const faqSections: FaqSection[] = [
     ),
     items: [
       {
-        q: "Comment fonctionne la detection de dossards ?",
-        a: "Nous utilisons AWS Rekognition, un service d'IA d'Amazon, pour detecter automatiquement les numeros de dossard sur les photos. La precision est de 85 a 95% selon la lisibilite du dossard (taille, angle, conditions).",
+        q: "Comment fonctionne la détection de dossards ?",
+        a: "Nous utilisons AWS Rekognition, un service d'IA d'Amazon, pour détecter automatiquement les numéros de dossard sur les photos. La précision est de 85 à 95 % selon la lisibilité du dossard (taille, angle, conditions).",
       },
       {
         q: "La reconnaissance faciale est-elle fiable ?",
-        a: "Oui, notre systeme utilise AWS Rekognition avec un seuil de confiance de 95%. La reconnaissance faciale permet de retrouver des photos meme quand le dossard n'est pas visible. Les donnees biometriques sont traitees conformement au RGPD.",
+        a: "Oui, notre système utilise AWS Rekognition avec un seuil de confiance de 95 %. La reconnaissance faciale permet de retrouver des photos même quand le dossard n'est pas visible. Les données biométriques sont traitées conformément au RGPD.",
       },
       {
-        q: "Pourquoi certaines photos sont-elles filtrees ?",
-        a: "Avant traitement, notre systeme peut filtrer les photos floues (analyse de la nettete) et les doublons (comparaison par empreinte visuelle). Ces options sont activees par defaut mais peuvent etre desactivees par le photographe lors de l'import.",
+        q: "Pourquoi certaines photos sont-elles filtrées ?",
+        a: "Avant traitement, notre système peut filtrer les photos floues (analyse de la netteté) et les doublons (comparaison par empreinte visuelle). Ces options sont activées par défaut mais peuvent être désactivées par le photographe lors de l'import.",
       },
     ],
   },
   {
     id: "rgpd",
-    title: "RGPD & Donnees personnelles",
+    title: "RGPD & Données personnelles",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
@@ -144,16 +144,16 @@ const faqSections: FaqSection[] = [
     ),
     items: [
       {
-        q: "Quels sont mes droits sur mes donnees personnelles ?",
-        a: "Conformement au RGPD, vous disposez d'un droit d'acces, de rectification, de suppression, de portabilite et d'opposition sur vos donnees personnelles. Vous pouvez exercer ces droits depuis votre compte ou via la page RGPD.",
+        q: "Quels sont mes droits sur mes données personnelles ?",
+        a: "Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, de suppression, de portabilité et d'opposition sur vos données personnelles. Vous pouvez exercer ces droits depuis votre compte ou via la page RGPD.",
       },
       {
         q: "Comment demander la suppression de mes photos ?",
-        a: "Rendez-vous sur la page RGPD (/gdpr) et remplissez le formulaire de demande de suppression en precisant votre email, votre numero de dossard et l'evenement concerne. Votre demande sera traitee sous 30 jours maximum.",
+        a: "Rendez-vous sur la page RGPD (/gdpr) et remplissez le formulaire de demande de suppression en précisant votre email, votre numéro de dossard et l'événement concerné. Votre demande sera traitée sous 30 jours maximum.",
       },
       {
         q: "Qui est le DPO de Focus Racer ?",
-        a: "Le Delegue a la Protection des Donnees (DPO) est joignable a l'adresse dpo@focusracer.com. Pour toute question relative a la protection de vos donnees personnelles, n'hesitez pas a le contacter.",
+        a: "Le Délégué à la Protection des Données (DPO) est joignable à l'adresse dpo@focusracer.com. Pour toute question relative à la protection de vos données personnelles, n'hésitez pas à le contacter.",
       },
     ],
   },
@@ -200,10 +200,10 @@ export default function FaqPage() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMC41IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDgpIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCBmaWxsPSJ1cmwoI2cpIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIi8+PC9zdmc+')] opacity-50" />
           <div className="relative container mx-auto px-4 py-16 md:py-20 text-center">
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 animate-fade-in">
-              Questions frequentes
+              Questions fréquentes
             </h1>
             <p className="text-white/70 max-w-lg mx-auto animate-fade-in animation-delay-100">
-              Retrouvez les reponses aux questions les plus posees sur Focus Racer.
+              Retrouvez les réponses aux questions les plus posées sur Focus Racer.
             </p>
           </div>
         </section>
@@ -233,10 +233,10 @@ export default function FaqPage() {
             <div className="mt-16 text-center">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
                 <h3 className="text-xl font-bold text-navy mb-2">
-                  Vous n&apos;avez pas trouve votre reponse ?
+                  Vous n&apos;avez pas trouvé votre réponse ?
                 </h3>
                 <p className="text-muted-foreground mb-6">
-                  Notre equipe est disponible pour repondre a toutes vos questions.
+                  Notre équipe est disponible pour répondre à toutes vos questions.
                 </p>
                 <Link
                   href="/contact"

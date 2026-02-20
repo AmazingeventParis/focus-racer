@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       data: {
         email: "coureur@test.com",
         password: await bcrypt.hash("runner123", 10),
-        name: "Marie Coureur",
+        name: "Marie Sportif",
         role: "RUNNER",
       },
     });

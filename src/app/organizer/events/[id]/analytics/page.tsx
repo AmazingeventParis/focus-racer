@@ -337,7 +337,7 @@ export default function EventAnalyticsPage({
           <Card className="mb-8">
             <CardHeader>
               <CardTitle>Top 20 Dossards</CardTitle>
-              <CardDescription>Les coureurs avec le plus de photos</CardDescription>
+              <CardDescription>Les sportifs avec le plus de photos</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">

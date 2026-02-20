@@ -12,16 +12,16 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 const categories = [
-  { value: "OTHER", label: "Question generale" },
+  { value: "OTHER", label: "Question générale" },
   { value: "BILLING", label: "Facturation" },
-  { value: "TECHNICAL", label: "Probleme technique" },
-  { value: "EVENT", label: "Evenement" },
-  { value: "GDPR", label: "RGPD / Donnees personnelles" },
+  { value: "TECHNICAL", label: "Problème technique" },
+  { value: "EVENT", label: "Événement" },
+  { value: "GDPR", label: "RGPD / Données personnelles" },
   { value: "ACCOUNT", label: "Mon compte" },
 ];
 
 const faqTeaser = [
-  { q: "Comment retrouver mes photos de course ?", href: "/faq#coureurs" },
+  { q: "Comment retrouver mes photos de course ?", href: "/faq#sportifs" },
   { q: "Quels moyens de paiement acceptez-vous ?", href: "/faq#paiements" },
   { q: "Comment devenir photographe sur la plateforme ?", href: "/faq#photographes" },
 ];
@@ -62,8 +62,8 @@ export default function ContactPage() {
 
       setSent(true);
       toast({
-        title: "Message envoye",
-        description: "Nous vous repondrons dans les plus brefs delais.",
+        title: "Message envoyé",
+        description: "Nous vous répondrons dans les plus brefs délais.",
       });
     } catch (err: any) {
       toast({
@@ -88,7 +88,7 @@ export default function ContactPage() {
               Contactez-nous
             </h1>
             <p className="text-white/70 max-w-lg mx-auto animate-fade-in animation-delay-100">
-              Une question, une suggestion ou un partenariat ? Notre equipe est la pour vous.
+              Une question, une suggestion ou un partenariat ? Notre équipe est là pour vous.
             </p>
           </div>
         </section>
@@ -103,8 +103,8 @@ export default function ContactPage() {
                     Parlons de votre projet
                   </h2>
                   <p className="text-muted-foreground">
-                    Que vous soyez photographe, organisateur d&apos;evenements ou simplement
-                    curieux, nous serions ravis d&apos;echanger avec vous.
+                    Que vous soyez photographe, organisateur d&apos;événements ou simplement
+                    curieux, nous serions ravis d&apos;échanger avec vous.
                   </p>
                 </div>
 
@@ -130,8 +130,8 @@ export default function ContactPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="font-medium text-navy">Temps de reponse</p>
-                      <p className="text-muted-foreground">Sous 24-48h en jours ouvres</p>
+                      <p className="font-medium text-navy">Temps de réponse</p>
+                      <p className="text-muted-foreground">Sous 24-48h en jours ouvrés</p>
                     </div>
                   </div>
 
@@ -151,7 +151,7 @@ export default function ContactPage() {
 
                 {/* FAQ teaser */}
                 <div className="pt-4">
-                  <h3 className="text-lg font-semibold text-navy mb-3">Questions frequentes</h3>
+                  <h3 className="text-lg font-semibold text-navy mb-3">Questions fréquentes</h3>
                   <ul className="space-y-2">
                     {faqTeaser.map((item) => (
                       <li key={item.q}>
@@ -189,9 +189,9 @@ export default function ContactPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                         </svg>
                       </div>
-                      <h3 className="text-xl font-bold text-navy mb-2">Message envoye !</h3>
+                      <h3 className="text-xl font-bold text-navy mb-2">Message envoyé !</h3>
                       <p className="text-muted-foreground">
-                        Merci pour votre message. Nous vous repondrons dans les plus brefs delais.
+                        Merci pour votre message. Nous vous répondrons dans les plus brefs délais.
                       </p>
                     </CardContent>
                   </Card>
@@ -200,7 +200,7 @@ export default function ContactPage() {
                     <CardHeader>
                       <CardTitle className="text-navy">Envoyez-nous un message</CardTitle>
                       <CardDescription>
-                        Remplissez le formulaire ci-dessous et nous vous repondrons rapidement.
+                        Remplissez le formulaire ci-dessous et nous vous répondrons rapidement.
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -229,7 +229,7 @@ export default function ContactPage() {
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="category">Categorie</Label>
+                          <Label htmlFor="category">Catégorie</Label>
                           <select
                             id="category"
                             value={category}

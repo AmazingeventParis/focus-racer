@@ -41,7 +41,7 @@ export async function POST(
     if (startListEntries.length === 0) {
       return NextResponse.json({
         sent: 0,
-        message: "Aucun coureur à notifier (pas d'emails ou déjà notifiés)",
+        message: "Aucun sportif à notifier (pas d'emails ou déjà notifiés)",
       });
     }
 
@@ -113,7 +113,7 @@ export async function POST(
       sent,
       skipped,
       errors: errors.length,
-      message: `${sent} coureur${sent > 1 ? "s" : ""} notifié${sent > 1 ? "s" : ""}${skipped > 0 ? `, ${skipped} sans photos détectées` : ""}`,
+      message: `${sent} sportif${sent > 1 ? "s" : ""} notifié${sent > 1 ? "s" : ""}${skipped > 0 ? `, ${skipped} sans photos détectées` : ""}`,
     });
   } catch (error) {
     console.error("Notify runners error:", error);

@@ -283,7 +283,7 @@ export default function StartListPage({
         href={`/organizer/events/${id}`}
         className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
       >
-        &larr; Retour a {eventName || "l'evenement"}
+        &larr; Retour à {eventName || "l'événement"}
       </Link>
 
       <h1 className="text-2xl font-bold text-slate-900 mb-6">Start-List</h1>
@@ -456,7 +456,7 @@ export default function StartListPage({
                   <Badge variant="secondary" className="ml-2">{entries.length}</Badge>
                 </CardTitle>
                 <CardDescription>
-                  Liste des coureurs inscrits pour cet événement
+                  Liste des sportifs inscrits pour cet événement
                 </CardDescription>
               </div>
               {entries.length > 0 && (

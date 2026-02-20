@@ -160,7 +160,7 @@ export default function EventDetailPage({
         const updated = await response.json();
         setEvent((prev) => prev ? { ...prev, ...updated } : prev);
         setEditStatus(newStatus);
-        toast({ title: "Statut mis a jour" });
+        toast({ title: "Statut mis à jour" });
       }
     } catch {
       toast({ title: "Erreur", description: "Impossible de changer le statut", variant: "destructive" });
@@ -187,7 +187,7 @@ export default function EventDetailPage({
       if (response.ok) {
         await fetchEvent();
         setEditOpen(false);
-        toast({ title: "Evenement mis a jour" });
+        toast({ title: "Événement mis à jour" });
       } else {
         const data = await response.json();
         toast({ title: "Erreur", description: data.error, variant: "destructive" });
@@ -200,11 +200,11 @@ export default function EventDetailPage({
   };
 
   const handleDelete = async () => {
-    if (!confirm("Supprimer cet evenement et toutes ses photos ? Cette action est irreversible.")) return;
+    if (!confirm("Supprimer cet événement et toutes ses photos ? Cette action est irréversible.")) return;
     try {
       const response = await fetch(`/api/events/${id}`, { method: "DELETE" });
       if (response.ok) {
-        toast({ title: "Evenement supprime" });
+        toast({ title: "Événement supprimé" });
         router.push("/organizer/dashboard");
       }
     } catch {
@@ -215,8 +215,8 @@ export default function EventDetailPage({
   const handleNotifyRunners = async () => {
     if (!confirm(
       notifyStatus?.pending
-        ? `Envoyer un email a ${notifyStatus.pending} coureur${notifyStatus.pending > 1 ? "s" : ""} pour les informer que leurs photos sont disponibles ?`
-        : "Envoyer les notifications par email aux coureurs ?"
+        ? `Envoyer un email à ${notifyStatus.pending} sportif${notifyStatus.pending > 1 ? "s" : ""} pour les informer que leurs photos sont disponibles ?`
+        : "Envoyer les notifications par email aux sportifs ?"
     )) return;
 
     setIsNotifying(true);
@@ -227,7 +227,7 @@ export default function EventDetailPage({
       const data = await response.json();
       if (response.ok) {
         toast({
-          title: "Notifications envoyees",
+          title: "Notifications envoyées",
           description: data.message,
         });
         fetchNotifyStatus();
@@ -259,7 +259,7 @@ export default function EventDetailPage({
       });
       if (response.ok) {
         await fetchEvent();
-        toast({ title: "Image mise a jour" });
+        toast({ title: "Image mise à jour" });
       } else {
         toast({ title: "Erreur d'upload", variant: "destructive" });
       }
@@ -288,7 +288,7 @@ export default function EventDetailPage({
         href="/organizer/events"
         className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
       >
-        &larr; Retour aux evenements
+        &larr; Retour aux événements
       </Link>
 
         {/* Event header card */}
@@ -393,12 +393,12 @@ export default function EventDetailPage({
                   >
                     {isNotifying
                       ? "Envoi en cours..."
-                      : `Notifier ${notifyStatus.pending} coureur${notifyStatus.pending > 1 ? "s" : ""}`}
+                      : `Notifier ${notifyStatus.pending} sportif${notifyStatus.pending > 1 ? "s" : ""}`}
                   </Button>
                 )}
                 {notifyStatus && notifyStatus.pending === 0 && notifyStatus.notified > 0 && (
                   <Badge variant="outline" className="text-emerald border-emerald/30 py-1.5">
-                    {notifyStatus.notified} notifie{notifyStatus.notified > 1 ? "s" : ""}
+                    {notifyStatus.notified} notifié{notifyStatus.notified > 1 ? "s" : ""}
                   </Badge>
                 )}
                 {/* Clustering button removed: face linking is now automatic during Premium upload pipeline */}
@@ -422,8 +422,8 @@ export default function EventDetailPage({
                 </DialogTrigger>
                 <DialogContent className="max-w-lg">
                   <DialogHeader>
-                    <DialogTitle className="text-navy">Modifier l&apos;evenement</DialogTitle>
-                    <DialogDescription>Modifiez les informations de votre evenement</DialogDescription>
+                    <DialogTitle className="text-navy">Modifier l&apos;événement</DialogTitle>
+                    <DialogDescription>Modifiez les informations de votre événement</DialogDescription>
                   </DialogHeader>
                   <form onSubmit={handleEdit} className="space-y-4">
                     <div className="space-y-2">
@@ -472,7 +472,7 @@ export default function EventDetailPage({
                           <SelectContent>
                             <SelectItem value="DRAFT">Brouillon</SelectItem>
                             <SelectItem value="PUBLISHED">Publié</SelectItem>
-                            <SelectItem value="ARCHIVED">Archive</SelectItem>
+                            <SelectItem value="ARCHIVED">Archivé</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -502,7 +502,7 @@ export default function EventDetailPage({
                     <div className="grid grid-cols-3 gap-3">
                       {[
                         { key: "coverImage", label: "Couverture" },
-                        { key: "bannerImage", label: "Banniere" },
+                        { key: "bannerImage", label: "Bannière" },
                         { key: "logoImage", label: "Logo" },
                       ].map(({ key, label }) => (
                         <div key={key} className="space-y-1">

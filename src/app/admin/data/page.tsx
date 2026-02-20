@@ -154,15 +154,15 @@ interface DataResponse {
 
 const SECTIONS = [
   { id: "users", label: "Comptes" },
-  { id: "events", label: "Events" },
+  { id: "events", label: "Événements" },
   { id: "photos", label: "Photos & IA" },
   { id: "bibs", label: "Dossards" },
   { id: "sales", label: "Ventes" },
-  { id: "credits", label: "Credits" },
+  { id: "credits", label: "Crédits" },
   { id: "marketplace", label: "Marketplace" },
   { id: "gdpr", label: "RGPD" },
   { id: "storage", label: "Stockage" },
-  { id: "downloads", label: "Downloads" },
+  { id: "downloads", label: "Téléchargements" },
   { id: "api", label: "API" },
 ];
 
@@ -179,9 +179,9 @@ const ROLE_LABELS: Record<string, string> = {
   ORGANIZER: "Organisateur",
   AGENCY: "Agence",
   CLUB: "Club",
-  FEDERATION: "Federation",
+  FEDERATION: "Fédération",
   ADMIN: "Admin",
-  RUNNER: "Coureur",
+  RUNNER: "Sportif",
 };
 
 const SPORT_LABELS: Record<string, string> = {
@@ -196,10 +196,10 @@ const SPORT_LABELS: Record<string, string> = {
 
 const ORDER_STATUS_LABELS: Record<string, string> = {
   PENDING: "En attente",
-  PAID: "Paye",
-  DELIVERED: "Livre",
-  REFUNDED: "Rembourse",
-  EXPIRED: "Expire",
+  PAID: "Payé",
+  DELIVERED: "Livré",
+  REFUNDED: "Remboursé",
+  EXPIRED: "Expiré",
 };
 
 const PACK_TYPE_LABELS: Record<string, string> = {
@@ -213,28 +213,28 @@ const PACK_TYPE_LABELS: Record<string, string> = {
 const LISTING_STATUS_LABELS: Record<string, string> = {
   OPEN: "Ouverte",
   IN_PROGRESS: "En cours",
-  COMPLETED: "Terminee",
-  CANCELLED: "Annulee",
+  COMPLETED: "Terminée",
+  CANCELLED: "Annulée",
 };
 
 const APP_STATUS_LABELS: Record<string, string> = {
   PENDING: "En attente",
-  ACCEPTED: "Acceptee",
-  REJECTED: "Refusee",
-  WITHDRAWN: "Retiree",
+  ACCEPTED: "Acceptée",
+  REJECTED: "Refusée",
+  WITHDRAWN: "Retirée",
 };
 
 const GDPR_TYPE_LABELS: Record<string, string> = {
   DELETION: "Suppression",
-  ACCESS: "Acces",
+  ACCESS: "Accès",
   RECTIFICATION: "Rectification",
 };
 
 const GDPR_STATUS_LABELS: Record<string, string> = {
   PENDING: "En attente",
   PROCESSING: "En cours",
-  COMPLETED: "Terminee",
-  REJECTED: "Rejetee",
+  COMPLETED: "Terminée",
+  REJECTED: "Rejetée",
 };
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -247,18 +247,18 @@ const SOURCE_LABELS: Record<string, string> = {
 };
 
 const REFERRAL_LABELS: Record<string, string> = {
-  word_of_mouth: "Bouche a oreille",
+  word_of_mouth: "Bouche à oreille",
   google: "Recherche Google",
-  social_media: "Reseaux sociaux",
-  event: "Salon / Evenement",
-  friend: "Ami / Collegue",
+  social_media: "Réseaux sociaux",
+  event: "Salon / Événement",
+  friend: "Ami / Collègue",
   other: "Autre",
-  null: "Non renseigne",
+  null: "Non renseigné",
 };
 
 const TX_TYPE_LABELS: Record<string, string> = {
   PURCHASE: "Achat",
-  DEDUCTION: "Deduction",
+  DEDUCTION: "Déduction",
   REFUND: "Remboursement",
   ADMIN_GRANT: "Attribution admin",
 };
@@ -516,12 +516,12 @@ export default function AdminDataPage() {
     ? dateRange.to
       ? `${format(dateRange.from, "dd MMM yyyy", { locale: fr })} - ${format(dateRange.to, "dd MMM yyyy", { locale: fr })}`
       : format(dateRange.from, "dd MMM yyyy", { locale: fr })
-    : "Toutes les donnees";
+    : "Toutes les données";
 
   if (isLoading && !data) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">Chargement des donnees...</p>
+        <p className="text-muted-foreground">Chargement des données...</p>
       </div>
     );
   }
@@ -529,7 +529,7 @@ export default function AdminDataPage() {
   if (!data) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-destructive">Erreur de chargement des donnees</p>
+        <p className="text-destructive">Erreur de chargement des données</p>
       </div>
     );
   }
@@ -541,7 +541,7 @@ export default function AdminDataPage() {
         <div>
           <h1 className="text-3xl font-bold text-navy">Data</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Analytiques plateforme completes
+            Analytiques plateforme complètes
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
@@ -606,7 +606,7 @@ export default function AdminDataPage() {
                 d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"
               />
             </svg>
-            Rafraichir
+            Rafraîchir
           </Button>
         </div>
       </div>
@@ -640,16 +640,16 @@ export default function AdminDataPage() {
             <KPICard label="Total comptes" value={fmt(data.users.total)} borderColor="border-l-emerald-500" />
             <KPICard label="Actifs" value={fmt(data.users.active)} borderColor="border-l-emerald-400" subtitle={fmtPct(data.users.total > 0 ? (data.users.active / data.users.total) * 100 : 0)} />
             <KPICard label="Inactifs" value={fmt(data.users.inactive)} borderColor="border-l-red-400" />
-            <KPICard label="Actifs 24h" value={fmt(data.users.recentlyActive)} borderColor="border-l-amber-400" subtitle="Derniere activite" />
+            <KPICard label="Actifs 24h" value={fmt(data.users.recentlyActive)} borderColor="border-l-amber-400" subtitle="Dernière activité" />
           </div>
           <div className="grid md:grid-cols-2 gap-4 mb-6">
             <KPICard label="Nouveaux (periode)" value={fmt(data.users.newInPeriod)} borderColor="border-l-emerald-300" subtitle={dateRangeLabel} />
-            <KPICard label="Stripe onboarded" value={fmt(data.users.stripeOnboarded)} borderColor="border-l-indigo-400" subtitle="Photographes connectes Stripe" />
+            <KPICard label="Stripe onboarded" value={fmt(data.users.stripeOnboarded)} borderColor="border-l-indigo-400" subtitle="Photographes connectés Stripe" />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="glass-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Utilisateurs par role</CardTitle>
+                <CardTitle className="text-sm font-medium">Utilisateurs par rôle</CardTitle>
               </CardHeader>
               <CardContent>
                 <RecordBars data={data.users.byRole} labelMap={ROLE_LABELS} barClass="bg-emerald-500" />
@@ -663,7 +663,7 @@ export default function AdminDataPage() {
                 {data.users.signupTrend.length > 0 ? (
                   <TrendBars data={data.users.signupTrend} barClass="bg-emerald-400" />
                 ) : (
-                  <p className="text-sm text-muted-foreground">Aucune donnee</p>
+                  <p className="text-sm text-muted-foreground">Aucune donnée</p>
                 )}
               </CardContent>
             </Card>
@@ -676,7 +676,7 @@ export default function AdminDataPage() {
               {Object.keys(data.users.byReferralSource).length > 0 ? (
                 <RecordBars data={data.users.byReferralSource} labelMap={REFERRAL_LABELS} barClass="bg-emerald-400" />
               ) : (
-                <p className="text-sm text-muted-foreground">Aucune donnee</p>
+                <p className="text-sm text-muted-foreground">Aucune donnée</p>
               )}
             </CardContent>
           </Card>
@@ -684,12 +684,12 @@ export default function AdminDataPage() {
 
         {/* ────── S2: EVENEMENTS ────── */}
         {activeSection === "events" && <section id="events">
-          <SectionHeader sectionId="events" label="Evenements" />
+          <SectionHeader sectionId="events" label="Événements" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total" value={fmt(data.events.total)} borderColor="border-l-teal-500" />
-            <KPICard label="Publies" value={fmt(data.events.byStatus["PUBLISHED"] || 0)} borderColor="border-l-teal-400" />
+            <KPICard label="Publiés" value={fmt(data.events.byStatus["PUBLISHED"] || 0)} borderColor="border-l-teal-400" />
             <KPICard label="Brouillons" value={fmt(data.events.byStatus["DRAFT"] || 0)} borderColor="border-l-amber-400" />
-            <KPICard label="Archives" value={fmt(data.events.byStatus["ARCHIVED"] || 0)} borderColor="border-l-slate-400" />
+            <KPICard label="Archivés" value={fmt(data.events.byStatus["ARCHIVED"] || 0)} borderColor="border-l-slate-400" />
           </div>
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             <KPICard label="Avec photos" value={fmt(data.events.withPhotos)} borderColor="border-l-teal-300" />
@@ -707,13 +707,13 @@ export default function AdminDataPage() {
             </Card>
             <Card className="glass-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Creation (12 mois)</CardTitle>
+                <CardTitle className="text-sm font-medium">Création (12 mois)</CardTitle>
               </CardHeader>
               <CardContent>
                 {data.events.creationTrend.length > 0 ? (
                   <TrendBars data={data.events.creationTrend} barClass="bg-teal-400" />
                 ) : (
-                  <p className="text-sm text-muted-foreground">Aucune donnee</p>
+                  <p className="text-sm text-muted-foreground">Aucune donnée</p>
                 )}
               </CardContent>
             </Card>
@@ -725,26 +725,26 @@ export default function AdminDataPage() {
           <SectionHeader sectionId="photos" label="Photos & Traitement IA" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total photos" value={fmt(data.photos.total)} borderColor="border-l-blue-500" />
-            <KPICard label="Traitees" value={fmt(data.photos.processed)} borderColor="border-l-blue-400" subtitle={data.photos.total > 0 ? fmtPct((data.photos.processed / data.photos.total) * 100) : "0 %"} />
+            <KPICard label="Traitées" value={fmt(data.photos.processed)} borderColor="border-l-blue-400" subtitle={data.photos.total > 0 ? fmtPct((data.photos.processed / data.photos.total) * 100) : "0 %"} />
             <KPICard label="Floues" value={fmt(data.photos.blurry)} borderColor="border-l-red-400" subtitle={data.photos.total > 0 ? fmtPct((data.photos.blurry / data.photos.total) * 100) : "0 %"} />
-            <KPICard label="Faces indexees" value={fmt(data.photos.faceIndexed)} borderColor="border-l-purple-400" subtitle={data.photos.total > 0 ? fmtPct((data.photos.faceIndexed / data.photos.total) * 100) : "0 %"} />
+            <KPICard label="Faces indexées" value={fmt(data.photos.faceIndexed)} borderColor="border-l-purple-400" subtitle={data.photos.total > 0 ? fmtPct((data.photos.faceIndexed / data.photos.total) * 100) : "0 %"} />
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Avec dossards" value={fmt(data.photos.withBibs)} borderColor="border-l-blue-300" />
             <KPICard label="Orphelines" value={fmt(data.photos.orphans)} borderColor="border-l-amber-400" subtitle="Sans dossard" />
-            <KPICard label="Taux OCR" value={fmtPct(data.photos.ocrSuccessRate)} borderColor="border-l-blue-300" subtitle="Photos avec dossard / traitees" />
-            <KPICard label="Score qualite moy." value={data.photos.avgQualityScore} borderColor="border-l-blue-300" subtitle="Sur 100" />
+            <KPICard label="Taux OCR" value={fmtPct(data.photos.ocrSuccessRate)} borderColor="border-l-blue-300" subtitle="Photos avec dossard / traitées" />
+            <KPICard label="Score qualité moy." value={data.photos.avgQualityScore} borderColor="border-l-blue-300" subtitle="Sur 100" />
           </div>
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <Card className="glass-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Distribution qualite</CardTitle>
+                <CardTitle className="text-sm font-medium">Distribution qualité</CardTitle>
               </CardHeader>
               <CardContent>
                 {data.photos.qualityDistribution.length > 0 ? (
                   <ArrayBars data={data.photos.qualityDistribution} barClass="bg-blue-500" />
                 ) : (
-                  <p className="text-sm text-muted-foreground">Aucune donnee</p>
+                  <p className="text-sm text-muted-foreground">Aucune donnée</p>
                 )}
               </CardContent>
             </Card>
@@ -756,30 +756,30 @@ export default function AdminDataPage() {
                 {Object.keys(data.photos.byOcrProvider).length > 0 ? (
                   <RecordBars data={data.photos.byOcrProvider} barClass="bg-blue-400" />
                 ) : (
-                  <p className="text-sm text-muted-foreground">Aucune donnee</p>
+                  <p className="text-sm text-muted-foreground">Aucune donnée</p>
                 )}
               </CardContent>
             </Card>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
-            <KPICard label="Credits debites" value={fmt(data.photos.creditDeducted)} borderColor="border-l-amber-400" subtitle="1 credit/photo importee" />
-            <KPICard label="Credits rembourses (ancien)" value={fmt(data.photos.creditRefunded)} borderColor="border-l-red-400" subtitle="Historique uniquement" />
+            <KPICard label="Crédits débités" value={fmt(data.photos.creditDeducted)} borderColor="border-l-amber-400" subtitle="1 crédit/photo importée" />
+            <KPICard label="Crédits remboursés (ancien)" value={fmt(data.photos.creditRefunded)} borderColor="border-l-red-400" subtitle="Historique uniquement" />
           </div>
         </section>}
 
         {/* ────── S4: DOSSARDS ────── */}
         {activeSection === "bibs" && <section id="bibs">
-          <SectionHeader sectionId="bibs" label="Dossards & Detection" />
+          <SectionHeader sectionId="bibs" label="Dossards & Détection" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <KPICard label="Total detections" value={fmt(data.bibs.totalDetections)} borderColor="border-l-purple-500" />
-            <KPICard label="Dossards uniques" value={fmt(data.bibs.uniqueBibs)} borderColor="border-l-purple-400" subtitle="Coureurs identifies" />
+            <KPICard label="Total détections" value={fmt(data.bibs.totalDetections)} borderColor="border-l-purple-500" />
+            <KPICard label="Dossards uniques" value={fmt(data.bibs.uniqueBibs)} borderColor="border-l-purple-400" subtitle="Sportifs identifiés" />
             <KPICard label="Moy. photos/dossard" value={data.bibs.avgPhotosPerBib} borderColor="border-l-purple-300" />
             <KPICard label="Taux couverture" value={fmtPct(data.bibs.coverageRate)} borderColor="border-l-purple-300" subtitle="Photos avec dossard" />
           </div>
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <Card className="glass-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Par source de detection</CardTitle>
+                <CardTitle className="text-sm font-medium">Par source de détection</CardTitle>
               </CardHeader>
               <CardContent>
                 <RecordBars data={data.bibs.bySource} labelMap={SOURCE_LABELS} barClass="bg-purple-500" />
@@ -797,7 +797,7 @@ export default function AdminDataPage() {
           {data.bibs.topBibs.length > 0 && (
             <Card className="glass-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Top 10 dossards les plus photographies</CardTitle>
+                <CardTitle className="text-sm font-medium">Top 10 dossards les plus photographiés</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
@@ -843,13 +843,13 @@ export default function AdminDataPage() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total commandes" value={fmt(data.sales.totalOrders)} borderColor="border-l-emerald-300" />
-            <KPICard label="Payees" value={fmt(data.sales.paidOrders)} borderColor="border-l-emerald-300" />
+            <KPICard label="Payées" value={fmt(data.sales.paidOrders)} borderColor="border-l-emerald-300" />
             <KPICard label="Taux remboursement" value={fmtPct(data.sales.refundRate)} borderColor="border-l-red-400" />
             <KPICard
               label="Guest vs Inscrit"
               value={`${data.sales.guestVsRegistered.guest} / ${data.sales.guestVsRegistered.registered}`}
               borderColor="border-l-indigo-300"
-              subtitle="Acheteurs guest / enregistres"
+              subtitle="Acheteurs guest / enregistrés"
             />
           </div>
           {data.sales.revenueInPeriod > 0 && (
@@ -869,7 +869,7 @@ export default function AdminDataPage() {
             </Card>
             <Card className="glass-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Revenue par type de pack</CardTitle>
+                <CardTitle className="text-sm font-medium">Revenu par type de pack</CardTitle>
               </CardHeader>
               <CardContent>
                 {Object.keys(data.sales.revenueByPackType).length > 0 ? (
@@ -898,7 +898,7 @@ export default function AdminDataPage() {
           {data.sales.revenueByMonth.length > 0 && (
             <Card className="glass-card mb-6">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Revenue mensuel (12 mois)</CardTitle>
+                <CardTitle className="text-sm font-medium">Revenu mensuel (12 mois)</CardTitle>
               </CardHeader>
               <CardContent>
                 <TrendBars data={data.sales.revenueByMonth} barClass="bg-emerald-500" valueKey="revenue" suffix=" \u20ac" />
@@ -908,7 +908,7 @@ export default function AdminDataPage() {
           {data.sales.topEventsByRevenue.length > 0 && (
             <Card className="glass-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Top 10 evenements par CA</CardTitle>
+                <CardTitle className="text-sm font-medium">Top 10 événements par CA</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
@@ -933,15 +933,15 @@ export default function AdminDataPage() {
 
         {/* ────── S6: CREDITS ────── */}
         {activeSection === "credits" && <section id="credits">
-          <SectionHeader sectionId="credits" label="Credits" />
+          <SectionHeader sectionId="credits" label="Crédits" />
           <div className="grid md:grid-cols-3 gap-4 mb-6">
-            <KPICard label="Total en circulation" value={fmt(data.credits.totalInCirculation)} borderColor="border-l-amber-500" subtitle="Solde cumule tous utilisateurs" />
+            <KPICard label="Total en circulation" value={fmt(data.credits.totalInCirculation)} borderColor="border-l-amber-500" subtitle="Solde cumulé tous utilisateurs" />
             <KPICard label="Transactions (periode)" value={fmt(data.credits.transactionsInPeriod)} borderColor="border-l-amber-400" subtitle={dateRangeLabel} />
             <KPICard
               label="Types de transactions"
               value={Object.keys(data.credits.transactionsByType).length}
               borderColor="border-l-amber-300"
-              subtitle="Categories actives"
+              subtitle="Catégories actives"
             />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
@@ -957,7 +957,7 @@ export default function AdminDataPage() {
                         <span className="text-sm font-medium">{TX_TYPE_LABELS[type] || type}</span>
                         <div className="flex items-center gap-4">
                           <Badge variant="outline">{info.count} tx</Badge>
-                          <span className="text-sm font-bold text-navy">{fmt(info.totalAmount)} credits</span>
+                          <span className="text-sm font-bold text-navy">{fmt(info.totalAmount)} crédits</span>
                         </div>
                       </div>
                     ))}
@@ -969,7 +969,7 @@ export default function AdminDataPage() {
             </Card>
             <Card className="glass-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Flux credits (12 mois)</CardTitle>
+                <CardTitle className="text-sm font-medium">Flux crédits (12 mois)</CardTitle>
               </CardHeader>
               <CardContent>
                 {data.credits.recentFlow.length > 0 ? (
@@ -992,14 +992,14 @@ export default function AdminDataPage() {
                       );
                     })}
                     <div className="grid grid-cols-4 gap-2 text-xs text-muted-foreground pt-2 border-t">
-                      <span>Deductions</span>
+                      <span>Déductions</span>
                       <span>Remb.</span>
                       <span>Achats</span>
                       <span>Grants</span>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">Aucune donnee</p>
+                  <p className="text-sm text-muted-foreground">Aucune donnée</p>
                 )}
               </CardContent>
             </Card>
@@ -1048,12 +1048,12 @@ export default function AdminDataPage() {
 
         {/* ────── S8: RGPD ────── */}
         {activeSection === "gdpr" && <section id="gdpr">
-          <SectionHeader sectionId="gdpr" label="RGPD / Conformite" />
+          <SectionHeader sectionId="gdpr" label="RGPD / Conformité" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total demandes" value={fmt(data.gdpr.totalRequests)} borderColor="border-l-red-400" />
-            <KPICard label="En attente" value={fmt(data.gdpr.pendingCount)} borderColor="border-l-amber-400" subtitle={data.gdpr.pendingCount > 0 ? "A traiter" : ""} />
-            <KPICard label="Photos supprimees" value={fmt(data.gdpr.totalPhotosDeleted)} borderColor="border-l-red-300" />
-            <KPICard label="Faces supprimees" value={fmt(data.gdpr.totalFacesDeleted)} borderColor="border-l-red-300" />
+            <KPICard label="En attente" value={fmt(data.gdpr.pendingCount)} borderColor="border-l-amber-400" subtitle={data.gdpr.pendingCount > 0 ? "À traiter" : ""} />
+            <KPICard label="Photos supprimées" value={fmt(data.gdpr.totalPhotosDeleted)} borderColor="border-l-red-300" />
+            <KPICard label="Faces supprimées" value={fmt(data.gdpr.totalFacesDeleted)} borderColor="border-l-red-300" />
           </div>
           <div className="grid md:grid-cols-1 gap-4 mb-6">
             <KPICard label="Temps traitement moyen" value={data.gdpr.avgProcessingTimeHours > 0 ? `${data.gdpr.avgProcessingTimeHours} h` : "N/A"} borderColor="border-l-slate-400" />
@@ -1085,7 +1085,7 @@ export default function AdminDataPage() {
             <KPICard label="Total photos" value={fmt(data.storage.totalPhotos)} borderColor="border-l-slate-500" />
             <KPICard label="Sur S3" value={fmt(data.storage.withS3Key)} borderColor="border-l-slate-400" subtitle={data.storage.totalPhotos > 0 ? fmtPct((data.storage.withS3Key / data.storage.totalPhotos) * 100) : "0 %"} />
             <KPICard label="Local seul" value={fmt(data.storage.localOnly)} borderColor="border-l-amber-400" />
-            <KPICard label="Taille estimee" value={fmtStorage(data.storage.estimatedStorageMB)} borderColor="border-l-slate-300" subtitle="~2.5 Mo/photo (HD+web+thumb)" />
+            <KPICard label="Taille estimée" value={fmtStorage(data.storage.estimatedStorageMB)} borderColor="border-l-slate-300" subtitle="~2.5 Mo/photo (HD+web+thumb)" />
           </div>
           <Card className="glass-card">
             <CardHeader className="pb-3">
@@ -1121,20 +1121,20 @@ export default function AdminDataPage() {
 
         {/* ────── S10: TELECHARGEMENTS ────── */}
         {activeSection === "downloads" && <section id="downloads">
-          <SectionHeader sectionId="downloads" label="Telechargements" />
+          <SectionHeader sectionId="downloads" label="Téléchargements" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <KPICard label="Total downloads" value={fmt(data.downloads.totalDownloads)} borderColor="border-l-cyan-500" />
-            <KPICard label="Commandes telechargees" value={fmt(data.downloads.ordersWithDownloads)} borderColor="border-l-cyan-400" />
+            <KPICard label="Commandes téléchargées" value={fmt(data.downloads.ordersWithDownloads)} borderColor="border-l-cyan-400" />
             <KPICard label="Moy. / commande" value={data.downloads.avgDownloadsPerOrder} borderColor="border-l-cyan-300" />
-            <KPICard label="Jamais telecharge" value={fmt(data.downloads.neverDownloaded)} borderColor="border-l-amber-400" subtitle="Commandes payees sans download" />
+            <KPICard label="Jamais téléchargé" value={fmt(data.downloads.neverDownloaded)} borderColor="border-l-amber-400" subtitle="Commandes payées sans download" />
           </div>
           <div className="grid md:grid-cols-2 gap-4 mb-6">
-            <KPICard label="Commandes expirees" value={fmt(data.downloads.expiredOrders)} borderColor="border-l-red-400" />
+            <KPICard label="Commandes expirées" value={fmt(data.downloads.expiredOrders)} borderColor="border-l-red-400" />
           </div>
           {data.downloads.downloadDistribution.length > 0 && (
             <Card className="glass-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Distribution des telechargements</CardTitle>
+                <CardTitle className="text-sm font-medium">Distribution des téléchargements</CardTitle>
               </CardHeader>
               <CardContent>
                 <ArrayBars data={data.downloads.downloadDistribution} barClass="bg-cyan-500" />
@@ -1145,26 +1145,26 @@ export default function AdminDataPage() {
 
         {/* ────── S11: API ────── */}
         {activeSection === "api" && <section id="api">
-          <SectionHeader sectionId="api" label="API & Cles" />
+          <SectionHeader sectionId="api" label="API & Clés" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <KPICard label="Total cles" value={fmt(data.api.totalKeys)} borderColor="border-l-orange-500" />
-            <KPICard label="Cles actives" value={fmt(data.api.activeKeys)} borderColor="border-l-orange-400" subtitle={data.api.totalKeys > 0 ? fmtPct((data.api.activeKeys / data.api.totalKeys) * 100) : "0 %"} />
-            <KPICard label="Utilisateurs API" value={fmt(data.api.uniqueUsers)} borderColor="border-l-orange-300" subtitle="Avec au moins 1 cle active" />
+            <KPICard label="Total clés" value={fmt(data.api.totalKeys)} borderColor="border-l-orange-500" />
+            <KPICard label="Clés actives" value={fmt(data.api.activeKeys)} borderColor="border-l-orange-400" subtitle={data.api.totalKeys > 0 ? fmtPct((data.api.activeKeys / data.api.totalKeys) * 100) : "0 %"} />
+            <KPICard label="Utilisateurs API" value={fmt(data.api.uniqueUsers)} borderColor="border-l-orange-300" subtitle="Avec au moins 1 clé active" />
             <KPICard label="Appels API total" value={fmt(data.api.totalCalls)} borderColor="border-l-orange-500" />
           </div>
           <div className="grid md:grid-cols-2 gap-4 mb-6">
-            <KPICard label="Credits consommes (API)" value={fmt(data.api.totalCreditsUsed)} borderColor="border-l-amber-500" subtitle="1 credit/appel analyse" />
+            <KPICard label="Crédits consommés (API)" value={fmt(data.api.totalCreditsUsed)} borderColor="border-l-amber-500" subtitle="1 crédit/appel analyse" />
           </div>
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <Card className="glass-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Creation de cles (12 mois)</CardTitle>
+                <CardTitle className="text-sm font-medium">Création de clés (12 mois)</CardTitle>
               </CardHeader>
               <CardContent>
                 {data.api.creationTrend.length > 0 ? (
                   <TrendBars data={data.api.creationTrend} barClass="bg-orange-400" />
                 ) : (
-                  <p className="text-sm text-muted-foreground">Aucune donnee</p>
+                  <p className="text-sm text-muted-foreground">Aucune donnée</p>
                 )}
               </CardContent>
             </Card>
@@ -1185,14 +1185,14 @@ export default function AdminDataPage() {
                           <span className="text-sm text-muted-foreground w-20">{monthLabel}</span>
                           <div className="flex items-center gap-4">
                             <Badge variant="outline" className="text-xs">{m.calls} appels</Badge>
-                            <span className="text-sm font-medium text-navy">{m.credits} credits</span>
+                            <span className="text-sm font-medium text-navy">{m.credits} crédits</span>
                           </div>
                         </div>
                       );
                     })}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">Aucune donnee</p>
+                  <p className="text-sm text-muted-foreground">Aucune donnée</p>
                 )}
               </CardContent>
             </Card>
@@ -1208,7 +1208,7 @@ export default function AdminDataPage() {
                     <thead>
                       <tr className="border-b border-slate-100">
                         <th className="text-left py-2 text-muted-foreground font-medium">Utilisateur</th>
-                        <th className="text-center py-2 text-muted-foreground font-medium">Cles</th>
+                        <th className="text-center py-2 text-muted-foreground font-medium">Clés</th>
                         <th className="text-right py-2 text-muted-foreground font-medium">Appels API</th>
                       </tr>
                     </thead>

@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       CLUB: "Club",
       FEDERATION: "Fédération",
       ADMIN: "Administrateur",
-      RUNNER: "Coureur",
+      RUNNER: "Sportif",
     };
 
     const headers = [

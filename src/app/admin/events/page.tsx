@@ -32,7 +32,7 @@ const SPORT_LABELS: Record<string, string> = {
 };
 
 const SORT_OPTIONS = [
-  { value: "date", label: "Date (recent)" },
+  { value: "date", label: "Date (récent)" },
   { value: "name", label: "Nom (A-Z)" },
   { value: "photos", label: "Photos (plus)" },
 ];
@@ -615,7 +615,7 @@ export default function AdminEventsPage() {
                               <span className="font-medium">{event.photoCount}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Coureurs (start-list)</span>
+                              <span className="text-muted-foreground">Sportifs (start-list)</span>
                               <span className="font-medium">{event.runnerCount}</span>
                             </div>
                             <div className="flex justify-between">
@@ -642,7 +642,7 @@ export default function AdminEventsPage() {
                             )}
                             {event.photoCount > 0 && event.runnerCount > 0 && (
                               <div className="flex justify-between">
-                                <span className="text-muted-foreground">Photos / coureur</span>
+                                <span className="text-muted-foreground">Photos / sportif</span>
                                 <span>{(event.photoCount / event.runnerCount).toFixed(1)}</span>
                               </div>
                             )}

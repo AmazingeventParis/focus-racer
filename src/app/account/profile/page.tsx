@@ -162,13 +162,13 @@ export default function AccountProfilePage() {
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
                   Ajoutez une photo de votre visage pour retrouver automatiquement vos photos sur toutes les courses.
-                  L&apos;IA utilisera cette image pour vous identifier parmi les coureurs.
+                  L&apos;IA utilisera cette image pour vous identifier parmi les sportifs.
                 </p>
                 {faceLoading ? (
                   <p className="text-sm text-muted-foreground">Chargement...</p>
                 ) : hasFaceImage ? (
                   <div className="flex items-center gap-3">
-                    <Badge className="bg-emerald/10 text-emerald border-emerald/20">Photo enregistree</Badge>
+                    <Badge className="bg-emerald/10 text-emerald border-emerald/20">Photo enregistrée</Badge>
                     <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                       Remplacer
                     </Button>
@@ -223,7 +223,7 @@ export default function AccountProfilePage() {
                 {notifLoading ? (
                   <p className="text-sm text-muted-foreground">Chargement...</p>
                 ) : notifications.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">Aucune notification. Suivez des evenements pour recevoir des alertes.</p>
+                  <p className="text-sm text-muted-foreground">Aucune notification. Suivez des événements pour recevoir des alertes.</p>
                 ) : (
                   <div className="space-y-2 max-h-[400px] overflow-y-auto">
                     {notifications.map((notif) => (
@@ -267,7 +267,7 @@ export default function AccountProfilePage() {
                   <svg className="w-5 h-5 text-emerald" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
                   </svg>
-                  Evenements suivis
+                  Événements suivis
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -275,7 +275,7 @@ export default function AccountProfilePage() {
                   <p className="text-sm text-muted-foreground">Chargement...</p>
                 ) : favorites.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
-                    Aucun evenement suivi. Cliquez sur &quot;Suivre&quot; sur la page d&apos;un evenement pour etre alerte.
+                    Aucun événement suivi. Cliquez sur &quot;Suivre&quot; sur la page d&apos;un événement pour être alerté.
                   </p>
                 ) : (
                   <div className="space-y-2">
