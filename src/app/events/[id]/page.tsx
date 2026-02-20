@@ -121,7 +121,7 @@ export default function PublicEventPage({
     if (!session?.user) return;
     fetch(`/api/events/${id}/favorite`)
       .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data) setIsFollowing(data.isFavorite); })
+      .then((data) => { if (data) setIsFollowing(data.favorited); })
       .catch(() => {});
   }, [id, session?.user]);
 
@@ -132,7 +132,7 @@ export default function PublicEventPage({
       const res = await fetch(`/api/events/${id}/favorite`, { method: "POST" });
       if (res.ok) {
         const data = await res.json();
-        setIsFollowing(data.isFavorite);
+        setIsFollowing(data.favorited);
       }
     } catch {}
     setFollowLoading(false);

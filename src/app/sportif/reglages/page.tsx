@@ -21,26 +21,6 @@ interface Profile {
   faceImagePath: string | null;
 }
 
-interface HordeMember {
-  id: string;
-  status: string;
-  user: { id: string; name: string; sportifId: string | null };
-}
-
-interface HordeData {
-  id: string;
-  name: string;
-  members: HordeMember[];
-}
-
-interface Invitation {
-  id: string;
-  horde: {
-    name: string;
-    owner: { name: string; sportifId: string | null };
-  };
-}
-
 interface GdprRequest {
   id: string;
   type: string;
@@ -63,13 +43,6 @@ export default function SportifReglagesPage() {
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
-
-  // Horde
-  const [horde, setHorde] = useState<HordeData | null>(null);
-  const [hordeName, setHordeName] = useState("");
-  const [inviteId, setInviteId] = useState("");
-  const [inviting, setInviting] = useState(false);
-  const [invitations, setInvitations] = useState<Invitation[]>([]);
 
   // GDPR
   const [gdprEventId, setGdprEventId] = useState("");
@@ -98,25 +71,9 @@ export default function SportifReglagesPage() {
     } catch { /* silent */ }
   }, []);
 
-  const fetchHorde = useCallback(async () => {
-    try {
-      const [hordeRes, invRes] = await Promise.all([
-        fetch("/api/sportif/horde"),
-        fetch("/api/sportif/horde/invitations"),
-      ]);
-      if (hordeRes.ok) {
-        const data = await hordeRes.json();
-        setHorde(data);
-        setHordeName(data.name);
-      }
-      if (invRes.ok) setInvitations(await invRes.json());
-    } catch { /* silent */ }
-  }, []);
-
   useEffect(() => {
-    Promise.all([fetchProfile(), fetchHorde()])
-      .finally(() => setIsLoading(false));
-  }, [fetchProfile, fetchHorde]);
+    fetchProfile().finally(() => setIsLoading(false));
+  }, [fetchProfile]);
 
   // Profile save
   const saveProfile = async () => {
@@ -138,73 +95,6 @@ export default function SportifReglagesPage() {
     } finally {
       setSavingProfile(false);
     }
-  };
-
-  // Horde name
-  const saveHordeName = async () => {
-    if (!hordeName.trim()) return;
-    try {
-      const res = await fetch("/api/sportif/horde", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: hordeName.trim() }),
-      });
-      if (res.ok) {
-        toast({ title: "Nom de la horde mis à jour" });
-        fetchHorde();
-      }
-    } catch { /* silent */ }
-  };
-
-  // Invite
-  const inviteMember = async () => {
-    if (!inviteId.trim()) return;
-    setInviting(true);
-    try {
-      const res = await fetch("/api/sportif/horde/invite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sportifId: inviteId.trim() }),
-      });
-      if (res.ok) {
-        toast({ title: "Invitation envoyée !" });
-        setInviteId("");
-        fetchHorde();
-      } else {
-        const data = await res.json();
-        toast({ title: "Erreur", description: data.error, variant: "destructive" });
-      }
-    } catch {
-      toast({ title: "Erreur", variant: "destructive" });
-    } finally {
-      setInviting(false);
-    }
-  };
-
-  // Accept/decline invitation
-  const handleInvitation = async (id: string, action: "accept" | "decline") => {
-    try {
-      const res = await fetch(`/api/sportif/horde/invitations/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
-      });
-      if (res.ok) {
-        toast({ title: action === "accept" ? "Invitation acceptée" : "Invitation déclinée" });
-        fetchHorde();
-      }
-    } catch { /* silent */ }
-  };
-
-  // Remove member
-  const removeMember = async (memberId: string) => {
-    try {
-      const res = await fetch(`/api/sportif/horde/members/${memberId}`, { method: "DELETE" });
-      if (res.ok) {
-        toast({ title: "Membre retiré" });
-        fetchHorde();
-      }
-    } catch { /* silent */ }
   };
 
   // Face upload
@@ -272,7 +162,6 @@ export default function SportifReglagesPage() {
         setVerifyResult(null);
         setGdprEventId("");
         setGdprSelfie(null);
-        // Refresh GDPR requests
         fetch("/api/gdpr/self-service").then((r) => r.json()).then(setGdprRequests).catch(() => {});
       } else {
         toast({ title: "Erreur", variant: "destructive" });
@@ -303,14 +192,11 @@ export default function SportifReglagesPage() {
     );
   }
 
-  const acceptedMembers = horde?.members.filter((m) => m.status === "ACCEPTED") || [];
-  const pendingMembers = horde?.members.filter((m) => m.status === "PENDING") || [];
-
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-navy">Réglages</h1>
-        <p className="text-muted-foreground mt-1">Gérez votre profil, votre horde et vos données</p>
+        <p className="text-muted-foreground mt-1">Gérez votre profil et vos données</p>
       </div>
 
       {/* Profile */}
@@ -319,6 +205,29 @@ export default function SportifReglagesPage() {
           <CardTitle className="text-lg">Profil</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Sportif ID */}
+          {profile?.sportifId && (
+            <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl mb-4">
+              <span className="text-sm text-gray-600">ID Sportif :</span>
+              <button
+                onClick={copySportifId}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white text-emerald-700 font-mono text-base font-bold hover:bg-emerald-100 transition-colors border border-emerald-200"
+              >
+                {profile.sportifId}
+                {copied ? (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9.75a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                  </svg>
+                )}
+              </button>
+              <span className="text-xs text-muted-foreground">Partagez-le pour recevoir des invitations Horde</span>
+            </div>
+          )}
+
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="text-gray-700">Nom complet</Label>
@@ -368,145 +277,6 @@ export default function SportifReglagesPage() {
               )}
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Sportif ID */}
-      <Card className="glass-card rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-lg">Mon ID sportif</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground mb-3">
-            Partagez cet identifiant avec vos amis pour qu&apos;ils vous invitent dans leur Horde.
-          </p>
-          <button
-            onClick={copySportifId}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 text-emerald-700 font-mono text-lg font-bold hover:bg-emerald-100 transition-colors"
-          >
-            {profile?.sportifId}
-            {copied ? (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9.75a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
-              </svg>
-            )}
-          </button>
-        </CardContent>
-      </Card>
-
-      {/* Ma Horde */}
-      <Card className="glass-card rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-lg">Ma Horde</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Horde name */}
-          <div className="flex items-end gap-3">
-            <div className="flex-1 space-y-2">
-              <Label className="text-gray-700">Nom de la horde</Label>
-              <Input value={hordeName} onChange={(e) => setHordeName(e.target.value)} className="bg-gray-50 border-gray-200 rounded-lg" />
-            </div>
-            <Button onClick={saveHordeName} size="sm" variant="outline">Renommer</Button>
-          </div>
-
-          {/* Invite */}
-          <div>
-            <Label className="text-gray-700 mb-2 block">Inviter un sportif</Label>
-            <div className="flex gap-2">
-              <Input
-                value={inviteId}
-                onChange={(e) => setInviteId(e.target.value)}
-                placeholder="FR-XXXXXX"
-                className="bg-gray-50 border-gray-200 rounded-lg font-mono max-w-xs"
-              />
-              <Button onClick={inviteMember} disabled={inviting || !inviteId.trim()} size="sm" className="bg-emerald hover:bg-emerald-dark text-white">
-                {inviting ? "..." : "Inviter"}
-              </Button>
-            </div>
-          </div>
-
-          {/* Invitations received */}
-          {invitations.length > 0 && (
-            <div>
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Invitations reçues</h3>
-              <div className="space-y-2">
-                {invitations.map((inv) => (
-                  <div key={inv.id} className="flex items-center justify-between p-3 bg-amber-50 rounded-xl">
-                    <div>
-                      <p className="text-sm font-medium">{inv.horde.owner.name} vous invite dans &quot;{inv.horde.name}&quot;</p>
-                      {inv.horde.owner.sportifId && <p className="text-xs text-muted-foreground">{inv.horde.owner.sportifId}</p>}
-                    </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" onClick={() => handleInvitation(inv.id, "accept")} className="bg-emerald hover:bg-emerald-dark text-white text-xs">
-                        Accepter
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => handleInvitation(inv.id, "decline")} className="text-xs">
-                        Décliner
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Members */}
-          {acceptedMembers.length > 0 && (
-            <div>
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Membres ({acceptedMembers.length})</h3>
-              <div className="space-y-2">
-                {acceptedMembers.map((m) => (
-                  <div key={m.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 text-sm font-bold">
-                        {m.user.name.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">{m.user.name}</p>
-                        {m.user.sportifId && <p className="text-xs text-muted-foreground font-mono">{m.user.sportifId}</p>}
-                      </div>
-                    </div>
-                    <Button size="sm" variant="ghost" onClick={() => removeMember(m.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 text-xs">
-                      Retirer
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Pending invites sent */}
-          {pendingMembers.length > 0 && (
-            <div>
-              <h3 className="text-sm font-medium text-gray-700 mb-2">En attente ({pendingMembers.length})</h3>
-              <div className="space-y-2">
-                {pendingMembers.map((m) => (
-                  <div key={m.id} className="flex items-center justify-between p-3 bg-yellow-50 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 text-sm font-bold">
-                        {m.user.name.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">{m.user.name}</p>
-                        <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700">En attente</Badge>
-                      </div>
-                    </div>
-                    <Button size="sm" variant="ghost" onClick={() => removeMember(m.id)} className="text-gray-400 hover:text-red-500 text-xs">
-                      Annuler
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {acceptedMembers.length === 0 && pendingMembers.length === 0 && (
-            <p className="text-sm text-muted-foreground">Aucun membre dans votre horde. Invitez vos amis avec leur ID sportif !</p>
-          )}
         </CardContent>
       </Card>
 

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { s3KeyToPublicPath } from "@/lib/s3";
 
 // GET — activité récente de la horde (événements des membres)
 export async function GET() {
@@ -65,5 +66,13 @@ export async function GET() {
     }
   }
 
-  return NextResponse.json(Array.from(eventMap.values()).slice(0, 10));
+  const feed = Array.from(eventMap.values()).slice(0, 10).map((item) => ({
+    ...item,
+    event: {
+      ...item.event,
+      coverImage: item.event.coverImage ? s3KeyToPublicPath(item.event.coverImage) : null,
+    },
+  }));
+
+  return NextResponse.json(feed);
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { s3KeyToPublicPath } from "@/lib/s3";
 
 // Get user's favorite events
 export async function GET() {
@@ -31,5 +32,13 @@ export async function GET() {
     take: 50,
   });
 
-  return NextResponse.json({ favorites });
+  const mapped = favorites.map((f) => ({
+    ...f,
+    event: {
+      ...f.event,
+      coverImage: f.event.coverImage ? s3KeyToPublicPath(f.event.coverImage) : null,
+    },
+  }));
+
+  return NextResponse.json({ favorites: mapped });
 }

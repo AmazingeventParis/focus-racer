@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { ensureSportifId } from "@/lib/sportif-id";
+import { s3KeyToPublicPath } from "@/lib/s3";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -84,7 +85,10 @@ export async function GET() {
       totalDepense: ordersData._sum.totalAmount || 0,
       nbCommandes: ordersData._count,
     },
-    recentFavorites: recentFavorites.map((f) => f.event),
+    recentFavorites: recentFavorites.map((f) => ({
+      ...f.event,
+      coverImage: f.event.coverImage ? s3KeyToPublicPath(f.event.coverImage) : null,
+    })),
     notifications,
     horde: horde
       ? {

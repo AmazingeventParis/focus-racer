@@ -22,10 +22,7 @@ export async function GET(request: NextRequest) {
       orderBy: { date: "desc" },
     });
 
-    // Only return events that have at least one photo
-    const eventsWithPhotos = events.filter((event) => event._count.photos > 0);
-
-    const mapped = eventsWithPhotos.map((e) => ({
+    const mapped = events.map((e) => ({
       ...e,
       coverImage: e.coverImage ? s3KeyToPublicPath(e.coverImage) : null,
       bannerImage: e.bannerImage ? s3KeyToPublicPath(e.bannerImage) : null,
