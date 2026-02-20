@@ -259,6 +259,21 @@ export default function PublicEventPage({
     return () => window.removeEventListener("keydown", handleKey);
   });
 
+  // Block Ctrl+S / Ctrl+Shift+I / Ctrl+U on gallery (deters casual save attempts)
+  useEffect(() => {
+    const block = (e: KeyboardEvent) => {
+      if (
+        (e.ctrlKey && e.key === "s") ||
+        (e.ctrlKey && e.key === "u") ||
+        (e.ctrlKey && e.shiftKey && e.key === "I")
+      ) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener("keydown", block);
+    return () => window.removeEventListener("keydown", block);
+  }, []);
+
   if (isLoading) {
     return (
       <div className="min-h-screen gradient-bg-subtle flex items-center justify-center">
@@ -282,21 +297,6 @@ export default function PublicEventPage({
 
   const primaryColor = event.primaryColor || "#14B8A6";
   const favCount = favorites.size;
-
-  // Block Ctrl+S / Ctrl+Shift+I / Ctrl+U on gallery (deters casual save attempts)
-  useEffect(() => {
-    const block = (e: KeyboardEvent) => {
-      if (
-        (e.ctrlKey && e.key === "s") ||
-        (e.ctrlKey && e.key === "u") ||
-        (e.ctrlKey && e.shiftKey && e.key === "I")
-      ) {
-        e.preventDefault();
-      }
-    };
-    window.addEventListener("keydown", block);
-    return () => window.removeEventListener("keydown", block);
-  }, []);
 
   return (
     <div className="min-h-screen gradient-bg-subtle gallery-protected">
