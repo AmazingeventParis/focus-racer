@@ -98,18 +98,18 @@
 }
 
 @keyframes rotate-words {
-    0%, 7% { transform: translateY(0); }
-    9.09%, 16% { transform: translateY(-100%); }
-    18.18%, 25% { transform: translateY(-200%); }
-    27.27%, 34% { transform: translateY(-300%); }
-    36.36%, 43% { transform: translateY(-400%); }
-    45.45%, 52% { transform: translateY(-500%); }
-    54.54%, 61% { transform: translateY(-600%); }
-    63.63%, 70% { transform: translateY(-700%); }
-    72.72%, 79% { transform: translateY(-800%); }
-    81.81%, 88% { transform: translateY(-900%); }
-    90.9%, 97% { transform: translateY(-1000%); }
-    100% { transform: translateY(-1100%); }
+    0%, 8.3%      { transform: translateY(0); }
+    9.09%, 17.3%  { transform: translateY(-1.15em); }
+    18.18%, 26.3% { transform: translateY(-2.3em); }
+    27.27%, 35.3% { transform: translateY(-3.45em); }
+    36.36%, 44.3% { transform: translateY(-4.6em); }
+    45.45%, 53.3% { transform: translateY(-5.75em); }
+    54.54%, 62.3% { transform: translateY(-6.9em); }
+    63.63%, 71.3% { transform: translateY(-8.05em); }
+    72.72%, 80.3% { transform: translateY(-9.2em); }
+    81.81%, 89.3% { transform: translateY(-10.35em); }
+    90.9%, 98.3%  { transform: translateY(-11.5em); }
+    100%          { transform: translateY(-11.5em); }
 }
 
 @keyframes grain {
@@ -446,7 +446,7 @@
 .rotating-words {
     display: flex;
     flex-direction: column;
-    animation: rotate-words 27.5s infinite cubic-bezier(0.68, -0.15, 0.27, 1.15);
+    animation: rotate-words 27.5s infinite ease-in-out;
 }
 
 .rotating-words span {
