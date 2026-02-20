@@ -7,11 +7,8 @@ import "./homepage.css";
 
 export default function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSearchTab, setActiveSearchTab] = useState<"dossard" | "selfie" | "nom">("dossard");
   const [activeAudienceTab, setActiveAudienceTab] = useState<"runners" | "photographers" | "organizers">("runners");
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-  const [searchInputValue, setSearchInputValue] = useState("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const slotWords = ["marathon", "trail", "triathlon", "cyclisme", "natation", "ski", "running", "duathlon", "canicross", "obstacle", "swimrun", "motocross", "aviron", "rallye", "ironman", "équitation", "kayak", "escalade", "rugby", "football", "handball", "voile", "CrossFit", "paddle", "biathlon", "enduro", "karting", "surf", "boxe", "judo", "athlétisme"];
 
   // Simple rotating words — 1 word every 0.5s
@@ -88,47 +85,14 @@ export default function HomePage() {
     return () => counterObserver.disconnect();
   }, []);
 
-  // Typing animation in search input
+  // Animated pipeline step for hero widget
+  const [pipelineStep, setPipelineStep] = useState(0);
   useEffect(() => {
-    const dossardNumber = "1247";
-    let charIndex = 0;
-    let timeoutId: ReturnType<typeof setTimeout>;
-    let active = true;
-
-    function typeNumber() {
-      if (!active) return;
-      if (charIndex <= dossardNumber.length) {
-        setSearchInputValue(dossardNumber.slice(0, charIndex));
-        charIndex++;
-        timeoutId = setTimeout(typeNumber, 200 + Math.random() * 150);
-      } else {
-        timeoutId = setTimeout(() => {
-          if (!active) return;
-          setSearchInputValue("");
-          charIndex = 0;
-          timeoutId = setTimeout(typeNumber, 2000);
-        }, 3000);
-      }
-    }
-
-    timeoutId = setTimeout(typeNumber, 2000);
-    return () => {
-      active = false;
-      clearTimeout(timeoutId);
-    };
+    const interval = setInterval(() => {
+      setPipelineStep((prev) => (prev + 1) % 4);
+    }, 2000);
+    return () => clearInterval(interval);
   }, []);
-
-  // Search tab switching
-  const handleSearchTabSwitch = useCallback((type: "dossard" | "selfie" | "nom") => {
-    setActiveSearchTab(type);
-  }, []);
-
-  const searchIcons: Record<string, string> = { dossard: "\uD83D\uDD22", selfie: "\uD83E\uDD33", nom: "\uD83D\uDC64" };
-  const searchPlaceholders: Record<string, string> = {
-    dossard: "Entrez votre num\u00e9ro de dossard...",
-    selfie: "Uploadez un selfie pour la recherche...",
-    nom: "Entrez votre nom ou pr\u00e9nom...",
-  };
 
   // FAQ toggle
   const handleFaqToggle = useCallback((index: number) => {
@@ -290,6 +254,9 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero-grain"></div>
         <div className="hero-grid-pattern"></div>
+        <div className="hero-orb hero-orb-1"></div>
+        <div className="hero-orb hero-orb-2"></div>
+        <div className="hero-orb hero-orb-3"></div>
         <div className="hero-content">
           <div className="hero-text">
             <div className="hero-badge">
@@ -329,48 +296,51 @@ export default function HomePage() {
             <div className="hero-float-card card-2">
               <div className="float-icon purple">🎯</div>
               <div>
-                <div className="float-label">Photos trouv&eacute;es</div>
-                <div className="float-value">24 r&eacute;sultats</div>
+                <div className="float-label">Reconnaissance faciale</div>
+                <div className="float-value">Confiance 98.7%</div>
               </div>
             </div>
 
             <div className="hero-mockup">
-              <div className="hero-search-demo">
-                <div className="search-demo-title">🏃 Trouvez vos photos</div>
-                <div className="search-tabs">
-                  <button
-                    className={`search-tab${activeSearchTab === "dossard" ? " active" : ""}`}
-                    onClick={() => handleSearchTabSwitch("dossard")}
-                  >
-                    🏷️ Dossard
-                  </button>
-                  <button
-                    className={`search-tab${activeSearchTab === "selfie" ? " active" : ""}`}
-                    onClick={() => handleSearchTabSwitch("selfie")}
-                  >
-                    🤳 Selfie
-                  </button>
-                  <button
-                    className={`search-tab${activeSearchTab === "nom" ? " active" : ""}`}
-                    onClick={() => handleSearchTabSwitch("nom")}
-                  >
-                    👤 Nom
-                  </button>
+              <div className="hero-pipeline">
+                <div className="pipeline-header">
+                  <span className="pipeline-dot"></span>
+                  <span className="pipeline-title">Traitement IA en direct</span>
                 </div>
-                <div className="search-input-group">
-                  <span className="search-input-icon">{searchIcons[activeSearchTab]}</span>
-                  <input
-                    type="text"
-                    className="search-input"
-                    ref={searchInputRef}
-                    placeholder={searchPlaceholders[activeSearchTab]}
-                    value={searchInputValue}
-                    readOnly
-                  />
+                <div className="pipeline-steps">
+                  {[
+                    { icon: "📸", label: "Upload", detail: "2 847 photos re\u00e7ues" },
+                    { icon: "🔍", label: "D\u00e9tection OCR", detail: "Dossards identifi\u00e9s" },
+                    { icon: "🧠", label: "Reconnaissance", detail: "Visages index\u00e9s" },
+                    { icon: "✨", label: "Livraison", detail: "Tri\u00e9es et pr\u00eates" },
+                  ].map((step, i) => (
+                    <div key={i} className={`pipeline-step${pipelineStep === i ? " active" : ""}${pipelineStep > i ? " done" : ""}`}>
+                      <div className="pipeline-step-icon">{pipelineStep > i ? "✅" : step.icon}</div>
+                      <div className="pipeline-step-info">
+                        <div className="pipeline-step-label">{step.label}</div>
+                        <div className="pipeline-step-detail">{step.detail}</div>
+                      </div>
+                      {pipelineStep === i && <div className="pipeline-pulse"></div>}
+                    </div>
+                  ))}
                 </div>
-                <Link href="/runner">
-                  <button className="search-btn">Rechercher mes photos →</button>
-                </Link>
+                <div className="pipeline-bar">
+                  <div className="pipeline-bar-fill" style={{ width: `${((pipelineStep + 1) / 4) * 100}%` }}></div>
+                </div>
+                <div className="pipeline-stats">
+                  <div className="pipeline-stat">
+                    <span className="pipeline-stat-value">0.3s</span>
+                    <span className="pipeline-stat-label">par photo</span>
+                  </div>
+                  <div className="pipeline-stat">
+                    <span className="pipeline-stat-value">95%</span>
+                    <span className="pipeline-stat-label">pr&eacute;cision</span>
+                  </div>
+                  <div className="pipeline-stat">
+                    <span className="pipeline-stat-value">24/7</span>
+                    <span className="pipeline-stat-label">disponible</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
