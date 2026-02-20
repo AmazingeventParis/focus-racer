@@ -1,3 +1,5 @@
+> **IMPORTANT** : Lis `project-state.md` au demarrage pour comprendre l'etat complet du projet.
+
 # Focus Racer - Journal de projet
 
 > Version condensée - Suivi de l'avancement du projet Focus Racer
