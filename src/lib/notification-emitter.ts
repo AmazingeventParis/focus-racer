@@ -80,6 +80,26 @@ class NotificationEmitter {
     }
   }
 
+  // Notify a user about a new horde chat message
+  notifyUserChat(userId: string, conversationId: string): void {
+    const subs = this.userSubscriptions.get(userId);
+    if (!subs) return;
+    const alive: Subscription[] = [];
+    for (const sub of subs) {
+      try {
+        sub.listener({ type: "horde_message", conversationId } as { type: string });
+        alive.push(sub);
+      } catch {
+        // Connection closed, skip
+      }
+    }
+    if (alive.length === 0) {
+      this.userSubscriptions.delete(userId);
+    } else {
+      this.userSubscriptions.set(userId, alive);
+    }
+  }
+
   getStats() {
     let userConns = 0;
     for (const subs of this.userSubscriptions.values()) {

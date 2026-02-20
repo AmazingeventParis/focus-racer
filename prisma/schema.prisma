@@ -90,8 +90,11 @@ model User {
   faceImagePath      String?
   eventFavorites     EventFavorite[]
   notifications      Notification[]
-  hordeOwned         Horde?              @relation("HordeOwner")
-  hordeMemberships   HordeMember[]       @relation("HordeMemberUser")
+  hordeOwned              Horde?                          @relation("HordeOwner")
+  hordeMemberships        HordeMember[]                   @relation("HordeMemberUser")
+  conversationsCreated    HordeConversation[]             @relation("ConversationCreator")
+  conversationMemberships HordeConversationParticipant[]  @relation("ConversationParticipant")
+  hordeMessages           HordeMessage[]                  @relation("HordeMessageSender")
 
   @@index([role])
   @@index([isActive])
@@ -496,14 +499,20 @@ enum HordeMemberStatus {
   DECLINED
 }
 
+enum ConversationType {
+  GROUP
+  DM
+}
+
 model Horde {
-  id        String        @id @default(cuid())
-  ownerId   String        @unique
-  owner     User          @relation("HordeOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  name      String        @default("Ma Horde")
-  members   HordeMember[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id            String              @id @default(cuid())
+  ownerId       String              @unique
+  owner         User                @relation("HordeOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  name          String              @default("Ma Horde")
+  members       HordeMember[]
+  conversations HordeConversation[]
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
 }
 
 model HordeMember {
@@ -518,6 +527,48 @@ model HordeMember {
 
   @@unique([hordeId, userId])
   @@index([userId])
+}
+
+// =========== HORDE CHAT ===========
+
+model HordeConversation {
+  id           String                        @id @default(cuid())
+  hordeId      String
+  horde        Horde                         @relation(fields: [hordeId], references: [id], onDelete: Cascade)
+  type         ConversationType
+  name         String?
+  createdById  String
+  createdBy    User                          @relation("ConversationCreator", fields: [createdById], references: [id])
+  participants HordeConversationParticipant[]
+  messages     HordeMessage[]
+  createdAt    DateTime                      @default(now())
+  updatedAt    DateTime                      @updatedAt
+
+  @@index([hordeId])
+}
+
+model HordeConversationParticipant {
+  id             String            @id @default(cuid())
+  conversationId String
+  conversation   HordeConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User              @relation("ConversationParticipant", fields: [userId], references: [id], onDelete: Cascade)
+  lastReadAt     DateTime          @default(now())
+
+  @@unique([conversationId, userId])
+  @@index([userId])
+}
+
+model HordeMessage {
+  id             String            @id @default(cuid())
+  conversationId String
+  conversation   HordeConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User              @relation("HordeMessageSender", fields: [userId], references: [id], onDelete: Cascade)
+  content        String
+  createdAt      DateTime          @default(now())
+
+  @@index([conversationId, createdAt])
 }
 
 // =========== NOTIFICATIONS ===========

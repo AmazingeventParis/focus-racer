@@ -8,8 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import HordeChat from "@/components/horde/HordeChat";
 
 interface HordeMember {
   id: string;
@@ -45,23 +46,11 @@ interface HordeFeedItem {
   members: { name: string; sportifId: string | null }[];
 }
 
-const SPORT_LABELS: Record<string, string> = {
-  RUNNING: "Course à pied",
-  TRAIL: "Trail",
-  TRIATHLON: "Triathlon",
-  CYCLING: "Cyclisme",
-  SWIMMING: "Natation",
-  OBSTACLE: "Course à obstacles",
-  OTHER: "Autre",
-};
-
 export default function SportifHordePage() {
   const { data: session } = useSession();
   const { toast } = useToast();
 
   const [horde, setHorde] = useState<HordeData | null>(null);
-  const [hordeName, setHordeName] = useState("");
-  const [editingName, setEditingName] = useState(false);
   const [inviteId, setInviteId] = useState("");
   const [inviting, setInviting] = useState(false);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
@@ -79,7 +68,6 @@ export default function SportifHordePage() {
       if (hordeRes.ok) {
         const data = await hordeRes.json();
         setHorde(data);
-        setHordeName(data.name);
       }
       if (invRes.ok) setInvitations(await invRes.json());
       if (feedRes.ok) {
@@ -93,22 +81,6 @@ export default function SportifHordePage() {
   useEffect(() => {
     fetchHorde();
   }, [fetchHorde]);
-
-  const saveHordeName = async () => {
-    if (!hordeName.trim()) return;
-    try {
-      const res = await fetch("/api/sportif/horde", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: hordeName.trim() }),
-      });
-      if (res.ok) {
-        toast({ title: "Nom de la horde mis à jour" });
-        setEditingName(false);
-        fetchHorde();
-      }
-    } catch { /* silent */ }
-  };
 
   const inviteMember = async () => {
     if (!inviteId.trim()) return;
@@ -176,87 +148,55 @@ export default function SportifHordePage() {
   const acceptedMembers = horde?.members.filter((m) => m.status === "ACCEPTED") || [];
   const pendingMembers = horde?.members.filter((m) => m.status === "PENDING") || [];
 
+  // Build member list for chat (accepted members, excluding self)
+  const chatMembers = acceptedMembers
+    .filter((m) => m.user.id !== session?.user?.id)
+    .map((m) => ({
+      userId: m.user.id,
+      user: m.user,
+    }));
+
   return (
-    <div className="p-8 max-w-5xl mx-auto space-y-8 animate-fade-in">
+    <div className="p-8 max-w-5xl mx-auto space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-3">
-            {editingName ? (
-              <div className="flex items-center gap-2">
-                <Input
-                  value={hordeName}
-                  onChange={(e) => setHordeName(e.target.value)}
-                  className="text-2xl font-bold border-gray-200 rounded-lg h-10 max-w-xs"
-                  onKeyDown={(e) => { if (e.key === "Enter") saveHordeName(); if (e.key === "Escape") setEditingName(false); }}
-                  autoFocus
-                />
-                <Button size="sm" onClick={saveHordeName} className="bg-emerald hover:bg-emerald-dark text-white">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                </Button>
-                <Button size="sm" variant="ghost" onClick={() => { setEditingName(false); setHordeName(horde?.name || ""); }}>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </Button>
-              </div>
-            ) : (
-              <button onClick={() => setEditingName(true)} className="group flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-navy">{horde?.name || "Ma Horde"}</h1>
-                <svg className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z" />
-                </svg>
-              </button>
-            )}
-          </div>
-          <p className="text-muted-foreground mt-1">
-            {acceptedMembers.length} membre{acceptedMembers.length > 1 ? "s" : ""}
-            {pendingMembers.length > 0 && ` · ${pendingMembers.length} en attente`}
-          </p>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold text-navy">Ma Horde</h1>
+        <p className="text-muted-foreground mt-1">
+          {acceptedMembers.length} membre{acceptedMembers.length > 1 ? "s" : ""}
+          {pendingMembers.length > 0 && ` · ${pendingMembers.length} en attente`}
+        </p>
       </div>
 
-      {/* Invitations received */}
-      {invitations.length > 0 && (
-        <Card className="border-amber-200 bg-amber-50/50 rounded-2xl">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-              </svg>
-              Invitations reçues ({invitations.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {invitations.map((inv) => (
-              <div key={inv.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-amber-100">
-                <div>
-                  <p className="font-medium text-gray-900">
-                    {inv.horde.owner.name} vous invite dans &laquo; {inv.horde.name} &raquo;
-                  </p>
-                  {inv.horde.owner.sportifId && (
-                    <p className="text-xs text-muted-foreground font-mono mt-0.5">{inv.horde.owner.sportifId}</p>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" onClick={() => handleInvitation(inv.id, "accept")} className="bg-emerald hover:bg-emerald-dark text-white">
-                    Accepter
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleInvitation(inv.id, "decline")}>
-                    Décliner
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+      {/* Tabs */}
+      <Tabs defaultValue="membres">
+        <TabsList className="w-full sm:w-auto">
+          <TabsTrigger value="membres" className="flex-1 sm:flex-initial gap-1.5">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+            </svg>
+            Membres
+          </TabsTrigger>
+          <TabsTrigger value="chat" className="flex-1 sm:flex-initial gap-1.5">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+            </svg>
+            Chat
+          </TabsTrigger>
+          <TabsTrigger value="demandes" className="flex-1 sm:flex-initial gap-1.5">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+            Demandes
+            {(invitations.length > 0 || pendingMembers.length > 0) && (
+              <span className="ml-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+                {invitations.length + pendingMembers.length}
+              </span>
+            )}
+          </TabsTrigger>
+        </TabsList>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Left column — Members + Invite */}
-        <div className="lg:col-span-2 space-y-6">
+        {/* ====== TAB: MEMBRES ====== */}
+        <TabsContent value="membres" className="space-y-6 mt-4">
           {/* Invite */}
           <Card className="glass-card rounded-2xl">
             <CardHeader className="pb-3">
@@ -355,56 +295,7 @@ export default function SportifHordePage() {
             </CardContent>
           </Card>
 
-          {/* Pending invites sent */}
-          {pendingMembers.length > 0 && (
-            <Card className="glass-card rounded-2xl">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base flex items-center gap-2">
-                  En attente
-                  <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200">
-                    {pendingMembers.length}
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {pendingMembers.map((m) => (
-                    <div key={m.id} className="flex items-center justify-between p-3 bg-yellow-50/50 rounded-xl">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 font-bold flex-shrink-0">
-                          {m.user.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">{m.user.name}</p>
-                          <div className="flex items-center gap-2">
-                            {m.user.sportifId && (
-                              <span className="text-xs text-muted-foreground font-mono">{m.user.sportifId}</span>
-                            )}
-                            <span className="text-xs text-yellow-600">
-                              Invité le {new Date(m.invitedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => removeMember(m.id)}
-                        disabled={removingId === m.id}
-                        className="text-gray-400 hover:text-red-500 text-xs"
-                      >
-                        Annuler
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        {/* Right column — Horde Activity Feed */}
-        <div className="space-y-6">
+          {/* Horde Activity Feed */}
           <Card className="glass-card rounded-2xl">
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
@@ -497,8 +388,140 @@ export default function SportifHordePage() {
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
+        </TabsContent>
+
+        {/* ====== TAB: CHAT ====== */}
+        <TabsContent value="chat" className="mt-4">
+          {horde ? (
+            <HordeChat hordeId={horde.id} acceptedMembers={chatMembers} />
+          ) : (
+            <div className="py-16 text-center">
+              <p className="text-muted-foreground">Chargement...</p>
+            </div>
+          )}
+        </TabsContent>
+
+        {/* ====== TAB: DEMANDES D'AMI ====== */}
+        <TabsContent value="demandes" className="space-y-6 mt-4">
+          {/* Invitations reçues */}
+          <Card className="glass-card rounded-2xl">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+                Invitations reçues
+                {invitations.length > 0 && (
+                  <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
+                    {invitations.length}
+                  </Badge>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {invitations.length > 0 ? (
+                <div className="space-y-2">
+                  {invitations.map((inv) => (
+                    <div key={inv.id} className="flex items-center justify-between p-4 bg-amber-50/50 rounded-xl border border-amber-100">
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {inv.horde.owner.name} vous invite dans &laquo; {inv.horde.name} &raquo;
+                        </p>
+                        {inv.horde.owner.sportifId && (
+                          <p className="text-xs text-muted-foreground font-mono mt-0.5">{inv.horde.owner.sportifId}</p>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => handleInvitation(inv.id, "accept")} className="bg-emerald hover:bg-emerald-dark text-white">
+                          Accepter
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => handleInvitation(inv.id, "decline")}>
+                          Décliner
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-6 text-center">
+                  <p className="text-muted-foreground text-sm">Aucune invitation reçue</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Invitations envoyées */}
+          <Card className="glass-card rounded-2xl">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                </svg>
+                Invitations envoyées
+                {pendingMembers.length > 0 && (
+                  <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                    {pendingMembers.length}
+                  </Badge>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {pendingMembers.length > 0 ? (
+                <div className="space-y-2">
+                  {pendingMembers.map((m) => (
+                    <div key={m.id} className="flex items-center justify-between p-3 bg-blue-50/50 rounded-xl border border-blue-100">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold flex-shrink-0">
+                          {m.user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{m.user.name}</p>
+                          <div className="flex items-center gap-2">
+                            {m.user.sportifId && (
+                              <span className="text-xs text-muted-foreground font-mono">{m.user.sportifId}</span>
+                            )}
+                            <span className="text-xs text-blue-600">
+                              Invité le {new Date(m.invitedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => removeMember(m.id)}
+                        disabled={removingId === m.id}
+                        className="text-gray-400 hover:text-red-500 text-xs"
+                      >
+                        {removingId === m.id ? "..." : "Annuler"}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-6 text-center">
+                  <p className="text-muted-foreground text-sm">Aucune invitation en attente</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Empty state when both are empty */}
+          {invitations.length === 0 && pendingMembers.length === 0 && (
+            <div className="py-8 text-center">
+              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
+                <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+              </div>
+              <p className="text-muted-foreground text-sm">Aucune demande en cours</p>
+              <p className="text-muted-foreground text-xs mt-1">
+                Invitez des amis depuis l&apos;onglet Membres pour agrandir votre horde
+              </p>
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
