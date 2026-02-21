@@ -29,7 +29,6 @@ const moreItemsBase: MobileNavItem[] = [
 function SportifMobileNav() {
   const { data: session } = useSession();
   const [unreadCount, setUnreadCount] = useState(0);
-  const [hordeUnread, setHordeUnread] = useState(0);
 
   const fetchUnread = useCallback(async () => {
     try {
@@ -41,23 +40,8 @@ function SportifMobileNav() {
     } catch {}
   }, []);
 
-  const fetchHordeUnread = useCallback(async () => {
-    try {
-      const res = await fetch("/api/sportif/horde/conversations/unread-total", { cache: "no-store" });
-      if (res.ok) {
-        const data = await res.json();
-        setHordeUnread(data.count);
-      }
-    } catch {}
-  }, []);
-
   useSSENotifications(["user_unread", "connected"], fetchUnread);
-  useSSENotifications(["horde_message"], fetchHordeUnread);
-  useEffect(() => { fetchUnread(); fetchHordeUnread(); }, [fetchUnread, fetchHordeUnread]);
-
-  const mainItemsWithBadges = mainItems.map((item) =>
-    item.href === "/sportif/horde" ? { ...item, badge: hordeUnread } : item
-  );
+  useEffect(() => { fetchUnread(); }, [fetchUnread]);
 
   const moreItems = moreItemsBase.map((item) =>
     item.href === "/sportif/messagerie" ? { ...item, badge: unreadCount } : item
@@ -65,7 +49,7 @@ function SportifMobileNav() {
 
   return (
     <MobileNav
-      mainItems={mainItemsWithBadges}
+      mainItems={mainItems}
       moreItems={moreItems}
       roleLabel="Espace sportif"
       sportifId={session?.user?.sportifId}
