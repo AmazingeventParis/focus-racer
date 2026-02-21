@@ -893,7 +893,7 @@ export default function HomePage() {
           {faqItems.map((item, index) => (
             <div
               key={index}
-              className={`faq-item reveal stagger-${index + 1}${openFaqIndex === index ? " open" : ""}`}
+              className={`faq-item${openFaqIndex === index ? " open" : ""}`}
             >
               <button className="faq-question" onClick={() => handleFaqToggle(index)}>
                 {item.question}
