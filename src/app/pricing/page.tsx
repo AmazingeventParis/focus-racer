@@ -167,6 +167,12 @@ export default function PricingPage() {
                 <br />
                 <strong className="text-navy">1 crédit = 1 photo traitée</strong> (détection dossard + reconnaissance faciale + watermark).
               </p>
+              <div className="mt-4 inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-full px-5 py-2">
+                <svg className="w-5 h-5 text-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-sm font-semibold text-emerald">0% de commission sur vos ventes — vous gardez 100% de vos revenus</span>
+              </div>
             </div>
 
             {/* Pro features */}

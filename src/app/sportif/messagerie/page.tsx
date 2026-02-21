@@ -17,6 +17,13 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
+interface Reply {
+  role: "user" | "admin" | "recipient";
+  content: string;
+  date: string;
+  author?: string;
+}
+
 interface SupportMessage {
   id: string;
   subject: string;
@@ -26,6 +33,10 @@ interface SupportMessage {
   adminReply: string | null;
   repliedAt: string | null;
   recipientId: string | null;
+  userId: string | null;
+  replies: Reply[];
+  user?: { id: string; name: string; sportifId?: string | null } | null;
+  recipient?: { id: string; name: string } | null;
   createdAt: string;
 }
 
@@ -79,6 +90,11 @@ export default function SportifMessageriePage() {
   const [showForm, setShowForm] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+
+  // Reply form
+  const [replyText, setReplyText] = useState("");
+  const [isReplying, setIsReplying] = useState(false);
+  const [closingId, setClosingId] = useState<string | null>(null);
 
   // Form
   const [recipient, setRecipient] = useState<"support" | string>("support");
@@ -199,6 +215,78 @@ export default function SportifMessageriePage() {
       setIsSubmitting(false);
     }
   };
+
+  const handleReply = async (msgId: string) => {
+    if (!replyText.trim()) {
+      toast({ title: "Champs requis", description: "Veuillez saisir une réponse", variant: "destructive" });
+      return;
+    }
+
+    setIsReplying(true);
+    try {
+      const res = await fetch(`/api/support/${msgId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reply: replyText.trim() }),
+      });
+
+      if (res.ok) {
+        toast({ title: "Réponse envoyée" });
+        setReplyText("");
+        fetchMessages(page);
+      } else {
+        const data = await res.json();
+        toast({ title: "Erreur", description: data.error || "Impossible d'envoyer la réponse", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Erreur", description: "Erreur de connexion", variant: "destructive" });
+    } finally {
+      setIsReplying(false);
+    }
+  };
+
+  const handleClose = async (msgId: string) => {
+    setClosingId(msgId);
+    try {
+      const res = await fetch(`/api/support/${msgId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "close" }),
+      });
+
+      if (res.ok) {
+        toast({ title: "Conversation clôturée" });
+        setExpandedId(null);
+        setReplyText("");
+        fetchMessages(page);
+      } else {
+        toast({ title: "Erreur", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Erreur", variant: "destructive" });
+    } finally {
+      setClosingId(null);
+    }
+  };
+
+  const toggleExpanded = (id: string) => {
+    if (expandedId === id) {
+      setExpandedId(null);
+      setReplyText("");
+    } else {
+      setExpandedId(id);
+      setReplyText("");
+    }
+  };
+
+  const formatDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
@@ -353,28 +441,33 @@ export default function SportifMessageriePage() {
             {messages.map((msg) => {
               const statusCfg = STATUS_CONFIG[msg.status] || STATUS_CONFIG.OPEN;
               const isExpanded = expandedId === msg.id;
+              const isClosed = msg.status === "CLOSED";
+              const replies: Reply[] = Array.isArray(msg.replies) ? msg.replies : [];
+              const hasConversation = replies.length > 0 || msg.adminReply;
 
               return (
                 <Card
                   key={msg.id}
-                  className="glass-card rounded-2xl hover:shadow-glass-lg transition-all duration-200 cursor-pointer"
-                  onClick={() => setExpandedId(isExpanded ? null : msg.id)}
+                  className={`glass-card rounded-2xl hover:shadow-glass-lg transition-all duration-200 cursor-pointer ${isClosed ? "opacity-70" : ""}`}
+                  onClick={() => toggleExpanded(msg.id)}
                 >
                   <CardContent className="p-6">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-3">
                         <h3 className="font-medium text-gray-900">{msg.subject}</h3>
                         {msg.recipientId ? (
-                          <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">Photographe</Badge>
+                          <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                            Photographe{msg.recipient?.name ? ` — ${msg.recipient.name}` : ""}
+                          </Badge>
                         ) : (
                           <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">Support</Badge>
                         )}
-                        {msg.adminReply && (
-                          <span className="flex items-center gap-1 text-xs text-emerald-600">
+                        {hasConversation && (
+                          <span className="flex items-center gap-1 text-xs text-blue-600">
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
                             </svg>
-                            Répondu
+                            {replies.length + (msg.adminReply && replies.length === 0 ? 1 : 0)} réponse{(replies.length + (msg.adminReply && replies.length === 0 ? 1 : 0)) > 1 ? "s" : ""}
                           </span>
                         )}
                       </div>
@@ -384,7 +477,7 @@ export default function SportifMessageriePage() {
                         <span className="text-xs text-gray-400">
                           {new Date(msg.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
                         </span>
-                        <svg className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <svg className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                         </svg>
                       </div>
@@ -393,24 +486,118 @@ export default function SportifMessageriePage() {
                     {!isExpanded && <p className="text-sm text-muted-foreground line-clamp-2">{msg.message}</p>}
 
                     {isExpanded && (
-                      <div className="mt-3 space-y-4">
+                      <div className="mt-3 space-y-3" onClick={(e) => e.stopPropagation()}>
+                        {/* Initial message */}
                         <div className="bg-gray-50 rounded-lg p-4">
-                          <p className="text-sm text-gray-700 whitespace-pre-wrap">{msg.message}</p>
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
+                              <svg className="w-3.5 h-3.5 text-gray-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                              </svg>
+                            </div>
+                            <span className="text-sm font-medium text-gray-700">
+                              {msg.userId === session?.user?.id ? "Vous" : (msg.user?.name || "Utilisateur")}
+                            </span>
+                            <span className="text-xs text-gray-400">{formatDate(msg.createdAt)}</span>
+                          </div>
+                          <p className="text-sm text-gray-700 whitespace-pre-wrap ml-8">{msg.message}</p>
                         </div>
-                        {msg.adminReply && (
+
+                        {/* Legacy admin reply (if no replies array entries) */}
+                        {msg.adminReply && replies.length === 0 && (
                           <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4">
                             <div className="flex items-center gap-2 mb-2">
-                              <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              <span className="text-sm font-medium text-emerald-700">Réponse</span>
+                              <div className="w-6 h-6 rounded-full bg-emerald-200 flex items-center justify-center">
+                                <svg className="w-3.5 h-3.5 text-emerald-700" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                              </div>
+                              <span className="text-sm font-medium text-emerald-700">Support</span>
                               {msg.repliedAt && (
-                                <span className="text-xs text-emerald-500">
-                                  {new Date(msg.repliedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                                </span>
+                                <span className="text-xs text-emerald-500">{formatDate(msg.repliedAt)}</span>
                               )}
                             </div>
-                            <p className="text-sm text-emerald-800 whitespace-pre-wrap">{msg.adminReply}</p>
+                            <p className="text-sm text-emerald-800 whitespace-pre-wrap ml-8">{msg.adminReply}</p>
+                          </div>
+                        )}
+
+                        {/* Conversation thread from replies array */}
+                        {replies.map((reply, i) => (
+                          <div
+                            key={i}
+                            className={`rounded-lg p-4 ${
+                              reply.role === "admin"
+                                ? "bg-emerald-50 border border-emerald-100"
+                                : "bg-blue-50 border border-blue-100"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                                reply.role === "admin" ? "bg-emerald-200" : "bg-blue-200"
+                              }`}>
+                                <svg className={`w-3.5 h-3.5 ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                  {reply.role === "admin" ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                  )}
+                                </svg>
+                              </div>
+                              <span className={`text-sm font-medium ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`}>
+                                {reply.role === "admin"
+                                  ? "Support"
+                                  : reply.role === "user"
+                                    ? (msg.userId === session?.user?.id ? "Vous" : (reply.author || "Sportif"))
+                                    : reply.role === "recipient"
+                                      ? (msg.recipientId === session?.user?.id ? "Vous" : (reply.author || "Photographe"))
+                                      : (reply.author || "Utilisateur")}
+                              </span>
+                              <span className={`text-xs ${reply.role === "admin" ? "text-emerald-500" : "text-blue-500"}`}>
+                                {formatDate(reply.date)}
+                              </span>
+                            </div>
+                            <p className={`text-sm whitespace-pre-wrap ml-8 ${reply.role === "admin" ? "text-emerald-800" : "text-blue-800"}`}>
+                              {reply.content}
+                            </p>
+                          </div>
+                        ))}
+
+                        {/* Reply form + Close button (only if not closed) */}
+                        {!isClosed && (
+                          <div className="bg-white border border-gray-200 rounded-lg p-4 mt-2">
+                            <textarea
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                              placeholder="Votre réponse..."
+                              rows={3}
+                              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald resize-y min-h-[80px]"
+                            />
+                            <div className="flex items-center gap-2 mt-3 justify-end">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="border-gray-300 text-gray-600 hover:bg-gray-100"
+                                onClick={() => handleClose(msg.id)}
+                                disabled={closingId === msg.id || isReplying}
+                              >
+                                {closingId === msg.id ? "..." : "Clôturer"}
+                              </Button>
+                              <Button
+                                size="sm"
+                                className="bg-emerald hover:bg-emerald-dark text-white"
+                                onClick={() => handleReply(msg.id)}
+                                disabled={isReplying || !replyText.trim()}
+                              >
+                                {isReplying ? "Envoi..." : "Répondre"}
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Closed notice */}
+                        {isClosed && (
+                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
+                            <p className="text-sm text-gray-500">Cette conversation est clôturée</p>
                           </div>
                         )}
                       </div>

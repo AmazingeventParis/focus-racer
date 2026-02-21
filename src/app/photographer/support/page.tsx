@@ -18,7 +18,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 interface Reply {
-  role: "user" | "admin";
+  role: "user" | "admin" | "recipient";
   content: string;
   date: string;
   author?: string;
@@ -494,7 +494,9 @@ export default function PhotographerSupportPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                               </svg>
                             </div>
-                            <span className="text-sm font-medium text-gray-700">Vous</span>
+                            <span className="text-sm font-medium text-gray-700">
+                              {msg.userId === session?.user?.id ? "Vous" : (msg.user?.name || "Sportif")}
+                            </span>
                             <span className="text-xs text-gray-400">{formatDate(msg.createdAt)}</span>
                           </div>
                           <p className="text-sm text-gray-700 whitespace-pre-wrap ml-8">{msg.message}</p>
@@ -541,7 +543,7 @@ export default function PhotographerSupportPage() {
                                 </svg>
                               </div>
                               <span className={`text-sm font-medium ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`}>
-                                {reply.role === "admin" ? "Support" : "Vous"}
+                                {reply.role === "admin" ? "Support" : reply.role === "recipient" ? (msg.recipientId === session?.user?.id ? "Vous" : (reply.author || "Photographe")) : (msg.userId === session?.user?.id ? "Vous" : (reply.author || "Sportif"))}
                               </span>
                               <span className={`text-xs ${reply.role === "admin" ? "text-emerald-500" : "text-blue-500"}`}>
                                 {formatDate(reply.date)}

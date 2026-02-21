@@ -22,7 +22,8 @@ export async function PATCH(
     return NextResponse.json({ error: "Message introuvable" }, { status: 404 });
   }
 
-  if (msg.userId !== session.user.id) {
+  // Allow both the original sender (userId) and the recipient to reply
+  if (msg.userId !== session.user.id && msg.recipientId !== session.user.id) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
   }
 
@@ -49,9 +50,10 @@ export async function PATCH(
     return NextResponse.json({ error: "Réponse requise" }, { status: 400 });
   }
 
+  const isOriginalSender = msg.userId === session.user.id;
   const currentReplies = (msg.replies as any[]) || [];
   const newReply = {
-    role: "user",
+    role: isOriginalSender ? "user" : "recipient",
     content: reply.trim(),
     date: new Date().toISOString(),
     author: session.user.name || session.user.email,
@@ -61,13 +63,20 @@ export async function PATCH(
     where: { id: params.id },
     data: {
       replies: [...currentReplies, newReply],
-      status: "OPEN",
-      readByUser: true,
+      status: isOriginalSender ? "OPEN" : "IN_PROGRESS",
+      readByUser: isOriginalSender,
     },
   });
 
-  // Notify admin that user replied (status changed to OPEN)
+  // Notify the other party + admin
   notificationEmitter.notifyAdmin();
+  if (isOriginalSender && msg.recipientId) {
+    // Sportif replied → notify the photographer
+    notificationEmitter.notifyUser(msg.recipientId);
+  } else if (!isOriginalSender && msg.userId) {
+    // Photographer replied → notify the sportif
+    notificationEmitter.notifyUser(msg.userId);
+  }
 
   return NextResponse.json(updated);
 }
