@@ -12,6 +12,7 @@ export interface MobileNavItem {
   shortLabel?: string;
   icon: React.ReactNode;
   badge?: number;
+  badgeDot?: boolean;
 }
 
 interface MobileNavProps {
@@ -109,6 +110,9 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
                       {item.badge > 99 ? "99+" : item.badge}
                     </span>
                   )}
+                  {item.badgeDot && (
+                    <span className="absolute -top-0.5 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-navy" />
+                  )}
                 </span>
                 <span className="text-[10px] font-medium leading-tight">
                   {item.shortLabel || item.label}
@@ -181,6 +185,9 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
                         <span className="ml-auto min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">
                           {item.badge > 99 ? "99+" : item.badge}
                         </span>
+                      )}
+                      {item.badgeDot && (
+                        <span className="ml-auto w-2.5 h-2.5 rounded-full bg-red-500" />
                       )}
                     </Link>
                   );
