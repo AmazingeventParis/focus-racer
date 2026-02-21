@@ -29,25 +29,25 @@ const proFeatures = [
 
 const creditPacks = [
   {
-    name: "Pack 1 000",
+    name: "Pack 1k",
     credits: "1 000",
     price: "19",
     pricePerCredit: "0,019",
     popular: false,
   },
   {
-    name: "Pack 5 000",
+    name: "Pack 5k",
     credits: "5 000",
     price: "85",
     pricePerCredit: "0,017",
-    popular: true,
+    popular: false,
   },
   {
-    name: "Pack 15 000",
+    name: "Pack 15k",
     credits: "15 000",
     price: "225",
     pricePerCredit: "0,015",
-    popular: false,
+    popular: true,
   },
 ];
 
@@ -205,7 +205,7 @@ export default function PricingPage() {
                   {pack.popular && (
                     <div className="absolute top-0 right-0">
                       <Badge className="rounded-none rounded-bl-xl bg-emerald text-white px-3 py-1 text-xs">
-                        Meilleur rapport
+                        Best-seller
                       </Badge>
                     </div>
                   )}
