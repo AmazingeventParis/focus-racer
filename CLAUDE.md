@@ -192,7 +192,7 @@ Focus Racer/
 - **API Connect** : onboarding (`/api/stripe/connect`), status (`/api/stripe/connect/status`), dashboard (`/api/stripe/connect/dashboard`)
 - **Checkout modifié** : si photographe connecté → `transfer_data` + `application_fee_amount: 100` (1€)
 - **Webhook enrichi** : `account.updated` + tracking fees sur `payment_intent.succeeded`
-- **Page photographe** : `/photographer/payments` — section Connect (onboarding/dashboard) + statistiques revenus
+- **Page Ventes** : `/photographer/orders` — Stripe Connect + KPIs + répartition revenus + filtres + table triable + CSV
 - **Admin enrichi** : KPIs revenus plateforme, reversé photographes, colonnes commandes enrichies
 
 ### ✅ Admin utilisateurs CRUD + Messagerie améliorée (Session 18)
@@ -216,7 +216,7 @@ Focus Racer/
   - Fallback : fond blanc + nom de l'événement si pas d'affiche
   - Ajout à postériori de la création de l'événement
 - **Événements récents sur homepage** : composant `HomeEvents` affichant les 6 derniers événements publics
-- **Sidebar photographe simplifiée** : suppression onglets Commandes et Marketplace, renommage Paiements→Commandes, Statistiques→Data
+- **Sidebar photographe simplifiée** : suppression onglets Marketplace, renommage Statistiques→Data, Commandes→Ventes (fusionné avec Paiements)
 - **Espace Organisateur** : duplication complète de `/photographer/` vers `/organizer/`
   - `OrganizerSidebar` dédié avec chemins `/organizer/...`
   - Middleware protège `/organizer/:path*` (mêmes rôles PRO)
@@ -245,6 +245,30 @@ Focus Racer/
   - CSS extrait dans `src/app/homepage.css` (1643 lignes)
   - Interactions JS converties en React hooks (scroll, reveal, counters, tabs, FAQ, typing)
   - `public/homepage.html` supprimé (doublon)
+
+### ✅ Mobile responsive + Ventes dashboard + Fusion pages (Session 22)
+- **Navigation mobile** : composant `MobileNav.tsx` réutilisable (header fixe + bottom tab bar + sheet "Plus")
+  - Header fixe (h-14) : logo, rôle, avatar, sportifId copiable
+  - Bottom tab bar (h-16) : 4 onglets principaux + "Plus" avec overlay sheet
+  - Badges SSE temps réel (messagerie, horde)
+  - Safe area bottom pour appareils à encoche
+  - Appliqué aux 3 espaces pro (photographe, organisateur, sportif) + admin
+  - Sidebars desktop : `hidden md:flex` (masquées sur mobile)
+- **Dashboard Ventes** : page `/photographer/orders` (et `/organizer/orders`) avec pilotage complet
+  - 7 KPIs (CA, revenus nets, commandes, photos vendues, panier moyen, clients uniques, photos/commande)
+  - Graphique tendance 30 jours + top 5 événements par revenus
+  - Filtres : recherche, événement, statut, plage de dates, reset
+  - Tableau triable (date, montant, photos) avec export CSV
+  - API `/api/orders?view=seller` : vue vendeur avec filtres dynamiques
+- **Fusion orders + payments** : page unique "Ventes" intégrant tout
+  - Stripe Connect card (onboarding/dashboard) intégré en haut de la page Ventes
+  - Répartition des revenus (barre visuelle : payout vs frais Stripe vs frais service)
+  - Pages `/photographer/payments` et `/organizer/payments` supprimées
+  - Sidebar label "Commandes" → "Ventes", "Paiements" retiré du mobile
+  - URLs Stripe Connect redirect mises à jour vers `/orders`
+- **Messagerie sportif** : support bidirectionnel sportif ↔ photographe (thread complet, réponses, fermeture)
+- **Page Pricing** : packs renommés (Pack 1k/5k/15k), best-seller sur 15k, pictos contextuels, badge 0% commission
+- **CSS mobile** : responsive padding, grid-cols-3→2 mobile, safe-area-bottom
 
 ### ✅ Footer + FAQ + Contact API (Session 20)
 - **Page FAQ** : `/faq` — 18 questions/réponses en 6 sections accordéon (Coureurs, Photographes, Organisateurs, Paiements, Technique & IA, RGPD)
@@ -303,8 +327,9 @@ Focus Racer/
 | **19** | 2026-02-19 | Stripe Checkout crédits (packs + abonnements), affiche événement (upload poster), événements récents homepage, sidebar simplifiée, espace organisateur (duplication complète /photographer/ → /organizer/), migration repo GitHub |
 | **20** | 2026-02-20 | Page FAQ (18 Q&A, 6 sections accordéon), API contact guest+auth, refonte page contact (catégories, pré-remplissage), footer restructuré, admin messages guest |
 | **21** | 2026-02-20 | Chat Horde (groupe + DM, SSE temps réel, 5 composants), page Ma Horde restructurée (3 onglets : Membres/Chat/Demandes), badge non lus sidebar, nouvelle homepage React (12 sections, conversion HTML→JSX) |
+| **22** | 2026-02-21 | Navigation mobile (MobileNav, bottom tab bar, sheet Plus), dashboard Ventes complet (7 KPIs, graphiques, filtres, CSV), fusion orders+payments en page unique "Ventes", suppression pages payments, messagerie sportif bidirectionnelle, pricing refonte (pictos, packs renommés, 0% commission) |
 
-**Fichiers clés créés** : `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/photographer/payments/page.tsx`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`, `src/app/api/sportif/horde/conversations/route.ts`, `src/app/api/sportif/horde/conversations/[id]/messages/route.ts`, `src/app/api/sportif/horde/conversations/[id]/read/route.ts`, `src/app/api/sportif/horde/conversations/unread-total/route.ts`, `src/components/horde/HordeChat.tsx`, `src/components/horde/ConversationList.tsx`, `src/components/horde/MessageThread.tsx`, `src/components/horde/CreateGroupDialog.tsx`, `src/components/horde/CreateDMDialog.tsx`, `src/app/homepage.css`
+**Fichiers clés créés** : `src/components/layout/MobileNav.tsx`, `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`, `src/app/api/sportif/horde/conversations/route.ts`, `src/app/api/sportif/horde/conversations/[id]/messages/route.ts`, `src/app/api/sportif/horde/conversations/[id]/read/route.ts`, `src/app/api/sportif/horde/conversations/unread-total/route.ts`, `src/components/horde/HordeChat.tsx`, `src/components/horde/ConversationList.tsx`, `src/components/horde/MessageThread.tsx`, `src/components/horde/CreateGroupDialog.tsx`, `src/components/horde/CreateDMDialog.tsx`, `src/app/homepage.css`
 
 ---
 
@@ -474,4 +499,4 @@ orga@test.com / orga123
 
 ---
 
-**Dernière mise à jour** : Session 20, 2026-02-20 (FAQ, contact API guest, footer restructuré, admin messages guest)
+**Dernière mise à jour** : Session 22, 2026-02-21 (navigation mobile, dashboard Ventes, fusion orders+payments, messagerie sportif, pricing refonte)

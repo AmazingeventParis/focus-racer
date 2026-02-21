@@ -129,6 +129,7 @@ export default function HomePage() {
   ];
 
   return (
+    <>
     <div className="homepage-wrapper">
       {/* Schema.org structured data */}
       <Script
@@ -927,7 +928,8 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════ FOOTER ═══════════ */}
-      <Footer />
     </div>
+    <Footer />
+    </>
   );
 }
