@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
       message: message.trim(),
       category: "EVENT",
       eventId: eventId || null,
+      readByRecipient: false,
     },
   });
 

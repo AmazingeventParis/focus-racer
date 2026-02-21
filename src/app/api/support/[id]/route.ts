@@ -65,6 +65,7 @@ export async function PATCH(
       replies: [...currentReplies, newReply],
       status: isOriginalSender ? "OPEN" : "IN_PROGRESS",
       readByUser: isOriginalSender,
+      readByRecipient: !isOriginalSender,
     },
   });
 

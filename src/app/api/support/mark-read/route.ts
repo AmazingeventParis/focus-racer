@@ -11,17 +11,19 @@ export async function POST() {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
 
-    const result = await prisma.supportMessage.updateMany({
-      where: {
-        userId: session.user.id,
-        adminReply: { not: null },
-        readByUser: false,
-      },
-      data: { readByUser: true },
-    });
+    const [r1, r2] = await Promise.all([
+      prisma.supportMessage.updateMany({
+        where: { userId: session.user.id, readByUser: false },
+        data: { readByUser: true },
+      }),
+      prisma.supportMessage.updateMany({
+        where: { recipientId: session.user.id, readByRecipient: false },
+        data: { readByRecipient: true },
+      }),
+    ]);
 
     // If messages were marked read, notify user's other tabs to update badge
-    if (result.count > 0) {
+    if (r1.count + r2.count > 0) {
       notificationEmitter.notifyUser(session.user.id);
     }
 

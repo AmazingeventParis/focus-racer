@@ -14,9 +14,10 @@ export async function GET() {
 
     const count = await prisma.supportMessage.count({
       where: {
-        userId: session.user.id,
-        adminReply: { not: null },
-        readByUser: false,
+        OR: [
+          { userId: session.user.id, readByUser: false },
+          { recipientId: session.user.id, readByRecipient: false },
+        ],
       },
     });
 

@@ -21,7 +21,7 @@ const footerLinks = {
     links: [
       { href: "/legal", label: "Mentions légales" },
       { href: "/legal/cgu", label: "CGU" },
-      { href: "/gdpr", label: "RGPD" },
+      { href: "/legal/confidentialite", label: "Politique de confidentialité" },
     ],
   },
   support: {
@@ -29,6 +29,7 @@ const footerLinks = {
     links: [
       { href: "/faq", label: "FAQ" },
       { href: "/contact", label: "Contact" },
+      { href: "/gdpr", label: "RGPD" },
     ],
   },
 };

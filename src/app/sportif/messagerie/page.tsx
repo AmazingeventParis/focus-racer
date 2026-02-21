@@ -34,6 +34,8 @@ interface SupportMessage {
   repliedAt: string | null;
   recipientId: string | null;
   userId: string | null;
+  readByUser: boolean;
+  readByRecipient: boolean;
   replies: Reply[];
   user?: { id: string; name: string; sportifId?: string | null } | null;
   recipient?: { id: string; name: string } | null;
@@ -166,10 +168,33 @@ export default function SportifMessageriePage() {
     return () => clearInterval(interval);
   }, [silentRefresh]);
 
-  // Mark messages as read
+  // Track which messages were unread on load (for visual indicator)
+  const [initialUnreadIds, setInitialUnreadIds] = useState<Set<string>>(new Set());
+
+  // When messages load, capture unread IDs then mark as read
   useEffect(() => {
-    fetch("/api/support/mark-read", { method: "POST" }).catch(() => {});
-  }, []);
+    if (messages.length > 0 && session?.user?.id && !isLoading) {
+      const unreadIds = new Set<string>();
+      for (const msg of messages) {
+        const isUnread =
+          (msg.userId === session.user.id && !msg.readByUser) ||
+          (msg.recipientId === session.user.id && !msg.readByRecipient);
+        if (isUnread) unreadIds.add(msg.id);
+      }
+      if (unreadIds.size > 0) {
+        setInitialUnreadIds((prev) => {
+          const merged = new Set(prev);
+          unreadIds.forEach((id) => merged.add(id));
+          return merged;
+        });
+      }
+      // Mark as read after a short delay so badge updates
+      const timer = setTimeout(() => {
+        fetch("/api/support/mark-read", { method: "POST" }).catch(() => {});
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [messages, session?.user?.id, isLoading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -444,17 +469,21 @@ export default function SportifMessageriePage() {
               const isClosed = msg.status === "CLOSED";
               const replies: Reply[] = Array.isArray(msg.replies) ? msg.replies : [];
               const hasConversation = replies.length > 0 || msg.adminReply;
+              const isUnread = initialUnreadIds.has(msg.id);
 
               return (
                 <Card
                   key={msg.id}
-                  className={`glass-card rounded-2xl hover:shadow-glass-lg transition-all duration-200 cursor-pointer ${isClosed ? "opacity-70" : ""}`}
+                  className={`glass-card rounded-2xl hover:shadow-glass-lg transition-all duration-200 cursor-pointer ${isClosed ? "opacity-70" : ""} ${isUnread ? "ring-2 ring-emerald-400 border-emerald-300 bg-emerald-50/30" : ""}`}
                   onClick={() => toggleExpanded(msg.id)}
                 >
                   <CardContent className="p-6">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-3">
-                        <h3 className="font-medium text-gray-900">{msg.subject}</h3>
+                        {isUnread && (
+                          <span className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                        )}
+                        <h3 className={`font-medium ${isUnread ? "text-emerald-900 font-semibold" : "text-gray-900"}`}>{msg.subject}</h3>
                         {msg.recipientId ? (
                           <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
                             Photographe{msg.recipient?.name ? ` — ${msg.recipient.name}` : ""}
@@ -472,6 +501,9 @@ export default function SportifMessageriePage() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 flex-wrap">
+                        {isUnread && (
+                          <Badge className="text-xs bg-emerald-500 text-white border-emerald-600">Nouveau</Badge>
+                        )}
                         <Badge className={`text-xs ${statusCfg.className}`}>{statusCfg.label}</Badge>
                         <Badge variant="outline" className="text-xs">{CATEGORY_LABELS[msg.category] || msg.category}</Badge>
                         <span className="text-xs text-gray-400">
