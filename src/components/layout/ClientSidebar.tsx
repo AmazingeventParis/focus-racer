@@ -155,7 +155,7 @@ export default function ClientSidebar() {
   }, [userRole]);
 
   return (
-    <aside className="w-64 gradient-navy text-white min-h-screen flex flex-col">
+    <aside className="hidden md:flex w-64 gradient-navy text-white min-h-screen flex-col">
       {/* Logo */}
       <div className="p-6">
         <Link href="/" className="flex items-center gap-2">

@@ -345,6 +345,24 @@
     animation-delay: 400ms;
   }
 
+  /* ===== MOBILE RESPONSIVE PADDING ===== */
+  @media (max-width: 767px) {
+    .p-8 {
+      padding: 1rem !important;
+    }
+    .mb-8 {
+      margin-bottom: 1.25rem !important;
+    }
+    .grid-cols-3 {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+  }
+
+  /* Safe area for bottom nav on notch devices */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
   /* ===== SCROLLBAR CUSTOM ===== */
   .scrollbar-thin {
     scrollbar-width: thin;

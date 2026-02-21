@@ -111,7 +111,7 @@ export default function AdminSidebar() {
   }, [fetchUnread]);
 
   return (
-    <aside className="w-64 gradient-navy text-white min-h-screen flex flex-col">
+    <aside className="hidden md:flex w-64 gradient-navy text-white min-h-screen flex-col">
       <div className="p-6">
         <Link href="/focus-mgr-7k9x/dashboard" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg gradient-emerald flex items-center justify-center">
