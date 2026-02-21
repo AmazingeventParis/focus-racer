@@ -102,7 +102,7 @@ export function HomeEvents() {
 
         <div className="text-center mt-10">
           <Link
-            href="/runner"
+            href="/explore"
             className="inline-flex items-center gap-2 text-emerald hover:text-emerald-dark font-medium transition-colors"
           >
             Voir tous les événements

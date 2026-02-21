@@ -4,7 +4,7 @@ const footerLinks = {
   produit: {
     title: "Produit",
     links: [
-      { href: "/runner", label: "Comment ça marche" },
+      { href: "/explore", label: "Comment ça marche" },
       { href: "/pricing", label: "Tarifs" },
       { href: "/register", label: "Devenir photographe" },
       { href: "/marketplace", label: "Marketplace" },
@@ -13,8 +13,8 @@ const footerLinks = {
   decouvrir: {
     title: "Découvrir",
     links: [
-      { href: "/runner", label: "Trouver mes photos" },
-      { href: "/runner", label: "Événements" },
+      { href: "/explore", label: "Trouver mes photos" },
+      { href: "/explore", label: "Événements" },
       { href: "/register", label: "Créer un compte" },
       { href: "/faq", label: "FAQ" },
     ],

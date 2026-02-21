@@ -118,7 +118,7 @@ export default function SportifPhotosPage() {
             <p className="text-sm text-gray-400 mb-6">
               Vos photos apparaîtront ici lorsque vous serez inscrit sur une start-list ou après un achat.
             </p>
-            <Link href="/runner">
+            <Link href="/explore">
               <Button variant="outline">Rechercher mes photos</Button>
             </Link>
           </CardContent>

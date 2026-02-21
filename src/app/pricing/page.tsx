@@ -18,7 +18,7 @@ const plans = [
       "Accès à vie aux photos achetées",
     ],
     cta: "Trouver mes photos",
-    href: "/runner",
+    href: "/explore",
     popular: false,
   },
   {

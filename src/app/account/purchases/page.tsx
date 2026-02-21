@@ -122,7 +122,7 @@ export default function PurchasesPage() {
             <Card className="glass-card rounded-2xl">
               <CardContent className="py-12 text-center">
                 <p className="text-muted-foreground mb-4">Aucun achat pour le moment</p>
-                <Link href="/runner">
+                <Link href="/explore">
                   <Button variant="outline">Parcourir les événements</Button>
                 </Link>
               </CardContent>

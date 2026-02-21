@@ -467,7 +467,7 @@ export default function RunnerStatisticsPage() {
                     </svg>
                   </div>
                   <p className="text-muted-foreground mb-4">Aucun achat pour le moment</p>
-                  <Link href="/runner">
+                  <Link href="/explore">
                     <Button className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald rounded-lg">
                       Découvrir les courses
                     </Button>
@@ -546,7 +546,7 @@ export default function RunnerStatisticsPage() {
                     </svg>
                   </div>
                   <p className="text-muted-foreground mb-4">Aucun événement</p>
-                  <Link href="/runner">
+                  <Link href="/explore">
                     <Button className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald rounded-lg">
                       Explorer les courses
                     </Button>

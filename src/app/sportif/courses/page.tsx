@@ -152,7 +152,7 @@ export default function SportifCoursesPage() {
         <Card className="glass-card rounded-2xl mb-12">
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground mb-4">Vous ne suivez aucun événement</p>
-            <Link href="/runner">
+            <Link href="/explore">
               <Button variant="outline">Découvrir des événements</Button>
             </Link>
           </CardContent>
@@ -191,7 +191,7 @@ export default function SportifCoursesPage() {
 
       {/* Discover link */}
       <div className="mt-12 text-center">
-        <Link href="/runner">
+        <Link href="/explore">
           <Button variant="outline" className="rounded-xl">
             Découvrir de nouveaux événements
           </Button>

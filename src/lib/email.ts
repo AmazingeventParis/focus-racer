@@ -41,7 +41,7 @@ export async function sendRunnerNotification(data: RunnerNotificationData) {
     month: "long",
     year: "numeric",
   });
-  const galleryUrl = `${APP_URL}/runner/${data.eventId}/search?bib=${data.bibNumber}`;
+  const galleryUrl = `${APP_URL}/explore/${data.eventId}/search?bib=${data.bibNumber}`;
 
   await resend.emails.send({
     from: EMAIL_FROM,

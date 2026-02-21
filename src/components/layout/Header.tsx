@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "/runner", label: "Courses" },
+  { href: "/explore", label: "Courses" },
   { href: "/marketplace", label: "Marketplace" },
   { href: "/pricing", label: "Tarifs" },
 ];

@@ -223,7 +223,7 @@ export default function HomePage() {
           </Link>
           <ul className="nav-links">
             <li>
-              <Link href="/runner">Courses</Link>
+              <Link href="/explore">Courses</Link>
             </li>
             <li>
               <Link href="/marketplace">Marketplace</Link>
@@ -276,7 +276,7 @@ export default function HomePage() {
               d&apos;&eacute;v&eacute;nement en quelques secondes. Gratuit pour les coureurs.
             </p>
             <div className="hero-ctas">
-              <Link href="/runner">
+              <Link href="/explore">
                 <button className="btn-hero-primary">🔍 Trouver mes photos</button>
               </Link>
               <Link href="/register">
@@ -623,7 +623,7 @@ export default function HomePage() {
                   <span className="benefit-check">✓</span>Notification quand vos photos sont pr&ecirc;tes
                 </li>
               </ul>
-              <Link href="/runner">
+              <Link href="/explore">
                 <button className="btn-audience">Trouver mes photos →</button>
               </Link>
             </div>
@@ -916,7 +916,7 @@ export default function HomePage() {
             leurs photos d&apos;&eacute;v&eacute;nements sportifs.
           </p>
           <div className="cta-btns">
-            <Link href="/runner">
+            <Link href="/explore">
               <button className="btn-hero-primary">🔍 Rechercher mes photos</button>
             </Link>
             <Link href="/register">

@@ -227,7 +227,7 @@ export default function SportifDashboard() {
             <Card className="glass-card rounded-2xl">
               <CardContent className="py-12 text-center">
                 <p className="text-muted-foreground mb-2">Aucun événement suivi</p>
-                <Link href="/runner" className="text-sm text-emerald hover:text-emerald-dark transition-colors">
+                <Link href="/explore" className="text-sm text-emerald hover:text-emerald-dark transition-colors">
                   Découvrir des événements
                 </Link>
               </CardContent>

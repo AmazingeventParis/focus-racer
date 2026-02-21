@@ -364,7 +364,7 @@ export default function PublicEventPage({
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground mb-4">Événement non trouvé ou non publié</p>
-          <Link href="/runner">
+          <Link href="/explore">
             <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">Voir les événements</Button>
           </Link>
         </div>
@@ -391,7 +391,7 @@ export default function PublicEventPage({
                 </Button>
               </Link>
             )}
-            <Link href="/runner">
+            <Link href="/explore">
               <Button variant="outline" size="sm" className="rounded-xl">Tous les événements</Button>
             </Link>
           </div>
