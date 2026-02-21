@@ -16,15 +16,38 @@ const sportifFeatures = [
 ];
 
 const proFeatures = [
-  "Upload illimité de photos",
-  "Détection automatique des dossards (IA)",
-  "Reconnaissance faciale des sportifs",
-  "Galerie personnalisée par événement",
-  "Mode Live pour upload en direct",
-  "Statistiques et analytics détaillés",
-  "Paiement direct via Stripe Connect",
-  "Branding et watermark personnalisés",
-  "Support prioritaire",
+  {
+    label: "Détection automatique des dossards (IA)",
+    icon: <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 3.75H6A2.25 2.25 0 003.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0120.25 6v1.5m0 9V18A2.25 2.25 0 0118 20.25h-1.5m-9 0H6A2.25 2.25 0 013.75 18v-1.5M15 12a3 3 0 11-6 0 3 3 0 016 0z" />,
+  },
+  {
+    label: "Reconnaissance faciale des sportifs",
+    icon: <><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M4.501 20.118a7.5 7.5 0 0114.998 0" /></>,
+  },
+  {
+    label: "Galerie personnalisée par événement",
+    icon: <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />,
+  },
+  {
+    label: "Mode Live pour upload en direct",
+    icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />,
+  },
+  {
+    label: "Statistiques et analytics détaillés",
+    icon: <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />,
+  },
+  {
+    label: "Paiement direct via Stripe Connect",
+    icon: <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />,
+  },
+  {
+    label: "Branding et watermark personnalisés",
+    icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />,
+  },
+  {
+    label: "Support prioritaire",
+    icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />,
+  },
 ];
 
 const creditPacks = [
@@ -181,9 +204,11 @@ export default function PricingPage() {
                 <h3 className="font-semibold text-navy text-center mb-4">Inclus dans tous les comptes Pro</h3>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {proFeatures.map((f) => (
-                    <div key={f} className="flex items-start gap-2 text-sm">
-                      <CheckIcon />
-                      <span className="text-navy/80">{f}</span>
+                    <div key={f.label} className="flex items-start gap-2.5 text-sm">
+                      <svg className="w-5 h-5 text-navy/60 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                        {f.icon}
+                      </svg>
+                      <span className="text-navy/80">{f.label}</span>
                     </div>
                   ))}
                 </div>
