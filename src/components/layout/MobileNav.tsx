@@ -125,6 +125,9 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
           })}
 
           {/* More Button */}
+          {(() => {
+            const hasMoreBadge = moreItems.some((item) => (item.badge && item.badge > 0) || item.badgeDot);
+            return (
           <button
             onClick={() => setMoreOpen(!moreOpen)}
             className={cn(
@@ -132,6 +135,7 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
               moreOpen ? "text-emerald" : "text-navy-200"
             )}
           >
+            <span className="relative">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               {moreOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -139,8 +143,14 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               )}
             </svg>
+              {hasMoreBadge && !moreOpen && (
+                <span className="absolute -top-0.5 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-navy" />
+              )}
+            </span>
             <span className="text-[10px] font-medium leading-tight">Plus</span>
           </button>
+            );
+          })()}
         </div>
       </nav>
 
