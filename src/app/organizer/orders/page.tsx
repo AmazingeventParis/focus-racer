@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -34,6 +35,24 @@ interface EventOption {
   date: string;
 }
 
+interface ConnectStatus {
+  hasAccount: boolean;
+  isOnboarded: boolean;
+  chargesEnabled: boolean;
+  payoutsEnabled: boolean;
+}
+
+interface RevenueData {
+  total: number;
+  photographerPayout: number;
+  stripeFees: number;
+  serviceFees: number;
+}
+
+function euro(amount: number): string {
+  return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(amount);
+}
+
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   PAID: { label: "Payé", className: "bg-emerald-100 text-emerald-800" },
   DELIVERED: { label: "Livré", className: "bg-blue-100 text-blue-800" },
@@ -44,9 +63,15 @@ const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
 
 export default function OrdersPage() {
   const { data: session } = useSession();
+  const { toast } = useToast();
   const [orders, setOrders] = useState<Order[]>([]);
   const [events, setEvents] = useState<EventOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Stripe Connect
+  const [connectStatus, setConnectStatus] = useState<ConnectStatus | null>(null);
+  const [connectLoading, setConnectLoading] = useState(false);
+  const [revenueData, setRevenueData] = useState<RevenueData | null>(null);
 
   // Filters
   const [search, setSearch] = useState("");
@@ -82,9 +107,58 @@ export default function OrdersPage() {
     }
   }, [eventFilter, statusFilter, dateFrom, dateTo, search]);
 
+  const fetchStripeData = useCallback(async () => {
+    try {
+      const [connectRes, statsRes] = await Promise.all([
+        fetch("/api/stripe/connect/status"),
+        fetch("/api/stats/organizer"),
+      ]);
+      if (connectRes.ok) setConnectStatus(await connectRes.json());
+      if (statsRes.ok) {
+        const data = await statsRes.json();
+        if (data.revenue) setRevenueData(data.revenue);
+      }
+    } catch {}
+  }, []);
+
   useEffect(() => {
-    if (session) fetchOrders();
-  }, [session, fetchOrders]);
+    if (session) {
+      fetchOrders();
+      fetchStripeData();
+    }
+  }, [session, fetchOrders, fetchStripeData]);
+
+  const handleConnectStripe = async () => {
+    setConnectLoading(true);
+    try {
+      const res = await fetch("/api/stripe/connect", { method: "POST" });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        toast({ title: "Erreur Stripe", description: data.error || "Impossible de configurer Stripe", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Erreur", description: "Erreur de connexion au serveur.", variant: "destructive" });
+    } finally {
+      setConnectLoading(false);
+    }
+  };
+
+  const handleStripeDashboard = async () => {
+    setConnectLoading(true);
+    try {
+      const res = await fetch("/api/stripe/connect/dashboard", { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        window.open(data.url, "_blank");
+      }
+    } catch {
+      toast({ title: "Erreur", description: "Impossible d'ouvrir le dashboard", variant: "destructive" });
+    } finally {
+      setConnectLoading(false);
+    }
+  };
 
   // Computed KPIs
   const kpis = useMemo(() => {
@@ -97,7 +171,6 @@ export default function OrdersPage() {
     const uniqueCustomers = new Set(
       paid.map((o) => o.user?.id || o.guestEmail || o.id)
     ).size;
-    const conversionRate = orders.length > 0 ? (paid.length / orders.length) * 100 : 0;
 
     return {
       totalRevenue,
@@ -107,7 +180,6 @@ export default function OrdersPage() {
       totalPhotos,
       avgOrder,
       uniqueCustomers,
-      conversionRate,
     };
   }, [orders]);
 
@@ -168,7 +240,7 @@ export default function OrdersPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `commandes_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `ventes_${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -216,12 +288,12 @@ export default function OrdersPage() {
   const maxDailyRevenue = Math.max(...dailyTrend.map((d) => d.revenue), 1);
 
   return (
-    <div className="p-8 animate-fade-in">
+    <div className="p-4 md:p-8 animate-fade-in max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold font-display text-gray-900">Commandes</h1>
-          <p className="text-gray-500 mt-1">Pilotez vos ventes et analysez vos performances</p>
+          <h1 className="text-2xl font-bold font-display text-gray-900">Ventes</h1>
+          <p className="text-gray-500 mt-1">Pilotez vos ventes, paiements et performances</p>
         </div>
         <Button
           onClick={handleExportCSV}
@@ -236,6 +308,56 @@ export default function OrdersPage() {
         </Button>
       </div>
 
+      {/* Stripe Connect Status Card */}
+      <Card className="bg-white border-0 shadow-card rounded-2xl mb-6">
+        <CardContent className="p-5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-xl bg-[#635BFF]/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-[#635BFF]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
+                </svg>
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold text-gray-900">Stripe Connect</p>
+                  {connectStatus?.isOnboarded ? (
+                    <Badge className="bg-emerald-100 text-emerald-700 border-0 text-xs">Actif</Badge>
+                  ) : connectStatus?.hasAccount ? (
+                    <Badge className="bg-amber-100 text-amber-700 border-0 text-xs">En cours</Badge>
+                  ) : (
+                    <Badge className="bg-gray-100 text-gray-500 border-0 text-xs">Non configuré</Badge>
+                  )}
+                </div>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  {connectStatus?.isOnboarded
+                    ? "Les paiements de vos ventes sont versés directement sur votre compte"
+                    : "Connectez votre compte pour recevoir les paiements de vos ventes"}
+                </p>
+              </div>
+            </div>
+            {connectStatus?.isOnboarded ? (
+              <Button
+                className="text-[#635BFF] border-[#635BFF]/30 hover:bg-[#635BFF]/5 rounded-xl flex-shrink-0"
+                variant="outline"
+                onClick={handleStripeDashboard}
+                disabled={connectLoading}
+              >
+                {connectLoading ? "..." : "Dashboard Stripe"}
+              </Button>
+            ) : (
+              <Button
+                className="bg-[#635BFF] hover:bg-[#5249d9] text-white rounded-xl flex-shrink-0"
+                onClick={handleConnectStripe}
+                disabled={connectLoading}
+              >
+                {connectLoading ? "..." : connectStatus?.hasAccount ? "Reprendre" : "Connecter Stripe"}
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <Card className="bg-white border-0 shadow-card rounded-xl">
@@ -248,7 +370,7 @@ export default function OrdersPage() {
               </div>
               <div>
                 <p className="text-xs text-gray-500 uppercase tracking-wide">Chiffre d&apos;affaires</p>
-                <p className="text-xl font-bold text-gray-900">{kpis.totalRevenue.toFixed(2)}€</p>
+                <p className="text-xl font-bold text-gray-900">{euro(kpis.totalRevenue)}</p>
               </div>
             </div>
           </CardContent>
@@ -264,7 +386,7 @@ export default function OrdersPage() {
               </div>
               <div>
                 <p className="text-xs text-gray-500 uppercase tracking-wide">Revenus nets</p>
-                <p className="text-xl font-bold text-green-600">{kpis.netRevenue.toFixed(2)}€</p>
+                <p className="text-xl font-bold text-green-600">{euro(kpis.netRevenue)}</p>
               </div>
             </div>
           </CardContent>
@@ -319,7 +441,7 @@ export default function OrdersPage() {
             </div>
             <div>
               <p className="text-xs text-gray-500">Panier moyen</p>
-              <p className="text-lg font-bold text-gray-900">{kpis.avgOrder.toFixed(2)}€</p>
+              <p className="text-lg font-bold text-gray-900">{euro(kpis.avgOrder)}</p>
             </div>
           </CardContent>
         </Card>
@@ -355,6 +477,53 @@ export default function OrdersPage() {
         </Card>
       </div>
 
+      {/* Revenue Breakdown Bar */}
+      {revenueData && revenueData.total > 0 && (
+        <Card className="bg-white border-0 shadow-card rounded-xl mb-6">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold text-gray-700">Répartition des revenus</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="h-5 bg-gray-100 rounded-full overflow-hidden flex">
+                <div
+                  className="h-full bg-emerald-500 transition-all duration-700"
+                  style={{ width: `${Math.max((revenueData.photographerPayout / revenueData.total) * 100, 2)}%` }}
+                  title={`Vous recevez: ${euro(revenueData.photographerPayout)}`}
+                />
+                <div
+                  className="h-full bg-violet-400 transition-all duration-700"
+                  style={{ width: `${Math.max((revenueData.stripeFees / revenueData.total) * 100, 1)}%` }}
+                  title={`Frais Stripe: ${euro(revenueData.stripeFees)}`}
+                />
+                <div
+                  className="h-full bg-gray-400 transition-all duration-700"
+                  style={{ width: `${Math.max((revenueData.serviceFees / revenueData.total) * 100, 1)}%` }}
+                  title={`Frais de service: ${euro(revenueData.serviceFees)}`}
+                />
+              </div>
+              <div className="flex flex-wrap gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                  <span className="text-gray-600">Vous recevez</span>
+                  <span className="font-semibold text-gray-900">{euro(revenueData.photographerPayout)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-violet-400" />
+                  <span className="text-gray-600">Frais Stripe</span>
+                  <span className="font-semibold text-gray-900">{euro(revenueData.stripeFees)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-gray-400" />
+                  <span className="text-gray-600">Frais de service</span>
+                  <span className="font-semibold text-gray-900">{euro(revenueData.serviceFees)}</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Charts Row */}
       {!isLoading && orders.length > 0 && (
         <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -365,17 +534,16 @@ export default function OrdersPage() {
             </CardHeader>
             <CardContent>
               <div className="flex items-end gap-[2px] h-32">
-                {dailyTrend.map((d, i) => (
+                {dailyTrend.map((d) => (
                   <div key={d.date} className="flex-1 flex flex-col items-center group relative">
                     <div
                       className="w-full bg-emerald/20 hover:bg-emerald/40 rounded-t transition-colors cursor-default"
                       style={{ height: `${Math.max((d.revenue / maxDailyRevenue) * 100, d.revenue > 0 ? 4 : 0)}%`, minHeight: d.revenue > 0 ? "3px" : "0" }}
                     />
-                    {/* Tooltip */}
                     <div className="absolute bottom-full mb-2 hidden group-hover:block z-10">
                       <div className="bg-gray-900 text-white text-xs rounded-lg px-2.5 py-1.5 whitespace-nowrap shadow-lg">
                         <p className="font-medium">{d.label}</p>
-                        <p>{d.revenue.toFixed(2)}€ — {d.count} cmd</p>
+                        <p>{euro(d.revenue)} — {d.count} cmd</p>
                       </div>
                     </div>
                   </div>
@@ -402,7 +570,7 @@ export default function OrdersPage() {
                     <div key={i}>
                       <div className="flex justify-between text-sm mb-1">
                         <span className="text-gray-700 truncate max-w-[60%]">{ev.name}</span>
-                        <span className="font-semibold text-gray-900">{ev.revenue.toFixed(2)}€ <span className="font-normal text-gray-400 text-xs">({ev.count})</span></span>
+                        <span className="font-semibold text-gray-900">{euro(ev.revenue)} <span className="font-normal text-gray-400 text-xs">({ev.count})</span></span>
                       </div>
                       <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                         <div
@@ -423,7 +591,6 @@ export default function OrdersPage() {
       <Card className="bg-white border-0 shadow-card rounded-xl mb-6">
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row gap-3 items-end">
-            {/* Search */}
             <div className="flex-1 min-w-0">
               <label className="text-xs text-gray-500 mb-1 block">Rechercher</label>
               <div className="relative">
@@ -438,8 +605,6 @@ export default function OrdersPage() {
                 />
               </div>
             </div>
-
-            {/* Event filter */}
             <div className="w-full md:w-48">
               <label className="text-xs text-gray-500 mb-1 block">Événement</label>
               <Select value={eventFilter} onValueChange={setEventFilter}>
@@ -454,8 +619,6 @@ export default function OrdersPage() {
                 </SelectContent>
               </Select>
             </div>
-
-            {/* Status filter */}
             <div className="w-full md:w-36">
               <label className="text-xs text-gray-500 mb-1 block">Statut</label>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -470,8 +633,6 @@ export default function OrdersPage() {
                 </SelectContent>
               </Select>
             </div>
-
-            {/* Date from */}
             <div className="w-full md:w-40">
               <label className="text-xs text-gray-500 mb-1 block">Du</label>
               <input
@@ -481,8 +642,6 @@ export default function OrdersPage() {
                 className="flex h-10 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
               />
             </div>
-
-            {/* Date to */}
             <div className="w-full md:w-40">
               <label className="text-xs text-gray-500 mb-1 block">Au</label>
               <input
@@ -492,8 +651,6 @@ export default function OrdersPage() {
                 className="flex h-10 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
               />
             </div>
-
-            {/* Reset */}
             {hasActiveFilters && (
               <Button
                 variant="ghost"
@@ -516,7 +673,7 @@ export default function OrdersPage() {
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-display text-gray-900">
-              Historique des commandes
+              Historique des ventes
               <span className="text-sm font-normal text-gray-400 ml-2">({sortedOrders.length})</span>
             </CardTitle>
           </div>
@@ -549,8 +706,8 @@ export default function OrdersPage() {
               </div>
               <p className="text-gray-500">
                 {hasActiveFilters
-                  ? "Aucune commande ne correspond à vos filtres"
-                  : "Aucune commande pour le moment"}
+                  ? "Aucune vente ne correspond à vos filtres"
+                  : "Aucune vente pour le moment"}
               </p>
               {hasActiveFilters && (
                 <Button variant="link" onClick={resetFilters} className="text-emerald mt-2">
@@ -560,7 +717,6 @@ export default function OrdersPage() {
             </div>
           ) : (
             <>
-              {/* Table header */}
               <div className="hidden md:grid grid-cols-12 gap-3 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100 mb-2">
                 <button className="col-span-2 flex items-center text-left hover:text-gray-700" onClick={() => toggleSort("date")}>
                   Date <SortIcon field="date" />
@@ -577,7 +733,6 @@ export default function OrdersPage() {
                 <div className="col-span-1 text-right">Statut</div>
               </div>
 
-              {/* Rows */}
               <div className="space-y-2">
                 {sortedOrders.map((order) => {
                   const statusCfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.PENDING;
@@ -590,7 +745,6 @@ export default function OrdersPage() {
                       key={order.id}
                       className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all duration-200 items-center"
                     >
-                      {/* Date */}
                       <div className="md:col-span-2">
                         <span className="text-sm text-gray-700">
                           {new Date(order.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
@@ -599,8 +753,6 @@ export default function OrdersPage() {
                           {new Date(order.createdAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                         </span>
                       </div>
-
-                      {/* Client */}
                       <div className="md:col-span-3">
                         <p className="font-medium text-gray-900 text-sm truncate">
                           {customerName}
@@ -612,33 +764,23 @@ export default function OrdersPage() {
                           <p className="text-xs text-gray-400 truncate">{customerEmail}</p>
                         )}
                       </div>
-
-                      {/* Event */}
                       <div className="md:col-span-2">
                         <p className="text-sm text-gray-600 truncate">{order.event.name}</p>
                       </div>
-
-                      {/* Photos */}
                       <div className="md:col-span-1">
                         <span className="text-sm text-gray-700">
                           {order._count.items} <span className="text-gray-400 text-xs">photo{order._count.items > 1 ? "s" : ""}</span>
                         </span>
                       </div>
-
-                      {/* Amount */}
                       <div className="md:col-span-2">
-                        <p className="font-semibold text-gray-900 text-sm">{order.totalAmount.toFixed(2)}€</p>
+                        <p className="font-semibold text-gray-900 text-sm">{euro(order.totalAmount)}</p>
                         {order.platformFee > 0 && (
-                          <p className="text-[10px] text-gray-400">comm. {order.platformFee.toFixed(2)}€</p>
+                          <p className="text-[10px] text-gray-400">comm. {euro(order.platformFee)}</p>
                         )}
                       </div>
-
-                      {/* Net */}
                       <div className="md:col-span-1">
-                        <p className="font-semibold text-green-600 text-sm">{net.toFixed(2)}€</p>
+                        <p className="font-semibold text-green-600 text-sm">{euro(net)}</p>
                       </div>
-
-                      {/* Status */}
                       <div className="md:col-span-1 md:text-right">
                         <Badge className={`text-xs ${statusCfg.className}`}>
                           {statusCfg.label}
