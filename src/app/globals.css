@@ -92,6 +92,11 @@
     @apply bg-interface text-primary antialiased;
   }
 
+  .dark body,
+  html.dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+
   h1, h2, h3, .font-display {
     font-family: var(--font-geist-sans), sans-serif;
     font-weight: 800;
@@ -108,6 +113,10 @@
     @apply bg-gradient-to-b from-[#F8FAFC] to-[#ECFDF5];
   }
 
+  .dark .gradient-bg-subtle {
+    background: linear-gradient(to bottom, hsl(222, 47%, 7%), hsl(222, 47%, 9%));
+  }
+
   .gradient-emerald {
     @apply bg-gradient-to-r from-[#10B981] to-[#059669];
   }
@@ -119,6 +128,10 @@
   /* ===== GLASSMORPHISM CARDS ===== */
   .glass-card {
     @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-card;
+  }
+
+  .dark .glass-card {
+    @apply bg-gray-800/80 border-gray-700/20;
   }
 
   .shadow-glass-lg {
@@ -144,6 +157,10 @@
            active:scale-[0.98];
   }
 
+  .dark .btn-secondary {
+    @apply bg-gray-800 border-emerald/20 hover:bg-gray-700;
+  }
+
   .btn-ghost {
     @apply bg-transparent text-secondary font-medium px-4 py-2 rounded-lg
            transition-all duration-200 ease-out
@@ -151,9 +168,17 @@
            active:scale-[0.98];
   }
 
+  .dark .btn-ghost {
+    @apply hover:bg-gray-800 hover:text-gray-100;
+  }
+
   /* ===== CARTES ===== */
   .card-base {
     @apply bg-white rounded-xl shadow-card border-0;
+  }
+
+  .dark .card-base {
+    @apply bg-gray-800 shadow-none border border-gray-700/30;
   }
 
   .card-interactive {
@@ -162,10 +187,18 @@
            hover:shadow-card-hover hover:-translate-y-0.5;
   }
 
+  .dark .card-interactive {
+    @apply bg-gray-800 shadow-none border border-gray-700/30;
+  }
+
   .card-event {
     @apply bg-white rounded-xl shadow-card border-0
            transition-all duration-200 ease-out
            hover:shadow-card-hover hover:-translate-y-0.5;
+  }
+
+  .dark .card-event {
+    @apply bg-gray-800 shadow-none border border-gray-700/30;
   }
 
   /* ===== BADGES / STATUTS ===== */
@@ -200,12 +233,20 @@
     @apply sidebar-item bg-white text-teal shadow-sm;
   }
 
+  .dark .sidebar-item-active {
+    @apply bg-gray-800 text-emerald;
+  }
+
   /* ===== INPUTS ===== */
   .input-base {
     @apply w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5
            text-primary placeholder:text-secondary
            transition-all duration-200
            focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald;
+  }
+
+  .dark .input-base {
+    @apply bg-gray-800 border-gray-700 text-gray-100 placeholder:text-gray-500;
   }
 
   /* ===== SKELETON LOADING ===== */
@@ -228,6 +269,10 @@
   /* ===== NAVIGATION GLASS (pour header public) ===== */
   .glass-nav {
     @apply bg-white/80 backdrop-blur-lg border-b border-gray-200/50 shadow-sm;
+  }
+
+  .dark .glass-nav {
+    @apply bg-gray-900/80 border-gray-700/50;
   }
 
   /* ===== FOND SOMBRE POUR GALERIE COUREUR ===== */

@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useLocale } from "@/components/providers/LocaleProvider";
+import PreferencesCard from "@/components/PreferencesCard";
 
 interface Profile {
   id: string;
@@ -37,6 +39,7 @@ interface VerifyResult {
 export default function SportifReglagesPage() {
   const { data: session } = useSession();
   const { toast } = useToast();
+  const { t } = useLocale();
 
   // Profile
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -85,7 +88,7 @@ export default function SportifReglagesPage() {
         body: JSON.stringify({ name: editName.trim(), phone: editPhone.trim() || null }),
       });
       if (res.ok) {
-        toast({ title: "Profil mis à jour" });
+        toast({ title: t("settings.profile") + " OK" });
         fetchProfile();
       } else {
         toast({ title: "Erreur", variant: "destructive" });
@@ -106,7 +109,7 @@ export default function SportifReglagesPage() {
       formData.append("face", faceFile);
       const res = await fetch("/api/account/face", { method: "POST", body: formData });
       if (res.ok) {
-        toast({ title: "Photo de visage mise à jour" });
+        toast({ title: t("settings.facePhoto") + " OK" });
         setFaceFile(null);
         fetchProfile();
       } else {
@@ -132,7 +135,7 @@ export default function SportifReglagesPage() {
       if (res.ok) {
         setVerifyResult(await res.json());
       } else {
-        toast({ title: "Erreur", description: "Vérification impossible", variant: "destructive" });
+        toast({ title: "Erreur", variant: "destructive" });
       }
     } catch {
       toast({ title: "Erreur", variant: "destructive" });
@@ -181,12 +184,32 @@ export default function SportifReglagesPage() {
     }
   };
 
+  // Share profile
+  const shareProfile = async () => {
+    if (!profile?.sportifId) return;
+    const data = {
+      title: "Focus Racer",
+      text: `${t("settings.shareText")} ID: ${profile.sportifId}`,
+      url: `${window.location.origin}/explore?sportifId=${profile.sportifId}`,
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(data);
+      } catch {
+        // User cancelled
+      }
+    } else {
+      navigator.clipboard.writeText(data.url);
+      toast({ title: t("settings.linkCopied") });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="p-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 w-48 bg-gray-200 rounded" />
-          {[1, 2, 3].map((i) => <div key={i} className="h-40 bg-gray-200 rounded-2xl" />)}
+          <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded" />
+          {[1, 2, 3].map((i) => <div key={i} className="h-40 bg-gray-200 dark:bg-gray-700 rounded-2xl" />)}
         </div>
       </div>
     );
@@ -195,23 +218,26 @@ export default function SportifReglagesPage() {
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-navy">Réglages</h1>
-        <p className="text-muted-foreground mt-1">Gérez votre profil et vos données</p>
+        <h1 className="text-2xl font-bold text-navy dark:text-white">{t("settings.title")}</h1>
+        <p className="text-muted-foreground mt-1">{t("settings.subtitle")}</p>
       </div>
+
+      {/* Preferences */}
+      <PreferencesCard />
 
       {/* Profile */}
       <Card className="glass-card rounded-2xl">
         <CardHeader>
-          <CardTitle className="text-lg">Profil</CardTitle>
+          <CardTitle className="text-lg">{t("settings.profile")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Sportif ID */}
           {profile?.sportifId && (
-            <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl mb-4">
-              <span className="text-sm text-gray-600">ID Sportif :</span>
+            <div className="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl mb-4">
+              <span className="text-sm text-gray-600 dark:text-gray-300">{t("settings.sportifId")} :</span>
               <button
                 onClick={copySportifId}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white text-emerald-700 font-mono text-base font-bold hover:bg-emerald-100 transition-colors border border-emerald-200"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 text-emerald-700 dark:text-emerald-400 font-mono text-base font-bold hover:bg-emerald-100 dark:hover:bg-gray-700 transition-colors border border-emerald-200 dark:border-emerald-800"
               >
                 {profile.sportifId}
                 {copied ? (
@@ -224,26 +250,41 @@ export default function SportifReglagesPage() {
                   </svg>
                 )}
               </button>
-              <span className="text-xs text-muted-foreground">Partagez-le pour recevoir des invitations Horde</span>
+              <span className="text-xs text-muted-foreground hidden sm:inline">{t("settings.sportifIdHint")}</span>
             </div>
+          )}
+
+          {/* Share profile */}
+          {profile?.sportifId && (
+            <Button
+              onClick={shareProfile}
+              variant="outline"
+              size="sm"
+              className="mb-4"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+              </svg>
+              {t("settings.shareProfile")}
+            </Button>
           )}
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-gray-700">Nom complet</Label>
-              <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="bg-gray-50 border-gray-200 rounded-lg" />
+              <Label className="text-gray-700 dark:text-gray-300">{t("settings.fullName")}</Label>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg" />
             </div>
             <div className="space-y-2">
-              <Label className="text-gray-700">Email</Label>
-              <Input value={profile?.email || ""} disabled className="bg-gray-100 border-gray-200 rounded-lg" />
+              <Label className="text-gray-700 dark:text-gray-300">{t("settings.email")}</Label>
+              <Input value={profile?.email || ""} disabled className="bg-gray-100 dark:bg-gray-900 border-gray-200 dark:border-gray-700 rounded-lg" />
             </div>
             <div className="space-y-2">
-              <Label className="text-gray-700">Téléphone</Label>
-              <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="06 12 34 56 78" className="bg-gray-50 border-gray-200 rounded-lg" />
+              <Label className="text-gray-700 dark:text-gray-300">{t("settings.phone")}</Label>
+              <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="06 12 34 56 78" className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg" />
             </div>
           </div>
           <Button onClick={saveProfile} disabled={savingProfile} size="sm" className="bg-emerald hover:bg-emerald-dark text-white">
-            {savingProfile ? "Enregistrement..." : "Enregistrer"}
+            {savingProfile ? t("common.saving") : t("common.save")}
           </Button>
         </CardContent>
       </Card>
@@ -251,15 +292,15 @@ export default function SportifReglagesPage() {
       {/* Face photo */}
       <Card className="glass-card rounded-2xl">
         <CardHeader>
-          <CardTitle className="text-lg">Photo de visage</CardTitle>
+          <CardTitle className="text-lg">{t("settings.facePhoto")}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
-            Votre photo de visage permet la recherche automatique par reconnaissance faciale.
+            {t("settings.facePhotoDesc")}
           </p>
           <div className="flex items-center gap-4">
             {profile?.faceImagePath && (
-              <div className="w-20 h-20 rounded-xl overflow-hidden relative bg-gray-100">
+              <div className="w-20 h-20 rounded-xl overflow-hidden relative bg-gray-100 dark:bg-gray-800">
                 <Image src={profile.faceImagePath} alt="Visage" fill className="object-cover" sizes="80px" />
               </div>
             )}
@@ -272,7 +313,7 @@ export default function SportifReglagesPage() {
               />
               {faceFile && (
                 <Button onClick={uploadFace} disabled={uploadingFace} size="sm" className="mt-2 bg-emerald hover:bg-emerald-dark text-white">
-                  {uploadingFace ? "Upload..." : "Mettre à jour"}
+                  {uploadingFace ? t("settings.uploading") : t("settings.update")}
                 </Button>
               )}
             </div>
@@ -283,21 +324,21 @@ export default function SportifReglagesPage() {
       {/* RGPD */}
       <Card className="glass-card rounded-2xl">
         <CardHeader>
-          <CardTitle className="text-lg">RGPD — Droit à la suppression</CardTitle>
+          <CardTitle className="text-lg">{t("settings.gdpr")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Pour exercer votre droit à la suppression, nous devons vérifier votre identité via reconnaissance faciale.
+            {t("settings.gdprDesc")}
           </p>
 
           {/* Step 1: Event + Selfie */}
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-gray-700">ID de l&apos;événement</Label>
-              <Input value={gdprEventId} onChange={(e) => setGdprEventId(e.target.value)} placeholder="ID événement" className="bg-gray-50 border-gray-200 rounded-lg" />
+              <Label className="text-gray-700 dark:text-gray-300">{t("settings.eventId")}</Label>
+              <Input value={gdprEventId} onChange={(e) => setGdprEventId(e.target.value)} placeholder="ID événement" className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg" />
             </div>
             <div className="space-y-2">
-              <Label className="text-gray-700">Selfie de vérification</Label>
+              <Label className="text-gray-700 dark:text-gray-300">{t("settings.selfie")}</Label>
               <input type="file" accept="image/*" onChange={(e) => setGdprSelfie(e.target.files?.[0] || null)} className="text-sm" />
             </div>
           </div>
@@ -308,19 +349,19 @@ export default function SportifReglagesPage() {
             size="sm"
             variant="outline"
           >
-            {verifying ? "Vérification en cours..." : "Vérifier mon identité"}
+            {verifying ? t("settings.verifying") : t("settings.verify")}
           </Button>
 
           {/* Step 2: Results */}
           {verifyResult && (
-            <div className={`p-4 rounded-xl ${verifyResult.verified ? "bg-emerald-50 border border-emerald-200" : "bg-red-50 border border-red-200"}`}>
-              <p className={`text-sm font-medium ${verifyResult.verified ? "text-emerald-700" : "text-red-700"}`}>
+            <div className={`p-4 rounded-xl ${verifyResult.verified ? "bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800" : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"}`}>
+              <p className={`text-sm font-medium ${verifyResult.verified ? "text-emerald-700 dark:text-emerald-400" : "text-red-700 dark:text-red-400"}`}>
                 {verifyResult.message}
               </p>
               {verifyResult.photos.length > 0 && (
                 <div className="flex gap-2 mt-3 overflow-x-auto">
                   {verifyResult.photos.slice(0, 6).map((p) => (
-                    <div key={p.id} className="w-16 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-100 relative">
+                    <div key={p.id} className="w-16 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-100 dark:bg-gray-800 relative">
                       {p.thumbnail ? (
                         <Image src={p.thumbnail} alt={p.name} fill className="object-cover" sizes="64px" />
                       ) : (
@@ -329,7 +370,7 @@ export default function SportifReglagesPage() {
                     </div>
                   ))}
                   {verifyResult.photos.length > 6 && (
-                    <div className="w-16 h-16 flex-shrink-0 rounded bg-gray-100 flex items-center justify-center text-xs text-gray-500">
+                    <div className="w-16 h-16 flex-shrink-0 rounded bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs text-gray-500">
                       +{verifyResult.photos.length - 6}
                     </div>
                   )}
@@ -344,7 +385,7 @@ export default function SportifReglagesPage() {
                   size="sm"
                   className="mt-4 bg-red-500 hover:bg-red-600 text-white"
                 >
-                  {submittingGdpr ? "Envoi..." : "Confirmer la demande de suppression"}
+                  {submittingGdpr ? t("settings.sending") : t("settings.confirmDeletion")}
                 </Button>
               )}
             </div>
@@ -353,10 +394,10 @@ export default function SportifReglagesPage() {
           {/* History */}
           {gdprRequests.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Historique des demandes</h3>
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("settings.history")}</h3>
               <div className="space-y-2">
                 {gdprRequests.map((req) => (
-                  <div key={req.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl text-sm">
+                  <div key={req.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl text-sm">
                     <span>{req.type === "DELETION" ? "Suppression" : req.type}</span>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">{req.status}</Badge>

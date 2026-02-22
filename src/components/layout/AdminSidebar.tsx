@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSSENotifications } from "@/hooks/useSSENotifications";
+import { useLocale } from "@/components/providers/LocaleProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -87,6 +88,7 @@ const navItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const { t } = useLocale();
   const [unreadCount, setUnreadCount] = useState(0);
 
   const fetchUnread = useCallback(async () => {
@@ -121,7 +123,7 @@ export default function AdminSidebar() {
             Focus <span className="text-emerald">Racer</span>
           </span>
         </Link>
-        <p className="text-navy-200 text-xs mt-2 ml-10">Administration</p>
+        <p className="text-navy-200 text-xs mt-2 ml-10">{t("nav.admin")}</p>
       </div>
 
       <nav className="flex-1 px-3 mt-2">
@@ -164,7 +166,7 @@ export default function AdminSidebar() {
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
           </svg>
-          Déconnexion
+          {t("common.logout")}
         </Button>
       </div>
     </aside>

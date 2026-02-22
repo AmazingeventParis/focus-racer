@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Trash2, Upload } from "lucide-react";
+import PreferencesCard from "@/components/PreferencesCard";
 
 interface WatermarkSettings {
   id: string;
@@ -106,6 +107,10 @@ export default function AdminSettingsPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-navy mb-2">Reglages</h1>
         <p className="text-muted-foreground">Configuration globale de la plateforme</p>
+      </div>
+
+      <div className="mb-6">
+        <PreferencesCard />
       </div>
 
       {message && (

@@ -8,10 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { getRoleLabel } from "@/lib/role-helpers";
+import PreferencesCard from "@/components/PreferencesCard";
+import { useLocale } from "@/components/providers/LocaleProvider";
 
 export default function SettingsPage() {
   const { data: session, update } = useSession();
   const { toast } = useToast();
+  const { t } = useLocale();
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState(session?.user?.name || "");
   const [email, setEmail] = useState(session?.user?.email || "");
@@ -42,11 +45,14 @@ export default function SettingsPage() {
   return (
     <div className="p-8 animate-fade-in">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold font-display text-gray-900">Paramètres</h1>
-        <p className="text-gray-500 mt-1">Gérez votre compte et vos préférences</p>
+        <h1 className="text-2xl font-bold font-display text-gray-900 dark:text-white">{t("nav.params")}</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">{t("common.manageAccount")}</p>
       </div>
 
       <div className="max-w-2xl space-y-6">
+        {/* Preferences */}
+        <PreferencesCard />
+
         {/* Profile */}
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardHeader>
