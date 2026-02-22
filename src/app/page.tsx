@@ -224,16 +224,19 @@ export default function HomePage() {
           </Link>
           <ul className="nav-links">
             <li>
-              <Link href="/explore">Courses</Link>
+              <Link href="/explore">Trouver mes photos</Link>
             </li>
             <li>
-              <Link href="/marketplace">Marketplace</Link>
+              <Link href="/explore">Événements</Link>
+            </li>
+            <li>
+              <Link href="/solutions/photographes">Photographes</Link>
+            </li>
+            <li>
+              <Link href="/solutions/organisateurs">Organisateurs</Link>
             </li>
             <li>
               <Link href="/pricing">Tarifs</Link>
-            </li>
-            <li>
-              <Link href="/faq">FAQ</Link>
             </li>
           </ul>
           <div className="nav-actions">
@@ -241,7 +244,7 @@ export default function HomePage() {
               <button className="btn-ghost">Connexion</button>
             </Link>
             <Link href="/register">
-              <button className="btn-primary">Inscription</button>
+              <button className="btn-primary">Essai gratuit</button>
             </Link>
           </div>
           <button className="mobile-toggle" aria-label="Menu">

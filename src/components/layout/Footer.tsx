@@ -1,18 +1,20 @@
 import Link from "next/link";
 
 const footerLinks = {
-  produit: {
-    title: "Produit",
+  solutions: {
+    title: "Solutions",
     links: [
+      { href: "/solutions/sportifs", label: "Pour les sportifs" },
+      { href: "/solutions/photographes", label: "Pour les photographes" },
+      { href: "/solutions/organisateurs", label: "Pour les organisateurs" },
       { href: "/pricing", label: "Tarifs" },
-      { href: "/register", label: "Devenir photographe" },
-      { href: "/marketplace", label: "Marketplace" },
     ],
   },
   decouvrir: {
     title: "Découvrir",
     links: [
       { href: "/explore", label: "Trouver mes photos" },
+      { href: "/about", label: "À propos" },
       { href: "/register", label: "Créer un compte" },
     ],
   },
