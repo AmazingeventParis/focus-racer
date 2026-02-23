@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -98,13 +99,15 @@ export default function Header() {
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg gradient-emerald flex items-center justify-center">
-            <span className="text-white font-bold text-sm">FR</span>
-          </div>
-          <span className="text-xl font-bold text-navy">
-            Focus <span className="text-emerald">Racer</span>
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo-focus-racer.png"
+            alt="Focus Racer"
+            width={140}
+            height={78}
+            className="h-10 w-auto"
+            priority
+          />
         </Link>
 
         {/* Desktop Nav */}
