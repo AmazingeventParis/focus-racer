@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/explore", label: "Trouver mes photos" },
-  { href: "/explore", label: "Événements" },
   { href: "/pricing", label: "Tarifs" },
 ];
 
@@ -47,11 +46,7 @@ const solutionsMenu = [
   },
 ];
 
-const resourcesMenu = [
-  { title: "FAQ", href: "/faq", icon: "?" },
-  { title: "Contact", href: "/contact", icon: "@" },
-  { title: "À propos", href: "/about", icon: "i" },
-];
+
 
 export default function Header() {
   const pathname = usePathname();
@@ -90,7 +85,7 @@ export default function Header() {
     ? "/focus-mgr-7k9x/dashboard"
     : "/photographer/dashboard";
 
-  const isSolutionsActive = pathname.startsWith("/solutions") || pathname === "/about";
+  const isSolutionsActive = pathname.startsWith("/solutions");
 
   return (
     <header
@@ -147,59 +142,35 @@ export default function Header() {
               </svg>
             </button>
 
-            {/* Mega Menu */}
+            {/* Dropdown Menu */}
             {solutionsOpen && (
               <div
-                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[480px] bg-white rounded-2xl shadow-xl border border-gray-100 p-6 animate-fade-in"
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[280px] bg-white rounded-2xl shadow-xl border border-gray-100 p-4 animate-fade-in"
                 onMouseLeave={() => setSolutionsOpen(false)}
               >
-                <div className="grid grid-cols-2 gap-6">
-                  {/* Solutions */}
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Par audience</p>
-                    <div className="space-y-1">
-                      {solutionsMenu.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className="flex items-start gap-3 p-3 rounded-xl hover:bg-emerald-50/50 transition-colors group"
-                        >
-                          <span className="text-emerald mt-0.5 group-hover:scale-110 transition-transform">{item.icon}</span>
-                          <div>
-                            <p className="font-medium text-gray-900 text-sm">{item.title}</p>
-                            <p className="text-xs text-gray-500">{item.desc}</p>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                  {/* Resources */}
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Ressources</p>
-                    <div className="space-y-1">
-                      {resourcesMenu.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-50/50 transition-colors"
-                        >
-                          <span className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 text-sm font-bold">
-                            {item.icon}
-                          </span>
-                          <span className="font-medium text-gray-900 text-sm">{item.title}</span>
-                        </Link>
-                      ))}
-                    </div>
-                    <div className="mt-4 p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100">
-                      <p className="text-sm font-medium text-gray-900 mb-1">Essai gratuit</p>
-                      <p className="text-xs text-gray-600 mb-3">Créez votre compte et uploadez vos premières photos.</p>
-                      <Link href="/register">
-                        <button className="w-full py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
-                          Commencer
-                        </button>
-                      </Link>
-                    </div>
-                  </div>
+                <div className="space-y-1">
+                  {solutionsMenu.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex items-start gap-3 p-3 rounded-xl hover:bg-emerald-50/50 transition-colors group"
+                    >
+                      <span className="text-emerald mt-0.5 group-hover:scale-110 transition-transform">{item.icon}</span>
+                      <div>
+                        <p className="font-medium text-gray-900 text-sm">{item.title}</p>
+                        <p className="text-xs text-gray-500">{item.desc}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+                <div className="mt-3 p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100">
+                  <p className="text-sm font-medium text-gray-900 mb-1">Essai gratuit</p>
+                  <p className="text-xs text-gray-600 mb-3">Créez votre compte et uploadez vos premières photos.</p>
+                  <Link href="/register">
+                    <button className="w-full py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
+                      Commencer
+                    </button>
+                  </Link>
                 </div>
               </div>
             )}
@@ -298,15 +269,6 @@ export default function Header() {
                     className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-navy-600 hover:text-emerald hover:bg-emerald-50/50 transition-all"
                   >
                     <span className="text-emerald">{item.icon}</span>
-                    {item.title}
-                  </Link>
-                ))}
-                {resourcesMenu.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-navy-600 hover:text-emerald hover:bg-emerald-50/50 transition-all"
-                  >
                     {item.title}
                   </Link>
                 ))}
