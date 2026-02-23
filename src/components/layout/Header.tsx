@@ -97,8 +97,8 @@ export default function Header() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-white/80 backdrop-blur-lg border-b border-white/20 shadow-sm"
-          : "bg-transparent"
+          ? "bg-white/95 backdrop-blur-lg border-b border-gray-200/50 shadow-sm"
+          : "bg-white/80 backdrop-blur-sm"
       )}
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
