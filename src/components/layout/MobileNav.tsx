@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
@@ -67,13 +68,14 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
     <>
       {/* Top Header Bar */}
       <header className="fixed top-0 left-0 right-0 z-40 bg-navy h-14 flex items-center px-4 gap-3 shadow-lg md:hidden">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg gradient-emerald flex items-center justify-center">
-            <span className="text-white font-bold text-xs">FR</span>
-          </div>
-          <span className="text-base font-bold text-white">
-            Focus <span className="text-emerald">Racer</span>
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo-focus-racer-white.png"
+            alt="Focus Racer"
+            width={120}
+            height={67}
+            className="h-8 w-auto"
+          />
         </Link>
         <span className="text-navy-200 text-[11px] ml-1">{roleLabel}</span>
         <div className="ml-auto flex items-center gap-2">

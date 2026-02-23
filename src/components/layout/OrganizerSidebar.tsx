@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -171,13 +172,14 @@ export default function OrganizerSidebar() {
     <aside className="hidden md:flex w-64 gradient-navy text-white min-h-screen flex-col">
       {/* Logo */}
       <div className="p-6">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg gradient-emerald flex items-center justify-center">
-            <span className="text-white font-bold text-sm">FR</span>
-          </div>
-          <span className="text-lg font-bold">
-            Focus <span className="text-emerald">Racer</span>
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo-focus-racer-white.png"
+            alt="Focus Racer"
+            width={140}
+            height={78}
+            className="h-9 w-auto"
+          />
         </Link>
         <p className="text-navy-200 text-xs mt-2 ml-10">{getRoleLabel(userRole)}</p>
       </div>

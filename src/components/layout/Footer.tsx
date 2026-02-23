@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const footerLinks = {
   solutions: {
@@ -43,13 +44,14 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 lg:gap-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg gradient-emerald flex items-center justify-center">
-                <span className="text-white font-bold text-sm">FR</span>
-              </div>
-              <span className="text-xl font-bold">
-                Focus <span className="text-emerald">Racer</span>
-              </span>
+            <div className="flex items-center mb-4">
+              <Image
+                src="/logo-focus-racer-white.png"
+                alt="Focus Racer"
+                width={160}
+                height={90}
+                className="h-10 w-auto"
+              />
             </div>
             <p className="text-navy-100 text-sm leading-relaxed max-w-xs">
               La plateforme de référence pour retrouver et acheter vos photos de courses sportives.

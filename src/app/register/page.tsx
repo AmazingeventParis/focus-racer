@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -185,14 +186,16 @@ export default function RegisterPage() {
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMC41IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDgpIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCBmaWxsPSJ1cmwoI2cpIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIi8+PC9zdmc+')] opacity-50" />
       <div className="w-full max-w-2xl relative animate-fade-in">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl gradient-emerald flex items-center justify-center shadow-emerald">
-              <span className="text-white font-bold">FR</span>
-            </div>
+          <Link href="/" className="inline-flex items-center">
+            <Image
+              src="/logo-focus-racer-white.png"
+              alt="Focus Racer"
+              width={180}
+              height={101}
+              className="h-14 w-auto"
+              priority
+            />
           </Link>
-          <h1 className="text-2xl font-bold text-white mt-4">
-            Focus <span className="text-emerald-light">Racer</span>
-          </h1>
           <p className="text-white/60 mt-2">Créez votre compte</p>
         </div>
 

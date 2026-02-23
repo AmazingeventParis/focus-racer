@@ -103,9 +103,9 @@ export default function Header() {
           <Image
             src="/logo-focus-racer.png"
             alt="Focus Racer"
-            width={140}
-            height={78}
-            className="h-10 w-auto"
+            width={160}
+            height={90}
+            className="h-12 w-auto"
             priority
           />
         </Link>
