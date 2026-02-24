@@ -268,7 +268,10 @@ export default function SolutionsPhotographesPage() {
     return () => observer.disconnect();
   }, []);
 
-  // Active nav tracking
+  // Active nav tracking + scroll progress
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showNav, setShowNav] = useState(false);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -285,6 +288,18 @@ export default function SolutionsPhotographesPage() {
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(docHeight > 0 ? scrollTop / docHeight : 0);
+      setShowNav(scrollTop > window.innerHeight * 0.5);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Counter animation
@@ -333,30 +348,54 @@ export default function SolutionsPhotographesPage() {
 
   return (
     <main className="bg-white">
-      {/* ═══════════ STICKY NAV ═══════════ */}
-      <nav className="hidden md:block sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200/50 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-3">
-            {NAV_ITEMS.map(({ id, label }) => (
+      {/* ═══════════ VERTICAL PROGRESS NAV ═══════════ */}
+      <nav
+        className={`hidden lg:flex fixed right-6 top-1/2 -translate-y-1/2 z-50 flex-col items-end gap-0 transition-all duration-500 ${
+          showNav ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8 pointer-events-none"
+        }`}
+      >
+        {/* Track background */}
+        <div className="absolute right-[5px] top-0 bottom-0 w-[2px] bg-gray-200/60 rounded-full" />
+        {/* Fill */}
+        <div
+          className="absolute right-[5px] top-0 w-[2px] bg-emerald-500 rounded-full transition-all duration-300"
+          style={{ height: `${scrollProgress * 100}%` }}
+        />
+        {/* Markers */}
+        <div className="relative flex flex-col gap-5 py-1">
+          {NAV_ITEMS.map(({ id, label }) => {
+            const isActive = activeNav === id;
+            const activeIdx = NAV_ITEMS.findIndex((n) => n.id === activeNav);
+            const thisIdx = NAV_ITEMS.findIndex((n) => n.id === id);
+            const isPassed = thisIdx <= activeIdx;
+            return (
               <a
                 key={id}
                 href={`#${id}`}
-                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 ${
-                  activeNav === id
-                    ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                }`}
+                className="group flex items-center gap-3 justify-end"
+                title={label}
               >
-                {label}
+                <span
+                  className={`text-xs font-medium transition-all duration-300 whitespace-nowrap ${
+                    isActive
+                      ? "opacity-100 text-emerald-600 translate-x-0"
+                      : "opacity-0 group-hover:opacity-100 text-gray-500 translate-x-2 group-hover:translate-x-0"
+                  }`}
+                >
+                  {label}
+                </span>
+                <span
+                  className={`relative z-10 rounded-full transition-all duration-300 flex-shrink-0 ${
+                    isActive
+                      ? "w-3 h-3 bg-emerald-500 shadow-md shadow-emerald-500/40"
+                      : isPassed
+                      ? "w-2 h-2 bg-emerald-400"
+                      : "w-2 h-2 bg-gray-300 group-hover:bg-gray-400"
+                  }`}
+                />
               </a>
-            ))}
-            <div className="flex-1" />
-            <Link href="/register">
-              <button className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-full text-sm transition-all duration-300 shadow-md shadow-emerald-500/20 whitespace-nowrap">
-                Essai gratuit
-              </button>
-            </Link>
-          </div>
+            );
+          })}
         </div>
       </nav>
 
