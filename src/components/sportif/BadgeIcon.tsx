@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { BADGE_MAP, BadgeDef } from "@/lib/badges";
 import { PHOTOGRAPHER_BADGE_MAP } from "@/lib/photographer-badges";
+import { ORGANIZER_BADGE_MAP } from "@/lib/organizer-badges";
 
 interface BadgeIconProps {
   badgeKey: string;
@@ -12,7 +13,7 @@ interface BadgeIconProps {
 }
 
 function findBadge(key: string): BadgeDef | undefined {
-  return BADGE_MAP.get(key) || PHOTOGRAPHER_BADGE_MAP.get(key);
+  return BADGE_MAP.get(key) || PHOTOGRAPHER_BADGE_MAP.get(key) || ORGANIZER_BADGE_MAP.get(key);
 }
 
 export default function BadgeIcon({ badgeKey, earned, size = 64, pulse = false }: BadgeIconProps) {

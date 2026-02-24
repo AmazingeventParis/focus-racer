@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { EventWithStats } from "@/types";
-import PhotographerBadgeRow from "@/components/photographer/PhotographerBadgeRow";
+import OrganizerBadgeRow from "@/components/organizer/OrganizerBadgeRow";
 
 const SPORT_LABELS: Record<string, string> = {
   RUNNING: "Course à pied",
@@ -172,7 +172,7 @@ export default function DashboardPage() {
 
       {/* Badges */}
       <div className="mb-8">
-        <PhotographerBadgeRow />
+        <OrganizerBadgeRow />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
