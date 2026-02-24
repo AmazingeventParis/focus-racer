@@ -321,7 +321,7 @@ export default function CheckoutPage({
                                   : "1 photo"}
                               </p>
                             </div>
-                            <span className="font-semibold text-emerald">{pack.price.toFixed(2)}\u20AC</span>
+                            <span className="font-semibold text-emerald">{pack.price.toFixed(2)}&euro;</span>
                           </div>
                         </button>
                       );
@@ -419,27 +419,27 @@ export default function CheckoutPage({
 
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Photos</span>
-                  <span>{total.toFixed(2)}\u20AC</span>
+                  <span>{total.toFixed(2)}&euro;</span>
                 </div>
 
                 {savings > 0 && (
                   <div className="flex justify-between text-sm text-green-600">
                     <span>Économie</span>
-                    <span>-{savings.toFixed(2)}\u20AC</span>
+                    <span>-{savings.toFixed(2)}&euro;</span>
                   </div>
                 )}
 
                 {serviceFee > 0 && (
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Frais de service</span>
-                    <span>{serviceFee.toFixed(2)}\u20AC</span>
+                    <span>{serviceFee.toFixed(2)}&euro;</span>
                   </div>
                 )}
 
                 <div className="border-t pt-4">
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-emerald">{(total + serviceFee).toFixed(2)}\u20AC</span>
+                    <span className="text-emerald">{(total + serviceFee).toFixed(2)}&euro;</span>
                   </div>
                 </div>
 
