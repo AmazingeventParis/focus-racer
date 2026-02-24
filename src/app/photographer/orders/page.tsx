@@ -20,6 +20,7 @@ interface Order {
   totalAmount: number;
   platformFee: number;
   serviceFee: number;
+  stripeFee: number;
   photographerPayout: number;
   payoutStatus: "NOT_APPLICABLE" | "PENDING" | "TRANSFERRED";
   transferredAt: string | null;
@@ -232,7 +233,7 @@ export default function OrdersPage() {
 
   const handleExportCSV = () => {
     const bom = "﻿";
-    const headers = ["Date", "Client", "Email", "SportifId", "Événement", "Photos", "Montant TTC", "Commission", "Net", "Versement", "Statut"];
+    const headers = ["Date", "Client", "Email", "SportifId", "Événement", "Photos", "Montant TTC", "Frais service", "Frais Stripe", "Net photographe", "Versement", "Statut"];
     const rows = sortedOrders.map((o) => [
       new Date(o.createdAt).toLocaleDateString("fr-FR"),
       o.user?.name || o.guestName || "Anonyme",
@@ -241,7 +242,8 @@ export default function OrdersPage() {
       o.event.name,
       o._count.items,
       o.totalAmount.toFixed(2),
-      o.platformFee.toFixed(2),
+      (o.serviceFee || 0).toFixed(2),
+      (o.stripeFee || 0).toFixed(2),
       o.photographerPayout.toFixed(2),
       o.payoutStatus === "TRANSFERRED" ? "Versé" : o.payoutStatus === "PENDING" ? "En attente" : "—",
       STATUS_CONFIG[o.status]?.label || o.status,
@@ -263,7 +265,7 @@ export default function OrdersPage() {
       .filter((o) => o.status === "PAID" || o.status === "DELIVERED")
       .forEach((o) => {
         if (!map[o.event.id]) map[o.event.id] = { name: o.event.name, revenue: 0, count: 0 };
-        map[o.event.id].revenue += o.totalAmount - o.platformFee;
+        map[o.event.id].revenue += o.totalAmount - o.serviceFee;
         map[o.event.id].count++;
       });
     return Object.values(map)
@@ -289,7 +291,7 @@ export default function OrdersPage() {
         const key = new Date(o.createdAt).toISOString().slice(0, 10);
         const day = days.find((d) => d.date === key);
         if (day) {
-          day.revenue += o.totalAmount - o.platformFee;
+          day.revenue += o.totalAmount - o.serviceFee;
           day.count++;
         }
       });
@@ -834,8 +836,10 @@ export default function OrdersPage() {
                       </div>
                       <div className="md:col-span-1">
                         <p className="font-semibold text-gray-900 text-sm">{euro(order.totalAmount)}</p>
-                        {order.platformFee > 0 && (
-                          <p className="text-[10px] text-gray-400">comm. {euro(order.platformFee)}</p>
+                        {(order.serviceFee > 0 || order.stripeFee > 0) && (
+                          <p className="text-[10px] text-gray-400">
+                            {order.stripeFee > 0 ? `Stripe ${euro(order.stripeFee)}` : `service ${euro(order.serviceFee)}`}
+                          </p>
                         )}
                       </div>
                       <div className="md:col-span-1">

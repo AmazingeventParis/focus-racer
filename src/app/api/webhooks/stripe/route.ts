@@ -226,60 +226,98 @@ export async function POST(request: NextRequest) {
       }
       await fulfillOrder(orderId, paymentIntent.id);
 
-      // Track Connect fees if this was a Connect payment
-      if (paymentIntent.transfer_data?.destination) {
-        try {
-          const chargeId =
-            typeof paymentIntent.latest_charge === "string"
-              ? paymentIntent.latest_charge
-              : paymentIntent.latest_charge?.id;
+      // Calculate exact Stripe fees and photographer payout
+      try {
+        const chargeId =
+          typeof paymentIntent.latest_charge === "string"
+            ? paymentIntent.latest_charge
+            : paymentIntent.latest_charge?.id;
 
-          if (chargeId) {
+        const totalAmount = paymentIntent.amount / 100; // euros
+        const serviceFeeAmount = SERVICE_FEE_EUR; // 1€ for platform
+        const photographerStripeAccountId = paymentIntent.metadata?.photographerStripeAccountId;
+
+        // Get exact Stripe fee from balance_transaction
+        let stripeFee = 0;
+        if (chargeId) {
+          try {
             const charge = await stripe.charges.retrieve(chargeId, {
               expand: ["balance_transaction"],
             });
-
             const bt = charge.balance_transaction;
-            const stripeFee =
-              bt && typeof bt !== "string" ? bt.fee / 100 : 0;
-            const appFee = (paymentIntent.application_fee_amount || 0) / 100;
-            const totalAmount = paymentIntent.amount / 100;
-            const photographerPayout = totalAmount - appFee - stripeFee;
+            stripeFee = bt && typeof bt !== "string" ? bt.fee / 100 : 0;
+          } catch (feeErr) {
+            console.error("Error retrieving Stripe fee:", feeErr);
+          }
+        }
 
+        // Photographer gets: total - platform fee (1€) - Stripe fees
+        const photographerPayout = Math.max(totalAmount - serviceFeeAmount - stripeFee, 0);
+
+        if (photographerStripeAccountId) {
+          // Photographer has connected Stripe → create a manual Transfer
+          try {
+            const transferAmountCents = Math.round(photographerPayout * 100);
+            if (transferAmountCents > 0) {
+              const stripeClient = getStripe();
+              const transfer = await stripeClient.transfers.create({
+                amount: transferAmountCents,
+                currency: "eur",
+                destination: photographerStripeAccountId,
+                source_transaction: chargeId || undefined,
+                metadata: {
+                  orderId,
+                  type: "photo_sale_payout",
+                },
+              });
+
+              await prisma.order.updateMany({
+                where: { id: orderId },
+                data: {
+                  stripeFee,
+                  photographerPayout,
+                  payoutStatus: "TRANSFERRED",
+                  transferredAt: new Date(),
+                  stripeTransferId: transfer.id,
+                },
+              });
+
+              console.log(
+                `Payout transferred: order ${orderId}, total ${euro(totalAmount)}, ` +
+                `platform ${euro(serviceFeeAmount)}, stripe ${euro(stripeFee)}, ` +
+                `photographer ${euro(photographerPayout)}, transfer ${transfer.id}`
+              );
+            }
+          } catch (transferErr) {
+            console.error(`Error creating transfer for order ${orderId}:`, transferErr);
+            // Still record the fees even if transfer fails
             await prisma.order.updateMany({
               where: { id: orderId },
               data: {
                 stripeFee,
-                photographerPayout: Math.max(photographerPayout, 0),
-                payoutStatus: "TRANSFERRED",
-                transferredAt: new Date(),
-                stripeTransferId:
-                  typeof paymentIntent.transfer_data.destination === "string"
-                    ? paymentIntent.transfer_data.destination
-                    : undefined,
+                photographerPayout,
+                payoutStatus: "PENDING",
               },
             });
           }
-        } catch (feeErr) {
-          console.error("Error tracking Connect fees:", feeErr);
-        }
-      } else if (orderId) {
-        // No Connect transfer — deferred payout scenario
-        // photographerPayout was already set at order creation time
-        // payoutStatus stays PENDING (set at order creation)
-        try {
-          const totalAmount = paymentIntent.amount / 100;
-          const serviceFeeAmount = SERVICE_FEE_EUR;
-          const estimatedPayout = totalAmount - serviceFeeAmount;
+        } else {
+          // Photographer not connected — deferred payout
+          // Record exact amounts, payoutStatus stays PENDING
           await prisma.order.updateMany({
             where: { id: orderId },
             data: {
-              photographerPayout: Math.max(estimatedPayout, 0),
+              stripeFee,
+              photographerPayout,
             },
           });
-        } catch (err) {
-          console.error("Error updating deferred payout estimate:", err);
+          console.log(
+            `Deferred payout: order ${orderId}, total ${euro(totalAmount)}, ` +
+            `platform ${euro(serviceFeeAmount)}, stripe ${euro(stripeFee)}, ` +
+            `photographer ${euro(photographerPayout)} (pending)`
+          );
         }
+      } catch (err) {
+        console.error("Error processing payment fees:", err);
       }
       break;
     }

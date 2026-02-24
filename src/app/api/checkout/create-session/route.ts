@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-import { stripe, PLATFORM_FEE_PERCENT, APP_URL } from "@/lib/stripe";
+import { stripe, APP_URL, SERVICE_FEE_EUR } from "@/lib/stripe";
 import { calculateOptimalPricing } from "@/lib/pricing";
 
 const checkoutSchema = z.object({
@@ -31,6 +31,11 @@ export async function POST(request: NextRequest) {
     // Verify event exists and is published
     const event = await prisma.event.findUnique({
       where: { id: data.eventId, status: "PUBLISHED" },
+      include: {
+        user: {
+          select: { stripeAccountId: true, stripeOnboarded: true },
+        },
+      },
     });
     if (!event) {
       return NextResponse.json({ error: "Événement non trouvé" }, { status: 404 });
@@ -100,8 +105,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Calculate platform fee
-    const platformFee = Math.round(totalAmount * PLATFORM_FEE_PERCENT) / 100;
+    // Service fee: 1€ added to the runner's total (same as payment-intent route)
+    const serviceFee = SERVICE_FEE_EUR;
+    const totalForRunner = totalAmount + serviceFee;
+    const photographerConnected =
+      !!event.user.stripeAccountId && event.user.stripeOnboarded;
 
     // Create order in DB
     const order = await prisma.order.create({
@@ -112,8 +120,11 @@ export async function POST(request: NextRequest) {
         eventId: data.eventId,
         packId: selectedPackId,
         status: "PENDING",
-        totalAmount,
-        platformFee,
+        totalAmount: totalForRunner,
+        platformFee: serviceFee,
+        serviceFee,
+        photographerPayout: totalAmount,
+        payoutStatus: photographerConnected ? "NOT_APPLICABLE" : "PENDING",
         items: {
           create: photos.map((photo) => ({
             photoId: photo.id,
@@ -138,7 +149,7 @@ export async function POST(request: NextRequest) {
               name: `Photos - ${event.name}`,
               description: `${photos.length} photo${photos.length > 1 ? "s" : ""} HD`,
             },
-            unit_amount: Math.round(totalAmount * 100), // Stripe uses cents
+            unit_amount: Math.round(totalForRunner * 100), // Stripe uses cents
           },
           quantity: 1,
         },
@@ -147,6 +158,7 @@ export async function POST(request: NextRequest) {
         orderId: order.id,
         eventId: data.eventId,
         photoCount: photos.length.toString(),
+        ...(photographerConnected ? { photographerStripeAccountId: event.user.stripeAccountId! } : {}),
       },
       success_url: `${APP_URL}/events/${data.eventId}/checkout/success?order=${order.id}`,
       cancel_url: `${APP_URL}/events/${data.eventId}/checkout/cancel`,

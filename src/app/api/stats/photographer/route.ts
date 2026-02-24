@@ -118,14 +118,13 @@ export async function GET() {
         stripeOnboarded: user?.stripeOnboarded || false,
       },
       revenue: {
-        total: orderStats._sum.totalAmount || 0,
-        platformFees: orderStats._sum.platformFee || 0,
-        net: (orderStats._sum.totalAmount || 0) - (orderStats._sum.platformFee || 0),
-        paidOrders: orderStats._count,
-        avgBasket: orderStats._avg.totalAmount || 0,
+        // total = what the photographer priced (excl. service fee)
+        total: (orderStats._sum.totalAmount || 0) - (connectFees._sum.serviceFee || 0),
         serviceFees: connectFees._sum.serviceFee || 0,
         stripeFees: connectFees._sum.stripeFee || 0,
         photographerPayout: connectFees._sum.photographerPayout || 0,
+        paidOrders: orderStats._count,
+        avgBasket: orderStats._avg.totalAmount || 0,
       },
       credits: {
         balance: user?.credits || 0,

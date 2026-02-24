@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-import { getStripe, SERVICE_FEE_CENTS, SERVICE_FEE_EUR } from "@/lib/stripe";
+import { getStripe, SERVICE_FEE_EUR } from "@/lib/stripe";
 import { calculateOptimalPricing } from "@/lib/pricing";
 
 const paymentIntentSchema = z.object({
@@ -129,12 +129,13 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Create PaymentIntent with automatic payment methods (card, Apple Pay, Google Pay, Link, etc.)
+    // Create PaymentIntent — payment always goes to platform account.
+    // If photographer is connected, a manual Transfer is created in the webhook
+    // after we know the exact Stripe fees (photographer pays Stripe fees, platform keeps 1€ net).
     const customerEmail = session?.user?.email || data.guestEmail || undefined;
     const stripe = getStripe();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const piParams: any = {
+    const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(totalForRunner * 100), // Stripe uses cents
       currency: "eur",
       automatic_payment_methods: {
@@ -144,20 +145,12 @@ export async function POST(request: NextRequest) {
         orderId: order.id,
         eventId: data.eventId,
         photoCount: photos.length.toString(),
+        // Store photographer Stripe info for the webhook to create a Transfer
+        ...(photographerConnected ? { photographerStripeAccountId: event.user.stripeAccountId! } : {}),
       },
       receipt_email: customerEmail,
       description: `${photos.length} photo${photos.length > 1 ? "s" : ""} - ${event.name}`,
-    };
-
-    // If photographer is connected, use Connect with transfer_data
-    if (photographerConnected) {
-      piParams.transfer_data = {
-        destination: event.user.stripeAccountId,
-      };
-      piParams.application_fee_amount = SERVICE_FEE_CENTS;
-    }
-
-    const paymentIntent = await stripe.paymentIntents.create(piParams);
+    });
 
     // Store the PaymentIntent ID on the order
     await prisma.order.update({
