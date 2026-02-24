@@ -164,7 +164,7 @@ export default async function PublicProfilePage({
                       isEarned ? "text-gray-800" : "text-gray-400"
                     }`}
                   >
-                    {isEarned ? def.labelFr : "???"}
+                    {def.labelFr}
                   </span>
                 </div>
               );

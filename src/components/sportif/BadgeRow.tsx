@@ -77,7 +77,7 @@ export default function BadgeRow({ badges, newlyEarned = [], sportifId, loading 
                   isEarned ? "text-gray-800" : "text-gray-400"
                 }`}
               >
-                {isEarned ? def.labelFr : "???"}
+                {def.labelFr}
               </span>
             </div>
           );
