@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { BADGE_MAP } from "@/lib/badges";
+import { BADGE_MAP, BadgeDef } from "@/lib/badges";
+import { PHOTOGRAPHER_BADGE_MAP } from "@/lib/photographer-badges";
 
 interface BadgeIconProps {
   badgeKey: string;
@@ -10,8 +11,12 @@ interface BadgeIconProps {
   pulse?: boolean;
 }
 
+function findBadge(key: string): BadgeDef | undefined {
+  return BADGE_MAP.get(key) || PHOTOGRAPHER_BADGE_MAP.get(key);
+}
+
 export default function BadgeIcon({ badgeKey, earned, size = 64, pulse = false }: BadgeIconProps) {
-  const def = BADGE_MAP.get(badgeKey);
+  const def = findBadge(badgeKey);
   if (!def) return null;
 
   return (
