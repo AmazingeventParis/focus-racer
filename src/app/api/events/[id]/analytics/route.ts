@@ -142,8 +142,6 @@ export async function GET(
       include: { _count: { select: { items: true } } },
     });
 
-    // DB stores amounts in centimes — convert to euros for display
-    const toEuros = (v: number) => v / 100;
     const totalServiceFee = orders.reduce((sum, o) => sum + (o.serviceFee || 0), 0);
     const totalStripeFee = orders.reduce((sum, o) => sum + (o.stripeFee || 0), 0);
     const totalPhotographerPayout = orders.reduce((sum, o) => sum + (o.photographerPayout || 0), 0);
@@ -226,18 +224,18 @@ export async function GET(
         },
       },
       revenue: {
-        totalRevenue: toEuros(totalRevenue),
+        totalRevenue,
         totalOrders: orders.length,
-        avgOrderValue: toEuros(avgOrderValue),
+        avgOrderValue,
         soldPhotos,
         packOrders: packOrders.length,
         unitOrders: unitOrders.length,
         packPhotos,
         unitPhotos,
-        serviceFee: toEuros(totalServiceFee),
-        stripeFee: toEuros(totalStripeFee),
-        photographerPayout: toEuros(totalPhotographerPayout),
-        platformFee: toEuros(totalPlatformFee),
+        serviceFee: totalServiceFee,
+        stripeFee: totalStripeFee,
+        photographerPayout: totalPhotographerPayout,
+        platformFee: totalPlatformFee,
         conversionRate:
           totalPhotos > 0 ? Math.round((soldPhotos / totalPhotos) * 100) : 0,
       },

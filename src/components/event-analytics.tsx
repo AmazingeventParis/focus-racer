@@ -107,8 +107,8 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
         </CardHeader>
         <CardContent className="p-6">
           {/* Main financial KPIs */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                {/* Total */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+                {/* Total CA */}
                 <div className="group">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="p-1.5 rounded-md bg-emerald-50 group-hover:bg-emerald-100 transition-colors">
@@ -119,26 +119,7 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
                     <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total</span>
                   </div>
                   <p className="text-3xl font-bold text-emerald-600 mb-1">{formatEuro(revenue.totalRevenue)}</p>
-                  <p className="text-xs text-slate-500">{revenue.soldPhotos} photo{revenue.soldPhotos > 1 ? "s" : ""} vendues</p>
-                </div>
-
-                {/* Ventes */}
-                <div className="group">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="p-1.5 rounded-md bg-blue-50 group-hover:bg-blue-100 transition-colors">
-                      <svg className="h-3.5 w-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                      </svg>
-                    </div>
-                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Ventes</span>
-                  </div>
-                  <p className="text-3xl font-bold text-blue-600 mb-1">{revenue.totalOrders}</p>
-                  <p className="text-xs text-slate-500">
-                    {revenue.packOrders > 0 && <>{revenue.packOrders} pack{revenue.packOrders > 1 ? "s" : ""}</>}
-                    {revenue.packOrders > 0 && revenue.unitOrders > 0 && " · "}
-                    {revenue.unitOrders > 0 && <>{revenue.unitOrders} unitaire{revenue.unitOrders > 1 ? "s" : ""}</>}
-                    {revenue.totalOrders === 0 && "aucune vente"}
-                  </p>
+                  <p className="text-xs text-slate-500">{revenue.soldPhotos} photo{revenue.soldPhotos > 1 ? "s" : ""} vendue{revenue.soldPhotos > 1 ? "s" : ""}</p>
                 </div>
 
                 {/* Panier moyen */}
@@ -167,6 +148,48 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
                   </div>
                   <p className="text-3xl font-bold text-amber-600 mb-1">{revenue.conversionRate}%</p>
                   <p className="text-xs text-slate-500">photos vendues / total</p>
+                </div>
+
+                {/* Ventes totales */}
+                <div className="group">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="p-1.5 rounded-md bg-blue-50 group-hover:bg-blue-100 transition-colors">
+                      <svg className="h-3.5 w-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Ventes totales</span>
+                  </div>
+                  <p className="text-3xl font-bold text-blue-600 mb-1">{revenue.totalOrders}</p>
+                  <p className="text-xs text-slate-500">{revenue.totalOrders === 0 ? "aucune vente" : `${revenue.soldPhotos} photo${revenue.soldPhotos > 1 ? "s" : ""}`}</p>
+                </div>
+
+                {/* Ventes packs */}
+                <div className="group">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="p-1.5 rounded-md bg-indigo-50 group-hover:bg-indigo-100 transition-colors">
+                      <svg className="h-3.5 w-3.5 text-indigo-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Packs</span>
+                  </div>
+                  <p className="text-3xl font-bold text-indigo-600 mb-1">{revenue.packOrders}</p>
+                  <p className="text-xs text-slate-500">{revenue.packPhotos} photo{revenue.packPhotos > 1 ? "s" : ""}</p>
+                </div>
+
+                {/* Ventes unitaires */}
+                <div className="group">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="p-1.5 rounded-md bg-teal-50 group-hover:bg-teal-100 transition-colors">
+                      <svg className="h-3.5 w-3.5 text-teal-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25a2.25 2.25 0 00-2.25-2.25H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Unitaires</span>
+                  </div>
+                  <p className="text-3xl font-bold text-teal-600 mb-1">{revenue.unitOrders}</p>
+                  <p className="text-xs text-slate-500">{revenue.unitPhotos} photo{revenue.unitPhotos > 1 ? "s" : ""}</p>
                 </div>
               </div>
 
