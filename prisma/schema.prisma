@@ -102,6 +102,7 @@ model User {
   conversationMemberships HordeConversationParticipant[]  @relation("ConversationParticipant")
   hordeMessages           HordeMessage[]                  @relation("HordeMessageSender")
   photoAlerts             PhotoAlert[]
+  badges                  UserBadge[]
 
   @@index([role])
   @@index([isActive])
@@ -599,6 +600,19 @@ model PhotoAlert {
   @@unique([userId, eventId, bibNumber])
   @@index([userId])
   @@index([eventId, bibNumber])
+}
+
+// =========== USER BADGES ===========
+
+model UserBadge {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badgeKey String
+  earnedAt DateTime @default(now())
+
+  @@unique([userId, badgeKey])
+  @@index([userId])
 }
 
 // =========== NOTIFICATIONS ===========

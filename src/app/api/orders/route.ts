@@ -83,6 +83,17 @@ export async function GET(request: NextRequest) {
             coverImage: true,
           },
         },
+        items: {
+          select: {
+            photo: {
+              select: {
+                id: true,
+                originalName: true,
+                thumbnailPath: true,
+              },
+            },
+          },
+        },
         _count: { select: { items: true } },
       },
       orderBy: { createdAt: "desc" },
@@ -98,6 +109,13 @@ export async function GET(request: NextRequest) {
         ...order.event,
         coverImage: order.event.coverImage ? s3KeyToPublicPath(order.event.coverImage) : null,
       },
+      items: order.items.map((item) => ({
+        photo: {
+          id: item.photo.id,
+          name: item.photo.originalName,
+          thumbnail: item.photo.thumbnailPath ? s3KeyToPublicPath(item.photo.thumbnailPath) : null,
+        },
+      })),
       ...(includePayoutStatus ? {
         payoutStatus: order.payoutStatus,
         transferredAt: order.transferredAt,

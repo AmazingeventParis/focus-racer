@@ -6,6 +6,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import BadgeRow from "@/components/sportif/BadgeRow";
+import SeasonRecap from "@/components/sportif/SeasonRecap";
+import RecommendationCards from "@/components/sportif/RecommendationCards";
 
 interface DashboardData {
   sportifId: string;
@@ -39,6 +42,33 @@ interface DashboardData {
   } | null;
 }
 
+interface StatsData {
+  overview: {
+    totalEvents: number;
+    favoriteSport: string | null;
+    memberSince: string;
+  };
+  sportBreakdown: Record<string, number>;
+  monthlySpending: { month: string; spent: number; orders: number; photos: number }[];
+}
+
+interface BadgesData {
+  earned: { badgeKey: string; earnedAt: string }[];
+  newlyEarned: string[];
+}
+
+interface RecosData {
+  recommendations: {
+    id: string;
+    name: string;
+    date: string;
+    location: string | null;
+    sportType: string;
+    coverImage: string | null;
+    photoCount: number;
+  }[];
+}
+
 const SPORT_LABELS: Record<string, string> = {
   RUNNING: "Course à pied",
   TRAIL: "Trail",
@@ -52,15 +82,40 @@ const SPORT_LABELS: Record<string, string> = {
 export default function SportifDashboard() {
   const { data: session } = useSession();
   const [data, setData] = useState<DashboardData | null>(null);
+  const [stats, setStats] = useState<StatsData | null>(null);
+  const [badges, setBadges] = useState<BadgesData | null>(null);
+  const [recos, setRecos] = useState<RecosData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [badgesLoading, setBadgesLoading] = useState(true);
+  const [recosLoading, setRecosLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    // Parallel fetches with independent loading states
     fetch("/api/sportif/dashboard")
       .then((res) => res.json())
       .then(setData)
       .catch(console.error)
       .finally(() => setIsLoading(false));
+
+    fetch("/api/stats/runner")
+      .then((res) => res.json())
+      .then(setStats)
+      .catch(console.error)
+      .finally(() => setStatsLoading(false));
+
+    fetch("/api/sportif/badges")
+      .then((res) => res.json())
+      .then(setBadges)
+      .catch(console.error)
+      .finally(() => setBadgesLoading(false));
+
+    fetch("/api/sportif/recommendations")
+      .then((res) => res.json())
+      .then(setRecos)
+      .catch(console.error)
+      .finally(() => setRecosLoading(false));
   }, []);
 
   const copySportifId = () => {
@@ -114,7 +169,7 @@ export default function SportifDashboard() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card className="glass-card rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -152,7 +207,7 @@ export default function SportifDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total dépensé</p>
-                <p className="text-3xl font-bold text-navy mt-1">{(data?.kpis.totalDepense || 0).toFixed(0)}€</p>
+                <p className="text-3xl font-bold text-navy mt-1">{(data?.kpis.totalDepense || 0).toFixed(0)}&euro;</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
                 <svg className="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -180,7 +235,26 @@ export default function SportifDashboard() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Badge Row */}
+      <div className="mb-6">
+        <BadgeRow
+          badges={badges?.earned ?? []}
+          sportifId={data?.sportifId}
+          loading={badgesLoading}
+        />
+      </div>
+
+      {/* Season Recap */}
+      <div className="mb-6">
+        <SeasonRecap
+          sportBreakdown={stats?.sportBreakdown ?? {}}
+          monthlySpending={stats?.monthlySpending ?? []}
+          overview={stats?.overview ?? { totalEvents: 0, favoriteSport: null, memberSince: new Date().toISOString() }}
+          loading={statsLoading}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Recent events */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
@@ -301,6 +375,12 @@ export default function SportifDashboard() {
           </Card>
         </div>
       </div>
+
+      {/* Recommendations */}
+      <RecommendationCards
+        recommendations={recos?.recommendations ?? []}
+        loading={recosLoading}
+      />
     </div>
   );
 }

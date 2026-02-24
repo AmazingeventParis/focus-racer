@@ -190,7 +190,7 @@ export default function SportifReglagesPage() {
     const data = {
       title: "Focus Racer",
       text: `${t("settings.shareText")} ID: ${profile.sportifId}`,
-      url: `${window.location.origin}/explore?sportifId=${profile.sportifId}`,
+      url: `${window.location.origin}/profil/${profile.sportifId}`,
     };
     if (navigator.share) {
       try {
