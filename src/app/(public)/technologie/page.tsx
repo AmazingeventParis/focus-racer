@@ -212,69 +212,6 @@ const photoProtection = [
   { label: "URLs signées", desc: "Téléchargements HD via liens temporaires (24h)" },
 ];
 
-const techStackItems = [
-  {
-    category: "Frontend",
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
-      </svg>
-    ),
-    items: ["Next.js 14 (App Router)", "React 18", "TypeScript", "Tailwind CSS", "shadcn/ui"],
-    color: "from-blue-500 to-blue-600",
-  },
-  {
-    category: "Backend",
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" />
-      </svg>
-    ),
-    items: ["API Routes", "Prisma 5.22", "PostgreSQL", "NextAuth.js", "Zod"],
-    color: "from-emerald-500 to-emerald-600",
-  },
-  {
-    category: "Intelligence artificielle",
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-      </svg>
-    ),
-    items: ["AWS Rekognition", "Sharp 0.33", "pHash (dédoublonnage)", "Laplacian (netteté)", "Tesseract.js (dev)"],
-    color: "from-violet-500 to-purple-600",
-  },
-  {
-    category: "Paiement",
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
-      </svg>
-    ),
-    items: ["Stripe Connect Express", "Payment Element", "Apple Pay / Google Pay", "SEPA", "Stripe Checkout"],
-    color: "from-pink-500 to-rose-500",
-  },
-  {
-    category: "Stockage",
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-      </svg>
-    ),
-    items: ["AWS S3 (AES-256)", "WebP optimisé", "Brotli / zstd", "CloudFront CDN", "URLs signées (24h)"],
-    color: "from-amber-500 to-orange-500",
-  },
-  {
-    category: "Infrastructure",
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" />
-      </svg>
-    ),
-    items: ["Docker multi-stage", "Coolify (PaaS)", "Caddy (auto-SSL)", "Ubuntu 24.04", "OVH dédié"],
-    color: "from-indigo-500 to-indigo-600",
-  },
-];
-
 const certifications = [
   { label: "RGPD", desc: "Union européenne", icon: "🇪🇺" },
   { label: "DMCA Ready", desc: "Protection droits d'auteur", icon: "🛡️" },
@@ -960,56 +897,8 @@ export default function TechnologiePage() {
         </div>
       </section>
 
-      {/* ═══════════ SECTION STACK ═══════════ */}
-      <section id="stack" data-reveal className="py-20 md:py-28 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 ${reveal("stack") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-sm font-medium mb-4">
-              Stack technique
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Notre stack technique
-            </h2>
-            <p className="text-gray-600 text-lg">
-              Une stack moderne, performante et éprouvée pour une expérience sans compromis.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {techStackItems.map((stack, i) => (
-              <div
-                key={stack.category}
-                className={`bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-500 hover:-translate-y-1 ${
-                  reveal("stack") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                }`}
-                style={{ transitionDelay: `${i * 100}ms` }}
-              >
-                <div className={`bg-gradient-to-r ${stack.color} p-4 flex items-center gap-3 text-white`}>
-                  <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                    {stack.icon}
-                  </div>
-                  <h3 className="font-bold">{stack.category}</h3>
-                </div>
-                <div className="p-5">
-                  <ul className="space-y-2">
-                    {stack.items.map((item, j) => (
-                      <li key={j} className="flex items-center gap-2 text-sm text-gray-700">
-                        <svg className="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                        </svg>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ═══════════ SECTION CERTIFICATIONS ═══════════ */}
-      <section id="certifications" data-reveal className="py-20 md:py-28">
+      <section id="certifications" data-reveal className="py-20 md:py-28 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 ${reveal("certifications") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-sm font-medium mb-4">
@@ -1023,17 +912,17 @@ export default function TechnologiePage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">
             {certifications.map((cert, i) => (
               <div
                 key={cert.label}
-                className={`flex flex-col items-center gap-3 bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-500 hover:-translate-y-1 w-44 ${
+                className={`flex flex-col items-center gap-3 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-500 hover:-translate-y-1 ${
                   reveal("certifications") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
                 style={{ transitionDelay: `${i * 100}ms` }}
               >
                 <span className="text-4xl">{cert.icon}</span>
-                <h3 className="font-bold text-gray-900">{cert.label}</h3>
+                <h3 className="font-bold text-gray-900 text-sm">{cert.label}</h3>
                 <p className="text-xs text-gray-500 text-center">{cert.desc}</p>
               </div>
             ))}
