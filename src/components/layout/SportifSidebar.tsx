@@ -13,7 +13,7 @@ interface NavItemDef {
   href: string;
   labelKey: string;
   icon: React.ReactNode;
-  badge?: "unread" | "horde-unread";
+  badge?: "unread" | "horde-unread" | "alerts";
 }
 
 const navItemDefs: NavItemDef[] = [
@@ -29,6 +29,7 @@ const navItemDefs: NavItemDef[] = [
   {
     href: "/sportif/courses",
     labelKey: "nav.courses",
+    badge: "alerts",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
@@ -91,6 +92,7 @@ export default function SportifSidebar() {
   const { t } = useLocale();
   const [unreadCount, setUnreadCount] = useState(0);
   const [hordeUnread, setHordeUnread] = useState(0);
+  const [alertsUnread, setAlertsUnread] = useState(0);
   const [copied, setCopied] = useState(false);
 
   const fetchUnread = useCallback(async () => {
@@ -117,18 +119,32 @@ export default function SportifSidebar() {
     }
   }, []);
 
+  const fetchAlertsUnread = useCallback(async () => {
+    try {
+      const res = await fetch("/api/photo-alerts/unread-count", { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        setAlertsUnread(data.count);
+      }
+    } catch {
+      // silently ignore
+    }
+  }, []);
+
   useSSENotifications(["user_unread", "connected"], fetchUnread);
   useSSENotifications(["horde_message"], fetchHordeUnread);
 
   useEffect(() => {
     fetchUnread();
     fetchHordeUnread();
+    fetchAlertsUnread();
     const interval = setInterval(() => {
       fetchUnread();
       fetchHordeUnread();
+      fetchAlertsUnread();
     }, 10000);
     return () => clearInterval(interval);
-  }, [fetchUnread, fetchHordeUnread]);
+  }, [fetchUnread, fetchHordeUnread, fetchAlertsUnread]);
 
   const userName = session?.user?.name || "Sportif";
   const sportifId = session?.user?.sportifId;
@@ -191,6 +207,11 @@ export default function SportifSidebar() {
                   {item.badge === "horde-unread" && hordeUnread > 0 && (
                     <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-xs font-bold">
                       {hordeUnread > 99 ? "99+" : hordeUnread}
+                    </span>
+                  )}
+                  {item.badge === "alerts" && alertsUnread > 0 && (
+                    <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-emerald text-white text-xs font-bold">
+                      {alertsUnread > 99 ? "99+" : alertsUnread}
                     </span>
                   )}
                 </Link>

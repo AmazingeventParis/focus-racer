@@ -129,6 +129,7 @@ export default function OrganizerSidebar() {
   const { data: session } = useSession();
   const { t } = useLocale();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [newOrdersCount, setNewOrdersCount] = useState(0);
 
   const fetchUnread = useCallback(async () => {
     try {
@@ -142,14 +143,41 @@ export default function OrganizerSidebar() {
     }
   }, []);
 
+  const fetchNewOrders = useCallback(async () => {
+    try {
+      const since = typeof window !== "undefined" ? localStorage.getItem("lastOrdersViewAt") : null;
+      const params = since ? `?since=${since}` : "";
+      const res = await fetch(`/api/orders/new-count${params}`, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        setNewOrdersCount(data.count);
+      }
+    } catch {
+      // silently ignore
+    }
+  }, []);
+
   // SSE for instant notifications + polling fallback every 10s
   useSSENotifications(["user_unread", "connected"], fetchUnread);
+  useSSENotifications(["payment_received"], fetchNewOrders);
 
   useEffect(() => {
     fetchUnread();
-    const interval = setInterval(fetchUnread, 10000);
+    fetchNewOrders();
+    const interval = setInterval(() => {
+      fetchUnread();
+      fetchNewOrders();
+    }, 10000);
     return () => clearInterval(interval);
-  }, [fetchUnread]);
+  }, [fetchUnread, fetchNewOrders]);
+
+  // Mark orders as seen when visiting the orders page
+  useEffect(() => {
+    if (pathname === "/organizer/orders" || pathname.startsWith("/organizer/orders/")) {
+      localStorage.setItem("lastOrdersViewAt", new Date().toISOString());
+      setNewOrdersCount(0);
+    }
+  }, [pathname]);
 
   const userName = session?.user?.name || "Utilisateur";
   const userRole = session?.user?.role || "ORGANIZER";
@@ -204,6 +232,11 @@ export default function OrganizerSidebar() {
                     {item.icon}
                   </span>
                   {item.labelKey ? t(item.labelKey) : item.label}
+                  {item.href === "/organizer/orders" && newOrdersCount > 0 && (
+                    <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-emerald text-white text-xs font-bold">
+                      {newOrdersCount > 99 ? "99+" : newOrdersCount}
+                    </span>
+                  )}
                   {item.href === "/organizer/support" && unreadCount > 0 && (
                     <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-xs font-bold">
                       {unreadCount > 99 ? "99+" : unreadCount}

@@ -2,9 +2,80 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import Stripe from "stripe";
 import prisma from "@/lib/prisma";
-import { stripe } from "@/lib/stripe";
+import { stripe, getStripe, SERVICE_FEE_EUR } from "@/lib/stripe";
 import { randomBytes } from "crypto";
 import { sendPurchaseConfirmation } from "@/lib/email";
+
+/**
+ * Transfer pending payouts to a newly-connected Stripe account.
+ * Called when account.updated fires and charges_enabled becomes true.
+ */
+async function processDeferredPayouts(stripeAccountId: string) {
+  try {
+    const user = await prisma.user.findFirst({
+      where: { stripeAccountId },
+      select: { id: true },
+    });
+    if (!user) return;
+
+    // Find all PAID orders with PENDING payout for events owned by this user
+    const pendingOrders = await prisma.order.findMany({
+      where: {
+        event: { userId: user.id },
+        status: { in: ["PAID", "DELIVERED"] },
+        payoutStatus: "PENDING",
+        photographerPayout: { gt: 0 },
+      },
+      select: {
+        id: true,
+        photographerPayout: true,
+        totalAmount: true,
+      },
+    });
+
+    if (pendingOrders.length === 0) return;
+
+    console.log(`Processing ${pendingOrders.length} deferred payouts for account ${stripeAccountId}`);
+
+    const stripeClient = getStripe();
+
+    for (const order of pendingOrders) {
+      try {
+        const transferAmount = Math.round(order.photographerPayout * 100);
+        if (transferAmount <= 0) continue;
+
+        const transfer = await stripeClient.transfers.create({
+          amount: transferAmount,
+          currency: "eur",
+          destination: stripeAccountId,
+          metadata: {
+            orderId: order.id,
+            type: "deferred_payout",
+          },
+        });
+
+        await prisma.order.update({
+          where: { id: order.id },
+          data: {
+            payoutStatus: "TRANSFERRED",
+            transferredAt: new Date(),
+            stripeTransferId: transfer.id,
+          },
+        });
+
+        console.log(`Deferred payout transferred: order ${order.id}, amount ${euro(order.photographerPayout)}, transfer ${transfer.id}`);
+      } catch (transferErr) {
+        console.error(`Failed to transfer deferred payout for order ${order.id}:`, transferErr);
+      }
+    }
+  } catch (err) {
+    console.error("Error processing deferred payouts:", err);
+  }
+}
+
+function euro(amount: number): string {
+  return `${amount.toFixed(2)}€`;
+}
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
@@ -180,6 +251,8 @@ export async function POST(request: NextRequest) {
               data: {
                 stripeFee,
                 photographerPayout: Math.max(photographerPayout, 0),
+                payoutStatus: "TRANSFERRED",
+                transferredAt: new Date(),
                 stripeTransferId:
                   typeof paymentIntent.transfer_data.destination === "string"
                     ? paymentIntent.transfer_data.destination
@@ -190,6 +263,23 @@ export async function POST(request: NextRequest) {
         } catch (feeErr) {
           console.error("Error tracking Connect fees:", feeErr);
         }
+      } else if (orderId) {
+        // No Connect transfer — deferred payout scenario
+        // photographerPayout was already set at order creation time
+        // payoutStatus stays PENDING (set at order creation)
+        try {
+          const totalAmount = paymentIntent.amount / 100;
+          const serviceFeeAmount = SERVICE_FEE_EUR;
+          const estimatedPayout = totalAmount - serviceFeeAmount;
+          await prisma.order.updateMany({
+            where: { id: orderId },
+            data: {
+              photographerPayout: Math.max(estimatedPayout, 0),
+            },
+          });
+        } catch (err) {
+          console.error("Error updating deferred payout estimate:", err);
+        }
       }
       break;
     }
@@ -197,10 +287,15 @@ export async function POST(request: NextRequest) {
     case "account.updated": {
       const account = event.data.object as Stripe.Account;
       if (account.charges_enabled && account.payouts_enabled) {
-        await prisma.user.updateMany({
+        const updatedUsers = await prisma.user.updateMany({
           where: { stripeAccountId: account.id, stripeOnboarded: false },
           data: { stripeOnboarded: true },
         });
+
+        // Process deferred payouts when a photographer completes Stripe onboarding
+        if (updatedUsers.count > 0) {
+          await processDeferredPayouts(account.id);
+        }
       }
       break;
     }

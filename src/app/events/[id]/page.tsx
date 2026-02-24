@@ -73,6 +73,10 @@ export default function PublicEventPage({
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertBib, setAlertBib] = useState("");
+  const [alertLoading, setAlertLoading] = useState(false);
+  const [alertCreated, setAlertCreated] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -136,6 +140,25 @@ export default function PublicEventPage({
       }
     } catch {}
     setFollowLoading(false);
+  };
+
+  const createPhotoAlert = async () => {
+    if (!alertBib.trim()) return;
+    setAlertLoading(true);
+    try {
+      const res = await fetch("/api/photo-alerts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ eventId: id, bibNumber: alertBib.trim() }),
+      });
+      if (res.ok) {
+        setAlertCreated(true);
+        setShowAlertModal(false);
+        setAlertBib("");
+        setTimeout(() => setAlertCreated(false), 5000);
+      }
+    } catch {}
+    setAlertLoading(false);
   };
 
   const reportWrongBib = async (photoId: string, bibNumber: string) => {
@@ -446,7 +469,7 @@ export default function PublicEventPage({
               </div>
             </div>
             {session?.user && (
-              <div className="mt-4">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <Button
                   variant="outline"
                   size="sm"
@@ -459,6 +482,53 @@ export default function PublicEventPage({
                 >
                   {isFollowing ? "\u2605 Événement suivi" : "\u2606 Suivre cet événement"}
                 </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowAlertModal(true)}
+                  className="bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-xl"
+                >
+                  <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                  </svg>
+                  {alertCreated ? "Alerte créée !" : "Créer une alerte"}
+                </Button>
+              </div>
+            )}
+
+            {/* Alert Modal */}
+            {showAlertModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowAlertModal(false)}>
+                <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6" onClick={(e) => e.stopPropagation()}>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">Créer une alerte photo</h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Recevez une notification quand de nouvelles photos de votre dossard sont mises en ligne.
+                  </p>
+                  <Input
+                    placeholder="Numéro de dossard"
+                    value={alertBib}
+                    onChange={(e) => setAlertBib(e.target.value)}
+                    className="h-12 rounded-xl text-lg mb-4"
+                    autoFocus
+                    onKeyDown={(e) => { if (e.key === "Enter") createPhotoAlert(); }}
+                  />
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outline"
+                      className="flex-1 rounded-xl"
+                      onClick={() => setShowAlertModal(false)}
+                    >
+                      Annuler
+                    </Button>
+                    <Button
+                      className="flex-1 rounded-xl bg-emerald hover:bg-emerald-dark text-white"
+                      onClick={createPhotoAlert}
+                      disabled={alertLoading || !alertBib.trim()}
+                    >
+                      {alertLoading ? "..." : "Activer l\u2019alerte"}
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
           </div>

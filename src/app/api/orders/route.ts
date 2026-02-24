@@ -88,6 +88,9 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
+    // For seller view, include payoutStatus info
+    const includePayoutStatus = view === "seller";
+
     // Convert S3 keys to public paths for frontend
     const mapped = orders.map((order) => ({
       ...order,
@@ -95,6 +98,11 @@ export async function GET(request: NextRequest) {
         ...order.event,
         coverImage: order.event.coverImage ? s3KeyToPublicPath(order.event.coverImage) : null,
       },
+      ...(includePayoutStatus ? {
+        payoutStatus: order.payoutStatus,
+        transferredAt: order.transferredAt,
+        photographerPayout: order.photographerPayout,
+      } : {}),
     }));
 
     // If seller view, also return events list for filter dropdown

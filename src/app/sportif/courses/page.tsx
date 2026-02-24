@@ -18,6 +18,21 @@ interface FavoriteEvent {
   _count?: { photos: number };
 }
 
+interface PhotoAlertItem {
+  id: string;
+  bibNumber: string;
+  photoCount: number;
+  hasNewPhotos: boolean;
+  event: {
+    id: string;
+    name: string;
+    date: string;
+    location: string | null;
+    sportType: string;
+    coverImage: string | null;
+  };
+}
+
 interface HordeFeedItem {
   event: {
     id: string;
@@ -43,6 +58,7 @@ const SPORT_LABELS: Record<string, string> = {
 export default function SportifCoursesPage() {
   const { toast } = useToast();
   const [favorites, setFavorites] = useState<FavoriteEvent[]>([]);
+  const [alerts, setAlerts] = useState<PhotoAlertItem[]>([]);
   const [hordeFeed, setHordeFeed] = useState<HordeFeedItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [removingId, setRemovingId] = useState<string | null>(null);
@@ -51,11 +67,17 @@ export default function SportifCoursesPage() {
     Promise.all([
       fetch("/api/account/favorites").then((r) => r.json()),
       fetch("/api/sportif/horde/feed").then((r) => r.json()),
+      fetch("/api/photo-alerts").then((r) => r.json()),
     ])
-      .then(([favData, feedData]) => {
+      .then(([favData, feedData, alertData]) => {
         const favs = favData?.favorites || [];
         setFavorites(favs.map((f: { event: FavoriteEvent }) => f.event));
         setHordeFeed(Array.isArray(feedData) ? feedData : []);
+        setAlerts(alertData?.alerts || []);
+        // Mark alerts as read when visiting this page
+        if (alertData?.unreadCount > 0) {
+          fetch("/api/photo-alerts/mark-read", { method: "POST" }).catch(() => {});
+        }
       })
       .catch(console.error)
       .finally(() => setIsLoading(false));
@@ -95,6 +117,68 @@ export default function SportifCoursesPage() {
         <h1 className="text-2xl font-bold text-navy">Mes courses</h1>
         <p className="text-muted-foreground mt-1">Événements que vous suivez</p>
       </div>
+
+      {/* Photo alerts */}
+      {alerts.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-navy mb-4 flex items-center gap-2">
+            <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+            </svg>
+            Mes alertes photos
+          </h2>
+          <div className="space-y-3">
+            {alerts.map((alert) => (
+              <Card key={alert.id} className="glass-card rounded-2xl hover:shadow-glass-lg transition-all duration-200">
+                <CardContent className="p-4 flex items-center gap-4">
+                  <Link href={`/events/${alert.event.id}?bib=${alert.bibNumber}`} className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className="w-16 h-16 rounded-xl bg-emerald-50 flex-shrink-0 relative overflow-hidden flex items-center justify-center">
+                      {alert.event.coverImage ? (
+                        <Image src={alert.event.coverImage} alt={alert.event.name} fill className="object-cover" sizes="64px" />
+                      ) : (
+                        <svg className="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
+                        </svg>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-gray-900 truncate">{alert.event.name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Dossard #{alert.bibNumber} — {new Date(alert.event.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-sm font-medium text-emerald-600">{alert.photoCount} photo{alert.photoCount !== 1 ? "s" : ""}</span>
+                        {alert.hasNewPhotos && (
+                          <Badge className="bg-emerald-500 text-white text-xs">Nouvelles photos</Badge>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={async () => {
+                      try {
+                        await fetch(`/api/photo-alerts/${alert.id}`, { method: "DELETE" });
+                        setAlerts((prev) => prev.filter((a) => a.id !== alert.id));
+                        toast({ title: "Alerte supprimée" });
+                      } catch {
+                        toast({ title: "Erreur", variant: "destructive" });
+                      }
+                    }}
+                    className="text-gray-400 hover:text-red-500 hover:bg-red-50 flex-shrink-0"
+                    title="Supprimer l'alerte"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Favorites list */}
       {favorites.length > 0 ? (

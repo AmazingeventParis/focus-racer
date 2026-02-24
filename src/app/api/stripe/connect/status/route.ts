@@ -17,11 +17,24 @@ export async function GET() {
     });
 
     if (!user?.stripeAccountId) {
+      // Count pending payouts even without Stripe account
+      const pendingPayouts = await prisma.order.aggregate({
+        where: {
+          event: { userId: session.user.id },
+          status: { in: ["PAID", "DELIVERED"] },
+          payoutStatus: "PENDING",
+        },
+        _sum: { photographerPayout: true },
+        _count: true,
+      });
+
       return NextResponse.json({
         hasAccount: false,
         isOnboarded: false,
         chargesEnabled: false,
         payoutsEnabled: false,
+        pendingPayoutTotal: pendingPayouts._sum.photographerPayout || 0,
+        pendingPayoutCount: pendingPayouts._count || 0,
       });
     }
 
@@ -40,11 +53,24 @@ export async function GET() {
       });
     }
 
+    // Count pending payouts
+    const pendingPayouts = await prisma.order.aggregate({
+      where: {
+        event: { userId: session.user.id },
+        status: { in: ["PAID", "DELIVERED"] },
+        payoutStatus: "PENDING",
+      },
+      _sum: { photographerPayout: true },
+      _count: true,
+    });
+
     return NextResponse.json({
       hasAccount: true,
       isOnboarded,
       chargesEnabled,
       payoutsEnabled,
+      pendingPayoutTotal: pendingPayouts._sum.photographerPayout || 0,
+      pendingPayoutCount: pendingPayouts._count || 0,
     });
   } catch (error) {
     console.error("Stripe Connect status error:", error);

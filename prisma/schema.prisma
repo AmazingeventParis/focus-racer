@@ -48,6 +48,12 @@ enum OrderStatus {
   EXPIRED
 }
 
+enum PayoutStatus {
+  NOT_APPLICABLE
+  PENDING
+  TRANSFERRED
+}
+
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
@@ -95,6 +101,7 @@ model User {
   conversationsCreated    HordeConversation[]             @relation("ConversationCreator")
   conversationMemberships HordeConversationParticipant[]  @relation("ConversationParticipant")
   hordeMessages           HordeMessage[]                  @relation("HordeMessageSender")
+  photoAlerts             PhotoAlert[]
 
   @@index([role])
   @@index([isActive])
@@ -125,6 +132,7 @@ model Event {
   updatedAt    DateTime    @updatedAt
   favorites    EventFavorite[]
   notifications Notification[]
+  photoAlerts  PhotoAlert[]
 
   @@index([userId])
   @@index([status])
@@ -230,6 +238,8 @@ model Order {
   stripeFee          Float       @default(0)
   photographerPayout Float       @default(0)
   stripeTransferId   String?
+  payoutStatus       PayoutStatus @default(NOT_APPLICABLE)
+  transferredAt      DateTime?
   stripeSessionId    String?     @unique
   stripePaymentId    String?
   downloadToken      String?     @unique
@@ -570,6 +580,25 @@ model HordeMessage {
   createdAt      DateTime          @default(now())
 
   @@index([conversationId, createdAt])
+}
+
+// =========== PHOTO ALERTS ===========
+
+model PhotoAlert {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId     String
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  bibNumber   String
+  photoCount  Int      @default(0)
+  lastNotifiedCount Int @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, eventId, bibNumber])
+  @@index([userId])
+  @@index([eventId, bibNumber])
 }
 
 // =========== NOTIFICATIONS ===========

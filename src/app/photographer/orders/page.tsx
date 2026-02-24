@@ -20,6 +20,9 @@ interface Order {
   totalAmount: number;
   platformFee: number;
   serviceFee: number;
+  photographerPayout: number;
+  payoutStatus: "NOT_APPLICABLE" | "PENDING" | "TRANSFERRED";
+  transferredAt: string | null;
   status: string;
   createdAt: string;
   guestEmail: string | null;
@@ -40,6 +43,8 @@ interface ConnectStatus {
   isOnboarded: boolean;
   chargesEnabled: boolean;
   payoutsEnabled: boolean;
+  pendingPayoutTotal: number;
+  pendingPayoutCount: number;
 }
 
 interface RevenueData {
@@ -164,13 +169,17 @@ export default function OrdersPage() {
   const kpis = useMemo(() => {
     const paid = orders.filter((o) => o.status === "PAID" || o.status === "DELIVERED");
     const refunded = orders.filter((o) => o.status === "REFUNDED");
-    const totalRevenue = paid.reduce((s, o) => s + o.totalAmount, 0);
-    const netRevenue = paid.reduce((s, o) => s + (o.totalAmount - o.platformFee), 0);
+    const totalRevenue = paid.reduce((s, o) => s + (o.totalAmount - o.serviceFee), 0);
+    const netRevenue = paid.reduce((s, o) => s + o.photographerPayout, 0);
     const totalPhotos = paid.reduce((s, o) => s + o._count.items, 0);
     const avgOrder = paid.length > 0 ? totalRevenue / paid.length : 0;
     const uniqueCustomers = new Set(
       paid.map((o) => o.user?.id || o.guestEmail || o.id)
     ).size;
+
+    const pendingPayout = paid
+      .filter((o) => o.payoutStatus === "PENDING")
+      .reduce((s, o) => s + o.photographerPayout, 0);
 
     return {
       totalRevenue,
@@ -180,6 +189,7 @@ export default function OrdersPage() {
       totalPhotos,
       avgOrder,
       uniqueCustomers,
+      pendingPayout,
     };
   }, [orders]);
 
@@ -222,7 +232,7 @@ export default function OrdersPage() {
 
   const handleExportCSV = () => {
     const bom = "\uFEFF";
-    const headers = ["Date", "Client", "Email", "SportifId", "Événement", "Photos", "Montant TTC", "Commission", "Net", "Statut"];
+    const headers = ["Date", "Client", "Email", "SportifId", "Événement", "Photos", "Montant TTC", "Commission", "Net", "Versement", "Statut"];
     const rows = sortedOrders.map((o) => [
       new Date(o.createdAt).toLocaleDateString("fr-FR"),
       o.user?.name || o.guestName || "Anonyme",
@@ -233,6 +243,7 @@ export default function OrdersPage() {
       o.totalAmount.toFixed(2),
       o.platformFee.toFixed(2),
       (o.totalAmount - o.platformFee).toFixed(2),
+      o.payoutStatus === "TRANSFERRED" ? "Versé" : o.payoutStatus === "PENDING" ? "En attente" : "—",
       STATUS_CONFIG[o.status]?.label || o.status,
     ]);
     const csv = bom + [headers.join(";"), ...rows.map((r) => r.join(";"))].join("\n");
@@ -358,6 +369,38 @@ export default function OrdersPage() {
         </CardContent>
       </Card>
 
+      {/* Pending Payout Banner */}
+      {connectStatus && !connectStatus.isOnboarded && (connectStatus.pendingPayoutTotal > 0 || kpis.pendingPayout > 0) && (
+        <Card className="bg-amber-50 border border-amber-200 shadow-card rounded-2xl mb-6">
+          <CardContent className="p-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-semibold text-amber-900">
+                    {euro(connectStatus.pendingPayoutTotal || kpis.pendingPayout)} en attente de versement
+                  </p>
+                  <p className="text-sm text-amber-700 mt-0.5">
+                    {connectStatus.pendingPayoutCount || 0} commande{(connectStatus.pendingPayoutCount || 0) > 1 ? "s" : ""} en attente — Connectez votre compte Stripe pour recevoir vos revenus
+                  </p>
+                </div>
+              </div>
+              <Button
+                className="bg-amber-600 hover:bg-amber-700 text-white rounded-xl flex-shrink-0"
+                onClick={handleConnectStripe}
+                disabled={connectLoading}
+              >
+                {connectLoading ? "..." : "Connecter Stripe"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <Card className="bg-white border-0 shadow-card rounded-xl">
@@ -431,7 +474,7 @@ export default function OrdersPage() {
       </div>
 
       {/* Secondary KPIs */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className={`grid gap-4 mb-6 ${kpis.pendingPayout > 0 ? "grid-cols-2 md:grid-cols-4" : "grid-cols-3"}`}>
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardContent className="p-4 flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
@@ -475,6 +518,22 @@ export default function OrdersPage() {
             </div>
           </CardContent>
         </Card>
+
+        {kpis.pendingPayout > 0 && (
+          <Card className="bg-white border-0 shadow-card rounded-xl">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">En attente</p>
+                <p className="text-lg font-bold text-amber-600">{euro(kpis.pendingPayout)}</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Revenue Breakdown Bar */}
@@ -721,16 +780,17 @@ export default function OrdersPage() {
                 <button className="col-span-2 flex items-center text-left hover:text-gray-700" onClick={() => toggleSort("date")}>
                   Date <SortIcon field="date" />
                 </button>
-                <div className="col-span-3">Client</div>
+                <div className="col-span-2">Client</div>
                 <div className="col-span-2">Événement</div>
                 <button className="col-span-1 flex items-center hover:text-gray-700" onClick={() => toggleSort("photos")}>
                   Photos <SortIcon field="photos" />
                 </button>
-                <button className="col-span-2 flex items-center hover:text-gray-700" onClick={() => toggleSort("amount")}>
+                <button className="col-span-1 flex items-center hover:text-gray-700" onClick={() => toggleSort("amount")}>
                   Montant <SortIcon field="amount" />
                 </button>
                 <div className="col-span-1">Net</div>
-                <div className="col-span-1 text-right">Statut</div>
+                <div className="col-span-1">Versement</div>
+                <div className="col-span-2 text-right">Statut</div>
               </div>
 
               <div className="space-y-2">
@@ -753,7 +813,7 @@ export default function OrdersPage() {
                           {new Date(order.createdAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                         </span>
                       </div>
-                      <div className="md:col-span-3">
+                      <div className="md:col-span-2">
                         <p className="font-medium text-gray-900 text-sm truncate">
                           {customerName}
                           {order.user?.sportifId && (
@@ -772,7 +832,7 @@ export default function OrdersPage() {
                           {order._count.items} <span className="text-gray-400 text-xs">photo{order._count.items > 1 ? "s" : ""}</span>
                         </span>
                       </div>
-                      <div className="md:col-span-2">
+                      <div className="md:col-span-1">
                         <p className="font-semibold text-gray-900 text-sm">{euro(order.totalAmount)}</p>
                         {order.platformFee > 0 && (
                           <p className="text-[10px] text-gray-400">comm. {euro(order.platformFee)}</p>
@@ -781,7 +841,16 @@ export default function OrdersPage() {
                       <div className="md:col-span-1">
                         <p className="font-semibold text-green-600 text-sm">{euro(net)}</p>
                       </div>
-                      <div className="md:col-span-1 md:text-right">
+                      <div className="md:col-span-1">
+                        {order.payoutStatus === "TRANSFERRED" ? (
+                          <Badge className="bg-emerald-100 text-emerald-700 border-0 text-[10px]">Versé</Badge>
+                        ) : order.payoutStatus === "PENDING" ? (
+                          <Badge className="bg-amber-100 text-amber-700 border-0 text-[10px]">En attente</Badge>
+                        ) : (
+                          <span className="text-xs text-gray-400">—</span>
+                        )}
+                      </div>
+                      <div className="md:col-span-2 md:text-right">
                         <Badge className={`text-xs ${statusCfg.className}`}>
                           {statusCfg.label}
                         </Badge>

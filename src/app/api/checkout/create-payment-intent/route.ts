@@ -99,9 +99,12 @@ export async function POST(request: NextRequest) {
     const photographerConnected =
       !!event.user.stripeAccountId && event.user.stripeOnboarded;
 
-    // Service fee: 1€ added to the runner's total when photographer is connected
-    const serviceFee = photographerConnected ? SERVICE_FEE_EUR : 0;
+    // Service fee: always 1€ added to the runner's total
+    const serviceFee = SERVICE_FEE_EUR;
     const totalForRunner = totalAmount + serviceFee;
+
+    // Estimated photographer payout (before Stripe fees)
+    const estimatedPhotographerPayout = totalAmount;
 
     // Create order
     const order = await prisma.order.create({
@@ -115,6 +118,8 @@ export async function POST(request: NextRequest) {
         totalAmount: totalForRunner,
         platformFee: serviceFee,
         serviceFee,
+        photographerPayout: estimatedPhotographerPayout,
+        payoutStatus: photographerConnected ? "NOT_APPLICABLE" : "PENDING",
         items: {
           create: photos.map((photo) => ({
             photoId: photo.id,
