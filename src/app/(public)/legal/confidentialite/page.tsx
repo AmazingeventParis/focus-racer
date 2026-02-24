@@ -104,8 +104,7 @@ export default function ConfidentialitePage() {
                 </p>
                 <ul className="text-navy/80 list-disc pl-6 space-y-1">
                   <li><strong>OVHcloud</strong> — Roubaix, France (serveur applicatif et base de données)</li>
-                  <li><strong>Amazon Web Services (AWS) S3</strong> — eu-west-1, Irlande (stockage des fichiers médias)</li>
-                  <li><strong>AWS Rekognition</strong> — eu-west-1, Irlande (traitement IA : OCR et reconnaissance faciale)</li>
+                  <li><strong>Amazon Web Services (AWS)</strong> — eu-west-1, Irlande (stockage des fichiers médias et traitement IA)</li>
                 </ul>
                 <p className="text-navy/80">
                   Aucune donnée n'est transférée en dehors de l'Espace Économique Européen (EEE).
@@ -125,7 +124,7 @@ export default function ConfidentialitePage() {
                 </p>
                 <ul className="text-navy/80 list-disc pl-6 space-y-1">
                   <li><strong>Stripe</strong> — traitement des paiements (Stripe Connect Express)</li>
-                  <li><strong>AWS</strong> — stockage S3 et traitement IA (Rekognition)</li>
+                  <li><strong>AWS</strong> — stockage cloud et traitement IA</li>
                   <li><strong>Resend</strong> — envoi d'emails transactionnels</li>
                 </ul>
                 <p className="text-navy/80">

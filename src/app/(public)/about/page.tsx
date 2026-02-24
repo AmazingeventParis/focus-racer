@@ -42,7 +42,7 @@ const milestones = [
     year: "2025",
     short: "25",
     title: "Le développement",
-    desc: "Construction du pipeline IA complet : OCR des dossards, reconnaissance faciale, filtrage qualité, smart crop. Intégration d'AWS Rekognition, Stripe Connect et architecture S3. Un an de R&D intensive.",
+    desc: "Construction du pipeline IA complet : OCR des dossards, reconnaissance faciale, filtrage qualité, smart crop. Intégration de notre moteur de vision, Stripe Connect et architecture cloud. Un an de R&D intensive.",
     icon: "⚙️",
   },
   {
@@ -135,7 +135,7 @@ const coreValues = [
   {
     icon: "🧠",
     title: "Innovation",
-    desc: "AWS Rekognition, reconnaissance faciale, smart crop, dédoublonnage pHash, retouche automatique. Nous repoussons les limites de l'IA appliquée au sport.",
+    desc: "Vision par ordinateur, reconnaissance faciale, smart crop, dédoublonnage pHash, retouche automatique. Nous repoussons les limites de l'IA appliquée au sport.",
     metric: "6+",
     metricLabel: "algorithmes IA",
   },
@@ -149,7 +149,7 @@ const coreValues = [
 ];
 
 const techStack = [
-  { name: "AWS Rekognition", desc: "OCR des dossards et reconnaissance faciale avec une précision de 95%", icon: "🧠", category: "IA" },
+  { name: "Vision IA", desc: "OCR des dossards et reconnaissance faciale avec une précision de 95%", icon: "🧠", category: "IA" },
   { name: "Sharp", desc: "Traitement d'image haute performance : retouche, smart crop, watermark, WebP", icon: "🖼️", category: "Traitement" },
   { name: "Stripe Connect", desc: "Paiements directs sécurisés avec Apple Pay, Google Pay, SEPA et CB", icon: "💳", category: "Paiement" },
   { name: "Next.js 14", desc: "Framework React fullstack avec App Router et rendu côté serveur", icon: "⚛️", category: "Infrastructure" },

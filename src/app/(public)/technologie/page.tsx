@@ -40,7 +40,7 @@ const pipelineSteps = [
       </svg>
     ),
     title: "OCR dossards",
-    desc: "AWS Rekognition analyse chaque photo pour détecter et lire les numéros de dossard avec une précision de 95%.",
+    desc: "Notre IA analyse chaque photo pour détecter et lire les numéros de dossard avec une précision de 95%.",
     metric: "95% précision",
     color: "from-emerald-500 to-emerald-600",
   },
@@ -254,11 +254,11 @@ const certifications: { label: string; desc: string; icon: React.ReactNode }[] =
 const faqTech = [
   {
     q: "Comment fonctionne la détection des dossards sur des photos en mouvement ?",
-    a: "Notre pipeline utilise AWS Rekognition qui analyse l'image entière pour détecter les zones de texte, même sur des sujets en mouvement. La version web optimisée (1600px, JPEG) est utilisée pour l'analyse, ce qui permet un traitement rapide tout en conservant suffisamment de détails pour une détection précise. Le seuil de confiance est configurable (70% par défaut).",
+    a: "Notre pipeline IA analyse l'image entière pour détecter les zones de texte, même sur des sujets en mouvement. La version web optimisée (1600px, JPEG) est utilisée pour l'analyse, ce qui permet un traitement rapide tout en conservant suffisamment de détails pour une détection précise. Le seuil de confiance est configurable (70% par défaut).",
   },
   {
     q: "Les données biométriques (visages) sont-elles stockées en clair ?",
-    a: "Non. Les visages ne sont jamais stockés sous forme d'images. AWS Rekognition extrait un vecteur mathématique (embedding) de chaque visage, qui est stocké dans une collection sécurisée. Ce vecteur ne permet pas de reconstituer le visage original. Les données sont supprimées sur demande RGPD.",
+    a: "Non. Les visages ne sont jamais stockés sous forme d'images. Notre IA extrait un vecteur mathématique (embedding) de chaque visage, qui est stocké dans une collection sécurisée. Ce vecteur ne permet pas de reconstituer le visage original. Les données sont supprimées sur demande RGPD.",
   },
   {
     q: "Quelle est la capacité de traitement maximale du serveur ?",
@@ -520,8 +520,8 @@ export default function TechnologiePage() {
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Comment ça fonctionne</h3>
                 <div className="space-y-4 text-gray-600 leading-relaxed">
                   <p>
-                    Chaque photo est analysée par <strong className="text-gray-900">AWS Rekognition</strong>, un service
-                    d'intelligence artificielle de pointe. L'algorithme détecte toutes les zones de texte de l'image,
+                    Chaque photo est analysée par <strong className="text-gray-900">notre moteur de vision par ordinateur</strong>,
+                    un service d'intelligence artificielle de pointe. L'algorithme détecte toutes les zones de texte de l'image,
                     puis filtre celles qui correspondent à des numéros de dossard.
                   </p>
                   <p>
@@ -660,7 +660,7 @@ export default function TechnologiePage() {
                   </svg>
                 ),
                 title: "Indexation des visages",
-                desc: "Chaque visage détecté est converti en un vecteur mathématique unique (embedding) et stocké dans une collection AWS Rekognition sécurisée. Ce processus est automatisé lors du traitement de chaque photo.",
+                desc: "Chaque visage détecté est converti en un vecteur mathématique unique (embedding) et stocké dans une collection sécurisée. Ce processus est automatisé lors du traitement de chaque photo.",
                 color: "bg-violet-50 text-violet-600",
               },
               {

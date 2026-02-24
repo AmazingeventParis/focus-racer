@@ -257,11 +257,11 @@ const article3Content = (
       La première brique de notre pipeline est la <strong>reconnaissance optique de caractères</strong> (OCR, pour <em>Optical Character Recognition</em>). Concrètement, l'IA analyse chaque image à la recherche de texte — en particulier les numéros imprimés sur les dossards des sportifs.
     </p>
     <p className="text-gray-600 leading-relaxed mb-4">
-      Notre système utilise <strong>AWS Rekognition DetectText</strong>, un service cloud de vision par ordinateur qui identifie les zones de texte dans une image, extrait les caractères et les retourne avec un indice de confiance. Nous filtrons ensuite les résultats pour ne garder que les chaînes numériques (les dossards) avec un seuil de confiance supérieur à 70 %.
+      Notre système utilise un <strong>moteur de vision par ordinateur</strong> de pointe qui identifie les zones de texte dans une image, extrait les caractères et les retourne avec un indice de confiance. Nous filtrons ensuite les résultats pour ne garder que les chaînes numériques (les dossards) avec un seuil de confiance supérieur à 70 %.
     </p>
     <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 my-6 font-mono text-sm text-gray-700">
       <p className="text-gray-400 mb-2">// Exemple simplifié du pipeline OCR</p>
-      <p>Photo → Version web (1600px, JPEG) → AWS DetectText</p>
+      <p>Photo → Version web (1600px, JPEG) → Moteur OCR IA</p>
       <p>{"→ Filtre numérique (confidence > 70 %) → BibNumber lié"}</p>
     </div>
     <p className="text-gray-600 leading-relaxed mb-4">
@@ -275,7 +275,7 @@ const article3Content = (
       Pour les photos où le dossard n'est pas visible (dos, plan large, dossard caché), notre système fait appel à la <strong>reconnaissance faciale</strong>. Le pipeline fonctionne en deux temps :
     </p>
     <ol className="list-decimal list-inside space-y-3 text-gray-600 mb-6 pl-4">
-      <li><strong>Indexation</strong> : chaque visage détecté sur une photo est extrait, encodé en vecteur biométrique et stocké dans une collection AWS Rekognition dédiée à l'événement.</li>
+      <li><strong>Indexation</strong> : chaque visage détecté sur une photo est extrait, encodé en vecteur biométrique et stocké dans une collection sécurisée dédiée à l'événement.</li>
       <li><strong>Correspondance</strong> : pour une photo « orpheline » (sans dossard), le système recherche si un visage déjà associé à un dossard correspond. Si oui, la photo est automatiquement liée au bon sportif (seuil de confiance : 85 %).</li>
     </ol>
     <p className="text-gray-600 leading-relaxed mb-4">
