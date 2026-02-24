@@ -3,6 +3,8 @@ export interface BadgeDef {
   labelFr: string;
   descriptionFr: string;
   emoji: string;
+  color: string;
+  colorLight: string;
 }
 
 export const BADGE_DEFINITIONS: BadgeDef[] = [
@@ -11,60 +13,80 @@ export const BADGE_DEFINITIONS: BadgeDef[] = [
     emoji: "\u{1F3C5}",
     labelFr: "Premier achat",
     descriptionFr: "Première commande payée sur Focus Racer",
+    color: "#F59E0B",
+    colorLight: "#FEF3C7",
   },
   {
     key: "collector_50",
     emoji: "\u{1F4F8}",
     labelFr: "Collectionneur",
     descriptionFr: "50 photos achetées",
+    color: "#3B82F6",
+    colorLight: "#DBEAFE",
   },
   {
     key: "collector_100",
     emoji: "\u{1F3C6}",
     labelFr: "Passionné",
     descriptionFr: "100 photos achetées",
+    color: "#6366F1",
+    colorLight: "#E0E7FF",
   },
   {
     key: "multi_sport",
     emoji: "\u{1F3AF}",
     labelFr: "Multi-sport",
     descriptionFr: "3 disciplines sportives différentes",
+    color: "#10B981",
+    colorLight: "#D1FAE5",
   },
   {
     key: "loyal_5",
     emoji: "⭐",
     labelFr: "Fidèle",
     descriptionFr: "5 événements suivis",
+    color: "#06B6D4",
+    colorLight: "#CFFAFE",
   },
   {
     key: "explorer_10",
     emoji: "\u{1F9ED}",
     labelFr: "Explorateur",
     descriptionFr: "10 événements suivis",
+    color: "#F97316",
+    colorLight: "#FFF7ED",
   },
   {
     key: "social_3",
     emoji: "\u{1F91D}",
     labelFr: "Social",
-    descriptionFr: "3 membres dans la Horde",
+    descriptionFr: "3 amis ajoutés",
+    color: "#EC4899",
+    colorLight: "#FCE7F3",
   },
   {
     key: "leader_10",
     emoji: "\u{1F451}",
     labelFr: "Leader",
-    descriptionFr: "10 membres dans la Horde",
+    descriptionFr: "10 amis ajoutés",
+    color: "#EAB308",
+    colorLight: "#FEF9C3",
   },
   {
     key: "patron_100",
     emoji: "\u{1F48E}",
     labelFr: "Mécène",
     descriptionFr: "100€ dépensés au total",
+    color: "#A855F7",
+    colorLight: "#F3E8FF",
   },
   {
     key: "pioneer",
     emoji: "\u{1F680}",
     labelFr: "Pionnier",
     descriptionFr: "Compte créé en 2026",
+    color: "#EF4444",
+    colorLight: "#FEE2E2",
   },
 ];
 

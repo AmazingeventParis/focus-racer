@@ -55,6 +55,10 @@ interface Analytics {
     totalOrders: number;
     avgOrderValue: number;
     soldPhotos: number;
+    packOrders: number;
+    unitOrders: number;
+    packPhotos: number;
+    unitPhotos: number;
     conversionRate: number;
   };
   timeline: {
@@ -243,16 +247,18 @@ export default function EventAnalyticsPage({
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm font-medium">
                 <DollarSign className="h-4 w-4" />
-                Chiffre d'Affaires
+                Total
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{revenue.totalRevenue.toFixed(2)}€</div>
               <p className="text-xs text-muted-foreground mt-1">
-                {revenue.totalOrders} commandes ({revenue.soldPhotos} photos vendues)
+                {revenue.totalOrders} vente{revenue.totalOrders > 1 ? "s" : ""}
+                {revenue.packOrders > 0 && <> · {revenue.packOrders} pack{revenue.packOrders > 1 ? "s" : ""}</>}
+                {revenue.unitOrders > 0 && <> · {revenue.unitOrders} unitaire{revenue.unitOrders > 1 ? "s" : ""}</>}
               </p>
               <p className="text-xs text-muted-foreground">
-                Panier moyen: {revenue.avgOrderValue.toFixed(2)}€
+                {revenue.soldPhotos} photo{revenue.soldPhotos > 1 ? "s" : ""} · Panier moy. {revenue.avgOrderValue.toFixed(2)}€
               </p>
             </CardContent>
           </Card>

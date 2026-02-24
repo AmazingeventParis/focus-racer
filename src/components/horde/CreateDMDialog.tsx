@@ -89,7 +89,7 @@ export default function CreateDMDialog({
           ))}
           {members.length === 0 && (
             <p className="text-sm text-muted-foreground text-center py-8">
-              Aucun membre dans la horde
+              Aucun ami dans le groupe
             </p>
           )}
         </div>

@@ -160,7 +160,7 @@ export default function SportifHordePage() {
     <div className="p-8 max-w-5xl mx-auto space-y-6 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-navy">Ma Horde</h1>
+        <h1 className="text-2xl font-bold text-navy">Mes Amis</h1>
         <p className="text-muted-foreground mt-1">
           {acceptedMembers.length} membre{acceptedMembers.length > 1 ? "s" : ""}
           {pendingMembers.length > 0 && ` · ${pendingMembers.length} en attente`}
@@ -204,7 +204,7 @@ export default function SportifHordePage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-3">
-                Entrez l'ID sportif (FR-XXXXXX) d'un ami pour l'inviter dans votre horde.
+                Entrez l'ID sportif (FR-XXXXXX) d'un ami pour l'inviter dans votre groupe.
               </p>
               <div className="flex gap-2">
                 <Input
@@ -288,7 +288,7 @@ export default function SportifHordePage() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                     </svg>
                   </div>
-                  <p className="text-muted-foreground text-sm">Aucun membre dans votre horde</p>
+                  <p className="text-muted-foreground text-sm">Aucun ami dans votre groupe</p>
                   <p className="text-muted-foreground text-xs mt-1">Invitez vos amis avec leur ID sportif !</p>
                 </div>
               )}
@@ -302,7 +302,7 @@ export default function SportifHordePage() {
                 <svg className="w-5 h-5 text-purple-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                 </svg>
-                Activité de la Horde
+                Activité de mes amis
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -383,7 +383,7 @@ export default function SportifHordePage() {
                   <span className="text-xs font-bold text-emerald-700">3</span>
                 </div>
                 <p className="text-sm text-gray-600">
-                  Suivez les événements de votre horde et retrouvez-vous sur les courses !
+                  Suivez les événements de vos amis et retrouvez-vous sur les courses !
                 </p>
               </div>
             </CardContent>
@@ -516,7 +516,7 @@ export default function SportifHordePage() {
               </div>
               <p className="text-muted-foreground text-sm">Aucune demande en cours</p>
               <p className="text-muted-foreground text-xs mt-1">
-                Invitez des amis depuis l'onglet Membres pour agrandir votre horde
+                Invitez des amis depuis l'onglet Membres pour agrandir votre groupe
               </p>
             </div>
           )}

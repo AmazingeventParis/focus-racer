@@ -212,6 +212,21 @@ export default function EventsListPage() {
                       <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md">
                         {SPORT_LABELS[event.sportType || "RUNNING"]}
                       </span>
+                      {event.status === "PUBLISHED" && (() => {
+                        const daysLeft = Math.ceil((new Date(event.date).getTime() + 30 * 86400000 - Date.now()) / 86400000);
+                        const badgeClass = daysLeft <= 0
+                          ? "bg-red-100 text-red-700"
+                          : daysLeft <= 7
+                          ? "bg-red-50 text-red-600"
+                          : daysLeft <= 14
+                          ? "bg-orange-50 text-orange-600"
+                          : "bg-gray-100 text-gray-500";
+                        return (
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-md ${badgeClass}`}>
+                            {daysLeft <= 0 ? "Expiré" : `⏱ ${daysLeft} j restants`}
+                          </span>
+                        );
+                      })()}
                     </div>
                   </div>
                 </CardContent>

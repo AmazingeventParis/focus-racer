@@ -143,18 +143,18 @@ const galerieFeatures = [
 const communauteFeatures = [
   {
     icon: "\u{1F43A}",
-    title: "Créez votre Horde",
-    desc: "Invitez vos coéquipiers, amis de course ou membres de votre club dans votre Horde. Un espace privé pour votre communauté sportive.",
+    title: "Créez votre groupe d'amis",
+    desc: "Invitez vos coéquipiers, amis de course ou membres de votre club dans votre groupe. Un espace privé pour votre communauté sportive.",
   },
   {
     icon: "\u{1F4AC}",
     title: "Chat intégré",
-    desc: "Discutez en temps réel avec votre Horde : conversations de groupe, messages directs 1-to-1. Partagez vos impressions, vos temps, vos anecdotes de course.",
+    desc: "Discutez en temps réel avec vos amis : conversations de groupe, messages directs 1-to-1. Partagez vos impressions, vos temps, vos anecdotes de course.",
   },
   {
     icon: "\u{1F3C5}",
     title: "10 badges à débloquer",
-    desc: "Première course, 10 événements, parrain de Horde, collectionneur de photos... Débloquez des badges et affichez-les fièrement sur votre profil public.",
+    desc: "Première course, 10 événements, parrain de groupe, collectionneur de photos... Débloquez des badges et affichez-les fièrement sur votre profil public.",
   },
   {
     icon: "\u{1F4F2}",
@@ -211,7 +211,7 @@ const testimonials = [
     role: "Trail du Mont-Blanc — 28h15",
   },
   {
-    quote: "Ma Horde c'est notre club de triathlon. On partage nos photos après chaque course, on se chambrait sur les grimaces d'effort. C'est devenu notre réseau social sportif préféré. Et le chat intégré remplace notre groupe WhatsApp.",
+    quote: "Mes Amis sur Focus Racer, c'est notre club de triathlon. On partage nos photos après chaque course, on se chambre sur les grimaces d'effort. C'est devenu notre réseau social sportif préféré. Et le chat intégré remplace notre groupe WhatsApp.",
     author: "Sophie L.",
     role: "Triathlon de Nice — Club Côte d'Azur Tri",
   },
@@ -232,7 +232,7 @@ const faqItems = [
   },
   {
     q: "Dois-je créer un compte pour chercher mes photos ?",
-    a: "Non. La recherche par dossard et par nom est accessible sans aucun compte. Vous pouvez retrouver et consulter vos photos immédiatement. Un compte gratuit est nécessaire uniquement pour utiliser la recherche par selfie, les favoris, Ma Horde (communauté) et pour gérer vos achats. La création de compte prend moins de 30 secondes.",
+    a: "Non. La recherche par dossard et par nom est accessible sans aucun compte. Vous pouvez retrouver et consulter vos photos immédiatement. Un compte gratuit est nécessaire uniquement pour utiliser la recherche par selfie, les favoris, Mes Amis (communauté) et pour gérer vos achats. La création de compte prend moins de 30 secondes.",
   },
   {
     q: "Les photos sont-elles en haute définition ?",
@@ -695,11 +695,11 @@ export default function SolutionsSportifsPage() {
               Communauté sportive
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Ma Horde : partagez avec vos coéquipiers
+              Mes Amis : partagez avec vos coéquipiers
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
               Créez votre groupe de sportifs, chattez en temps réel, partagez vos photos de course.
-              Ma Horde est votre réseau social sportif intégré, conçu pour les passionnés de course.
+              Mes Amis est votre réseau social sportif intégré, conçu pour les passionnés de course.
               <strong className="text-gray-900"> Débloquez des badges et affichez-les sur votre profil public.</strong>
             </p>
           </div>
@@ -794,7 +794,7 @@ export default function SolutionsSportifsPage() {
                     "Consultation des galeries d'événements",
                     "Mise en favoris des photos",
                     "Création de compte et profil",
-                    "Rejoindre ou créer une Horde",
+                    "Rejoindre ou créer un groupe d'amis",
                     "Chat avec votre communauté",
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-3 text-white/90 text-sm">

@@ -246,7 +246,7 @@ export default function SportifCoursesPage() {
       {/* Horde feed */}
       {hordeFeed.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold text-navy mb-4">Activité de la Horde</h2>
+          <h2 className="text-lg font-semibold text-navy mb-4">Activité de mes amis</h2>
           <div className="space-y-3">
             {hordeFeed.map((item) => (
               <Link key={item.event.id} href={`/events/${item.event.id}`}>

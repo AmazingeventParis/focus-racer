@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
   // Get user's horde
   const hordeId = await getUserHordeId(userId);
   if (!hordeId) {
-    return NextResponse.json({ error: "Horde introuvable" }, { status: 404 });
+    return NextResponse.json({ error: "Groupe introuvable" }, { status: 404 });
   }
 
   // Verify all participants are members (ACCEPTED) or owner of the horde
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
   });
 
   if (!horde) {
-    return NextResponse.json({ error: "Horde introuvable" }, { status: 404 });
+    return NextResponse.json({ error: "Groupe introuvable" }, { status: 404 });
   }
 
   const validUserIds = new Set([
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
   for (const pid of participantIds) {
     if (!validUserIds.has(pid)) {
       return NextResponse.json(
-        { error: `L'utilisateur ${pid} n'est pas membre de la horde` },
+        { error: `L'utilisateur ${pid} n'est pas membre du groupe` },
         { status: 400 }
       );
     }

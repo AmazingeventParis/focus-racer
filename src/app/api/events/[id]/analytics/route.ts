@@ -138,17 +138,26 @@ export async function GET(
 
     // Revenue stats — query Orders directly for accurate financial breakdown
     const orders = await prisma.order.findMany({
-      where: { eventId, status: "PAID" },
+      where: { eventId, status: { in: ["PAID", "DELIVERED"] } },
       include: { _count: { select: { items: true } } },
     });
 
-    const totalRevenue = orders.reduce((sum, o) => sum + o.totalAmount, 0);
+    // DB stores amounts in centimes — convert to euros for display
+    const toEuros = (v: number) => v / 100;
     const totalServiceFee = orders.reduce((sum, o) => sum + (o.serviceFee || 0), 0);
     const totalStripeFee = orders.reduce((sum, o) => sum + (o.stripeFee || 0), 0);
     const totalPhotographerPayout = orders.reduce((sum, o) => sum + (o.photographerPayout || 0), 0);
     const totalPlatformFee = orders.reduce((sum, o) => sum + (o.platformFee || 0), 0);
+    // CA = totalAmount - serviceFee (service fee is charged to buyer, not photographer revenue)
+    const totalRevenue = orders.reduce((sum, o) => sum + (o.totalAmount - (o.serviceFee || 0)), 0);
     const soldPhotos = orders.reduce((sum, o) => sum + o._count.items, 0);
     const avgOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
+
+    // Pack vs unit photo breakdown
+    const packOrders = orders.filter((o) => o.packId != null);
+    const unitOrders = orders.filter((o) => o.packId == null);
+    const packPhotos = packOrders.reduce((sum, o) => sum + o._count.items, 0);
+    const unitPhotos = unitOrders.reduce((sum, o) => sum + o._count.items, 0);
 
     // Uploads timeline (group by day)
     const uploadsByDay: Record<string, number> = {};
@@ -217,14 +226,18 @@ export async function GET(
         },
       },
       revenue: {
-        totalRevenue: totalRevenue / 100,
+        totalRevenue: toEuros(totalRevenue),
         totalOrders: orders.length,
-        avgOrderValue: avgOrderValue / 100,
+        avgOrderValue: toEuros(avgOrderValue),
         soldPhotos,
-        serviceFee: totalServiceFee / 100,
-        stripeFee: totalStripeFee / 100,
-        photographerPayout: totalPhotographerPayout / 100,
-        platformFee: totalPlatformFee / 100,
+        packOrders: packOrders.length,
+        unitOrders: unitOrders.length,
+        packPhotos,
+        unitPhotos,
+        serviceFee: toEuros(totalServiceFee),
+        stripeFee: toEuros(totalStripeFee),
+        photographerPayout: toEuros(totalPhotographerPayout),
+        platformFee: toEuros(totalPlatformFee),
         conversionRate:
           totalPhotos > 0 ? Math.round((soldPhotos / totalPhotos) * 100) : 0,
       },

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { BADGE_DEFINITIONS, BADGE_MAP } from "@/lib/badges";
+import { BADGE_DEFINITIONS } from "@/lib/badges";
+import BadgeIcon from "@/components/sportif/BadgeIcon";
 
 const SPORT_LABELS: Record<string, string> = {
   RUNNING: "Course à pied",
@@ -102,7 +103,7 @@ export default async function PublicProfilePage({
           <div className="text-center">
             <p className="text-2xl font-bold text-navy">{profile.hordeSize}</p>
             <p className="text-xs text-muted-foreground">
-              Membre{profile.hordeSize !== 1 ? "s" : ""} Horde
+              Ami{profile.hordeSize !== 1 ? "s" : ""}
             </p>
           </div>
           <div className="text-center">
@@ -142,29 +143,28 @@ export default async function PublicProfilePage({
 
         {/* Badges */}
         <div className="glass-card rounded-2xl p-6 mb-6">
-          <h2 className="text-base font-semibold text-navy mb-4">Badges</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <h2 className="text-base font-semibold text-navy mb-4">
+            Badges{" "}
+            <span className="text-sm font-normal text-muted-foreground">
+              ({earnedKeys.size}/{BADGE_DEFINITIONS.length})
+            </span>
+          </h2>
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
             {BADGE_DEFINITIONS.map((def) => {
               const isEarned = earnedKeys.has(def.key);
               return (
                 <div
                   key={def.key}
-                  className={`flex flex-col items-center gap-1.5 p-3 rounded-xl text-center transition-all ${
-                    isEarned
-                      ? "bg-emerald-50 border border-emerald-200"
-                      : "bg-gray-100 border border-gray-200 opacity-50"
-                  }`}
+                  className="flex flex-col items-center gap-1.5"
                   title={def.descriptionFr}
                 >
-                  <span className="text-2xl">
-                    {isEarned ? def.emoji : "\u{1F512}"}
-                  </span>
+                  <BadgeIcon badgeKey={def.key} earned={isEarned} size={56} />
                   <span
-                    className={`text-xs font-medium ${
-                      isEarned ? "text-emerald-700" : "text-gray-500"
+                    className={`text-xs font-medium text-center leading-tight ${
+                      isEarned ? "text-gray-800" : "text-gray-400"
                     }`}
                   >
-                    {def.labelFr}
+                    {isEarned ? def.labelFr : "???"}
                   </span>
                 </div>
               );

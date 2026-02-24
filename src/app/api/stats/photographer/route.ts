@@ -35,7 +35,7 @@ export async function GET() {
         _avg: { qualityScore: true },
       }),
       prisma.order.aggregate({
-        where: { event: { userId }, status: "PAID" },
+        where: { event: { userId }, status: { in: ["PAID", "DELIVERED"] } },
         _sum: { totalAmount: true, platformFee: true },
         _count: true,
         _avg: { totalAmount: true },
@@ -53,7 +53,7 @@ export async function GET() {
           COUNT(*)::int as orders
         FROM "Order" o
         JOIN "Event" e ON o."eventId" = e."id"
-        WHERE e."userId" = ${userId} AND o."status" = 'PAID'
+        WHERE e."userId" = ${userId} AND o."status" IN ('PAID', 'DELIVERED')
         GROUP BY DATE_TRUNC('month', o."createdAt")
         ORDER BY month DESC
         LIMIT 12
@@ -66,7 +66,7 @@ export async function GET() {
           COUNT(o.*)::int as orders
         FROM "Order" o
         JOIN "Event" e ON o."eventId" = e."id"
-        WHERE e."userId" = ${userId} AND o."status" = 'PAID'
+        WHERE e."userId" = ${userId} AND o."status" IN ('PAID', 'DELIVERED')
         GROUP BY e."id", e."name", e."date"
         ORDER BY revenue DESC
         LIMIT 5
@@ -79,7 +79,7 @@ export async function GET() {
       }),
       // Connect fees breakdown
       prisma.order.aggregate({
-        where: { event: { userId }, status: "PAID" },
+        where: { event: { userId }, status: { in: ["PAID", "DELIVERED"] } },
         _sum: { serviceFee: true, stripeFee: true, photographerPayout: true },
       }),
     ]);

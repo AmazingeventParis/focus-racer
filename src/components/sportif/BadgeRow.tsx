@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { BADGE_MAP } from "@/lib/badges";
+import { BADGE_DEFINITIONS } from "@/lib/badges";
+import BadgeIcon from "@/components/sportif/BadgeIcon";
 
 interface EarnedBadge {
   badgeKey: string;
@@ -10,68 +11,77 @@ interface EarnedBadge {
 
 interface BadgeRowProps {
   badges: EarnedBadge[];
+  newlyEarned?: string[];
   sportifId?: string;
   loading?: boolean;
 }
 
-export default function BadgeRow({ badges, sportifId, loading }: BadgeRowProps) {
+export default function BadgeRow({ badges, newlyEarned = [], sportifId, loading }: BadgeRowProps) {
+  const earnedKeys = new Set(badges.map((b) => b.badgeKey));
+
   if (loading) {
     return (
-      <div className="glass-card rounded-2xl p-4">
-        <div className="flex items-center gap-3 animate-pulse">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-8 w-24 bg-gray-200 rounded-full" />
+      <div className="glass-card rounded-2xl p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="h-5 w-40 bg-gray-200 rounded animate-pulse" />
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex flex-col items-center gap-2 animate-pulse">
+              <div className="w-14 h-14 bg-gray-200 rounded-full" />
+              <div className="h-3 w-16 bg-gray-200 rounded" />
+            </div>
           ))}
         </div>
       </div>
     );
   }
 
-  if (badges.length === 0) {
-    return (
-      <div className="glass-card rounded-2xl p-4">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            Participez pour débloquer vos premiers badges !
-          </p>
-          <Link
-            href="/explore"
-            className="text-sm text-emerald hover:text-emerald-dark transition-colors whitespace-nowrap ml-4"
-          >
-            Découvrir
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="glass-card rounded-2xl p-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-          {badges.map((b) => {
-            const def = BADGE_MAP.get(b.badgeKey);
-            if (!def) return null;
-            return (
-              <span
-                key={b.badgeKey}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-sm font-medium whitespace-nowrap"
-                title={def.descriptionFr}
-              >
-                <span>{def.emoji}</span>
-                {def.labelFr}
-              </span>
-            );
-          })}
-        </div>
+    <div className="glass-card rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-base font-semibold text-navy">
+          Mes Badges{" "}
+          <span className="text-sm font-normal text-muted-foreground">
+            ({earnedKeys.size}/{BADGE_DEFINITIONS.length})
+          </span>
+        </h2>
         {sportifId && (
           <Link
             href={`/profil/${sportifId}`}
             className="text-sm text-emerald hover:text-emerald-dark transition-colors whitespace-nowrap"
           >
-            Voir tous →
+            Voir mon profil →
           </Link>
         )}
+      </div>
+
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
+        {BADGE_DEFINITIONS.map((def) => {
+          const isEarned = earnedKeys.has(def.key);
+          const isNew = newlyEarned.includes(def.key);
+          return (
+            <div
+              key={def.key}
+              className="flex flex-col items-center gap-1.5 group"
+              title={def.descriptionFr}
+            >
+              <BadgeIcon
+                badgeKey={def.key}
+                earned={isEarned}
+                size={56}
+                pulse={isNew}
+              />
+              <span
+                className={`text-xs font-medium text-center leading-tight ${
+                  isEarned ? "text-gray-800" : "text-gray-400"
+                }`}
+              >
+                {isEarned ? def.labelFr : "???"}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

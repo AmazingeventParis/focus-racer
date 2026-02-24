@@ -20,6 +20,10 @@ interface Analytics {
     totalOrders: number;
     avgOrderValue: number;
     soldPhotos: number;
+    packOrders: number;
+    unitOrders: number;
+    packPhotos: number;
+    unitPhotos: number;
     serviceFee: number;
     stripeFee: number;
     photographerPayout: number;
@@ -104,7 +108,7 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
         <CardContent className="p-6">
           {/* Main financial KPIs */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                {/* Chiffre d'affaires */}
+                {/* Total */}
                 <div className="group">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="p-1.5 rounded-md bg-emerald-50 group-hover:bg-emerald-100 transition-colors">
@@ -112,10 +116,10 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
-                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">CA brut</span>
+                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total</span>
                   </div>
                   <p className="text-3xl font-bold text-emerald-600 mb-1">{formatEuro(revenue.totalRevenue)}</p>
-                  <p className="text-xs text-slate-500">encaissé total</p>
+                  <p className="text-xs text-slate-500">{revenue.soldPhotos} photo{revenue.soldPhotos > 1 ? "s" : ""} vendues</p>
                 </div>
 
                 {/* Ventes */}
@@ -129,7 +133,12 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
                     <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Ventes</span>
                   </div>
                   <p className="text-3xl font-bold text-blue-600 mb-1">{revenue.totalOrders}</p>
-                  <p className="text-xs text-slate-500">{revenue.soldPhotos} photo{revenue.soldPhotos > 1 ? "s" : ""} vendues</p>
+                  <p className="text-xs text-slate-500">
+                    {revenue.packOrders > 0 && <>{revenue.packOrders} pack{revenue.packOrders > 1 ? "s" : ""}</>}
+                    {revenue.packOrders > 0 && revenue.unitOrders > 0 && " · "}
+                    {revenue.unitOrders > 0 && <>{revenue.unitOrders} unitaire{revenue.unitOrders > 1 ? "s" : ""}</>}
+                    {revenue.totalOrders === 0 && "aucune vente"}
+                  </p>
                 </div>
 
                 {/* Panier moyen */}
@@ -196,7 +205,7 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
                     </div>
                   )}
                   <div className="flex items-center justify-between py-3 border-t border-slate-200 mt-1">
-                    <span className="text-sm font-semibold text-slate-800">Total encaissé (CA brut)</span>
+                    <span className="text-sm font-semibold text-slate-800">Total</span>
                     <span className="text-sm font-bold text-slate-900">{formatEuro(revenue.totalRevenue)}</span>
                   </div>
                 </div>

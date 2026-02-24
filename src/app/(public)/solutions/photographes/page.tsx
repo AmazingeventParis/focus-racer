@@ -110,8 +110,8 @@ const marketingFeatures = [
   },
   {
     icon: "\u{1F91D}",
-    title: "Horde : communauté sportive",
-    desc: "Les sportifs créent leur « Horde » (groupe d’amis), partagent et achètent ensemble. Effet réseau qui multiplie vos ventes par le bouche-à-oreille numérique.",
+    title: "Communauté sportive",
+    desc: "Les sportifs créent leur groupe d'amis, partagent et achètent ensemble. Effet réseau qui multiplie vos ventes par le bouche-à-oreille numérique.",
   },
 ];
 

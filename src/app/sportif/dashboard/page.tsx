@@ -239,6 +239,7 @@ export default function SportifDashboard() {
       <div className="mb-6">
         <BadgeRow
           badges={badges?.earned ?? []}
+          newlyEarned={badges?.newlyEarned ?? []}
           sportifId={data?.sportifId}
           loading={badgesLoading}
         />
@@ -315,7 +316,7 @@ export default function SportifDashboard() {
           <Card className="glass-card rounded-2xl">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base">Ma Horde</CardTitle>
+                <CardTitle className="text-base">Mes Amis</CardTitle>
                 <Link href="/sportif/reglages" className="text-xs text-emerald hover:text-emerald-dark transition-colors">
                   Gérer
                 </Link>

@@ -109,8 +109,8 @@ const engagementFeatures = [
   },
   {
     icon: "\u{1F91D}",
-    title: "Horde : communauté sportive",
-    desc: "Les sportifs créent leur « Horde » (groupe d'amis), partagent et achètent ensemble. Effet réseau qui multiplie les ventes et fidélise vos participants d'une édition à l'autre.",
+    title: "Communauté sportive",
+    desc: "Les sportifs créent leur groupe d'amis, partagent et achètent ensemble. Effet réseau qui multiplie les ventes et fidélise vos participants d'une édition à l'autre.",
   },
 ];
 

@@ -126,7 +126,7 @@ export default function CreateGroupDialog({
               ))}
               {members.length === 0 && (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                  Aucun membre dans la horde
+                  Aucun ami dans le groupe
                 </p>
               )}
             </div>

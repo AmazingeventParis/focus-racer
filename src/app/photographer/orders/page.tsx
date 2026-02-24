@@ -242,7 +242,7 @@ export default function OrdersPage() {
       o._count.items,
       o.totalAmount.toFixed(2),
       o.platformFee.toFixed(2),
-      (o.totalAmount - o.platformFee).toFixed(2),
+      o.photographerPayout.toFixed(2),
       o.payoutStatus === "TRANSFERRED" ? "Versé" : o.payoutStatus === "PENDING" ? "En attente" : "—",
       STATUS_CONFIG[o.status]?.label || o.status,
     ]);
@@ -798,7 +798,7 @@ export default function OrdersPage() {
                   const statusCfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.PENDING;
                   const customerName = order.user?.name || order.guestName || order.guestEmail || "Anonyme";
                   const customerEmail = order.user?.email || order.guestEmail || "";
-                  const net = order.totalAmount - order.platformFee;
+                  const net = order.photographerPayout;
 
                   return (
                     <div
