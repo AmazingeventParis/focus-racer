@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
@@ -80,6 +82,28 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching admin orders:", error);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
+}
+
+export async function DELETE() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+    }
+
+    // Delete order items first (FK constraint), then orders
+    const deletedItems = await prisma.orderItem.deleteMany({});
+    const deletedOrders = await prisma.order.deleteMany({});
+
+    return NextResponse.json({
+      message: "Toutes les commandes ont été supprimées",
+      deletedOrders: deletedOrders.count,
+      deletedItems: deletedItems.count,
+    });
+  } catch (error) {
+    console.error("Error deleting all orders:", error);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
