@@ -16,7 +16,10 @@ const footerLinks = {
     links: [
       { href: "/explore", label: "Trouver mes photos" },
       { href: "/about", label: "À propos" },
-      { href: "/register", label: "Créer un compte" },
+      { href: "/blog", label: "Blog" },
+      { href: "/technologie", label: "Technologie" },
+      { href: "/partenaires", label: "Partenaires" },
+      { href: "/presse", label: "Presse" },
     ],
   },
   legal: {

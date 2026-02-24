@@ -216,7 +216,7 @@ const faqItems = [
   },
   {
     q: "Est-ce adapté aux petits événements locaux (moins de 500 participants) ?",
-    a: "Absolument. Focus Racer s'adapte à toutes les tailles : course de village de 50 participants, course caritative de 200 personnes, semi-marathon municipal de 2 000 inscrits, ou marathon international de 40 000 coureurs. Le modèle au crédit (1 crédit = 1 photo) vous permet de payer uniquement ce que vous consommez.",
+    a: "Absolument. Focus Racer s'adapte à toutes les tailles : course de village de 50 participants, course caritative de 200 personnes, semi-marathon municipal de 2 000 inscrits, ou marathon international de 40 000 participants. Le modèle au crédit (1 crédit = 1 photo) vous permet de payer uniquement ce que vous consommez.",
   },
   {
     q: "Comment fonctionne le branding événement ?",
