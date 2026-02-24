@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
 import { EventWithStats } from "@/types";
 
 const SPORT_LABELS: Record<string, string> = {
@@ -213,8 +214,20 @@ export default function DashboardPage() {
                       className="flex items-center justify-between p-4 rounded-xl bg-gray-50 hover:bg-gray-100 hover:-translate-y-0.5 hover:shadow-sm transition-all duration-200"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald font-bold text-sm">
-                          {event.name.charAt(0)}
+                        <div className="w-14 h-14 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden">
+                          {event.coverImage ? (
+                            <Image
+                              src={event.coverImage}
+                              alt={event.name}
+                              width={56}
+                              height={56}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-emerald-50 flex items-center justify-center text-emerald font-bold text-sm">
+                              {event.name.charAt(0)}
+                            </div>
+                          )}
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">{event.name}</p>
