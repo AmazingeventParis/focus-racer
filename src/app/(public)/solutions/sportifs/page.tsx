@@ -77,7 +77,7 @@ const iaFeatures = [
     statLabel: "moins de déchets",
   },
   {
-    icon: "\u{2702}\uFE0F",
+    icon: "\u{2702}️",
     title: "Smart Crop individuel",
     desc: "L'IA recadre automatiquement un portrait centré sur votre visage, extrait de la photo de groupe. Idéal pour votre photo de profil ou pour partager sur les réseaux sociaux.",
     stat: "800px",
@@ -101,10 +101,10 @@ const iaFeatures = [
 
 const purchaseTimeline = [
   { step: "Recherche", desc: "Dossard, selfie ou nom", icon: "\u{1F50D}", color: "bg-emerald-500" },
-  { step: "Favoris", desc: "Sélectionnez vos préférées", icon: "\u{2764}\uFE0F", color: "bg-pink-500" },
+  { step: "Favoris", desc: "Sélectionnez vos préférées", icon: "\u{2764}️", color: "bg-pink-500" },
   { step: "Panier", desc: "Pack ou photo à l'unité", icon: "\u{1F6D2}", color: "bg-blue-500" },
   { step: "Paiement", desc: "Apple Pay, CB, SEPA", icon: "\u{1F4B3}", color: "bg-amber-500" },
-  { step: "HD en 30s", desc: "Téléchargement sans filigrane", icon: "\u{2B07}\uFE0F", color: "bg-emerald-600" },
+  { step: "HD en 30s", desc: "Téléchargement sans filigrane", icon: "\u{2B07}️", color: "bg-emerald-600" },
 ];
 
 const galerieFeatures = [
@@ -119,17 +119,17 @@ const galerieFeatures = [
     desc: "Payez en un clic avec Apple Pay, Google Pay, carte bancaire ou virement SEPA. Zéro friction, paiement sécurisé par Stripe.",
   },
   {
-    icon: "\u{1F5BC}\uFE0F",
+    icon: "\u{1F5BC}️",
     title: "Lightbox plein écran",
     desc: "Visualisez chaque photo en plein écran avec un viewer haute qualité. Zoomez, naviguez entre les clichés, ajoutez en favoris.",
   },
   {
-    icon: "\u{2B07}\uFE0F",
+    icon: "\u{2B07}️",
     title: "HD sans filigrane",
     desc: "Après achat, téléchargez vos photos en haute définition originale, sans aucun filigrane. Qualité professionnelle garantie.",
   },
   {
-    icon: "\u{2764}\uFE0F",
+    icon: "\u{2764}️",
     title: "Système de favoris",
     desc: "Marquez vos photos préférées d'un cœur pour les retrouver facilement. Composez votre sélection avant d'acheter, à votre rythme.",
   },
@@ -175,17 +175,17 @@ const securiteFeatures = [
     desc: "Tous les paiements sont traités par Stripe, leader mondial du paiement en ligne. Vos coordonnées bancaires ne transitent jamais par nos serveurs. Chiffrement SSL de bout en bout.",
   },
   {
-    icon: "\u{1F5D1}\uFE0F",
+    icon: "\u{1F5D1}️",
     title: "Suppression sur demande",
     desc: "Vous ne souhaitez plus apparaître sur les photos ? Un simple formulaire de demande RGPD et vos photos sont supprimées en cascade : clichés, visages, données personnelles.",
   },
   {
-    icon: "\u{1F441}\uFE0F",
+    icon: "\u{1F441}️",
     title: "Pas de compte requis pour chercher",
     desc: "La recherche de photos est accessible sans créer de compte. Tapez votre dossard ou votre nom et retrouvez vos photos immédiatement. Le compte n'est nécessaire que pour les fonctionnalités avancées.",
   },
   {
-    icon: "\u{1F6E1}\uFE0F",
+    icon: "\u{1F6E1}️",
     title: "Protection anti-vol des photos",
     desc: "Filigrane dynamique, protection hotlink, blocage clic droit, anti-screenshot. Les photos HD originales ne sont jamais exposées publiquement. Seules les versions protégées sont visibles avant achat.",
   },
@@ -426,7 +426,7 @@ export default function SolutionsSportifsPage() {
               </h1>
               <p className="text-lg text-white/80 max-w-xl leading-relaxed">
                 Notre intelligence artificielle retrouve automatiquement toutes vos photos
-                parmi des milliers d&apos;images. Trois modes de recherche, précision de 95%,
+                parmi des milliers d'images. Trois modes de recherche, précision de 95%,
                 résultat quasi instantané.
                 <strong className="text-white"> La recherche est 100% gratuite.</strong>
               </p>
@@ -549,7 +549,7 @@ export default function SolutionsSportifsPage() {
               3 façons de retrouver vos photos
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
-              Que vous connaissiez votre numéro de dossard, votre nom d&apos;inscription ou simplement votre visage,
+              Que vous connaissiez votre numéro de dossard, votre nom d'inscription ou simplement votre visage,
               Focus Racer vous retrouve parmi des milliers de photos en quelques secondes.
               <strong className="text-gray-900"> Choisissez votre méthode préférée.</strong>
             </p>
@@ -594,7 +594,7 @@ export default function SolutionsSportifsPage() {
               Intelligence artificielle
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              L&apos;IA qui vous trouve parmi des milliers
+              L'IA qui vous trouve parmi des milliers
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
               Derrière chaque recherche, une intelligence artificielle de pointe analyse chaque photo :
@@ -632,10 +632,10 @@ export default function SolutionsSportifsPage() {
         <div className="container mx-auto px-4">
           <div className={`max-w-3xl mx-auto text-center mb-16 transition-all duration-700 ${reveal("galerie") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-sm font-medium mb-4">
-              Expérience d&apos;achat
+              Expérience d'achat
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Une expérience d&apos;achat sans friction
+              Une expérience d'achat sans friction
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
               De la recherche au téléchargement HD, chaque étape est conçue pour être fluide et rapide.
@@ -774,7 +774,7 @@ export default function SolutionsSportifsPage() {
             </h2>
             <p className="text-white/70 text-lg max-w-2xl mx-auto">
               La recherche et la consultation des galeries sont <strong className="text-emerald-400">100% gratuites</strong>.
-              Vous ne payez que si vous décidez d&apos;acheter les photos en haute définition.
+              Vous ne payez que si vous décidez d'acheter les photos en haute définition.
               Les prix sont fixés par le photographe, pas par Focus Racer.
             </p>
           </div>
@@ -786,7 +786,7 @@ export default function SolutionsSportifsPage() {
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-3 h-3 rounded-full bg-emerald-400" />
                   <h3 className="text-white font-semibold text-lg">Gratuit</h3>
-                  <span className="ml-auto px-3 py-1 bg-emerald-500/30 text-emerald-300 rounded-full text-xs font-bold">0&euro;</span>
+                  <span className="ml-auto px-3 py-1 bg-emerald-500/30 text-emerald-300 rounded-full text-xs font-bold">0€</span>
                 </div>
                 <ul className="space-y-4">
                   {[
@@ -824,7 +824,7 @@ export default function SolutionsSportifsPage() {
                         <span className="text-2xl">{ex.icon}</span>
                         <span className="text-white font-medium">{ex.label}</span>
                       </div>
-                      <span className="text-emerald-400 font-bold">{ex.price}&euro;</span>
+                      <span className="text-emerald-400 font-bold">{ex.price}€</span>
                     </div>
                   ))}
                 </div>
@@ -849,7 +849,7 @@ export default function SolutionsSportifsPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Tous les sports, une seule plateforme
             </h2>
-            <p className="text-gray-600 text-lg">Focus Racer s&apos;adapte à toutes les disciplines sportives.</p>
+            <p className="text-gray-600 text-lg">Focus Racer s'adapte à toutes les disciplines sportives.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
             {sports.map((sport, i) => (
@@ -894,7 +894,7 @@ export default function SolutionsSportifsPage() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-700 leading-relaxed mb-6 italic">&laquo;&nbsp;{t.quote}&nbsp;&raquo;</p>
+                <p className="text-gray-700 leading-relaxed mb-6 italic">« {t.quote} »</p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-sm font-bold">
                     {t.author[0]}

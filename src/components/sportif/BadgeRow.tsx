@@ -69,7 +69,7 @@ export default function BadgeRow({ badges, sportifId, loading }: BadgeRowProps) 
             href={`/profil/${sportifId}`}
             className="text-sm text-emerald hover:text-emerald-dark transition-colors whitespace-nowrap"
           >
-            Voir tous &rarr;
+            Voir tous →
           </Link>
         )}
       </div>

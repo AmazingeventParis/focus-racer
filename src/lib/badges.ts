@@ -32,7 +32,7 @@ export const BADGE_DEFINITIONS: BadgeDef[] = [
   },
   {
     key: "loyal_5",
-    emoji: "\u2B50",
+    emoji: "⭐",
     labelFr: "Fidèle",
     descriptionFr: "5 événements suivis",
   },
@@ -58,7 +58,7 @@ export const BADGE_DEFINITIONS: BadgeDef[] = [
     key: "patron_100",
     emoji: "\u{1F48E}",
     labelFr: "Mécène",
-    descriptionFr: "100\u20AC dépensés au total",
+    descriptionFr: "100€ dépensés au total",
   },
   {
     key: "pioneer",

@@ -23,7 +23,7 @@ const SPORT_LABELS: Record<string, string> = {
 
 const SPORT_ICONS: Record<string, string> = {
   RUNNING: "\u{1F3C3}",
-  TRAIL: "\u26F0\uFE0F",
+  TRAIL: "⛰️",
   TRIATHLON: "\u{1F3CA}",
   CYCLING: "\u{1F6B4}",
   SWIMMING: "\u{1F3CA}",
@@ -239,7 +239,7 @@ export default function ExplorePage() {
             </h1>
             <p className="text-white/70 max-w-lg mx-auto mb-8 text-lg">
               Sélectionnez un événement, puis recherchez vos photos par dossard, selfie ou nom.
-              Notre IA vous trouve en quelques secondes parmi des milliers d&apos;images.
+              Notre IA vous trouve en quelques secondes parmi des milliers d'images.
             </p>
 
             {/* Search bar */}
@@ -312,7 +312,7 @@ export default function ExplorePage() {
                 <h2 className="text-2xl font-bold text-gray-900">Événements populaires</h2>
               </div>
               <Link href="#tous" className="text-emerald-600 hover:text-emerald-700 text-sm font-medium hidden sm:block">
-                Voir tous &rarr;
+                Voir tous →
               </Link>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
@@ -344,7 +344,7 @@ export default function ExplorePage() {
                           <h3 className="text-lg font-bold text-white">{event.name}</h3>
                           <p className="text-white/80 text-sm">
                             {new Date(event.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
-                            {event.location && ` \u2022 ${event.location}`}
+                            {event.location && ` • ${event.location}`}
                           </p>
                         </div>
                       </div>
@@ -547,7 +547,7 @@ export default function ExplorePage() {
                             month: "long",
                             year: "numeric",
                           })}
-                          {event.location && ` \u2022 ${event.location}`}
+                          {event.location && ` • ${event.location}`}
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
@@ -583,7 +583,7 @@ export default function ExplorePage() {
               Comment retrouver vos photos ?
             </h2>
             <p className="text-gray-600">
-              Trois méthodes de recherche propulsées par l&apos;intelligence artificielle.
+              Trois méthodes de recherche propulsées par l'intelligence artificielle.
               Gratuit et sans inscription obligatoire.
             </p>
           </div>

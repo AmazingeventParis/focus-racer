@@ -68,7 +68,7 @@ function PaymentForm({ onSuccess, onError, amount, primaryColor, returnUrl }: Pa
         style={{ backgroundColor: primaryColor }}
         disabled={!stripe || isProcessing}
       >
-        {isProcessing ? "Traitement en cours..." : `Payer ${amount.toFixed(2)}\u20AC`}
+        {isProcessing ? "Traitement en cours..." : `Payer ${amount.toFixed(2)}€`}
       </Button>
     </form>
   );

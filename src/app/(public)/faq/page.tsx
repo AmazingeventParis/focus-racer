@@ -230,7 +230,7 @@ export default function FaqPage() {
             <div className="mt-16 text-center">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
                 <h3 className="text-xl font-bold text-navy mb-2">
-                  Vous n&apos;avez pas trouvé votre réponse ?
+                  Vous n'avez pas trouvé votre réponse ?
                 </h3>
                 <p className="text-muted-foreground mb-6">
                   Notre équipe est disponible pour répondre à toutes vos questions.

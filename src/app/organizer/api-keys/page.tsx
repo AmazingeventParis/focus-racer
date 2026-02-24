@@ -102,7 +102,7 @@ export default function ApiKeysPage() {
         <div>
           <h1 className="text-3xl font-bold text-navy">Cles API</h1>
           <p className="text-muted-foreground mt-1">
-            Integrez Focus Racer dans vos outils via l&apos;API REST
+            Integrez Focus Racer dans vos outils via l'API REST
           </p>
         </div>
         <Button
@@ -145,7 +145,7 @@ export default function ApiKeysPage() {
               className="mt-3 text-amber-700"
               onClick={() => setNewRawKey(null)}
             >
-              J&apos;ai copie la cle, fermer
+              J'ai copie la cle, fermer
             </Button>
           </CardContent>
         </Card>

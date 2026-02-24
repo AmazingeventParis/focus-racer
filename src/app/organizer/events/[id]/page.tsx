@@ -288,7 +288,7 @@ export default function EventDetailPage({
         href="/organizer/events"
         className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
       >
-        &larr; Retour aux événements
+        ← Retour aux événements
       </Link>
 
         {/* Event header card */}
@@ -347,8 +347,8 @@ export default function EventDetailPage({
                     month: "long",
                     year: "numeric",
                   })}
-                  {event.location && ` \u2022 ${event.location}`}
-                  {" \u2022 "}
+                  {event.location && ` • ${event.location}`}
+                  {" • "}
                   {SPORT_LABELS[event.sportType || "RUNNING"]}
                 </CardDescription>
                 {event.description && (
@@ -422,7 +422,7 @@ export default function EventDetailPage({
                 </DialogTrigger>
                 <DialogContent className="max-w-lg">
                   <DialogHeader>
-                    <DialogTitle className="text-navy">Modifier l&apos;événement</DialogTitle>
+                    <DialogTitle className="text-navy">Modifier l'événement</DialogTitle>
                     <DialogDescription>Modifiez les informations de votre événement</DialogDescription>
                   </DialogHeader>
                   <form onSubmit={handleEdit} className="space-y-4">

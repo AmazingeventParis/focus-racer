@@ -26,7 +26,7 @@ const missionValues = [
   {
     icon: "🔒",
     title: "Confiance",
-    desc: "RGPD natif, données sécurisées, watermark de protection. La sécurité n&apos;est pas une option.",
+    desc: "RGPD natif, données sécurisées, watermark de protection. La sécurité n'est pas une option.",
   },
 ];
 
@@ -34,15 +34,15 @@ const milestones = [
   {
     year: "2024",
     short: "24",
-    title: "L&apos;idée",
-    desc: "Un sportif passionné termine son premier marathon. Frustré de ne pas retrouver ses photos parmi des milliers de clichés, il imagine une solution automatisée. L&apos;idée de Focus Racer est née.",
+    title: "L'idée",
+    desc: "Un sportif passionné termine son premier marathon. Frustré de ne pas retrouver ses photos parmi des milliers de clichés, il imagine une solution automatisée. L'idée de Focus Racer est née.",
     icon: "💡",
   },
   {
     year: "2025",
     short: "25",
     title: "Le développement",
-    desc: "Construction du pipeline IA complet : OCR des dossards, reconnaissance faciale, filtrage qualité, smart crop. Intégration d&apos;AWS Rekognition, Stripe Connect et architecture S3. Un an de R&D intensive.",
+    desc: "Construction du pipeline IA complet : OCR des dossards, reconnaissance faciale, filtrage qualité, smart crop. Intégration d'AWS Rekognition, Stripe Connect et architecture S3. Un an de R&D intensive.",
     icon: "⚙️",
   },
   {
@@ -56,14 +56,14 @@ const milestones = [
     year: "2026 Q2",
     short: "Q2",
     title: "La croissance",
-    desc: "150+ événements couverts, couverture multi-sports (trail, triathlon, cyclisme, natation, obstacle race...). Adoption par les agences photo et fédérations sportives. Le bouche-à-oreille s&apos;accélère.",
+    desc: "150+ événements couverts, couverture multi-sports (trail, triathlon, cyclisme, natation, obstacle race...). Adoption par les agences photo et fédérations sportives. Le bouche-à-oreille s'accélère.",
     icon: "📈",
   },
   {
     year: "2027",
     short: "27",
     title: "La vision",
-    desc: "Objectif : 1 000 événements par an à travers l&apos;Europe. Application mobile native, partenariats avec les grandes fédérations sportives, expansion vers de nouvelles disciplines.",
+    desc: "Objectif : 1 000 événements par an à travers l'Europe. Application mobile native, partenariats avec les grandes fédérations sportives, expansion vers de nouvelles disciplines.",
     icon: "🌍",
   },
 ];
@@ -73,15 +73,15 @@ const teamMembers = [
     initials: "AL",
     name: "Alexandre Lefèvre",
     role: "Fondateur & CEO",
-    bio: "Ex-marathonien et passionné de technologie, Alexandre a couru plus de 30 courses avant de se lancer dans l&apos;aventure Focus Racer. Sa vision : démocratiser l&apos;accès à la photo sportive grâce à l&apos;IA.",
-    funFact: "A terminé l&apos;UTMB en 38h12 sous la pluie — et n&apos;a retrouvé que 2 photos de lui sur 15 000.",
+    bio: "Ex-marathonien et passionné de technologie, Alexandre a couru plus de 30 courses avant de se lancer dans l'aventure Focus Racer. Sa vision : démocratiser l'accès à la photo sportive grâce à l'IA.",
+    funFact: "A terminé l'UTMB en 38h12 sous la pluie — et n'a retrouvé que 2 photos de lui sur 15 000.",
     gradient: "from-emerald-400 to-teal-500",
   },
   {
     initials: "SC",
     name: "Sophie Chen",
     role: "CTO",
-    bio: "Experte en intelligence artificielle et computer vision, ex-ingénieure AWS. Sophie a conçu le pipeline de reconnaissance d&apos;images qui permet de traiter 1 000 photos en moins de 2 minutes.",
+    bio: "Experte en intelligence artificielle et computer vision, ex-ingénieure AWS. Sophie a conçu le pipeline de reconnaissance d'images qui permet de traiter 1 000 photos en moins de 2 minutes.",
     funFact: "A entraîné son premier modèle de deep learning à 19 ans — pour reconnaître les races de chats.",
     gradient: "from-blue-400 to-indigo-500",
   },
@@ -89,16 +89,16 @@ const teamMembers = [
     initials: "MB",
     name: "Marie Bertrand",
     role: "Directrice Commerciale",
-    bio: "10 ans d&apos;expérience dans l&apos;événementiel sportif. Marie a travaillé avec les plus grands organisateurs d&apos;événements en France avant de rejoindre Focus Racer pour développer le réseau de partenaires.",
-    funFact: "A organisé 200+ événements sportifs et affirme que le pire cauchemar d&apos;un organisateur, c&apos;est la pluie à J-1.",
+    bio: "10 ans d'expérience dans l'événementiel sportif. Marie a travaillé avec les plus grands organisateurs d'événements en France avant de rejoindre Focus Racer pour développer le réseau de partenaires.",
+    funFact: "A organisé 200+ événements sportifs et affirme que le pire cauchemar d'un organisateur, c'est la pluie à J-1.",
     gradient: "from-purple-400 to-pink-500",
   },
   {
     initials: "TN",
     name: "Thomas Nguyen",
     role: "Lead Designer",
-    bio: "Spécialiste UX/UI mobile-first, Thomas conçoit des interfaces qui convertissent. Son obsession : réduire le nombre de clics entre la découverte d&apos;une photo et son achat.",
-    funFact: "Teste chaque maquette en courant sur un tapis roulant pour simuler les conditions réelles d&apos;utilisation.",
+    bio: "Spécialiste UX/UI mobile-first, Thomas conçoit des interfaces qui convertissent. Son obsession : réduire le nombre de clics entre la découverte d'une photo et son achat.",
+    funFact: "Teste chaque maquette en courant sur un tapis roulant pour simuler les conditions réelles d'utilisation.",
     gradient: "from-orange-400 to-red-500",
   },
 ];
@@ -128,21 +128,21 @@ const coreValues = [
   {
     icon: "🔒",
     title: "Confiance",
-    desc: "RGPD natif, stockage chiffré S3, watermark anti-vol, protection hotlink. La sécurité des données n&apos;est pas une option, c&apos;est un fondement.",
+    desc: "RGPD natif, stockage chiffré S3, watermark anti-vol, protection hotlink. La sécurité des données n'est pas une option, c'est un fondement.",
     metric: "RGPD",
     metricLabel: "conformité native",
   },
   {
     icon: "🧠",
     title: "Innovation",
-    desc: "AWS Rekognition, reconnaissance faciale, smart crop, dédoublonnage pHash, retouche automatique. Nous repoussons les limites de l&apos;IA appliquée au sport.",
+    desc: "AWS Rekognition, reconnaissance faciale, smart crop, dédoublonnage pHash, retouche automatique. Nous repoussons les limites de l'IA appliquée au sport.",
     metric: "6+",
     metricLabel: "algorithmes IA",
   },
   {
     icon: "🆓",
     title: "Accessibilité",
-    desc: "La recherche et la consultation des galeries sont 100% gratuites pour les sportifs. Aucune barrière à l&apos;entrée, aucun compte obligatoire pour chercher.",
+    desc: "La recherche et la consultation des galeries sont 100% gratuites pour les sportifs. Aucune barrière à l'entrée, aucun compte obligatoire pour chercher.",
     metric: "100%",
     metricLabel: "gratuit pour chercher",
   },
@@ -150,7 +150,7 @@ const coreValues = [
 
 const techStack = [
   { name: "AWS Rekognition", desc: "OCR des dossards et reconnaissance faciale avec une précision de 95%", icon: "🧠", category: "IA" },
-  { name: "Sharp", desc: "Traitement d&apos;image haute performance : retouche, smart crop, watermark, WebP", icon: "🖼️", category: "Traitement" },
+  { name: "Sharp", desc: "Traitement d'image haute performance : retouche, smart crop, watermark, WebP", icon: "🖼️", category: "Traitement" },
   { name: "Stripe Connect", desc: "Paiements directs sécurisés avec Apple Pay, Google Pay, SEPA et CB", icon: "💳", category: "Paiement" },
   { name: "Next.js 14", desc: "Framework React fullstack avec App Router et rendu côté serveur", icon: "⚛️", category: "Infrastructure" },
   { name: "PostgreSQL", desc: "Base de données relationnelle robuste avec Prisma ORM", icon: "🗄️", category: "Infrastructure" },
@@ -179,7 +179,7 @@ const audiences = [
   {
     icon: "🏃",
     title: "Sportifs",
-    desc: "Retrouvez vos photos en un clic grâce à l&apos;IA. Recherche gratuite par dossard, selfie ou nom. Achat en quelques secondes.",
+    desc: "Retrouvez vos photos en un clic grâce à l'IA. Recherche gratuite par dossard, selfie ou nom. Achat en quelques secondes.",
     link: "/solutions/sportifs",
     color: "from-emerald-400 to-teal-500",
   },
@@ -202,8 +202,8 @@ const audiences = [
 const engagements = [
   { icon: "🇪🇺", title: "RGPD natif", desc: "Conformité complète avec le règlement européen sur la protection des données. Formulaire de suppression intégré, audit trail, chiffrement." },
   { icon: "🇫🇷", title: "Made in France", desc: "Conçu, développé et hébergé en France sur serveur dédié OVH. Données stockées en Europe (AWS eu-west-1)." },
-  { icon: "🌱", title: "Éco-responsable", desc: "Images optimisées WebP (-60% de bande passante), compression Brotli, cache immutable. Moins de données transférées = moins d&apos;énergie consommée." },
-  { icon: "💎", title: "Tarifs transparents", desc: "Pas de frais cachés, pas de commission sur les ventes, pas d&apos;abonnement obligatoire. Vous payez uniquement le tri IA à la photo." },
+  { icon: "🌱", title: "Éco-responsable", desc: "Images optimisées WebP (-60% de bande passante), compression Brotli, cache immutable. Moins de données transférées = moins d'énergie consommée." },
+  { icon: "💎", title: "Tarifs transparents", desc: "Pas de frais cachés, pas de commission sur les ventes, pas d'abonnement obligatoire. Vous payez uniquement le tri IA à la photo." },
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -295,9 +295,9 @@ export default function AboutPage() {
               </span>
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              Focus Racer est né d&apos;une frustration simple : passer des heures à chercher ses photos
+              Focus Racer est né d'une frustration simple : passer des heures à chercher ses photos
               après une course, sans jamais les retrouver. Nous avons créé la solution que nous aurions
-              aimé avoir &mdash; une plateforme où l&apos;intelligence artificielle fait le travail à votre place.
+              aimé avoir — une plateforme où l'intelligence artificielle fait le travail à votre place.
             </p>
             <p className="text-2xl md:text-3xl font-bold text-emerald-400 max-w-3xl mx-auto">
               500 000+ photos traitées. 150+ événements. 0% de commission.
@@ -369,12 +369,12 @@ export default function AboutPage() {
                 <p>
                   <strong className="text-gray-900">Focus Racer résout ce problème</strong> en combinant intelligence
                   artificielle de pointe et expérience utilisateur soignée. Notre IA lit les dossards, reconnaît
-                  les visages et trie automatiquement chaque photo vers le bon sportif &mdash; en moins de 0,3 seconde
+                  les visages et trie automatiquement chaque photo vers le bon sportif — en moins de 0,3 seconde
                   par image.
                 </p>
                 <p>
                   Nous créons de la valeur pour les <strong className="text-gray-900">trois acteurs</strong> de
-                  l&apos;écosystème :
+                  l'écosystème :
                 </p>
                 <ul className="space-y-2 ml-4">
                   <li className="flex items-start gap-3">
@@ -435,11 +435,11 @@ export default function AboutPage() {
               Notre histoire
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              De l&apos;idée à la réalité
+              De l'idée à la réalité
             </h2>
             <p className="text-gray-600 text-lg">
               Chaque grande aventure commence par une frustration. La nôtre a commencé sur la ligne
-              d&apos;arrivée d&apos;un marathon.
+              d'arrivée d'un marathon.
             </p>
           </div>
 
@@ -495,14 +495,14 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 ${reveal("equipe") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-sm font-medium mb-4">
-              L&apos;équipe
+              L'équipe
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              L&apos;équipe derrière Focus Racer
+              L'équipe derrière Focus Racer
             </h2>
             <p className="text-gray-600 text-lg">
               Des passionnés de sport et de technologie, réunis par une même conviction :
-              l&apos;IA peut transformer l&apos;expérience de la photo sportive.
+              l'IA peut transformer l'expérience de la photo sportive.
             </p>
           </div>
 
@@ -595,7 +595,7 @@ export default function AboutPage() {
               Technologies
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Propulsé par l&apos;IA de pointe
+              Propulsé par l'IA de pointe
             </h2>
             <p className="text-gray-600 text-lg">
               Une stack technologique moderne et performante, sélectionnée pour offrir
@@ -611,7 +611,7 @@ export default function AboutPage() {
               </div>
               <div className="relative z-10">
                 <p className="text-white/60 text-sm mb-6 uppercase tracking-wider font-medium text-center">
-                  Le parcours d&apos;une photo sur Focus Racer
+                  Le parcours d'une photo sur Focus Racer
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {pipelineSteps.map((step, i) => (
@@ -691,7 +691,7 @@ export default function AboutPage() {
               Focus Racer en chiffres
             </h2>
             <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Des chiffres qui parlent d&apos;eux-mêmes. Notre plateforme grandit chaque jour
+              Des chiffres qui parlent d'eux-mêmes. Notre plateforme grandit chaque jour
               grâce à la confiance de nos utilisateurs.
             </p>
           </div>
@@ -771,7 +771,7 @@ export default function AboutPage() {
               Nos engagements
             </h2>
             <p className="text-gray-600 text-lg">
-              Des engagements concrets qui reflètent notre vision d&apos;une plateforme responsable et transparente.
+              Des engagements concrets qui reflètent notre vision d'une plateforme responsable et transparente.
             </p>
           </div>
 
@@ -802,15 +802,15 @@ export default function AboutPage() {
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            Rejoignez l&apos;aventure Focus Racer
+            Rejoignez l'aventure Focus Racer
           </h2>
           <p className="text-white/80 text-lg mb-4 max-w-2xl mx-auto">
             Que vous soyez sportif à la recherche de vos photos, photographe souhaitant automatiser
-            votre activité, ou organisateur désireux d&apos;offrir le meilleur à vos participants &mdash;
+            votre activité, ou organisateur désireux d'offrir le meilleur à vos participants —
             Focus Racer a été conçu pour vous.
           </p>
           <p className="text-emerald-400 font-semibold text-lg mb-10 max-w-2xl mx-auto">
-            Rejoignez les milliers d&apos;utilisateurs qui nous font déjà confiance.
+            Rejoignez les milliers d'utilisateurs qui nous font déjà confiance.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/explore">

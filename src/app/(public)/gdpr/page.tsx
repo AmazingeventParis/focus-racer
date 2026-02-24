@@ -64,7 +64,7 @@ export default function GdprPage() {
               Votre demande a bien été prise en compte. Conformément au RGPD, nous traiterons votre demande dans un délai maximum de 30 jours. Vous recevrez un email de confirmation.
             </p>
             <Link href="/">
-              <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50">Retour à l&apos;accueil</Button>
+              <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50">Retour à l'accueil</Button>
             </Link>
           </div>
         </main>
@@ -78,7 +78,7 @@ export default function GdprPage() {
         <div className="container mx-auto px-4 py-8 max-w-2xl">
           <h1 className="text-2xl font-bold text-navy mb-2">Protection des données personnelles</h1>
           <p className="text-muted-foreground mb-8">
-            Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d&apos;un droit d&apos;accès, de rectification et de suppression de vos données personnelles.
+            Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles.
           </p>
 
           <Card className="glass-card rounded-2xl">
@@ -172,10 +172,10 @@ export default function GdprPage() {
 
           <div className="mt-8 text-sm text-muted-foreground space-y-2">
             <p>
-              <strong>Focus Racer</strong> s&apos;engage à protéger vos données personnelles conformément au RGPD (Règlement UE 2016/679).
+              <strong>Focus Racer</strong> s'engage à protéger vos données personnelles conformément au RGPD (Règlement UE 2016/679).
             </p>
             <p>
-              Pour toute question relative à la protection de vos données, contactez notre DPO à l&apos;adresse : privacy@focusracer.com
+              Pour toute question relative à la protection de vos données, contactez notre DPO à l'adresse : privacy@focusracer.com
             </p>
           </div>
         </div>

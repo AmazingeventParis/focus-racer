@@ -369,7 +369,7 @@ export default function CreditsPage() {
               </div>
               <div className="flex gap-3">
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">3</span>
-                <p>L&apos;IA analyse automatiquement vos photos</p>
+                <p>L'IA analyse automatiquement vos photos</p>
               </div>
               <div className="flex gap-3">
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">4</span>
@@ -381,7 +381,7 @@ export default function CreditsPage() {
           {/* Help */}
           <Card className="bg-white border-0 shadow-card rounded-xl">
             <CardHeader>
-              <CardTitle className="text-lg font-display text-gray-900">Besoin d&apos;aide ?</CardTitle>
+              <CardTitle className="text-lg font-display text-gray-900">Besoin d'aide ?</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <a

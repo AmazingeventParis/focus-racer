@@ -233,13 +233,13 @@ export default function CheckoutPage({
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/" className="text-xl font-bold text-navy">Focus Racer</Link>
           <Link href={`/events/${id}/favorites`}>
-            <Button variant="outline" size="sm">&larr; Retour aux favoris</Button>
+            <Button variant="outline" size="sm">← Retour aux favoris</Button>
           </Link>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <h1 className="text-2xl font-bold text-navy mb-2">Finaliser l&apos;achat</h1>
+        <h1 className="text-2xl font-bold text-navy mb-2">Finaliser l'achat</h1>
         <p className="text-muted-foreground mb-8">{eventInfo?.name}</p>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -321,7 +321,7 @@ export default function CheckoutPage({
                                   : "1 photo"}
                               </p>
                             </div>
-                            <span className="font-semibold text-emerald">{pack.price.toFixed(2)}&euro;</span>
+                            <span className="font-semibold text-emerald">{pack.price.toFixed(2)}€</span>
                           </div>
                         </button>
                       );
@@ -419,27 +419,27 @@ export default function CheckoutPage({
 
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Photos</span>
-                  <span>{total.toFixed(2)}&euro;</span>
+                  <span>{total.toFixed(2)}€</span>
                 </div>
 
                 {savings > 0 && (
                   <div className="flex justify-between text-sm text-green-600">
                     <span>Économie</span>
-                    <span>-{savings.toFixed(2)}&euro;</span>
+                    <span>-{savings.toFixed(2)}€</span>
                   </div>
                 )}
 
                 {serviceFee > 0 && (
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Frais de service</span>
-                    <span>{serviceFee.toFixed(2)}&euro;</span>
+                    <span>{serviceFee.toFixed(2)}€</span>
                   </div>
                 )}
 
                 <div className="border-t pt-4">
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-emerald">{(total + serviceFee).toFixed(2)}&euro;</span>
+                    <span className="text-emerald">{(total + serviceFee).toFixed(2)}€</span>
                   </div>
                 </div>
 

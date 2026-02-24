@@ -231,7 +231,7 @@ export default function OrdersPage() {
   const hasActiveFilters = search || eventFilter !== "all" || statusFilter !== "all" || dateFrom || dateTo;
 
   const handleExportCSV = () => {
-    const bom = "\uFEFF";
+    const bom = "﻿";
     const headers = ["Date", "Client", "Email", "SportifId", "Événement", "Photos", "Montant TTC", "Commission", "Net", "Versement", "Statut"];
     const rows = sortedOrders.map((o) => [
       new Date(o.createdAt).toLocaleDateString("fr-FR"),
@@ -412,7 +412,7 @@ export default function OrdersPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide">Chiffre d&apos;affaires</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wide">Chiffre d'affaires</p>
                 <p className="text-xl font-bold text-gray-900">{euro(kpis.totalRevenue)}</p>
               </div>
             </div>

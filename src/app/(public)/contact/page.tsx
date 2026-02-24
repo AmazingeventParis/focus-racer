@@ -100,8 +100,8 @@ export default function ContactPage() {
                     Parlons de votre projet
                   </h2>
                   <p className="text-muted-foreground">
-                    Que vous soyez photographe, organisateur d&apos;événements ou simplement
-                    curieux, nous serions ravis d&apos;échanger avec vous.
+                    Que vous soyez photographe, organisateur d'événements ou simplement
+                    curieux, nous serions ravis d'échanger avec vous.
                   </p>
                 </div>
 

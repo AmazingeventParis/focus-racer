@@ -240,7 +240,7 @@ export default function EventPhotosPage({
           <Link href={`/organizer/events/${id}`}>
             <Button variant="ghost" size="sm" className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour à l&apos;événement
+              Retour à l'événement
             </Button>
           </Link>
           <div className="flex items-center justify-between">
@@ -283,7 +283,7 @@ export default function EventPhotosPage({
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground">
                 {event.photos.length === 0
-                  ? "Aucune photo n&apos;a encore été ajoutée"
+                  ? "Aucune photo n'a encore été ajoutée"
                   : "Aucune photo ne correspond à cette recherche"}
               </p>
             </CardContent>

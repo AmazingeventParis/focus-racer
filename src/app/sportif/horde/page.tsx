@@ -204,7 +204,7 @@ export default function SportifHordePage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-3">
-                Entrez l&apos;ID sportif (FR-XXXXXX) d&apos;un ami pour l&apos;inviter dans votre horde.
+                Entrez l'ID sportif (FR-XXXXXX) d'un ami pour l'inviter dans votre horde.
               </p>
               <div className="flex gap-2">
                 <Input
@@ -425,7 +425,7 @@ export default function SportifHordePage() {
                     <div key={inv.id} className="flex items-center justify-between p-4 bg-amber-50/50 rounded-xl border border-amber-100">
                       <div>
                         <p className="font-medium text-gray-900">
-                          {inv.horde.owner.name} vous invite dans &laquo; {inv.horde.name} &raquo;
+                          {inv.horde.owner.name} vous invite dans « {inv.horde.name} »
                         </p>
                         {inv.horde.owner.sportifId && (
                           <p className="text-xs text-muted-foreground font-mono mt-0.5">{inv.horde.owner.sportifId}</p>
@@ -516,7 +516,7 @@ export default function SportifHordePage() {
               </div>
               <p className="text-muted-foreground text-sm">Aucune demande en cours</p>
               <p className="text-muted-foreground text-xs mt-1">
-                Invitez des amis depuis l&apos;onglet Membres pour agrandir votre horde
+                Invitez des amis depuis l'onglet Membres pour agrandir votre horde
               </p>
             </div>
           )}

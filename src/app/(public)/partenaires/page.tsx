@@ -185,7 +185,7 @@ const benefits = [
     ),
     title: "Revenus partagés",
     description:
-      "Bénéficiez d&apos;un programme de revenus partagés sur chaque vente générée via votre intégration. Un modèle gagnant-gagnant.",
+      "Bénéficiez d'un programme de revenus partagés sur chaque vente générée via votre intégration. Un modèle gagnant-gagnant.",
   },
   {
     icon: (
@@ -196,7 +196,7 @@ const benefits = [
     ),
     title: "Visibilité accrue",
     description:
-      "Votre marque mise en avant sur notre plateforme, dans les galeries d&apos;événements et les communications partenaires.",
+      "Votre marque mise en avant sur notre plateforme, dans les galeries d'événements et les communications partenaires.",
   },
   {
     icon: (
@@ -216,7 +216,7 @@ const benefits = [
     ),
     title: "Support dédié",
     description:
-      "Un interlocuteur technique dédié pour l&apos;intégration, la formation et le support continu. Accompagnement personnalisé.",
+      "Un interlocuteur technique dédié pour l'intégration, la formation et le support continu. Accompagnement personnalisé.",
   },
   {
     icon: (
@@ -243,7 +243,7 @@ const benefits = [
 const testimonials = [
   {
     quote:
-      "L&apos;intégration avec Focus Racer a transformé notre offre. Nos clients reçoivent leurs photos liées à leurs résultats en temps réel. Le taux de satisfaction a bondi de 40%.",
+      "L'intégration avec Focus Racer a transformé notre offre. Nos clients reçoivent leurs photos liées à leurs résultats en temps réel. Le taux de satisfaction a bondi de 40%.",
     author: "Marc Delpierre",
     role: "Directeur technique",
     company: "ChronoPro Timing",
@@ -251,7 +251,7 @@ const testimonials = [
   },
   {
     quote:
-      "Nous avons déployé Focus Racer sur l&apos;ensemble de nos événements fédéraux. La couverture photo automatisée et les galeries officielles sont un vrai plus pour nos licenciés.",
+      "Nous avons déployé Focus Racer sur l'ensemble de nos événements fédéraux. La couverture photo automatisée et les galeries officielles sont un vrai plus pour nos licenciés.",
     author: "Isabelle Moreau",
     role: "Directrice communication",
     company: "Fédération Française de Trail",
@@ -283,7 +283,7 @@ const processSteps = [
     step: 2,
     title: "Évaluation mutuelle",
     description:
-      "Nous analysons ensemble vos besoins, vos volumes et définissons le périmètre de l&apos;intégration technique et commerciale.",
+      "Nous analysons ensemble vos besoins, vos volumes et définissons le périmètre de l'intégration technique et commerciale.",
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
@@ -294,7 +294,7 @@ const processSteps = [
     step: 3,
     title: "Intégration technique",
     description:
-      "Notre équipe vous accompagne pour l&apos;intégration API, la configuration des connecteurs et les tests de bout en bout.",
+      "Notre équipe vous accompagne pour l'intégration API, la configuration des connecteurs et les tests de bout en bout.",
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.58 3.18a.75.75 0 01-1.09-.79l1.06-6.18L.92 6.65a.75.75 0 01.42-1.28l6.21-.9L10.33.52a.75.75 0 011.34 0l2.78 5.65 6.21.9a.75.75 0 01.42 1.28l-4.49 4.38 1.06 6.18a.75.75 0 01-1.09.79l-5.56-2.92z" />
@@ -317,19 +317,19 @@ const processSteps = [
 const faqItems = [
   {
     q: "Quelles sont les conditions pour devenir partenaire Focus Racer ?",
-    a: "Le programme est ouvert à toute organisation intervenant dans l&apos;écosystème du sport : chronométreurs, fédérations, agences photo, clubs, associations, collectivités et médias sportifs. Nous évaluons chaque candidature sur la complémentarité avec notre plateforme et la valeur ajoutée pour les sportifs.",
+    a: "Le programme est ouvert à toute organisation intervenant dans l'écosystème du sport : chronométreurs, fédérations, agences photo, clubs, associations, collectivités et médias sportifs. Nous évaluons chaque candidature sur la complémentarité avec notre plateforme et la valeur ajoutée pour les sportifs.",
   },
   {
     q: "Le programme partenaire est-il payant ?",
-    a: "L&apos;adhésion au programme est gratuite. Selon le type de partenariat, un modèle de revenus partagés ou de tarifs préférentiels est mis en place. Aucun frais d&apos;entrée, aucun engagement minimum. Les conditions sont définies ensemble lors de la phase d&apos;évaluation.",
+    a: "L'adhésion au programme est gratuite. Selon le type de partenariat, un modèle de revenus partagés ou de tarifs préférentiels est mis en place. Aucun frais d'entrée, aucun engagement minimum. Les conditions sont définies ensemble lors de la phase d'évaluation.",
   },
   {
-    q: "Quel est le délai d&apos;intégration technique ?",
+    q: "Quel est le délai d'intégration technique ?",
     a: "Pour une intégration standard (connecteur CSV ou API REST), comptez 1 à 2 semaines. Pour une intégration bidirectionnelle complète avec synchronisation temps réel, le délai est de 3 à 6 semaines selon la complexité. Notre équipe technique vous accompagne à chaque étape.",
   },
   {
-    q: "Bénéficierons-nous d&apos;un support technique dédié ?",
-    a: "Oui. Chaque partenaire dispose d&apos;un interlocuteur technique dédié, d&apos;un accès à notre documentation API privée, et d&apos;un canal de support prioritaire. Nous proposons également des sessions de formation et d&apos;accompagnement personnalisées.",
+    q: "Bénéficierons-nous d'un support technique dédié ?",
+    a: "Oui. Chaque partenaire dispose d'un interlocuteur technique dédié, d'un accès à notre documentation API privée, et d'un canal de support prioritaire. Nous proposons également des sessions de formation et d'accompagnement personnalisées.",
   },
 ];
 
@@ -491,7 +491,7 @@ export default function PartenairesPage() {
             </h1>
 
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              Rejoignez l&apos;écosystème de la photo sportive intelligente.
+              Rejoignez l'écosystème de la photo sportive intelligente.
               Chronométreurs, fédérations, agences, clubs, collectivités, médias :
               construisons ensemble le futur de la couverture photo événementielle.
             </p>
@@ -682,7 +682,7 @@ export default function PartenairesPage() {
             </h2>
             <p className="text-gray-600 text-lg">
               Connectez vos systèmes à Focus Racer en quelques jours grâce à nos
-              connecteurs prêts à l&apos;emploi et notre API REST documentée.
+              connecteurs prêts à l'emploi et notre API REST documentée.
             </p>
           </div>
 
@@ -923,7 +923,7 @@ export default function PartenairesPage() {
                 </svg>
 
                 <p className="text-gray-700 text-sm leading-relaxed mb-6 italic">
-                  &laquo;&nbsp;{t.quote}&nbsp;&raquo;
+                  « {t.quote} »
                 </p>
 
                 <div className="border-t border-gray-100 pt-4">
@@ -1042,7 +1042,7 @@ export default function PartenairesPage() {
 
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            Rejoignez l&apos;écosystème Focus Racer
+            Rejoignez l'écosystème Focus Racer
           </h2>
           <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto">
             Ensemble, construisons le futur de la photo sportive événementielle.

@@ -23,7 +23,7 @@ export default function CheckoutCancelPage({
             <span className="text-3xl text-amber-600">!</span>
           </div>
           <h1 className="text-2xl font-bold text-navy mb-2">Paiement annule</h1>
-          <p className="text-muted-foreground">Votre paiement n&apos;a pas ete effectue</p>
+          <p className="text-muted-foreground">Votre paiement n'a pas ete effectue</p>
         </div>
 
         <Card className="glass-card rounded-2xl animate-fade-in">

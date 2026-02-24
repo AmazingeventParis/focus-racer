@@ -155,7 +155,7 @@ export default function AccountProfilePage() {
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
                   Ajoutez une photo de votre visage pour retrouver automatiquement vos photos sur toutes les courses.
-                  L&apos;IA utilisera cette image pour vous identifier parmi les sportifs.
+                  L'IA utilisera cette image pour vous identifier parmi les sportifs.
                 </p>
                 {faceLoading ? (
                   <p className="text-sm text-muted-foreground">Chargement...</p>
@@ -243,7 +243,7 @@ export default function AccountProfilePage() {
                             href={`/events/${notif.event.id}`}
                             className="text-xs text-emerald hover:underline mt-1 inline-block"
                           >
-                            Voir les photos &rarr;
+                            Voir les photos →
                           </Link>
                         )}
                       </div>
@@ -268,7 +268,7 @@ export default function AccountProfilePage() {
                   <p className="text-sm text-muted-foreground">Chargement...</p>
                 ) : favorites.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
-                    Aucun événement suivi. Cliquez sur &quot;Suivre&quot; sur la page d&apos;un événement pour être alerté.
+                    Aucun événement suivi. Cliquez sur &quot;Suivre&quot; sur la page d'un événement pour être alerté.
                   </p>
                 ) : (
                   <div className="space-y-2">
@@ -283,7 +283,7 @@ export default function AccountProfilePage() {
                             <p className="text-sm font-medium text-navy">{fav.event.name}</p>
                             <p className="text-xs text-muted-foreground">
                               {new Date(fav.event.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
-                              {fav.event.location && ` \u2022 ${fav.event.location}`}
+                              {fav.event.location && ` • ${fav.event.location}`}
                             </p>
                           </div>
                           <Badge variant="outline" className="text-xs">{fav.event.sportType}</Badge>

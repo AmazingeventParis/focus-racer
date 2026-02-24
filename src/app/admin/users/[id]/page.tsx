@@ -385,7 +385,7 @@ export default function AdminUserDetailPage({
         href="/focus-mgr-7k9x/users"
         className="text-emerald hover:text-emerald-dark hover:underline mb-4 inline-block transition-colors duration-200"
       >
-        &larr; Retour à la liste
+        ← Retour à la liste
       </Link>
 
       {/* Header */}
@@ -678,7 +678,7 @@ export default function AdminUserDetailPage({
                     <code className="font-mono font-bold">{tempPassword}</code>
                   </p>
                   <p className="text-xs text-amber-600 mt-1">
-                    Communiquez ce mot de passe à l&apos;utilisateur de manière
+                    Communiquez ce mot de passe à l'utilisateur de manière
                     sécurisée.
                   </p>
                 </div>
@@ -829,7 +829,7 @@ export default function AdminUserDetailPage({
                       )}
                       <p className="text-xs text-muted-foreground">
                         {formatDateTime(tx.createdAt)} | Solde:{" "}
-                        {tx.balanceBefore} &rarr; {tx.balanceAfter}
+                        {tx.balanceBefore} → {tx.balanceAfter}
                       </p>
                     </div>
                   </div>

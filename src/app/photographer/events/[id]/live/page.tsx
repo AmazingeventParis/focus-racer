@@ -222,7 +222,7 @@ export default function LiveUploadPage({
               <p className={`text-4xl font-bold ${pendingProcessing > 0 ? "text-amber-400" : "text-white/40"}`}>
                 {pendingProcessing}
               </p>
-              <p className="text-sm text-white/50 mt-1">En file d&apos;attente</p>
+              <p className="text-sm text-white/50 mt-1">En file d'attente</p>
             </CardContent>
           </Card>
         </div>

@@ -16,7 +16,7 @@ const pipelineSteps = [
       </svg>
     ),
     title: "Upload en masse",
-    desc: "Drag &amp; drop ou import dossier. Compression client-side parall&egrave;le, envoi par chunks de 25 photos.",
+    desc: "Drag &amp; drop ou import dossier. Compression client-side parallèle, envoi par chunks de 25 photos.",
     metric: "25 photos/chunk",
     color: "from-blue-500 to-blue-600",
   },
@@ -27,9 +27,9 @@ const pipelineSteps = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
       </svg>
     ),
-    title: "Pr&eacute;-filtrage intelligent",
-    desc: "D&eacute;doublonnage par empreinte visuelle (pHash, distance de Hamming &le;5) et filtre des photos floues (variance de Laplacian).",
-    metric: "&Eacute;conomie 15-20%",
+    title: "Pré-filtrage intelligent",
+    desc: "Dédoublonnage par empreinte visuelle (pHash, distance de Hamming &le;5) et filtre des photos floues (variance de Laplacian).",
+    metric: "Économie 15-20%",
     color: "from-amber-500 to-orange-500",
   },
   {
@@ -40,8 +40,8 @@ const pipelineSteps = [
       </svg>
     ),
     title: "OCR dossards",
-    desc: "AWS Rekognition analyse chaque photo pour d&eacute;tecter et lire les num&eacute;ros de dossard avec une pr&eacute;cision de 95%.",
-    metric: "95% pr&eacute;cision",
+    desc: "AWS Rekognition analyse chaque photo pour détecter et lire les numéros de dossard avec une précision de 95%.",
+    metric: "95% précision",
     color: "from-emerald-500 to-emerald-600",
   },
   {
@@ -52,7 +52,7 @@ const pipelineSteps = [
       </svg>
     ),
     title: "Reconnaissance faciale",
-    desc: "Indexation des visages et matching cross-photo. Les photos orphelines sont automatiquement li&eacute;es au bon sportif.",
+    desc: "Indexation des visages et matching cross-photo. Les photos orphelines sont automatiquement liées au bon sportif.",
     metric: "85%+ confiance",
     color: "from-violet-500 to-purple-600",
   },
@@ -64,8 +64,8 @@ const pipelineSteps = [
       </svg>
     ),
     title: "Retouche automatique",
-    desc: "Luminosit&eacute;, contraste, saturation et nettet&eacute; ajust&eacute;s automatiquement via Sharp pour un rendu professionnel.",
-    metric: "5 param&egrave;tres",
+    desc: "Luminosité, contraste, saturation et netteté ajustés automatiquement via Sharp pour un rendu professionnel.",
+    metric: "5 paramètres",
     color: "from-pink-500 to-rose-500",
   },
   {
@@ -76,7 +76,7 @@ const pipelineSteps = [
       </svg>
     ),
     title: "Smart Crop",
-    desc: "Recadrage individuel par visage d&eacute;tect&eacute; (bounding box + padding g&eacute;n&eacute;reux), export HD 800px en WebP.",
+    desc: "Recadrage individuel par visage détecté (bounding box + padding généreux), export HD 800px en WebP.",
     metric: "800px HD",
     color: "from-cyan-500 to-teal-500",
   },
@@ -88,7 +88,7 @@ const pipelineSteps = [
       </svg>
     ),
     title: "Watermark &amp; protection",
-    desc: "Filigrane dynamique personnalisable, anti-hotlink, blocage clic droit, headers de s&eacute;curit&eacute; et URLs sign&eacute;es.",
+    desc: "Filigrane dynamique personnalisable, anti-hotlink, blocage clic droit, headers de sécurité et URLs signées.",
     metric: "6 couches",
     color: "from-red-500 to-red-600",
   },
@@ -100,8 +100,8 @@ const pipelineSteps = [
       </svg>
     ),
     title: "Publication galerie",
-    desc: "Galerie publique instantan&eacute;e avec SEO automatique, pagination infinie et recherche par dossard, nom ou selfie.",
-    metric: "Instantan&eacute;e",
+    desc: "Galerie publique instantanée avec SEO automatique, pagination infinie et recherche par dossard, nom ou selfie.",
+    metric: "Instantanée",
     color: "from-indigo-500 to-indigo-600",
   },
 ];
@@ -109,29 +109,29 @@ const pipelineSteps = [
 const ocrScenarios = [
   {
     label: "Dossard propre",
-    desc: "Num&eacute;ro bien visible, face cam&eacute;ra",
+    desc: "Numéro bien visible, face caméra",
     difficulty: "Facile",
     confidence: 99,
     handled: true,
   },
   {
     label: "Dossard boueux",
-    desc: "Boue, pluie, &eacute;claboussures",
+    desc: "Boue, pluie, éclaboussures",
     difficulty: "Difficile",
     confidence: 88,
     handled: true,
   },
   {
-    label: "Dossard pli&eacute;",
-    desc: "Froiss&eacute; par le vent ou le mouvement",
+    label: "Dossard plié",
+    desc: "Froissé par le vent ou le mouvement",
     difficulty: "Difficile",
     confidence: 85,
     handled: true,
   },
   {
-    label: "Partiellement cach&eacute;",
+    label: "Partiellement caché",
     desc: "Bras, sac ou autre sportif devant",
-    difficulty: "Tr&egrave;s difficile",
+    difficulty: "Très difficile",
     confidence: 78,
     handled: true,
   },
@@ -154,7 +154,7 @@ const rgpdItems = [
       </svg>
     ),
     title: "Consentement explicite",
-    desc: "Chaque traitement de données est soumis au consentement préalable de l&apos;utilisateur.",
+    desc: "Chaque traitement de données est soumis au consentement préalable de l'utilisateur.",
   },
   {
     icon: (
@@ -162,7 +162,7 @@ const rgpdItems = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
       </svg>
     ),
-    title: "Droit à l&apos;effacement",
+    title: "Droit à l'effacement",
     desc: "Suppression complète des données sur demande, avec cascade sur toutes les relations.",
   },
   {
@@ -198,7 +198,7 @@ const rgpdItems = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
       </svg>
     ),
-    title: "Journal d&apos;audit",
+    title: "Journal d'audit",
     desc: "Traçabilité complète de chaque action sur les données personnelles (GdprAuditLog).",
   },
 ];
@@ -277,20 +277,20 @@ const techStackItems = [
 
 const certifications = [
   { label: "RGPD", desc: "Union européenne", icon: "🇪🇺" },
-  { label: "DMCA Ready", desc: "Protection droits d&apos;auteur", icon: "🛡️" },
+  { label: "DMCA Ready", desc: "Protection droits d'auteur", icon: "🛡️" },
   { label: "PCI DSS", desc: "Via Stripe (niveau 1)", icon: "💳" },
-  { label: "SSL/TLS", desc: "Certificat Let&apos;s Encrypt", icon: "🔐" },
+  { label: "SSL/TLS", desc: "Certificat Let's Encrypt", icon: "🔐" },
   { label: "Made in France", desc: "Hébergé en France (OVH)", icon: "🇫🇷" },
 ];
 
 const faqTech = [
   {
     q: "Comment fonctionne la détection des dossards sur des photos en mouvement ?",
-    a: "Notre pipeline utilise AWS Rekognition qui analyse l&apos;image entière pour détecter les zones de texte, même sur des sujets en mouvement. La version web optimisée (1600px, JPEG) est utilisée pour l&apos;analyse, ce qui permet un traitement rapide tout en conservant suffisamment de détails pour une détection précise. Le seuil de confiance est configurable (70% par défaut).",
+    a: "Notre pipeline utilise AWS Rekognition qui analyse l'image entière pour détecter les zones de texte, même sur des sujets en mouvement. La version web optimisée (1600px, JPEG) est utilisée pour l'analyse, ce qui permet un traitement rapide tout en conservant suffisamment de détails pour une détection précise. Le seuil de confiance est configurable (70% par défaut).",
   },
   {
     q: "Les données biométriques (visages) sont-elles stockées en clair ?",
-    a: "Non. Les visages ne sont jamais stockés sous forme d&apos;images. AWS Rekognition extrait un vecteur mathématique (embedding) de chaque visage, qui est stocké dans une collection sécurisée. Ce vecteur ne permet pas de reconstituer le visage original. Les données sont supprimées sur demande RGPD.",
+    a: "Non. Les visages ne sont jamais stockés sous forme d'images. AWS Rekognition extrait un vecteur mathématique (embedding) de chaque visage, qui est stocké dans une collection sécurisée. Ce vecteur ne permet pas de reconstituer le visage original. Les données sont supprimées sur demande RGPD.",
   },
   {
     q: "Quelle est la capacité de traitement maximale du serveur ?",
@@ -397,17 +397,17 @@ export default function TechnologiePage() {
               <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
               </svg>
-              IA de pointe &amp; s&eacute;curit&eacute; maximale
+              IA de pointe &amp; sécurité maximale
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-              La technologie derri&egrave;re{" "}
+              La technologie derrière{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">
                 Focus Racer
               </span>
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              Une infrastructure de pointe au service de la simplicit&eacute;. D&eacute;couvrez comment notre pipeline IA traite
-              des milliers de photos en quelques minutes, avec une pr&eacute;cision de 95% et une conformit&eacute; RGPD native.
+              Une infrastructure de pointe au service de la simplicité. Découvrez comment notre pipeline IA traite
+              des milliers de photos en quelques minutes, avec une précision de 95% et une conformité RGPD native.
             </p>
           </div>
         </div>
@@ -419,7 +419,7 @@ export default function TechnologiePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
             <div>
               <div className="text-3xl md:text-4xl font-bold" data-count="95" data-suffix="%">0</div>
-              <div className="text-sm text-white/80 mt-1">Pr&eacute;cision OCR</div>
+              <div className="text-sm text-white/80 mt-1">Précision OCR</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold" data-count="0.3" data-suffix="s" data-decimal="true">0</div>
@@ -427,7 +427,7 @@ export default function TechnologiePage() {
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold" data-count="16" data-suffix=" c&oelig;urs">0</div>
-              <div className="text-sm text-white/80 mt-1">Serveur d&eacute;di&eacute;</div>
+              <div className="text-sm text-white/80 mt-1">Serveur dédié</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold">RGPD</div>
@@ -445,10 +445,10 @@ export default function TechnologiePage() {
               Pipeline IA
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Le pipeline IA en d&eacute;tail
+              Le pipeline IA en détail
             </h2>
             <p className="text-gray-600 text-lg">
-              De l&apos;upload &agrave; la publication, chaque photo traverse 8 &eacute;tapes automatis&eacute;es
+              De l'upload à la publication, chaque photo traverse 8 étapes automatisées
               en moins de 300 millisecondes.
             </p>
           </div>
@@ -464,7 +464,7 @@ export default function TechnologiePage() {
                   {pipelineSteps[activeStep].icon}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold mb-2">&Eacute;tape {pipelineSteps[activeStep].id} &mdash; {pipelineSteps[activeStep].title}</h3>
+                  <h3 className="text-xl font-bold mb-2">Étape {pipelineSteps[activeStep].id} — {pipelineSteps[activeStep].title}</h3>
                   <p className="text-white/90 leading-relaxed mb-3">{pipelineSteps[activeStep].desc}</p>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-sm font-medium">
                     {pipelineSteps[activeStep].metric}
@@ -486,7 +486,7 @@ export default function TechnologiePage() {
                     className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                       i === activeStep ? "bg-white w-8" : "bg-white/40 hover:bg-white/60"
                     }`}
-                    aria-label={`&Eacute;tape ${i + 1}`}
+                    aria-label={`Étape ${i + 1}`}
                   />
                 ))}
               </div>
@@ -534,14 +534,14 @@ export default function TechnologiePage() {
         <div className="container mx-auto px-4">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 ${reveal("ocr") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-sm font-medium mb-4">
-              OCR avanc&eacute;
+              OCR avancé
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               OCR : lire les dossards par IA
             </h2>
             <p className="text-gray-600 text-lg">
-              La reconnaissance optique de caract&egrave;res (OCR) est le c&oelig;ur de Focus Racer. Notre IA d&eacute;chiffre
-              les num&eacute;ros de dossard dans toutes les conditions.
+              La reconnaissance optique de caractères (OCR) est le c&oelig;ur de Focus Racer. Notre IA déchiffre
+              les numéros de dossard dans toutes les conditions.
             </p>
           </div>
 
@@ -549,22 +549,22 @@ export default function TechnologiePage() {
             {/* Left: explanation */}
             <div className={`space-y-6 transition-all duration-700 ${reveal("ocr") ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Comment &ccedil;a fonctionne</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Comment ça fonctionne</h3>
                 <div className="space-y-4 text-gray-600 leading-relaxed">
                   <p>
-                    Chaque photo est analys&eacute;e par <strong className="text-gray-900">AWS Rekognition</strong>, un service
-                    d&apos;intelligence artificielle de pointe. L&apos;algorithme d&eacute;tecte toutes les zones de texte de l&apos;image,
-                    puis filtre celles qui correspondent &agrave; des num&eacute;ros de dossard.
+                    Chaque photo est analysée par <strong className="text-gray-900">AWS Rekognition</strong>, un service
+                    d'intelligence artificielle de pointe. L'algorithme détecte toutes les zones de texte de l'image,
+                    puis filtre celles qui correspondent à des numéros de dossard.
                   </p>
                   <p>
-                    La version web optimis&eacute;e (1600px, JPEG qualit&eacute; 80) est utilis&eacute;e pour l&apos;analyse, ce qui permet
-                    de rester sous la limite de 4 Mo d&apos;AWS tout en conservant suffisamment de d&eacute;tails.
+                    La version web optimisée (1600px, JPEG qualité 80) est utilisée pour l'analyse, ce qui permet
+                    de rester sous la limite de 4 Mo d'AWS tout en conservant suffisamment de détails.
                   </p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Les d&eacute;fis relev&eacute;s</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Les défis relevés</h3>
                 <div className="grid grid-cols-2 gap-3">
                   {[
                     { label: "Mouvement", desc: "Flou de vitesse, sportif en pleine foulée" },
@@ -595,8 +595,8 @@ export default function TechnologiePage() {
                   <div>
                     <p className="text-sm font-semibold text-emerald-800">Fallback intelligent</p>
                     <p className="text-sm text-emerald-700">
-                      Quand l&apos;OCR ne d&eacute;tecte aucun dossard, la reconnaissance faciale prend le relais.
-                      L&apos;IA croise le visage d&eacute;tect&eacute; avec ceux d&eacute;j&agrave; index&eacute;s pour retrouver le sportif (confiance 85%+).
+                      Quand l'OCR ne détecte aucun dossard, la reconnaissance faciale prend le relais.
+                      L'IA croise le visage détecté avec ceux déjà indexés pour retrouver le sportif (confiance 85%+).
                     </p>
                   </div>
                 </div>
@@ -607,7 +607,7 @@ export default function TechnologiePage() {
             <div className={`transition-all duration-700 delay-200 ${reveal("ocr") ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}>
               <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
                 <h3 className="text-lg font-bold text-gray-900 mb-1">Testez mentalement</h3>
-                <p className="text-sm text-gray-500 mb-6">4 sc&eacute;narios de difficult&eacute; croissante &mdash; Focus Racer g&egrave;re tout.</p>
+                <p className="text-sm text-gray-500 mb-6">4 scénarios de difficulté croissante — Focus Racer gère tout.</p>
 
                 <div className="space-y-4">
                   {ocrScenarios.map((scenario, i) => (
@@ -638,7 +638,7 @@ export default function TechnologiePage() {
                           <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
-                          <span className="text-sm font-bold text-emerald-600">G&eacute;r&eacute;</span>
+                          <span className="text-sm font-bold text-emerald-600">Géré</span>
                         </div>
                       </div>
                       <p className="text-sm text-gray-500 mb-3">{scenario.desc}</p>
@@ -658,7 +658,7 @@ export default function TechnologiePage() {
 
                 <div className="mt-6 text-center">
                   <p className="text-xs text-gray-400">
-                    Seuil de confiance configurable &mdash; 70% par d&eacute;faut
+                    Seuil de confiance configurable — 70% par défaut
                   </p>
                 </div>
               </div>
@@ -679,7 +679,7 @@ export default function TechnologiePage() {
             </h2>
             <p className="text-gray-600 text-lg">
               Quand le dossard est invisible, le visage parle. Notre IA identifie chaque sportif
-              gr&acirc;ce &agrave; la reconnaissance faciale.
+              grâce à la reconnaissance faciale.
             </p>
           </div>
 
@@ -692,7 +692,7 @@ export default function TechnologiePage() {
                   </svg>
                 ),
                 title: "Indexation des visages",
-                desc: "Chaque visage d&eacute;tect&eacute; est converti en un vecteur math&eacute;matique unique (embedding) et stock&eacute; dans une collection AWS Rekognition s&eacute;curis&eacute;e. Ce processus est automatis&eacute; lors du traitement de chaque photo.",
+                desc: "Chaque visage détecté est converti en un vecteur mathématique unique (embedding) et stocké dans une collection AWS Rekognition sécurisée. Ce processus est automatisé lors du traitement de chaque photo.",
                 color: "bg-violet-50 text-violet-600",
               },
               {
@@ -702,7 +702,7 @@ export default function TechnologiePage() {
                   </svg>
                 ),
                 title: "Matching cross-photo",
-                desc: "L&apos;IA compare chaque nouveau visage avec l&apos;ensemble de la collection. Si un m&ecirc;me sportif appara&icirc;t sur plusieurs photos, elles sont automatiquement regroup&eacute;es, m&ecirc;me avec des angles ou &eacute;clairages diff&eacute;rents.",
+                desc: "L'IA compare chaque nouveau visage avec l'ensemble de la collection. Si un même sportif apparaît sur plusieurs photos, elles sont automatiquement regroupées, même avec des angles ou éclairages différents.",
                 color: "bg-indigo-50 text-indigo-600",
               },
               {
@@ -712,7 +712,7 @@ export default function TechnologiePage() {
                   </svg>
                 ),
                 title: "Liaison automatique",
-                desc: "Les photos orphelines (sans dossard d&eacute;tect&eacute;) sont automatiquement li&eacute;es au bon sportif si un visage correspondant est trouv&eacute; dans la collection (confiance 85%+). Source trac&eacute;e : &laquo;&nbsp;face_recognition&nbsp;&raquo;.",
+                desc: "Les photos orphelines (sans dossard détecté) sont automatiquement liées au bon sportif si un visage correspondant est trouvé dans la collection (confiance 85%+). Source tracée : « face_recognition ».",
                 color: "bg-purple-50 text-purple-600",
               },
             ].map((item, i) => (
@@ -742,11 +742,11 @@ export default function TechnologiePage() {
                   </svg>
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-900 mb-1">Vie priv&eacute;e prot&eacute;g&eacute;e</h4>
+                  <h4 className="font-bold text-gray-900 mb-1">Vie privée protégée</h4>
                   <p className="text-sm text-gray-600 leading-relaxed">
-                    Les visages ne sont <strong>jamais stock&eacute;s sous forme d&apos;images</strong>. Seuls des vecteurs
-                    math&eacute;matiques (embeddings) sont conserv&eacute;s, rendant toute reconstitution du visage impossible.
-                    Ces donn&eacute;es sont supprim&eacute;es int&eacute;gralement sur demande RGPD.
+                    Les visages ne sont <strong>jamais stockés sous forme d'images</strong>. Seuls des vecteurs
+                    mathématiques (embeddings) sont conservés, rendant toute reconstitution du visage impossible.
+                    Ces données sont supprimées intégralement sur demande RGPD.
                   </p>
                 </div>
               </div>
@@ -766,8 +766,8 @@ export default function TechnologiePage() {
               Infrastructure serveur
             </h2>
             <p className="text-gray-600 text-lg">
-              Un serveur d&eacute;di&eacute; OVH h&eacute;berg&eacute; en France, dimensionn&eacute; pour traiter
-              des milliers de photos simultan&eacute;ment.
+              Un serveur dédié OVH hébergé en France, dimensionné pour traiter
+              des milliers de photos simultanément.
             </p>
           </div>
 
@@ -782,8 +782,8 @@ export default function TechnologiePage() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg">Serveur d&eacute;di&eacute; OVH</h3>
-                    <p className="text-sm text-white/60">H&eacute;berg&eacute; en France (Roubaix)</p>
+                    <h3 className="font-bold text-lg">Serveur dédié OVH</h3>
+                    <p className="text-sm text-white/60">Hébergé en France (Roubaix)</p>
                   </div>
                 </div>
 
@@ -803,7 +803,7 @@ export default function TechnologiePage() {
 
             {/* Performance metrics */}
             <div className={`space-y-6 transition-all duration-700 delay-200 ${reveal("infrastructure") ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Performances mesur&eacute;es</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Performances mesurées</h3>
 
               {/* Speed comparison */}
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
@@ -856,7 +856,7 @@ export default function TechnologiePage() {
                 </div>
                 <div className="bg-white rounded-xl p-5 border border-gray-200 text-center shadow-sm">
                   <div className="text-3xl font-bold text-gray-900">99,9%</div>
-                  <p className="text-sm text-gray-500 mt-1">Disponibilit&eacute;</p>
+                  <p className="text-sm text-gray-500 mt-1">Disponibilité</p>
                 </div>
               </div>
             </div>
@@ -869,20 +869,20 @@ export default function TechnologiePage() {
         <div className="container mx-auto px-4">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 ${reveal("securite") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 text-red-600 text-sm font-medium mb-4">
-              S&eacute;curit&eacute;
+              Sécurité
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              S&eacute;curit&eacute; &amp; protection des donn&eacute;es
+              Sécurité &amp; protection des données
             </h2>
             <p className="text-gray-600 text-lg">
-              La protection de vos donn&eacute;es et de vos photos n&apos;est pas une option. C&apos;est le fondement de notre plateforme.
+              La protection de vos données et de vos photos n'est pas une option. C'est le fondement de notre plateforme.
             </p>
           </div>
 
           {/* RGPD Grid */}
           <div className="max-w-6xl mx-auto mb-16">
             <h3 className={`text-xl font-bold text-gray-900 mb-6 transition-all duration-700 ${reveal("securite") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              Conformit&eacute; RGPD
+              Conformité RGPD
             </h3>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {rgpdItems.map((item, i) => (
@@ -933,16 +933,16 @@ export default function TechnologiePage() {
 
           {/* Data security */}
           <div className={`max-w-4xl mx-auto transition-all duration-700 delay-400 ${reveal("securite") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <h3 className="text-xl font-bold text-gray-900 mb-6">S&eacute;curit&eacute; des donn&eacute;es</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-6">Sécurité des données</h3>
             <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 text-white">
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
-                  { label: "S3 chiffr&eacute; (AES-256)", desc: "Stockage au repos chiffr&eacute; c&ocirc;t&eacute; serveur" },
-                  { label: "HTTPS partout", desc: "TLS 1.3 avec certificat Let&apos;s Encrypt auto-renouvel&eacute;" },
-                  { label: "Rate limiting", desc: "Sliding window in-memory : 60 req/min &eacute;v&eacute;nements, 30 req/min recherche" },
-                  { label: "Validation Zod", desc: "Chaque entr&eacute;e API est valid&eacute;e c&ocirc;t&eacute; serveur avec Zod" },
+                  { label: "S3 chiffré (AES-256)", desc: "Stockage au repos chiffré côté serveur" },
+                  { label: "HTTPS partout", desc: "TLS 1.3 avec certificat Let's Encrypt auto-renouvelé" },
+                  { label: "Rate limiting", desc: "Sliding window in-memory : 60 req/min événements, 30 req/min recherche" },
+                  { label: "Validation Zod", desc: "Chaque entrée API est validée côté serveur avec Zod" },
                   { label: "Protection XSS", desc: "React escape natif + Content Security Policy" },
-                  { label: "Protection CSRF", desc: "NextAuth.js avec tokens CSRF int&eacute;gr&eacute;s" },
+                  { label: "Protection CSRF", desc: "NextAuth.js avec tokens CSRF intégrés" },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <svg className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -971,7 +971,7 @@ export default function TechnologiePage() {
               Notre stack technique
             </h2>
             <p className="text-gray-600 text-lg">
-              Une stack moderne, performante et &eacute;prouv&eacute;e pour une exp&eacute;rience sans compromis.
+              Une stack moderne, performante et éprouvée pour une expérience sans compromis.
             </p>
           </div>
 
@@ -1013,13 +1013,13 @@ export default function TechnologiePage() {
         <div className="container mx-auto px-4">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 ${reveal("certifications") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-sm font-medium mb-4">
-              Conformit&eacute;
+              Conformité
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Conformit&eacute; &amp; certifications
+              Conformité &amp; certifications
             </h2>
             <p className="text-gray-600 text-lg">
-              Des standards de s&eacute;curit&eacute; et de conformit&eacute; reconnus internationalement.
+              Des standards de sécurité et de conformité reconnus internationalement.
             </p>
           </div>
 
@@ -1049,7 +1049,7 @@ export default function TechnologiePage() {
               Questions techniques
             </h2>
             <p className="text-gray-600 text-lg">
-              Les r&eacute;ponses aux questions les plus pos&eacute;es par nos utilisateurs techniques.
+              Les réponses aux questions les plus posées par nos utilisateurs techniques.
             </p>
           </div>
 
@@ -1091,16 +1091,16 @@ export default function TechnologiePage() {
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            Pr&ecirc;t &agrave; essayer la puissance de l&apos;IA&nbsp;?
+            Prêt à essayer la puissance de l'IA ?
           </h2>
           <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto">
-            Cr&eacute;ez votre compte gratuitement et d&eacute;couvrez comment Focus Racer peut transformer
+            Créez votre compte gratuitement et découvrez comment Focus Racer peut transformer
             la gestion de vos photos sportives.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/register">
               <button className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-400/40 hover:-translate-y-0.5 text-lg">
-                Cr&eacute;er un compte gratuit
+                Créer un compte gratuit
               </button>
             </Link>
             <Link href="/pricing">

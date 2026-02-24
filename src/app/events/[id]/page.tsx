@@ -450,7 +450,7 @@ export default function PublicEventPage({
                     month: "long",
                     year: "numeric",
                   })}
-                  {event.location && ` \u2022 ${event.location}`}
+                  {event.location && ` • ${event.location}`}
                 </p>
                 <div className="flex flex-wrap items-center gap-2 mt-3">
                   <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
@@ -480,7 +480,7 @@ export default function PublicEventPage({
                     : "bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-xl"
                   }
                 >
-                  {isFollowing ? "\u2605 Événement suivi" : "\u2606 Suivre cet événement"}
+                  {isFollowing ? "★ Événement suivi" : "☆ Suivre cet événement"}
                 </Button>
                 <Button
                   variant="outline"
@@ -525,7 +525,7 @@ export default function PublicEventPage({
                       onClick={createPhotoAlert}
                       disabled={alertLoading || !alertBib.trim()}
                     >
-                      {alertLoading ? "..." : "Activer l\u2019alerte"}
+                      {alertLoading ? "..." : "Activer l’alerte"}
                     </Button>
                   </div>
                 </div>
@@ -673,7 +673,7 @@ export default function PublicEventPage({
                       className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center hover:bg-white transition-colors z-10"
                     >
                       <span className={favorites.has(photo.id) ? "text-emerald fill-emerald" : "text-muted-foreground"}>
-                        {favorites.has(photo.id) ? "\u2665" : "\u2661"}
+                        {favorites.has(photo.id) ? "♥" : "♡"}
                       </span>
                     </button>
                   </div>
@@ -690,7 +690,7 @@ export default function PublicEventPage({
                               className="text-[10px] text-muted-foreground hover:text-red-500 transition-colors px-1"
                               title="Ce n'est pas moi"
                             >
-                              &times;
+                              ×
                             </button>
                           )}
                         </span>
@@ -790,7 +790,7 @@ export default function PublicEventPage({
         >
           {/* Close button */}
           <button className="absolute top-4 right-4 text-white text-3xl z-10 hover:text-white/70" onClick={closeViewer}>
-            &times;
+            ×
           </button>
 
           {/* Favorite button */}
@@ -799,7 +799,7 @@ export default function PublicEventPage({
             onClick={(e) => { e.stopPropagation(); toggleFavorite(viewerPhoto.id); }}
           >
             <span className={favorites.has(viewerPhoto.id) ? "text-emerald fill-emerald" : "text-white/70"}>
-              {favorites.has(viewerPhoto.id) ? "\u2665" : "\u2661"}
+              {favorites.has(viewerPhoto.id) ? "♥" : "♡"}
             </span>
           </button>
 

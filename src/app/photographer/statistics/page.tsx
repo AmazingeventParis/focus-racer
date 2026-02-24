@@ -541,7 +541,7 @@ export default function StatisticsPage() {
                 </svg>
                 <div>
                   <p className="font-medium text-gray-900 text-sm">Dossards bien visibles</p>
-                  <p className="text-xs text-gray-600 mt-1">Photographiez les sportifs de face ou de 3/4 pour maximiser la détection des dossards par l&apos;IA.</p>
+                  <p className="text-xs text-gray-600 mt-1">Photographiez les sportifs de face ou de 3/4 pour maximiser la détection des dossards par l'IA.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-50">
@@ -551,7 +551,7 @@ export default function StatisticsPage() {
                 </svg>
                 <div>
                   <p className="font-medium text-gray-900 text-sm">Bonne luminosité</p>
-                  <p className="text-xs text-gray-600 mt-1">Évitez les contre-jours et les zones trop sombres. L&apos;IA fonctionne mieux avec un éclairage uniforme.</p>
+                  <p className="text-xs text-gray-600 mt-1">Évitez les contre-jours et les zones trop sombres. L'IA fonctionne mieux avec un éclairage uniforme.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-4 rounded-xl bg-purple-50">
@@ -560,7 +560,7 @@ export default function StatisticsPage() {
                 </svg>
                 <div>
                   <p className="font-medium text-gray-900 text-sm">Reconnaissance faciale incluse</p>
-                  <p className="text-xs text-gray-600 mt-1">Le traitement IA (1 crédit/photo) inclut l&apos;OCR dossards et la reconnaissance faciale pour lier automatiquement les photos orphelines.</p>
+                  <p className="text-xs text-gray-600 mt-1">Le traitement IA (1 crédit/photo) inclut l'OCR dossards et la reconnaissance faciale pour lier automatiquement les photos orphelines.</p>
                 </div>
               </div>
             </CardContent>

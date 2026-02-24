@@ -95,7 +95,7 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
           <Link href={`/photographer/events/${id}`}>
             <Button variant="ghost" size="sm" className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour à l&apos;événement
+              Retour à l'événement
             </Button>
           </Link>
           <div className="flex items-center justify-between">
@@ -163,7 +163,7 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
           <CardHeader>
             <CardTitle>Détails des Photos</CardTitle>
             <CardDescription>
-              Résultats de l&apos;OCR pour chaque photo uploadée
+              Résultats de l'OCR pour chaque photo uploadée
             </CardDescription>
           </CardHeader>
           <CardContent>

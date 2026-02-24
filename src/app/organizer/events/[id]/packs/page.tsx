@@ -172,7 +172,7 @@ export default function PacksPage({
         href={`/organizer/events/${id}`}
         className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
       >
-        &larr; Retour a {eventName || "l'evenement"}
+        ← Retour a {eventName || "l'evenement"}
       </Link>
 
       <h1 className="text-2xl font-bold text-slate-900 mb-6">Packs de vente</h1>
@@ -279,7 +279,7 @@ export default function PacksPage({
                             {PACK_TYPES.find((p) => p.value === pack.type)?.label || pack.type}
                           </Badge>
                         </TableCell>
-                        <TableCell>{pack.price.toFixed(2)} &euro;</TableCell>
+                        <TableCell>{pack.price.toFixed(2)} €</TableCell>
                         <TableCell>{pack.quantity ?? "Illimité"}</TableCell>
                         <TableCell>
                           <Badge variant={pack.isActive ? "default" : "secondary"} className={pack.isActive ? "bg-emerald" : ""}>

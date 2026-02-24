@@ -48,7 +48,7 @@ const iaFeatures = [
     statLabel: "automatisé",
   },
   {
-    icon: "\u{1F5BC}\uFE0F",
+    icon: "\u{1F5BC}️",
     title: "Retouche automatique des photos",
     desc: "Luminosité, contraste et netteté optimisés automatiquement. Vos photographes livrent des photos prêtes à la vente sans post-production manuelle. Option activable selon vos préférences.",
     stat: "Auto",
@@ -62,7 +62,7 @@ const iaFeatures = [
     statLabel: "moins de déchets",
   },
   {
-    icon: "\u2702\uFE0F",
+    icon: "✂️",
     title: "Smart Crop par visage",
     desc: "Recadrage automatique centré sur chaque visage détecté. Chaque sportif obtient son portrait individuel en haute définition, parfait pour les réseaux sociaux et le partage post-événement.",
     stat: "800px",
@@ -116,7 +116,7 @@ const engagementFeatures = [
 
 const infraFeatures = [
   {
-    icon: "\u26A1",
+    icon: "⚡",
     title: "Serveur dédié hautes performances",
     desc: "AMD EPYC 16 cœurs, 64 Go RAM, NVMe 960 Go. Notre infrastructure encaisse les pics de trafic post-événement sans broncher : 100 ou 50 000 visiteurs simultanés, la vitesse reste constante.",
   },
@@ -236,7 +236,7 @@ const useCases = [
     tag: "Grand événement",
   },
   {
-    icon: "\u26F0\uFE0F",
+    icon: "⛰️",
     title: "Trails & ultra-trails",
     desc: "Parcours montagneux, conditions extrêmes. Notre IA s'adapte aux dossards sales, boueux ou déchirés.",
     tag: "Outdoor",
@@ -260,7 +260,7 @@ const useCases = [
     tag: "Caritatif",
   },
   {
-    icon: "\u{1F3DB}\uFE0F",
+    icon: "\u{1F3DB}️",
     title: "Événements municipaux & de collectivités",
     desc: "Fêtes du sport, courses de quartier, jeux intercommunaux. Solution clé en main, sans équipe technique, rapport chiffré pour le conseil municipal.",
     tag: "Collectivité",
@@ -588,12 +588,12 @@ export default function SolutionsOrganisateursPage() {
               Intelligence artificielle
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              L&apos;IA qui transforme la couverture photo de votre événement
+              L'IA qui transforme la couverture photo de votre événement
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
               Fini le tri manuel de milliers de photos. Notre intelligence artificielle identifie chaque sportif par son dossard ou son visage,
               filtre les clichés ratés et organise la galerie automatiquement.
-              <strong className="text-gray-900"> Vos photographes uploadent, l&apos;IA fait le reste.</strong>
+              <strong className="text-gray-900"> Vos photographes uploadent, l'IA fait le reste.</strong>
             </p>
           </div>
 
@@ -632,7 +632,7 @@ export default function SolutionsOrganisateursPage() {
               La satisfaction de vos participants, notre priorité
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
-              Un sportif qui retrouve facilement ses photos est un sportif heureux. Un sportif heureux revient l&apos;année prochaine,
+              Un sportif qui retrouve facilement ses photos est un sportif heureux. Un sportif heureux revient l'année prochaine,
               parle de votre événement et partage ses photos sur les réseaux.
               <strong className="text-gray-900"> La photo devient un vecteur de fidélisation.</strong>
             </p>
@@ -662,7 +662,7 @@ export default function SolutionsOrganisateursPage() {
               </div>
             </div>
             <p className="text-center text-sm text-gray-500 mt-8">
-              Parcours type d&apos;un participant après la course
+              Parcours type d'un participant après la course
             </p>
           </div>
 
@@ -784,7 +784,7 @@ export default function SolutionsOrganisateursPage() {
                 <div>
                   <div className="flex justify-between mb-2">
                     <label className="text-white/80 text-sm font-medium">Prix moyen / photo</label>
-                    <span className="text-emerald-400 font-bold">{simPricePerPhoto}&euro;</span>
+                    <span className="text-emerald-400 font-bold">{simPricePerPhoto}€</span>
                   </div>
                   <input
                     type="range"
@@ -796,7 +796,7 @@ export default function SolutionsOrganisateursPage() {
                     className="w-full h-2 bg-white/20 rounded-full appearance-none cursor-pointer accent-emerald-500"
                   />
                   <div className="flex justify-between text-xs text-white/40 mt-1">
-                    <span>1&euro;</span><span>20&euro;</span>
+                    <span>1€</span><span>20€</span>
                   </div>
                 </div>
 
@@ -829,8 +829,8 @@ export default function SolutionsOrganisateursPage() {
                     <span className="text-white font-medium">{simPhotosSold.toLocaleString("fr-FR")}</span>
                   </div>
                   <div className="flex justify-between text-white/60">
-                    <span>Coût IA ({simCostPerPhoto}&euro;/photo)</span>
-                    <span className="text-white font-medium">{simCostIA.toLocaleString("fr-FR", { minimumFractionDigits: 2 })}&euro;</span>
+                    <span>Coût IA ({simCostPerPhoto}€/photo)</span>
+                    <span className="text-white font-medium">{simCostIA.toLocaleString("fr-FR", { minimumFractionDigits: 2 })}€</span>
                   </div>
                 </div>
               </div>
@@ -844,12 +844,12 @@ export default function SolutionsOrganisateursPage() {
                     <span className="ml-auto px-3 py-1 bg-emerald-500/30 text-emerald-300 rounded-full text-xs font-bold">0% commission</span>
                   </div>
                   <div className="text-5xl font-bold text-emerald-400 mb-2">
-                    {simRevenuNet.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}&euro;
+                    {simRevenuNet.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€
                   </div>
                   <p className="text-white/60 text-sm">revenu net par événement</p>
                   <div className="mt-4 px-4 py-3 bg-white/5 rounded-xl">
                     <p className="text-emerald-300 text-sm font-medium">
-                      ROI : {simROI.toLocaleString("fr-FR")}x l&apos;investissement IA
+                      ROI : {simROI.toLocaleString("fr-FR")}x l'investissement IA
                     </p>
                   </div>
                 </div>
@@ -861,7 +861,7 @@ export default function SolutionsOrganisateursPage() {
                     <span className="ml-auto px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs font-bold">30% commission</span>
                   </div>
                   <div className="text-4xl font-bold text-white/50 mb-2">
-                    {simTraditionalNet.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}&euro;
+                    {simTraditionalNet.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€
                   </div>
                   <p className="text-white/40 text-sm">revenu net par événement</p>
                 </div>
@@ -870,7 +870,7 @@ export default function SolutionsOrganisateursPage() {
                   <div className="bg-gradient-to-r from-emerald-500/20 to-teal-500/20 backdrop-blur-xl rounded-2xl border border-emerald-400/20 p-6 text-center">
                     <p className="text-white/80 text-sm mb-1">Votre événement gagne</p>
                     <p className="text-3xl font-bold text-emerald-400">
-                      +{simGain.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}&euro;
+                      +{simGain.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€
                     </p>
                     <p className="text-white/60 text-sm mt-1">de plus par édition avec Focus Racer</p>
                   </div>
@@ -889,11 +889,11 @@ export default function SolutionsOrganisateursPage() {
               Tous les formats
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Une solution qui s&apos;adapte à votre événement
+              Une solution qui s'adapte à votre événement
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
               De la course de village à 50 participants au marathon international de 40 000 inscrits,
-              en passant par la marche solidaire ou le raid aventure municipal. Focus Racer s&apos;adapte.
+              en passant par la marche solidaire ou le raid aventure municipal. Focus Racer s'adapte.
             </p>
           </div>
 
@@ -1097,7 +1097,7 @@ export default function SolutionsOrganisateursPage() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-700 leading-relaxed mb-6 italic">&laquo;&nbsp;{t.quote}&nbsp;&raquo;</p>
+                <p className="text-gray-700 leading-relaxed mb-6 italic">« {t.quote} »</p>
                 <div>
                   <p className="font-bold text-gray-900 text-sm">{t.author}</p>
                   <p className="text-xs text-gray-500">{t.role}</p>
@@ -1119,7 +1119,7 @@ export default function SolutionsOrganisateursPage() {
               Payez uniquement le tri IA
             </h2>
             <p className="text-gray-600 text-lg">
-              1 crédit = 1 photo traitée par l&apos;IA. Pas d&apos;abonnement obligatoire, pas de commission sur les ventes, pas de frais d&apos;installation.
+              1 crédit = 1 photo traitée par l'IA. Pas d'abonnement obligatoire, pas de commission sur les ventes, pas de frais d'installation.
               Vous ne payez que ce que vous consommez.
             </p>
           </div>
@@ -1142,9 +1142,9 @@ export default function SolutionsOrganisateursPage() {
                 <p className="text-gray-500 text-sm mb-6">{pack.credits} crédits</p>
                 <div className="mb-6">
                   <span className="text-4xl font-bold text-gray-900">{pack.price}</span>
-                  <span className="text-gray-500 ml-1">&euro;</span>
+                  <span className="text-gray-500 ml-1">€</span>
                 </div>
-                <p className="text-sm text-emerald-600 font-medium mb-6">{pack.perPhoto} &euro;/photo</p>
+                <p className="text-sm text-emerald-600 font-medium mb-6">{pack.perPhoto} €/photo</p>
                 <Link href="/pricing">
                   <button className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 ${
                     pack.popular
@@ -1159,7 +1159,7 @@ export default function SolutionsOrganisateursPage() {
           </div>
           <div className="text-center mt-8">
             <Link href="/pricing" className="text-emerald-600 hover:text-emerald-700 font-medium text-sm underline underline-offset-4">
-              Voir tous les tarifs et abonnements &rarr;
+              Voir tous les tarifs et abonnements →
             </Link>
           </div>
         </div>
@@ -1217,12 +1217,12 @@ export default function SolutionsOrganisateursPage() {
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            Prêt à révolutionner l&apos;expérience photo de votre événement ?
+            Prêt à révolutionner l'expérience photo de votre événement ?
           </h2>
           <p className="text-white/80 text-lg mb-4 max-w-2xl mx-auto">
             Course locale, marathon, trail caritatif ou événement municipal : offrez à vos participants
-            un service photo professionnel sans mobiliser d&apos;équipe supplémentaire.
-            L&apos;IA gère le tri, la mise en ligne et la vente.
+            un service photo professionnel sans mobiliser d'équipe supplémentaire.
+            L'IA gère le tri, la mise en ligne et la vente.
           </p>
           <p className="text-emerald-400 font-semibold text-lg mb-10 max-w-2xl mx-auto">
             Zéro logistique. Zéro commission. 100% de satisfaction participants.

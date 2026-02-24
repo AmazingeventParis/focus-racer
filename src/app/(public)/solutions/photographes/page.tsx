@@ -410,7 +410,7 @@ export default function SolutionsPhotographesPage() {
             <div className="text-white space-y-8">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                Plateforme de vente photo propulsée par l&apos;IA
+                Plateforme de vente photo propulsée par l'IA
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
                 Transformez vos clichés en{" "}
@@ -424,7 +424,7 @@ export default function SolutionsPhotographesPage() {
               </h1>
               <p className="text-lg text-white/80 max-w-xl leading-relaxed">
                 Upload, tri automatique par intelligence artificielle, galerie optimisée, vente et paiement direct.
-                Concentrez-vous sur la photo, Focus Racer s&apos;occupe du tri, de la vente et du marketing.
+                Concentrez-vous sur la photo, Focus Racer s'occupe du tri, de la vente et du marketing.
                 <strong className="text-white"> 0% de commission sur vos ventes.</strong>
               </p>
               <div className="flex flex-wrap gap-4">
@@ -496,7 +496,7 @@ export default function SolutionsPhotographesPage() {
                 <div className="mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-400/20">
                   <div className="flex items-center justify-between">
                     <span className="text-white/80 text-sm">1 crédit = 1 photo traitée</span>
-                    <span className="text-emerald-400 font-bold">à partir de 0,008 &euro;/photo</span>
+                    <span className="text-emerald-400 font-bold">à partir de 0,008 €/photo</span>
                   </div>
                 </div>
               </div>
@@ -551,12 +551,12 @@ export default function SolutionsPhotographesPage() {
               Intelligence artificielle
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              L&apos;IA au service de votre liberté : le tri sans effort
+              L'IA au service de votre liberté : le tri sans effort
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
               Notre intelligence artificielle identifie les athlètes même si le dossard est masqué, boueux ou partiellement caché.
-              Importez vos photos en masse, l&apos;IA s&apos;occupe de l&apos;organisation en arrière-plan pendant que vous vous reposez ou préparez votre prochain shooting.
-              <strong className="text-gray-900"> Workflow &laquo;&nbsp;Zéro Latence&nbsp;&raquo;.</strong>
+              Importez vos photos en masse, l'IA s'occupe de l'organisation en arrière-plan pendant que vous vous reposez ou préparez votre prochain shooting.
+              <strong className="text-gray-900"> Workflow « Zéro Latence ».</strong>
             </p>
           </div>
 
@@ -592,12 +592,12 @@ export default function SolutionsPhotographesPage() {
               Stratégie de vente
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Le &laquo;&nbsp;Golden Time&nbsp;&raquo; : vendez quand l&apos;émotion est au maximum
+              Le « Golden Time » : vendez quand l'émotion est au maximum
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
               En photographie événementielle, le temps est votre pire ennemi.
               <strong className="text-gray-900"> 70% des ventes se font dans les 24 premières heures</strong> après la course.
-              Passé ce délai, l&apos;adrénaline redescend, et vos chances de conversion aussi. Focus Racer vous permet de mettre en ligne le jour même.
+              Passé ce délai, l'adrénaline redescend, et vos chances de conversion aussi. Focus Racer vous permet de mettre en ligne le jour même.
             </p>
           </div>
 
@@ -658,7 +658,7 @@ export default function SolutionsPhotographesPage() {
               Marketing prédictif & engagement client
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
-              Un photographe utilisant notre système d&apos;alertes et d&apos;identification IA voit ses ventes augmenter en moyenne de{" "}
+              Un photographe utilisant notre système d'alertes et d'identification IA voit ses ventes augmenter en moyenne de{" "}
               <strong className="text-gray-900">40% par rapport à une mise en ligne classique à J+3</strong>.
               Activez les leviers de conversion intégrés.
             </p>
@@ -785,7 +785,7 @@ export default function SolutionsPhotographesPage() {
                     <span className="ml-auto px-3 py-1 bg-emerald-500/30 text-emerald-300 rounded-full text-xs font-bold">0% commission</span>
                   </div>
                   <div className="text-5xl font-bold text-emerald-400 mb-2">
-                    {simRevenuNet.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}&euro;
+                    {simRevenuNet.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€
                   </div>
                   <p className="text-white/60 text-sm">revenu net par événement</p>
                   <div className="mt-4 px-4 py-3 bg-white/5 rounded-xl">
@@ -803,7 +803,7 @@ export default function SolutionsPhotographesPage() {
                     <span className="ml-auto px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs font-bold">30% commission</span>
                   </div>
                   <div className="text-4xl font-bold text-white/50 mb-2">
-                    {simTraditionalNet.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}&euro;
+                    {simTraditionalNet.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€
                   </div>
                   <p className="text-white/40 text-sm">revenu net par événement</p>
                 </div>
@@ -813,7 +813,7 @@ export default function SolutionsPhotographesPage() {
                   <div className="bg-gradient-to-r from-emerald-500/20 to-teal-500/20 backdrop-blur-xl rounded-2xl border border-emerald-400/20 p-6 text-center">
                     <p className="text-white/80 text-sm mb-1">Vous gagnez</p>
                     <p className="text-3xl font-bold text-emerald-400">
-                      +{simGain.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}&euro;
+                      +{simGain.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€
                     </p>
                     <p className="text-white/60 text-sm mt-1">de plus par événement avec Focus Racer</p>
                   </div>
@@ -832,11 +832,11 @@ export default function SolutionsPhotographesPage() {
               Infrastructure & sécurité
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Une infrastructure &laquo;&nbsp;indestructible&nbsp;&raquo; & visibilité web
+              Une infrastructure « indestructible » & visibilité web
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
               Serveur dédié haute performance, SEO localisé pour chaque événement, sécurité de niveau professionnel.
-              Que vous ayez 100 ou 50&nbsp;000 visiteurs simultanés, la vitesse reste constante.
+              Que vous ayez 100 ou 50 000 visiteurs simultanés, la vitesse reste constante.
             </p>
           </div>
 
@@ -1002,7 +1002,7 @@ export default function SolutionsPhotographesPage() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-700 leading-relaxed mb-6 italic">&laquo;&nbsp;{t.quote}&nbsp;&raquo;</p>
+                <p className="text-gray-700 leading-relaxed mb-6 italic">« {t.quote} »</p>
                 <div>
                   <p className="font-bold text-gray-900 text-sm">{t.author}</p>
                   <p className="text-xs text-gray-500">{t.role}</p>
@@ -1024,7 +1024,7 @@ export default function SolutionsPhotographesPage() {
               Payez uniquement le tri IA
             </h2>
             <p className="text-gray-600 text-lg">
-              1 crédit = 1 photo traitée par l&apos;IA. Pas d&apos;abonnement obligatoire, pas de commission sur vos ventes. Vous ne payez que ce que vous consommez.
+              1 crédit = 1 photo traitée par l'IA. Pas d'abonnement obligatoire, pas de commission sur vos ventes. Vous ne payez que ce que vous consommez.
             </p>
           </div>
 
@@ -1046,9 +1046,9 @@ export default function SolutionsPhotographesPage() {
                 <p className="text-gray-500 text-sm mb-6">{pack.credits} crédits</p>
                 <div className="mb-6">
                   <span className="text-4xl font-bold text-gray-900">{pack.price}</span>
-                  <span className="text-gray-500 ml-1">&euro;</span>
+                  <span className="text-gray-500 ml-1">€</span>
                 </div>
-                <p className="text-sm text-emerald-600 font-medium mb-6">{pack.perPhoto} &euro;/photo</p>
+                <p className="text-sm text-emerald-600 font-medium mb-6">{pack.perPhoto} €/photo</p>
                 <Link href="/pricing">
                   <button className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 ${
                     pack.popular
@@ -1063,7 +1063,7 @@ export default function SolutionsPhotographesPage() {
           </div>
           <div className="text-center mt-8">
             <Link href="/pricing" className="text-emerald-600 hover:text-emerald-700 font-medium text-sm underline underline-offset-4">
-              Voir tous les tarifs et abonnements &rarr;
+              Voir tous les tarifs et abonnements →
             </Link>
           </div>
         </div>
@@ -1125,7 +1125,7 @@ export default function SolutionsPhotographesPage() {
           </h2>
           <p className="text-white/80 text-lg mb-4 max-w-2xl mx-auto">
             Nous ne vous offrons pas juste une galerie : nous vous offrons un levier pour multiplier vos revenus actuels.
-            En combinant l&apos;identification IA la plus rapide du marché avec une stratégie de vente axée sur la psychologie de l&apos;acheteur.
+            En combinant l'identification IA la plus rapide du marché avec une stratégie de vente axée sur la psychologie de l'acheteur.
           </p>
           <p className="text-emerald-400 font-semibold text-lg mb-10 max-w-2xl mx-auto">
             Un photographe utilisant Focus Racer voit ses ventes augmenter en moyenne de 40% par rapport à une mise en ligne classique à J+3.

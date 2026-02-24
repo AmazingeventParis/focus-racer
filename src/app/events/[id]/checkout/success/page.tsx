@@ -152,7 +152,7 @@ export default function CheckoutSuccessPage({
                 <CardContent className="pt-6">
                   <p className="font-medium text-navy mb-2">Creez un compte pour retrouver vos achats</p>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Avec un compte, vous pourrez re-telecharger vos photos et retrouver votre historique d&apos;achats.
+                    Avec un compte, vous pourrez re-telecharger vos photos et retrouver votre historique d'achats.
                   </p>
                   <Link href="/register">
                     <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">Creer un compte</Button>
@@ -180,7 +180,7 @@ export default function CheckoutSuccessPage({
             <h1 className="text-xl font-bold text-navy mb-2">Commande non trouvee</h1>
             <p className="text-muted-foreground mb-4">Impossible de trouver les details de cette commande.</p>
             <Link href={`/events/${id}`}>
-              <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">Retour a l&apos;evenement</Button>
+              <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">Retour a l'evenement</Button>
             </Link>
           </div>
         )}

@@ -168,7 +168,7 @@ export function EventQRCode({ eventUrl, eventName }: EventQRCodeProps) {
               </Button>
             </div>
             <p className="text-[11px] text-muted-foreground text-center">
-              Ultra HD 4096px &middot; Correction d&apos;erreur maximale (niveau H)
+              Ultra HD 4096px · Correction d'erreur maximale (niveau H)
             </p>
           </div>
           {/* Hidden canvas for ultra HD export */}

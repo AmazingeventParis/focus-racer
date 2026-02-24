@@ -206,7 +206,7 @@ export default function FavoritesPage({
 
       <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl pt-24">
         <Link href={`/events/${id}`} className="text-emerald hover:text-emerald-dark hover:underline mb-4 inline-block transition-colors duration-200">
-          &larr; Retour a {eventInfo?.name || "l'evenement"}
+          ← Retour a {eventInfo?.name || "l'evenement"}
         </Link>
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 animate-fade-in">
@@ -288,7 +288,7 @@ export default function FavoritesPage({
         {favoritePhotos.length === 0 ? (
           <Card className="glass-card rounded-2xl animate-fade-in">
             <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground mb-4">Vous n&apos;avez pas encore de favoris</p>
+              <p className="text-muted-foreground mb-4">Vous n'avez pas encore de favoris</p>
               <Link href={`/events/${id}`}>
                 <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">Parcourir la galerie</Button>
               </Link>
@@ -311,7 +311,7 @@ export default function FavoritesPage({
                     className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-all duration-200 shadow-sm"
                     title="Retirer des favoris"
                   >
-                    <span className="text-emerald">&times;</span>
+                    <span className="text-emerald">×</span>
                   </button>
                 </div>
                 {photo.bibNumbers.length > 0 && (

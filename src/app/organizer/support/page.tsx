@@ -402,7 +402,7 @@ export default function OrganizerSupportPage() {
             </div>
             <p className="text-gray-500 mb-2">Aucun message de support</p>
             <p className="text-sm text-gray-400 mb-6">
-              Vous n&apos;avez pas encore envoyé de message au support.
+              Vous n'avez pas encore envoyé de message au support.
             </p>
             <Button
               onClick={() => setShowForm(true)}

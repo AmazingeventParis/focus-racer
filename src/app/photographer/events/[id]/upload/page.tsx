@@ -570,7 +570,7 @@ export default function UploadPage({
           onClick={goBackToSelect}
           className="text-emerald-500 hover:text-emerald-600 transition-colors mb-4 inline-block text-sm"
         >
-          &larr; Retour à la sélection
+          ← Retour à la sélection
         </button>
 
         <Card className="bg-white border-0 shadow-sm rounded-2xl">
@@ -754,7 +754,7 @@ export default function UploadPage({
         href={`/photographer/events/${id}`}
         className="text-emerald-500 hover:text-emerald-600 transition-colors mb-4 inline-block"
       >
-        &larr; Retour à l&apos;événement
+        ← Retour à l'événement
       </Link>
 
       {/* Hidden file input — always accessible for "+ Ajouter" button */}

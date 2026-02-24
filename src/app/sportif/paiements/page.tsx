@@ -142,7 +142,7 @@ export default function SportifPaiementsPage() {
                     <div>
                       <CardTitle className="text-lg">{order.event.name}</CardTitle>
                       <p className="text-sm text-muted-foreground">
-                        Commande #{order.id.slice(-8).toUpperCase()} &bull;{" "}
+                        Commande #{order.id.slice(-8).toUpperCase()} •{" "}
                         {new Date(order.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                       </p>
                     </div>

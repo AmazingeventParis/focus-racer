@@ -118,7 +118,7 @@ function DisputesContent() {
 
   return (
     <div className="animate-fade-in">
-      <h1 className="text-3xl font-bold text-navy mb-2">Litiges &amp; Remboursements</h1>
+      <h1 className="text-3xl font-bold text-navy mb-2">Litiges & Remboursements</h1>
       <p className="text-muted-foreground mb-8">
         Gérez les remboursements des commandes payées
       </p>

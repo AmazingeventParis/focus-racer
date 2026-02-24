@@ -250,7 +250,7 @@ export default function RegisterPage() {
                   onClick={() => setStep(1)}
                   className="text-emerald hover:text-emerald-dark text-sm transition-colors"
                 >
-                  &larr; Retour
+                  ← Retour
                 </button>
               </div>
               <CardTitle className="text-navy">Créer un compte</CardTitle>
@@ -404,9 +404,9 @@ export default function RegisterPage() {
                     className="mt-1 h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                   />
                   <Label htmlFor="acceptedCgu" className="text-sm cursor-pointer leading-relaxed">
-                    J&apos;accepte les{" "}
+                    J'accepte les{" "}
                     <Link href="/legal" className="text-emerald underline hover:text-emerald-dark" target="_blank">
-                      Conditions Générales d&apos;Utilisation
+                      Conditions Générales d'Utilisation
                     </Link>{" "}
                     *
                   </Label>

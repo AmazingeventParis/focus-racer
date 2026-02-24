@@ -221,11 +221,11 @@ export default function PressePage() {
               </span>
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              Focus Racer dans les m&eacute;dias &mdash; Ressources pour journalistes,
-              blogueurs et cr&eacute;ateurs de contenu.
+              Focus Racer dans les médias — Ressources pour journalistes,
+              blogueurs et créateurs de contenu.
             </p>
             <p className="text-white/60 text-sm">
-              Contact presse&nbsp;:{" "}
+              Contact presse :{" "}
               <a
                 href="mailto:presse@focusracer.com"
                 className="text-emerald-400 hover:text-emerald-300 underline underline-offset-4 transition-colors"
@@ -242,11 +242,11 @@ export default function PressePage() {
                 }
                 className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-400/40 hover:-translate-y-0.5 text-lg"
               >
-                T&eacute;l&eacute;charger le kit m&eacute;dia
+                Télécharger le kit média
               </button>
               <Link href="/contact">
                 <button className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/20 transition-all duration-300 backdrop-blur-sm text-lg">
-                  Contacter l&apos;&eacute;quipe presse
+                  Contacter l'équipe presse
                 </button>
               </Link>
             </div>
@@ -266,7 +266,7 @@ export default function PressePage() {
           >
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-sm font-medium mb-4">
-                &Agrave; propos
+                À propos
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
                 Focus Racer en bref
@@ -335,10 +335,10 @@ export default function PressePage() {
               En chiffres
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-white">
-              Chiffres cl&eacute;s
+              Chiffres clés
             </h2>
             <p className="text-white/60 mt-3 max-w-xl mx-auto">
-              Les m&eacute;triques qui comptent pour les journalistes.
+              Les métriques qui comptent pour les journalistes.
             </p>
           </div>
 
@@ -379,13 +379,13 @@ export default function PressePage() {
             }`}
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-sm font-medium mb-4">
-              Actualit&eacute;s
+              Actualités
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Communiqu&eacute;s de presse
+              Communiqués de presse
             </h2>
             <p className="text-gray-600 text-lg">
-              Retrouvez nos derni&egrave;res annonces officielles.
+              Retrouvez nos dernières annonces officielles.
             </p>
           </div>
 
@@ -469,10 +469,10 @@ export default function PressePage() {
               Ressources
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Kit m&eacute;dia &amp; ressources
+              Kit média & ressources
             </h2>
             <p className="text-gray-600 text-lg">
-              Tout le n&eacute;cessaire pour parler de Focus Racer dans vos articles.
+              Tout le nécessaire pour parler de Focus Racer dans vos articles.
             </p>
           </div>
 
@@ -538,9 +538,9 @@ export default function PressePage() {
                     />
                   </svg>
                   <div>
-                    <strong>R&egrave;gles d&apos;utilisation&nbsp;:</strong> taille minimale 40px de hauteur,
-                    espace libre d&apos;au moins 16px autour du logo, ne pas d&eacute;former, ne pas modifier
-                    les couleurs. Pour t&eacute;l&eacute;charger les fichiers HD, contactez{" "}
+                    <strong>Règles d'utilisation :</strong> taille minimale 40px de hauteur,
+                    espace libre d'au moins 16px autour du logo, ne pas déformer, ne pas modifier
+                    les couleurs. Pour télécharger les fichiers HD, contactez{" "}
                     <a
                       href="mailto:presse@focusracer.com"
                       className="text-amber-700 underline"
@@ -582,7 +582,7 @@ export default function PressePage() {
                     Couleurs de marque
                   </h3>
                   <p className="text-gray-500 text-sm">
-                    Cliquez sur une couleur pour copier son code hexad&eacute;cimal.
+                    Cliquez sur une couleur pour copier son code hexadécimal.
                   </p>
                 </div>
               </div>
@@ -654,7 +654,7 @@ export default function PressePage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-1">
-                    Captures d&apos;&eacute;cran
+                    Captures d'écran
                   </h3>
                   <p className="text-gray-500 text-sm">
                     Screenshots du produit (dashboard, galerie, vue mobile) disponibles sur demande.
@@ -721,7 +721,7 @@ export default function PressePage() {
                     </button>
                   </div>
                   <p className="text-gray-600 text-sm leading-relaxed italic border-l-4 border-emerald-200 pl-4">
-                    &laquo;&nbsp;{boilerplate}&nbsp;&raquo;
+                    « {boilerplate} »
                   </p>
                 </div>
               </div>
@@ -747,7 +747,7 @@ export default function PressePage() {
               Ils parlent de nous
             </h2>
             <p className="text-gray-600 text-lg">
-              Vous souhaitez &eacute;crire sur Focus Racer&nbsp;? Contactez-nous pour
+              Vous souhaitez écrire sur Focus Racer ? Contactez-nous pour
               des informations exclusives.
             </p>
           </div>
@@ -779,7 +779,7 @@ export default function PressePage() {
                   </svg>
                 </div>
                 <p className="text-sm font-medium text-gray-400 group-hover:text-emerald-600 transition-colors">
-                  Votre m&eacute;dia ici
+                  Votre média ici
                 </p>
               </div>
             ))}
@@ -887,10 +887,10 @@ export default function PressePage() {
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">
-                        Temps de r&eacute;ponse
+                        Temps de réponse
                       </p>
                       <p className="text-gray-500 text-sm">
-                        Moins de 24h en jours ouvr&eacute;s
+                        Moins de 24h en jours ouvrés
                       </p>
                     </div>
                   </div>
@@ -913,10 +913,10 @@ export default function PressePage() {
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">
-                        R&eacute;seaux sociaux
+                        Réseaux sociaux
                       </p>
                       <p className="text-gray-500 text-sm">
-                        LinkedIn &middot; X (Twitter)
+                        LinkedIn · X (Twitter)
                       </p>
                     </div>
                   </div>
@@ -968,12 +968,12 @@ export default function PressePage() {
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            Une question&nbsp;?
+            Une question ?
           </h2>
           <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto">
-            L&apos;&eacute;quipe presse vous r&eacute;pond sous 24h. N&apos;h&eacute;sitez
-            pas &agrave; nous contacter pour toute demande d&apos;information, interview
-            ou partenariat m&eacute;dia.
+            L'équipe presse vous répond sous 24h. N'hésitez
+            pas à nous contacter pour toute demande d'information, interview
+            ou partenariat média.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a href="mailto:presse@focusracer.com">

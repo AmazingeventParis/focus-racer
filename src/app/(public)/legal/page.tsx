@@ -58,12 +58,12 @@ export default function LegalPage() {
             {/* Protection des photos */}
             <Card className="glass-card rounded-2xl" id="protection-photos">
               <CardHeader>
-                <CardTitle className="text-navy">Protection des photos et droits d&apos;auteur</CardTitle>
+                <CardTitle className="text-navy">Protection des photos et droits d'auteur</CardTitle>
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none space-y-4">
-                <h4 className="text-navy font-semibold">1. Droits d&apos;auteur</h4>
+                <h4 className="text-navy font-semibold">1. Droits d'auteur</h4>
                 <p className="text-navy/80">
-                  Toutes les photographies publiées sur Focus Racer sont protégées par le droit d&apos;auteur
+                  Toutes les photographies publiées sur Focus Racer sont protégées par le droit d'auteur
                   (articles L111-1 et suivants du Code de la propriété intellectuelle). Elles appartiennent
                   exclusivement aux photographes qui les ont publiées.
                 </p>
@@ -76,25 +76,25 @@ export default function LegalPage() {
                 <h4 className="text-navy font-semibold">2. Mesures de protection techniques</h4>
                 <p className="text-navy/80">
                   Les photographies affichées sur la Plateforme sont protégées par des mesures techniques
-                  conformément à l&apos;article L331-5 du Code de la propriété intellectuelle :
+                  conformément à l'article L331-5 du Code de la propriété intellectuelle :
                 </p>
                 <ul className="text-navy/80 list-disc pl-6 space-y-1">
                   <li>Filigrane (watermark) visible sur toutes les photos en consultation</li>
-                  <li>Résolution réduite (les originaux en haute définition ne sont accessibles qu&apos;après achat)</li>
+                  <li>Résolution réduite (les originaux en haute définition ne sont accessibles qu'après achat)</li>
                   <li>Protection contre le téléchargement non autorisé</li>
-                  <li>Protection contre l&apos;intégration sur des sites tiers (hotlink)</li>
+                  <li>Protection contre l'intégration sur des sites tiers (hotlink)</li>
                   <li>Limitation de débit pour prévenir le téléchargement automatisé</li>
                 </ul>
                 <p className="text-navy/80">
                   Le contournement de ces mesures de protection est interdit et passible de sanctions
-                  pénales (article L335-3-1 du Code de la propriété intellectuelle : 3 750 euros d&apos;amende).
+                  pénales (article L335-3-1 du Code de la propriété intellectuelle : 3 750 euros d'amende).
                 </p>
 
                 <h4 className="text-navy font-semibold">3. Sanctions</h4>
                 <p className="text-navy/80">
                   Toute utilisation non autorisée constitue une contrefaçon sanctionnée par les
-                  articles L335-2 et suivants du Code de la propriété intellectuelle (jusqu&apos;à 300 000
-                  euros d&apos;amende et 3 ans d&apos;emprisonnement).
+                  articles L335-2 et suivants du Code de la propriété intellectuelle (jusqu'à 300 000
+                  euros d'amende et 3 ans d'emprisonnement).
                 </p>
               </CardContent>
             </Card>
@@ -106,8 +106,8 @@ export default function LegalPage() {
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none space-y-4">
                 <p className="text-navy/80">
-                  Si vous constatez qu&apos;une photographie vous appartenant est utilisée sans autorisation,
-                  ou si vous souhaitez signaler une violation de droits d&apos;auteur, veuillez nous contacter.
+                  Si vous constatez qu'une photographie vous appartenant est utilisée sans autorisation,
+                  ou si vous souhaitez signaler une violation de droits d'auteur, veuillez nous contacter.
                 </p>
 
                 <h4 className="text-navy font-semibold">Pour les photographes</h4>
@@ -116,10 +116,10 @@ export default function LegalPage() {
                 </p>
                 <ul className="text-navy/80 list-disc pl-6 space-y-1">
                   <li>Votre identité et vos coordonnées</li>
-                  <li>L&apos;URL de votre photo originale sur Focus Racer</li>
-                  <li>L&apos;URL du site contrevenant</li>
-                  <li>Une capture d&apos;écran de la violation</li>
-                  <li>Une déclaration sur l&apos;honneur que vous êtes titulaire des droits</li>
+                  <li>L'URL de votre photo originale sur Focus Racer</li>
+                  <li>L'URL du site contrevenant</li>
+                  <li>Une capture d'écran de la violation</li>
+                  <li>Une déclaration sur l'honneur que vous êtes titulaire des droits</li>
                 </ul>
                 <p className="text-navy/80">
                   Nous adresserons une mise en demeure au site contrevenant sous 48 heures ouvrées.
@@ -127,10 +127,10 @@ export default function LegalPage() {
 
                 <h4 className="text-navy font-semibold">Pour les tiers</h4>
                 <p className="text-navy/80">
-                  Si vous estimez qu&apos;un contenu publié sur Focus Racer porte atteinte à vos droits,
-                  envoyez une notification à <strong>dmca@focusracer.com</strong> comprenant l&apos;identification
+                  Si vous estimez qu'un contenu publié sur Focus Racer porte atteinte à vos droits,
+                  envoyez une notification à <strong>dmca@focusracer.com</strong> comprenant l'identification
                   précise du contenu litigieux, la justification de vos droits et vos coordonnées.
-                  Conformément à l&apos;article 6-I-5 de la LCEN, nous procéderons au retrait dans les meilleurs délais.
+                  Conformément à l'article 6-I-5 de la LCEN, nous procéderons au retrait dans les meilleurs délais.
                 </p>
               </CardContent>
             </Card>

@@ -67,7 +67,7 @@ export default function ConfidentialitePage() {
               <CardContent className="prose prose-gray max-w-none space-y-4">
                 <p className="text-navy/80">
                   Le Professionnel est seul responsable du traitement des Données Personnelles de ses Utilisateurs.
-                  La Société agit en qualité de sous-traitant et s&apos;engage à traiter ces données uniquement
+                  La Société agit en qualité de sous-traitant et s'engage à traiter ces données uniquement
                   pour les finalités liées au Service.
                 </p>
                 <p className="text-navy/80">Les données traitées incluent :</p>
@@ -76,7 +76,7 @@ export default function ConfidentialitePage() {
                   <li>Nom, prénom, adresse email, adresse postale</li>
                   <li>Mot de passe chiffré</li>
                   <li>Données de connexion (date, adresse IP)</li>
-                  <li>Commandes et historique d&apos;achats</li>
+                  <li>Commandes et historique d'achats</li>
                   <li>Numéros de dossard</li>
                   <li>Selfies (pour la recherche par reconnaissance faciale, avec consentement)</li>
                   <li>Panier et sélections</li>
@@ -86,7 +86,7 @@ export default function ConfidentialitePage() {
                   (avec consentement), relation Professionnel-Utilisateur, téléchargement des photos achetées.
                 </p>
                 <p className="text-navy/80">
-                  La Société s&apos;engage à garantir la confidentialité de ces données, à ne les traiter
+                  La Société s'engage à garantir la confidentialité de ces données, à ne les traiter
                   que conformément aux instructions du Professionnel, et à notifier toute violation de
                   données dans un délai de 24 heures.
                 </p>
@@ -108,7 +108,7 @@ export default function ConfidentialitePage() {
                   <li><strong>AWS Rekognition</strong> — eu-west-1, Irlande (traitement IA : OCR et reconnaissance faciale)</li>
                 </ul>
                 <p className="text-navy/80">
-                  Aucune donnée n&apos;est transférée en dehors de l&apos;Espace Économique Européen (EEE).
+                  Aucune donnée n'est transférée en dehors de l'Espace Économique Européen (EEE).
                 </p>
               </CardContent>
             </Card>
@@ -120,16 +120,16 @@ export default function ConfidentialitePage() {
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none space-y-3">
                 <p className="text-navy/80">
-                  Les données ne sont partagées qu&apos;avec les partenaires techniques strictement nécessaires
+                  Les données ne sont partagées qu'avec les partenaires techniques strictement nécessaires
                   au fonctionnement du Service :
                 </p>
                 <ul className="text-navy/80 list-disc pl-6 space-y-1">
                   <li><strong>Stripe</strong> — traitement des paiements (Stripe Connect Express)</li>
                   <li><strong>AWS</strong> — stockage S3 et traitement IA (Rekognition)</li>
-                  <li><strong>Resend</strong> — envoi d&apos;emails transactionnels</li>
+                  <li><strong>Resend</strong> — envoi d'emails transactionnels</li>
                 </ul>
                 <p className="text-navy/80">
-                  Aucune donnée n&apos;est vendue, louée ou partagée à des fins publicitaires ou marketing.
+                  Aucune donnée n'est vendue, louée ou partagée à des fins publicitaires ou marketing.
                 </p>
               </CardContent>
             </Card>
@@ -170,10 +170,10 @@ export default function ConfidentialitePage() {
                   Conformément au RGPD, toute personne dispose des droits suivants :
                 </p>
                 <ul className="text-navy/80 list-disc pl-6 space-y-1">
-                  <li><strong>Droit d&apos;accès</strong> : obtenir une copie de vos données personnelles</li>
+                  <li><strong>Droit d'accès</strong> : obtenir une copie de vos données personnelles</li>
                   <li><strong>Droit de rectification</strong> : corriger vos données inexactes ou incomplètes</li>
-                  <li><strong>Droit d&apos;effacement</strong> : demander la suppression de vos données</li>
-                  <li><strong>Droit d&apos;opposition</strong> : vous opposer au traitement de vos données</li>
+                  <li><strong>Droit d'effacement</strong> : demander la suppression de vos données</li>
+                  <li><strong>Droit d'opposition</strong> : vous opposer au traitement de vos données</li>
                   <li><strong>Droit de limitation</strong> : limiter le traitement dans certains cas</li>
                   <li><strong>Droit de portabilité</strong> : recevoir vos données dans un format structuré</li>
                 </ul>
@@ -186,8 +186,8 @@ export default function ConfidentialitePage() {
                   Nous traitons toute demande dans un délai de 30 jours.
                 </p>
                 <p className="text-navy/80">
-                  Vous disposez également du droit d&apos;introduire une réclamation auprès de la CNIL
-                  (Commission Nationale de l&apos;Informatique et des Libertés) : <strong>www.cnil.fr</strong>.
+                  Vous disposez également du droit d'introduire une réclamation auprès de la CNIL
+                  (Commission Nationale de l'Informatique et des Libertés) : <strong>www.cnil.fr</strong>.
                 </p>
               </CardContent>
             </Card>

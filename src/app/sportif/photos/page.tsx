@@ -483,7 +483,7 @@ export default function SportifPhotosPage() {
                 {lightboxPhoto.purchased ? (
                   <p className="text-emerald-400 text-xs">Achetée — HD disponible</p>
                 ) : (
-                  <p className="text-blue-300 text-xs">Disponible à l&apos;achat</p>
+                  <p className="text-blue-300 text-xs">Disponible à l'achat</p>
                 )}
               </div>
               <div className="flex items-center gap-3 flex-shrink-0">

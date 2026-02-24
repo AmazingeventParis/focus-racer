@@ -143,7 +143,7 @@ export default function EventAnalyticsPage({
           <Link href={`/organizer/events/${id}`}>
             <Button variant="ghost" size="sm" className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour à l&apos;événement
+              Retour à l'événement
             </Button>
           </Link>
           <div className="flex items-center justify-between">
@@ -152,7 +152,7 @@ export default function EventAnalyticsPage({
                 Analytics - {analytics.event.name}
               </h1>
               <p className="text-slate-600 mt-1">
-                Vue d&apos;ensemble des performances de l&apos;événement
+                Vue d'ensemble des performances de l'événement
               </p>
             </div>
           </div>
@@ -191,7 +191,7 @@ export default function EventAnalyticsPage({
           {/* Success Rate */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Taux d&apos;Identification</CardTitle>
+              <CardTitle className="text-sm font-medium">Taux d'Identification</CardTitle>
               <Target className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -243,7 +243,7 @@ export default function EventAnalyticsPage({
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm font-medium">
                 <DollarSign className="h-4 w-4" />
-                Chiffre d&apos;Affaires
+                Chiffre d'Affaires
               </CardTitle>
             </CardHeader>
             <CardContent>

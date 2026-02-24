@@ -146,7 +146,7 @@ export default function RecommendationCards({
                         : "bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700"
                     }`}
                   >
-                    {isFollowed ? "\u2713 Suivi" : "Suivre"}
+                    {isFollowed ? "✓ Suivi" : "Suivre"}
                   </button>
                 </div>
               </div>

@@ -213,10 +213,10 @@ export default function GdprSelfServicePage() {
                 </p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>
-                    <strong>Droit d&apos;accès</strong> : obtenir une copie de vos données personnelles
+                    <strong>Droit d'accès</strong> : obtenir une copie de vos données personnelles
                   </li>
                   <li>
-                    <strong>Droit de suppression</strong> : demander l&apos;effacement de vos photos et données biométriques (visage, dossard)
+                    <strong>Droit de suppression</strong> : demander l'effacement de vos photos et données biométriques (visage, dossard)
                   </li>
                   <li>
                     <strong>Droit de rectification</strong> : corriger des informations inexactes
@@ -414,7 +414,7 @@ export default function GdprSelfServicePage() {
                           {req.adminNote && (
                             <div className="mt-2 bg-blue-50 border border-blue-100 rounded p-2">
                               <p className="text-xs text-blue-700">
-                                <strong>Note de l&apos;administrateur :</strong> {req.adminNote}
+                                <strong>Note de l'administrateur :</strong> {req.adminNote}
                               </p>
                             </div>
                           )}

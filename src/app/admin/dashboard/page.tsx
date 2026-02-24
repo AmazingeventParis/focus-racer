@@ -85,10 +85,10 @@ export default function AdminDashboardPage() {
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card className="glass-card border-l-4 border-l-emerald overflow-hidden">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Chiffre d&apos;affaires</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">Chiffre d'affaires</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-emerald">{stats.revenue.totalCA.toFixed(2)}&euro;</p>
+            <p className="text-3xl font-bold text-emerald">{stats.revenue.totalCA.toFixed(2)}€</p>
             <p className="text-xs text-muted-foreground mt-1">
               {stats.revenue.totalOrders} commande{stats.revenue.totalOrders > 1 ? "s" : ""} payée{stats.revenue.totalOrders > 1 ? "s" : ""}
             </p>
@@ -101,7 +101,7 @@ export default function AdminDashboardPage() {
           <CardContent>
             <p className="text-3xl font-bold text-teal-600">{stats.revenue.totalOrders}</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Panier moyen : {stats.revenue.avgOrderValue.toFixed(2)}&euro;
+              Panier moyen : {stats.revenue.avgOrderValue.toFixed(2)}€
             </p>
           </CardContent>
         </Card>
@@ -169,7 +169,7 @@ export default function AdminDashboardPage() {
                         style={{ width: `${Math.max(pct, 5)}%` }}
                       >
                         <span className="text-xs text-white font-medium">
-                          {m.revenue.toFixed(0)}&euro;
+                          {m.revenue.toFixed(0)}€
                         </span>
                       </div>
                     </div>
@@ -205,11 +205,11 @@ export default function AdminDashboardPage() {
                         {order.user?.name || order.guestEmail || "Invité"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {order.event.name} &bull; {order._count.items} photo{order._count.items > 1 ? "s" : ""}
+                        {order.event.name} • {order._count.items} photo{order._count.items > 1 ? "s" : ""}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-sm text-navy">{order.totalAmount.toFixed(2)}&euro;</p>
+                      <p className="font-semibold text-sm text-navy">{order.totalAmount.toFixed(2)}€</p>
                       <Badge
                         className={
                           order.status === "PAID"

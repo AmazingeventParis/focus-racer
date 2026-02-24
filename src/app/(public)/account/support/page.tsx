@@ -219,7 +219,7 @@ export default function RunnerSupportPage() {
             <div>
               <h1 className="text-2xl font-bold text-navy">Support</h1>
               <p className="text-muted-foreground mt-1">
-                Besoin d&apos;aide ? Contactez notre équipe
+                Besoin d'aide ? Contactez notre équipe
               </p>
             </div>
             <Button
@@ -354,7 +354,7 @@ export default function RunnerSupportPage() {
                 </div>
                 <p className="text-muted-foreground mb-2">Aucun message</p>
                 <p className="text-sm text-gray-400 mb-6">
-                  Vous n&apos;avez pas encore contacté le support.
+                  Vous n'avez pas encore contacté le support.
                 </p>
                 <Button
                   onClick={() => setShowForm(true)}
@@ -435,7 +435,7 @@ export default function RunnerSupportPage() {
                                   <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                   </svg>
-                                  <span className="text-sm font-medium text-emerald-700">Réponse de l&apos;équipe Focus Racer</span>
+                                  <span className="text-sm font-medium text-emerald-700">Réponse de l'équipe Focus Racer</span>
                                   {msg.repliedAt && (
                                     <span className="text-xs text-emerald-500">
                                       {new Date(msg.repliedAt).toLocaleDateString("fr-FR", {

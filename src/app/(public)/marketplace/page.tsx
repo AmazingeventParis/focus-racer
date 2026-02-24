@@ -305,7 +305,7 @@ export default function MarketplacePage() {
                       {listing.budget && (
                         <div className="flex justify-between">
                           <span>Budget</span>
-                          <span className="font-medium text-emerald-600">{listing.budget.toFixed(0)}&euro;</span>
+                          <span className="font-medium text-emerald-600">{listing.budget.toFixed(0)}€</span>
                         </div>
                       )}
                       <div className="flex justify-between">
@@ -325,7 +325,7 @@ export default function MarketplacePage() {
                         <DialogContent>
                           <DialogHeader>
                             <DialogTitle>Postuler — {listing.title}</DialogTitle>
-                            <DialogDescription>Présentez votre candidature à l&apos;organisateur</DialogDescription>
+                            <DialogDescription>Présentez votre candidature à l'organisateur</DialogDescription>
                           </DialogHeader>
                           <div className="space-y-4">
                             <div className="space-y-2">

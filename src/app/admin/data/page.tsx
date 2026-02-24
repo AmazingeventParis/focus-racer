@@ -439,7 +439,7 @@ function fmt(n: number): string {
 }
 
 function fmtEur(n: number): string {
-  return n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u20ac";
+  return n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
 }
 
 function fmtPct(n: number): string {
@@ -884,7 +884,7 @@ export default function AdminDataPage() {
                           value={info.revenue}
                           maxValue={totalRev}
                           barClass="bg-emerald-400"
-                          suffix={` \u20ac (${info.count})`}
+                          suffix={` € (${info.count})`}
                         />
                       ));
                     })()}
@@ -901,7 +901,7 @@ export default function AdminDataPage() {
                 <CardTitle className="text-sm font-medium">Revenu mensuel (12 mois)</CardTitle>
               </CardHeader>
               <CardContent>
-                <TrendBars data={data.sales.revenueByMonth} barClass="bg-emerald-500" valueKey="revenue" suffix=" \u20ac" />
+                <TrendBars data={data.sales.revenueByMonth} barClass="bg-emerald-500" valueKey="revenue" suffix=" €" />
               </CardContent>
             </Card>
           )}
@@ -921,7 +921,7 @@ export default function AdminDataPage() {
                         value={ev.revenue}
                         maxValue={totalRev}
                         barClass="bg-emerald-500"
-                        suffix={` \u20ac (${ev.orders} cmd)`}
+                        suffix={` € (${ev.orders} cmd)`}
                       />
                     ));
                   })()}

@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
     ].join("\n");
 
     // Add BOM for Excel UTF-8 compatibility
-    const bom = "\uFEFF";
+    const bom = "﻿";
     const filename = `focusracer_commandes_${new Date().toISOString().split("T")[0]}.csv`;
 
     return new NextResponse(bom + csvContent, {

@@ -154,7 +154,7 @@ export default function AdminGdprPage() {
 
       <main className="container mx-auto px-4 py-8">
         <Link href="/focus-mgr-7k9x/dashboard" className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block">
-          &larr; Retour au tableau de bord
+          ← Retour au tableau de bord
         </Link>
 
         <div className="flex justify-between items-center mb-6">
@@ -252,7 +252,7 @@ export default function AdminGdprPage() {
                     )}
                     {req.auditLogs.length > 0 && (
                       <div className="border-t pt-3 mt-3">
-                        <p className="text-xs font-medium text-muted-foreground mb-2">Journal d&apos;audit</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-2">Journal d'audit</p>
                         <div className="space-y-1">
                           {req.auditLogs.map((log) => (
                             <div key={log.id} className="text-xs text-muted-foreground flex gap-2">

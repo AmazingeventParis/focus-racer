@@ -81,7 +81,7 @@ export function HomeEvents() {
                       month: "long",
                       year: "numeric",
                     })}
-                    {event.location && ` \u2022 ${event.location}`}
+                    {event.location && ` • ${event.location}`}
                   </p>
                   <div className="flex justify-between items-center pt-1">
                     <div className="flex gap-2">

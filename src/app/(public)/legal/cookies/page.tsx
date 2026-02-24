@@ -52,7 +52,7 @@ export default function CookiesPage() {
                       </tr>
                       <tr>
                         <td className="py-3 pr-4 font-medium">preferences</td>
-                        <td className="py-3 pr-4">Mémorise vos choix d&apos;interface</td>
+                        <td className="py-3 pr-4">Mémorise vos choix d'interface</td>
                         <td className="py-3">1 an</td>
                       </tr>
                     </tbody>
@@ -85,20 +85,20 @@ export default function CookiesPage() {
             {/* Ce que nous n'utilisons PAS */}
             <Card className="glass-card rounded-2xl">
               <CardHeader>
-                <CardTitle className="text-navy">Ce que nous n&apos;utilisons pas</CardTitle>
+                <CardTitle className="text-navy">Ce que nous n'utilisons pas</CardTitle>
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none space-y-3">
                 <p className="text-navy/80">
-                  La Plateforme <strong>n&apos;utilise pas</strong> :
+                  La Plateforme <strong>n'utilise pas</strong> :
                 </p>
                 <ul className="text-navy/80 list-disc pl-6 space-y-1">
                   <li>Cookies publicitaires ou de ciblage</li>
                   <li>Cookies de tracking tiers</li>
-                  <li>Google Analytics, Facebook Pixel ou tout autre outil d&apos;analyse comportementale</li>
+                  <li>Google Analytics, Facebook Pixel ou tout autre outil d'analyse comportementale</li>
                   <li>Cookies de réseaux sociaux (boutons de partage intégrés)</li>
                 </ul>
                 <p className="text-navy/80">
-                  Aucune donnée de navigation n&apos;est partagée avec des tiers à des fins publicitaires ou marketing.
+                  Aucune donnée de navigation n'est partagée avec des tiers à des fins publicitaires ou marketing.
                 </p>
               </CardContent>
             </Card>
@@ -115,8 +115,8 @@ export default function CookiesPage() {
                 </p>
                 <p className="text-navy/80">
                   Étant donné que la Plateforme utilise exclusivement des cookies strictement nécessaires
-                  au fonctionnement du Service, aucun bandeau de consentement n&apos;est requis conformément
-                  à l&apos;article 82 de la loi Informatique et Libertés et aux lignes directrices de la CNIL.
+                  au fonctionnement du Service, aucun bandeau de consentement n'est requis conformément
+                  à l'article 82 de la loi Informatique et Libertés et aux lignes directrices de la CNIL.
                 </p>
               </CardContent>
             </Card>

@@ -70,7 +70,7 @@ export default function NewEventPage() {
       if (!response.ok) {
         toast({
           title: "Erreur",
-          description: data.error || "Impossible de créer l&apos;événement",
+          description: data.error || "Impossible de créer l'événement",
           variant: "destructive",
         });
       } else {
@@ -97,20 +97,20 @@ export default function NewEventPage() {
         href="/organizer/events"
         className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
       >
-        &larr; Retour aux événements
+        ← Retour aux événements
       </Link>
 
       <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardHeader>
             <CardTitle className="text-gray-900 font-display">Créer un événement</CardTitle>
             <CardDescription>
-              Renseignez les informations de la course ou de l&apos;événement
+              Renseignez les informations de la course ou de l'événement
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Nom de l&apos;événement *</Label>
+                <Label htmlFor="name">Nom de l'événement *</Label>
                 <Input
                   id="name"
                   name="name"

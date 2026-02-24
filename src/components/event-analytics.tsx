@@ -30,7 +30,7 @@ interface Analytics {
 }
 
 function formatEuro(value: number): string {
-  return value.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u20ac";
+  return value.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
 }
 
 export function EventAnalytics({ eventId }: { eventId: string }) {

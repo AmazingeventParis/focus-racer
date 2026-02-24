@@ -93,27 +93,27 @@ export default function HomePage() {
     {
       question: "Comment retrouver mes photos de course ?",
       answer:
-        "Rendez-vous sur Focus Racer, s\u00e9lectionnez votre \u00e9v\u00e9nement et entrez votre num\u00e9ro de dossard. Vous pouvez aussi utiliser un selfie pour retrouver vos photos gr\u00e2ce \u00e0 la reconnaissance faciale. Le processus prend moins de 3 secondes.",
+        "Rendez-vous sur Focus Racer, sélectionnez votre événement et entrez votre numéro de dossard. Vous pouvez aussi utiliser un selfie pour retrouver vos photos grâce à la reconnaissance faciale. Le processus prend moins de 3 secondes.",
     },
     {
-      question: "Quels types d\u2019\u00e9v\u00e9nements sont couverts ?",
+      question: "Quels types d’événements sont couverts ?",
       answer:
-        "Focus Racer couvre les marathons, trails, triathlons, courses \u00e0 pied, courses cyclistes, et tout \u00e9v\u00e9nement sportif avec dossard ou identification visuelle. Notre technologie s\u2019adapte \u00e0 toutes les disciplines.",
+        "Focus Racer couvre les marathons, trails, triathlons, courses à pied, courses cyclistes, et tout événement sportif avec dossard ou identification visuelle. Notre technologie s’adapte à toutes les disciplines.",
     },
     {
       question: "Comment fonctionne la reconnaissance de dossard ?",
       answer:
-        "Notre intelligence artificielle analyse automatiquement chaque photo upload\u00e9e pour d\u00e9tecter et lire les num\u00e9ros de dossard gr\u00e2ce \u00e0 un moteur OCR avanc\u00e9. Le processus est enti\u00e8rement automatique et prend quelques secondes par photo, m\u00eame avec des images floues ou en mouvement.",
+        "Notre intelligence artificielle analyse automatiquement chaque photo uploadée pour détecter et lire les numéros de dossard grâce à un moteur OCR avancé. Le processus est entièrement automatique et prend quelques secondes par photo, même avec des images floues ou en mouvement.",
     },
     {
       question: "Je suis photographe, comment vendre mes photos ?",
       answer:
-        "Cr\u00e9ez un compte photographe gratuitement, uploadez vos photos et notre IA les trie automatiquement par dossard et visage. Les coureurs retrouvent et ach\u00e8tent leurs photos directement sur la plateforme. Vous recevez vos revenus via paiement s\u00e9curis\u00e9 Stripe.",
+        "Créez un compte photographe gratuitement, uploadez vos photos et notre IA les trie automatiquement par dossard et visage. Les sportifs retrouvent et achètent leurs photos directement sur la plateforme. Vous recevez vos revenus via paiement sécurisé Stripe.",
     },
     {
-      question: "Peut-on retrouver ses photos sans num\u00e9ro de dossard ?",
+      question: "Peut-on retrouver ses photos sans numéro de dossard ?",
       answer:
-        "Absolument ! Gr\u00e2ce \u00e0 la reconnaissance faciale, prenez simplement un selfie et notre IA retrouvera toutes les photos o\u00f9 vous apparaissez, m\u00eame sans dossard visible. C\u2019est id\u00e9al pour les arriv\u00e9es, d\u00e9parts et photos de groupe.",
+        "Absolument ! Grâce à la reconnaissance faciale, prenez simplement un selfie et notre IA retrouvera toutes les photos où vous apparaissez, même sans dossard visible. C’est idéal pour les arrivées, départs et photos de groupe.",
     },
   ];
 
@@ -137,13 +137,13 @@ export default function HomePage() {
               "@type": "Offer",
               price: "0",
               priceCurrency: "EUR",
-              description: "Recherche de photos gratuite pour les coureurs",
+              description: "Recherche de photos gratuite pour les sportifs",
             },
             featureList: [
               "Reconnaissance de dossard par IA",
               "Reconnaissance faciale",
-              "Galeries personnalis\u00e9es",
-              "Paiement s\u00e9curis\u00e9",
+              "Galeries personnalisées",
+              "Paiement sécurisé",
               "Mode Live",
               "Marketplace photographes",
             ],
@@ -163,15 +163,15 @@ export default function HomePage() {
                 name: "Comment retrouver mes photos de course ?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Rendez-vous sur Focus Racer, s\u00e9lectionnez votre \u00e9v\u00e9nement et entrez votre num\u00e9ro de dossard. Vous pouvez aussi utiliser un selfie pour retrouver vos photos gr\u00e2ce \u00e0 la reconnaissance faciale.",
+                  text: "Rendez-vous sur Focus Racer, sélectionnez votre événement et entrez votre numéro de dossard. Vous pouvez aussi utiliser un selfie pour retrouver vos photos grâce à la reconnaissance faciale.",
                 },
               },
               {
                 "@type": "Question",
-                name: "Quels types d\u2019\u00e9v\u00e9nements sont couverts ?",
+                name: "Quels types d’événements sont couverts ?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Focus Racer couvre les marathons, trails, triathlons, courses \u00e0 pied, courses cyclistes, et tout \u00e9v\u00e9nement sportif avec dossard ou identification visuelle.",
+                  text: "Focus Racer couvre les marathons, trails, triathlons, courses à pied, courses cyclistes, et tout événement sportif avec dossard ou identification visuelle.",
                 },
               },
               {
@@ -179,7 +179,7 @@ export default function HomePage() {
                 name: "Comment fonctionne la reconnaissance de dossard ?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Notre intelligence artificielle analyse automatiquement chaque photo upload\u00e9e pour d\u00e9tecter et lire les num\u00e9ros de dossard. Le processus est enti\u00e8rement automatique et prend quelques secondes par photo.",
+                  text: "Notre intelligence artificielle analyse automatiquement chaque photo uploadée pour détecter et lire les numéros de dossard. Le processus est entièrement automatique et prend quelques secondes par photo.",
                 },
               },
               {
@@ -187,15 +187,15 @@ export default function HomePage() {
                 name: "Suis-je photographe, comment vendre mes photos ?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Cr\u00e9ez un compte photographe, uploadez vos photos et notre IA les trie automatiquement. Les coureurs retrouvent et ach\u00e8tent leurs photos directement. Vous recevez vos revenus via un paiement s\u00e9curis\u00e9 Stripe.",
+                  text: "Créez un compte photographe, uploadez vos photos et notre IA les trie automatiquement. Les sportifs retrouvent et achètent leurs photos directement. Vous recevez vos revenus via un paiement sécurisé Stripe.",
                 },
               },
               {
                 "@type": "Question",
-                name: "Peut-on retrouver ses photos sans num\u00e9ro de dossard ?",
+                name: "Peut-on retrouver ses photos sans numéro de dossard ?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Oui ! Gr\u00e2ce \u00e0 la reconnaissance faciale, prenez simplement un selfie et notre IA retrouvera toutes les photos o\u00f9 vous apparaissez, m\u00eame sans dossard visible.",
+                  text: "Oui ! Grâce à la reconnaissance faciale, prenez simplement un selfie et notre IA retrouvera toutes les photos où vous apparaissez, même sans dossard visible.",
                 },
               },
             ],
@@ -214,7 +214,7 @@ export default function HomePage() {
           <div className="hero-text">
             <div className="hero-badge">
               <span className="hero-badge-dot">⚡</span>
-              Propuls&eacute; par l&apos;Intelligence Artificielle
+              Propulsé par l'Intelligence Artificielle
             </div>
             <h1>
               Retrouvez vos photos de
@@ -224,8 +224,8 @@ export default function HomePage() {
               en un clic.
             </h1>
             <p className="hero-description">
-              Notre IA d&eacute;tecte automatiquement votre dossard et votre visage pour retrouver toutes vos photos
-              d&apos;&eacute;v&eacute;nement en quelques secondes. Gratuit pour les coureurs.
+              Notre IA détecte automatiquement votre dossard et votre visage pour retrouver toutes vos photos
+              d'événement en quelques secondes. Gratuit pour les sportifs.
             </p>
             <div className="hero-ctas">
               <Link href="/explore">
@@ -242,7 +242,7 @@ export default function HomePage() {
             <div className="hero-float-card card-1">
               <div className="float-icon green">✅</div>
               <div>
-                <div className="float-label">Dossard d&eacute;tect&eacute;</div>
+                <div className="float-label">Dossard détecté</div>
                 <div className="float-value">#1247 — 0.3s</div>
               </div>
             </div>
@@ -262,10 +262,10 @@ export default function HomePage() {
                 </div>
                 <div className="pipeline-steps">
                   {[
-                    { icon: "📸", label: "Upload", detail: "2 847 photos re\u00e7ues" },
-                    { icon: "🔍", label: "D\u00e9tection OCR", detail: "Dossards identifi\u00e9s" },
-                    { icon: "🧠", label: "Reconnaissance", detail: "Visages index\u00e9s" },
-                    { icon: "✨", label: "Livraison", detail: "Tri\u00e9es et pr\u00eates" },
+                    { icon: "📸", label: "Upload", detail: "2 847 photos reçues" },
+                    { icon: "🔍", label: "Détection OCR", detail: "Dossards identifiés" },
+                    { icon: "🧠", label: "Reconnaissance", detail: "Visages indexés" },
+                    { icon: "✨", label: "Livraison", detail: "Triées et prêtes" },
                   ].map((step, i) => (
                     <div key={i} className={`pipeline-step${pipelineStep === i ? " active" : ""}${pipelineStep > i ? " done" : ""}`}>
                       <div className="pipeline-step-icon">{pipelineStep > i ? "✅" : step.icon}</div>
@@ -287,7 +287,7 @@ export default function HomePage() {
                   </div>
                   <div className="pipeline-stat">
                     <span className="pipeline-stat-value">95%</span>
-                    <span className="pipeline-stat-label">pr&eacute;cision</span>
+                    <span className="pipeline-stat-label">précision</span>
                   </div>
                   <div className="pipeline-stat">
                     <span className="pipeline-stat-value">24/7</span>
@@ -303,7 +303,7 @@ export default function HomePage() {
       {/* ═══════════ SOCIAL PROOF BAR ═══════════ */}
       <div className="social-proof-bar">
         <div className="social-proof-inner">
-          <span className="social-proof-label">&Eacute;v&eacute;nements couverts</span>
+          <span className="social-proof-label">Événements couverts</span>
           <div className="logos-track-wrapper">
             <div className="logos-track">
               <span className="logo-item">
@@ -331,10 +331,10 @@ export default function HomePage() {
                 <span className="logo-dot"></span>Marathon Vert Rennes
               </span>
               <span className="logo-item">
-                <span className="logo-dot"></span>L&apos;&Eacute;chapp&eacute;e Belle
+                <span className="logo-dot"></span>L'Échappée Belle
               </span>
               <span className="logo-item">
-                <span className="logo-dot"></span>Saint&eacute;Lyon
+                <span className="logo-dot"></span>SaintéLyon
               </span>
               {/* Duplicated for infinite scroll */}
               <span className="logo-item">
@@ -362,10 +362,10 @@ export default function HomePage() {
                 <span className="logo-dot"></span>Marathon Vert Rennes
               </span>
               <span className="logo-item">
-                <span className="logo-dot"></span>L&apos;&Eacute;chapp&eacute;e Belle
+                <span className="logo-dot"></span>L'Échappée Belle
               </span>
               <span className="logo-item">
-                <span className="logo-dot"></span>Saint&eacute;Lyon
+                <span className="logo-dot"></span>SaintéLyon
               </span>
             </div>
           </div>
@@ -379,13 +379,13 @@ export default function HomePage() {
             <div className="stat-number" data-target="500000" data-suffix="+">
               0
             </div>
-            <div className="stat-label">Photos trait&eacute;es</div>
+            <div className="stat-label">Photos traitées</div>
           </div>
           <div className="stat-card reveal stagger-2">
             <div className="stat-number" data-target="200" data-suffix="+">
               0
             </div>
-            <div className="stat-label">&Eacute;v&eacute;nements couverts</div>
+            <div className="stat-label">Événements couverts</div>
           </div>
           <div className="stat-card reveal stagger-3">
             <div className="stat-number" data-target="50" data-suffix="+">
@@ -397,7 +397,7 @@ export default function HomePage() {
             <div className="stat-number" data-target="98" data-suffix="%">
               0
             </div>
-            <div className="stat-label">Taux de d&eacute;tection IA</div>
+            <div className="stat-label">Taux de détection IA</div>
           </div>
         </div>
       </section>
@@ -407,12 +407,12 @@ export default function HomePage() {
         <div className="section-header reveal">
           <div className="section-tag">
             <span className="section-tag-line"></span>
-            Comment &ccedil;a marche
+            Comment ça marche
             <span className="section-tag-line"></span>
           </div>
-          <h2 className="section-title">Trois &eacute;tapes, z&eacute;ro effort</h2>
+          <h2 className="section-title">Trois étapes, zéro effort</h2>
           <p className="section-subtitle">
-            De l&apos;upload &agrave; la livraison, notre intelligence artificielle s&apos;occupe de tout.
+            De l'upload à la livraison, notre intelligence artificielle s'occupe de tout.
           </p>
         </div>
 
@@ -422,8 +422,8 @@ export default function HomePage() {
             <div className="step-icon">📤</div>
             <h3>Upload des photos</h3>
             <p>
-              Le photographe t&eacute;l&eacute;verse ses photos sur la plateforme. Upload en masse ou en temps r&eacute;el
-              pendant l&apos;&eacute;v&eacute;nement gr&acirc;ce au mode Live.
+              Le photographe téléverse ses photos sur la plateforme. Upload en masse ou en temps réel
+              pendant l'événement grâce au mode Live.
             </p>
           </div>
           <div className="step-card reveal stagger-2">
@@ -431,8 +431,8 @@ export default function HomePage() {
             <div className="step-icon">🤖</div>
             <h3>Analyse IA automatique</h3>
             <p>
-              Notre intelligence artificielle d&eacute;tecte les num&eacute;ros de dossard et les visages en quelques
-              secondes. Tri et indexation instantan&eacute;s.
+              Notre intelligence artificielle détecte les numéros de dossard et les visages en quelques
+              secondes. Tri et indexation instantanés.
             </p>
           </div>
           <div className="step-card reveal stagger-3">
@@ -440,8 +440,8 @@ export default function HomePage() {
             <div className="step-icon">🎉</div>
             <h3>Retrouvez vos photos</h3>
             <p>
-              Recherchez par dossard, selfie ou nom. Achetez vos photos pr&eacute;f&eacute;r&eacute;es en un clic avec
-              paiement s&eacute;curis&eacute; Stripe.
+              Recherchez par dossard, selfie ou nom. Achetez vos photos préférées en un clic avec
+              paiement sécurisé Stripe.
             </p>
           </div>
         </div>
@@ -452,12 +452,12 @@ export default function HomePage() {
         <div className="section-header reveal">
           <div className="section-tag">
             <span className="section-tag-line"></span>
-            Fonctionnalit&eacute;s
+            Fonctionnalités
             <span className="section-tag-line"></span>
           </div>
           <h2 className="section-title">Tout ce dont vous avez besoin</h2>
           <p className="section-subtitle">
-            Une plateforme compl&egrave;te pour les coureurs, photographes et organisateurs d&apos;&eacute;v&eacute;nements
+            Une plateforme complète pour les sportifs, photographes et organisateurs d'événements
             sportifs.
           </p>
         </div>
@@ -467,47 +467,47 @@ export default function HomePage() {
             <div className="feature-icon-wrap fi-blue">🏷️</div>
             <h3>Recherche par dossard</h3>
             <p>
-              Entrez simplement votre num&eacute;ro de dossard et retrouvez toutes vos photos en un instant. La
-              d&eacute;tection IA est pr&eacute;cise &agrave; 98%.
+              Entrez simplement votre numéro de dossard et retrouvez toutes vos photos en un instant. La
+              détection IA est précise à 98%.
             </p>
           </div>
           <div className="feature-card reveal stagger-2">
             <div className="feature-icon-wrap fi-purple">🤳</div>
             <h3>Reconnaissance faciale</h3>
             <p>
-              Prenez un selfie et notre IA retrouve toutes les photos o&ugrave; vous apparaissez, m&ecirc;me sans dossard
-              visible. Id&eacute;al pour les photos de groupe.
+              Prenez un selfie et notre IA retrouve toutes les photos où vous apparaissez, même sans dossard
+              visible. Idéal pour les photos de groupe.
             </p>
           </div>
           <div className="feature-card reveal stagger-3">
             <div className="feature-icon-wrap fi-green">⚡</div>
             <h3>Mode Live</h3>
             <p>
-              Upload en temps r&eacute;el pendant la course avec d&eacute;tection instantan&eacute;e. Les coureurs
-              retrouvent leurs photos avant m&ecirc;me la ligne d&apos;arriv&eacute;e.
+              Upload en temps réel pendant la course avec détection instantanée. Les sportifs
+              retrouvent leurs photos avant même la ligne d'arrivée.
             </p>
           </div>
           <div className="feature-card reveal stagger-4">
             <div className="feature-icon-wrap fi-amber">🎨</div>
-            <h3>Galeries personnalis&eacute;es</h3>
+            <h3>Galeries personnalisées</h3>
             <p>
-              Chaque &eacute;v&eacute;nement dispose de sa galerie avec le branding de l&apos;organisateur. Un espace
-              d&eacute;di&eacute; pour chaque course.
+              Chaque événement dispose de sa galerie avec le branding de l'organisateur. Un espace
+              dédié pour chaque course.
             </p>
           </div>
           <div className="feature-card reveal stagger-5">
             <div className="feature-icon-wrap fi-rose">💳</div>
-            <h3>Paiement s&eacute;curis&eacute;</h3>
+            <h3>Paiement sécurisé</h3>
             <p>
-              Achetez vos photos en toute s&eacute;curit&eacute; via Stripe. Paiement instantan&eacute;,
-              t&eacute;l&eacute;chargement imm&eacute;diat en haute r&eacute;solution.
+              Achetez vos photos en toute sécurité via Stripe. Paiement instantané,
+              téléchargement immédiat en haute résolution.
             </p>
           </div>
           <div className="feature-card reveal stagger-6">
             <div className="feature-icon-wrap fi-teal">🤝</div>
             <h3>Marketplace</h3>
             <p>
-              Connectez photographes et organisateurs. Trouvez le photographe id&eacute;al pour votre &eacute;v&eacute;nement
+              Connectez photographes et organisateurs. Trouvez le photographe idéal pour votre événement
               ou proposez vos services.
             </p>
           </div>
@@ -524,7 +524,7 @@ export default function HomePage() {
           </div>
           <h2 className="section-title">Une plateforme, trois publics</h2>
           <p className="section-subtitle">
-            Que vous soyez coureur, photographe ou organisateur, Focus Racer s&apos;adapte &agrave; vos besoins.
+            Que vous soyez sportif, photographe ou organisateur, Focus Racer s'adapte à vos besoins.
           </p>
         </div>
 
@@ -533,7 +533,7 @@ export default function HomePage() {
             className={`audience-tab-btn${activeAudienceTab === "runners" ? " active" : ""}`}
             onClick={() => setActiveAudienceTab("runners")}
           >
-            🏃 Coureurs
+            🏃 Sportifs
           </button>
           <button
             className={`audience-tab-btn${activeAudienceTab === "photographers" ? " active" : ""}`}
@@ -558,21 +558,21 @@ export default function HomePage() {
             <div className="audience-info">
               <h3>Retrouvez vos souvenirs en quelques secondes</h3>
               <p>
-                Fini les heures pass&eacute;es &agrave; chercher vos photos parmi des milliers de clich&eacute;s. Focus
-                Racer vous les livre instantan&eacute;ment, tri&eacute;es et identifi&eacute;es.
+                Fini les heures passées à chercher vos photos parmi des milliers de clichés. Focus
+                Racer vous les livre instantanément, triées et identifiées.
               </p>
               <ul className="audience-benefits">
                 <li>
                   <span className="benefit-check">✓</span>Recherche par dossard, nom ou selfie
                 </li>
                 <li>
-                  <span className="benefit-check">✓</span>R&eacute;sultats en moins de 3 secondes
+                  <span className="benefit-check">✓</span>Résultats en moins de 3 secondes
                 </li>
                 <li>
-                  <span className="benefit-check">✓</span>Photos haute r&eacute;solution t&eacute;l&eacute;chargeables
+                  <span className="benefit-check">✓</span>Photos haute résolution téléchargeables
                 </li>
                 <li>
-                  <span className="benefit-check">✓</span>Notification quand vos photos sont pr&ecirc;tes
+                  <span className="benefit-check">✓</span>Notification quand vos photos sont prêtes
                 </li>
               </ul>
               <Link href="/explore">
@@ -593,14 +593,14 @@ export default function HomePage() {
               <h3>Vendez vos photos automatiquement</h3>
               <p>
                 Concentrez-vous sur votre art. Notre IA trie, indexe et identifie chaque participant sur vos photos. Vous
-                n&apos;avez plus qu&apos;&agrave; encaisser.
+                n'avez plus qu'à encaisser.
               </p>
               <ul className="audience-benefits">
                 <li>
                   <span className="benefit-check">✓</span>Tri automatique par dossard et visage
                 </li>
                 <li>
-                  <span className="benefit-check">✓</span>Upload en masse ou en temps r&eacute;el
+                  <span className="benefit-check">✓</span>Upload en masse ou en temps réel
                 </li>
                 <li>
                   <span className="benefit-check">✓</span>Paiement direct sur votre compte Stripe
@@ -624,27 +624,27 @@ export default function HomePage() {
               <div className="audience-img-placeholder">🏟️</div>
             </div>
             <div className="audience-info">
-              <h3>Offrez une exp&eacute;rience photo m&eacute;morable</h3>
+              <h3>Offrez une expérience photo mémorable</h3>
               <p>
-                Boostez la satisfaction de vos participants avec un service photo int&eacute;gr&eacute; &agrave; votre
-                &eacute;v&eacute;nement. Trouvez des photographes via notre marketplace.
+                Boostez la satisfaction de vos participants avec un service photo intégré à votre
+                événement. Trouvez des photographes via notre marketplace.
               </p>
               <ul className="audience-benefits">
                 <li>
-                  <span className="benefit-check">✓</span>Galerie aux couleurs de votre &eacute;v&eacute;nement
+                  <span className="benefit-check">✓</span>Galerie aux couleurs de votre événement
                 </li>
                 <li>
-                  <span className="benefit-check">✓</span>Marketplace de photographes qualifi&eacute;s
+                  <span className="benefit-check">✓</span>Marketplace de photographes qualifiés
                 </li>
                 <li>
                   <span className="benefit-check">✓</span>Diffusion SMS, email et QR code
                 </li>
                 <li>
-                  <span className="benefit-check">✓</span>Conformit&eacute; RGPD et droit &agrave; l&apos;image
+                  <span className="benefit-check">✓</span>Conformité RGPD et droit à l'image
                 </li>
               </ul>
               <Link href="/register">
-                <button className="btn-audience">Cr&eacute;er un compte Pro →</button>
+                <button className="btn-audience">Créer un compte Pro →</button>
               </Link>
             </div>
           </div>
@@ -659,10 +659,10 @@ export default function HomePage() {
               <span className="section-tag-line"></span>
               Technologie
             </div>
-            <h2 className="section-title">IA &amp; analyse d&apos;image de pointe</h2>
+            <h2 className="section-title">IA & analyse d'image de pointe</h2>
             <p>
-              Notre moteur d&apos;intelligence artificielle combine plusieurs algorithmes de d&eacute;tection pour identifier
-              chaque sportif avec une pr&eacute;cision remarquable, quelle que soit la discipline.
+              Notre moteur d'intelligence artificielle combine plusieurs algorithmes de détection pour identifier
+              chaque sportif avec une précision remarquable, quelle que soit la discipline.
             </p>
 
             <div className="tech-features">
@@ -671,7 +671,7 @@ export default function HomePage() {
                 <div>
                   <h4>Lecture OCR de dossard</h4>
                   <p>
-                    D&eacute;tection et lecture automatique des num&eacute;ros, m&ecirc;me sur des photos floues ou en
+                    Détection et lecture automatique des numéros, même sur des photos floues ou en
                     mouvement
                   </p>
                 </div>
@@ -680,15 +680,15 @@ export default function HomePage() {
                 <div className="tech-feature-icon">👤</div>
                 <div>
                   <h4>Reconnaissance faciale</h4>
-                  <p>Regroupement intelligent des photos par visage avec un simple selfie de r&eacute;f&eacute;rence</p>
+                  <p>Regroupement intelligent des photos par visage avec un simple selfie de référence</p>
                 </div>
               </div>
               <div className="tech-feature-item">
                 <div className="tech-feature-icon">⏱️</div>
                 <div>
-                  <h4>Traitement temps r&eacute;el</h4>
+                  <h4>Traitement temps réel</h4>
                   <p>
-                    Analyse instantan&eacute;e pendant l&apos;&eacute;v&eacute;nement gr&acirc;ce &agrave; notre
+                    Analyse instantanée pendant l'événement grâce à notre
                     infrastructure cloud haute performance
                   </p>
                 </div>
@@ -696,9 +696,9 @@ export default function HomePage() {
               <div className="tech-feature-item">
                 <div className="tech-feature-icon">🔒</div>
                 <div>
-                  <h4>RGPD &amp; droit &agrave; l&apos;image</h4>
+                  <h4>RGPD & droit à l'image</h4>
                   <p>
-                    Conformit&eacute; totale avec la r&eacute;glementation europ&eacute;enne sur les donn&eacute;es
+                    Conformité totale avec la réglementation européenne sur les données
                     personnelles
                   </p>
                 </div>
@@ -773,12 +773,12 @@ export default function HomePage() {
         <div className="section-header reveal">
           <div className="section-tag">
             <span className="section-tag-line"></span>
-            T&eacute;moignages
+            Témoignages
             <span className="section-tag-line"></span>
           </div>
           <h2 className="section-title">Ils nous font confiance</h2>
           <p className="section-subtitle">
-            Coureurs, photographes et organisateurs partagent leur exp&eacute;rience avec Focus Racer.
+            Sportifs, photographes et organisateurs partagent leur expérience avec Focus Racer.
           </p>
         </div>
 
@@ -786,9 +786,9 @@ export default function HomePage() {
           <div className="testimonial-card reveal stagger-1">
             <div className="testimonial-stars">★★★★★</div>
             <p className="testimonial-text">
-              &ldquo;J&apos;ai retrouv&eacute; toutes mes photos du marathon en moins de 30 secondes.
-              L&apos;interface est intuitive et le r&eacute;sultat bluffant. Je recommande &agrave; tous les coureurs
-              !&rdquo;
+              “J'ai retrouvé toutes mes photos du marathon en moins de 30 secondes.
+              L'interface est intuitive et le résultat bluffant. Je recommande à tous les sportifs
+              !”
             </p>
             <div className="testimonial-author">
               <div className="testimonial-avatar">SM</div>
@@ -801,8 +801,8 @@ export default function HomePage() {
           <div className="testimonial-card reveal stagger-2">
             <div className="testimonial-stars">★★★★★</div>
             <p className="testimonial-text">
-              &ldquo;Le tri automatique par dossard me fait gagner des heures de travail apr&egrave;s chaque course. Plus
-              besoin de trier manuellement des milliers de photos.&rdquo;
+              “Le tri automatique par dossard me fait gagner des heures de travail après chaque course. Plus
+              besoin de trier manuellement des milliers de photos.”
             </p>
             <div className="testimonial-author">
               <div className="testimonial-avatar">TL</div>
@@ -815,14 +815,14 @@ export default function HomePage() {
           <div className="testimonial-card reveal stagger-3">
             <div className="testimonial-stars">★★★★★</div>
             <p className="testimonial-text">
-              &ldquo;La marketplace nous a permis de trouver facilement des photographes qualifi&eacute;s pour notre trail.
-              La galerie personnalis&eacute;e est un vrai plus pour notre image.&rdquo;
+              “La marketplace nous a permis de trouver facilement des photographes qualifiés pour notre trail.
+              La galerie personnalisée est un vrai plus pour notre image.”
             </p>
             <div className="testimonial-author">
               <div className="testimonial-avatar">CD</div>
               <div>
                 <div className="testimonial-name">Claire D.</div>
-                <div className="testimonial-role">Organisatrice d&apos;&eacute;v&eacute;nements</div>
+                <div className="testimonial-role">Organisatrice d'événements</div>
               </div>
             </div>
           </div>
@@ -837,7 +837,7 @@ export default function HomePage() {
             FAQ
             <span className="section-tag-line"></span>
           </div>
-          <h2 className="section-title">Questions fr&eacute;quentes</h2>
+          <h2 className="section-title">Questions fréquentes</h2>
           <p className="section-subtitle">Tout ce que vous devez savoir sur Focus Racer.</p>
         </div>
 
@@ -862,17 +862,17 @@ export default function HomePage() {
       {/* ═══════════ CTA ═══════════ */}
       <section className="cta-section">
         <div className="cta-content reveal">
-          <h2>Pr&ecirc;t &agrave; retrouver vos photos ?</h2>
+          <h2>Prêt à retrouver vos photos ?</h2>
           <p>
-            Rejoignez des milliers de coureurs et photographes qui utilisent Focus Racer pour retrouver, partager et vendre
-            leurs photos d&apos;&eacute;v&eacute;nements sportifs.
+            Rejoignez des milliers de sportifs et photographes qui utilisent Focus Racer pour retrouver, partager et vendre
+            leurs photos d'événements sportifs.
           </p>
           <div className="cta-btns">
             <Link href="/explore">
               <button className="btn-hero-primary">🔍 Rechercher mes photos</button>
             </Link>
             <Link href="/register">
-              <button className="btn-hero-secondary">📸 Cr&eacute;er un compte</button>
+              <button className="btn-hero-secondary">📸 Créer un compte</button>
             </Link>
           </div>
         </div>

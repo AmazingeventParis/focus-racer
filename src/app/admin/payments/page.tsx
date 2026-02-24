@@ -397,7 +397,7 @@ export default function AdminPaymentsPage() {
         <div>
           <h1 className="text-3xl font-bold text-navy">Paiements</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Vue d&apos;ensemble du chiffre d&apos;affaires et gestion des
+            Vue d'ensemble du chiffre d'affaires et gestion des
             commandes
           </p>
         </div>
@@ -490,7 +490,7 @@ export default function AdminPaymentsPage() {
           <Card className="glass-card rounded-2xl border-l-4 border-l-emerald overflow-hidden">
             <CardHeader className="pb-1 pt-4 px-4">
               <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Chiffre d&apos;affaires
+                Chiffre d'affaires
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
@@ -498,7 +498,7 @@ export default function AdminPaymentsPage() {
                 {euro(stats.revenue.total)}
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                {stats.revenue.paidOrders} commandes &middot; Panier moy. {euro(stats.revenue.avgBasket)}
+                {stats.revenue.paidOrders} commandes · Panier moy. {euro(stats.revenue.avgBasket)}
               </p>
             </CardContent>
           </Card>
@@ -515,7 +515,7 @@ export default function AdminPaymentsPage() {
                 {euro(stats.connect.totalServiceFees)}
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                1&euro; / commande &middot; {stats.revenue.paidOrders} commandes
+                1€ / commande · {stats.revenue.paidOrders} commandes
               </p>
             </CardContent>
           </Card>
@@ -532,7 +532,7 @@ export default function AdminPaymentsPage() {
                 {euro(stats.credits.purchaseRevenue)}
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                {stats.credits.purchases.total.toLocaleString("fr-FR")} credits &middot; {stats.credits.purchases.count} transactions
+                {stats.credits.purchases.total.toLocaleString("fr-FR")} credits · {stats.credits.purchases.count} transactions
               </p>
             </CardContent>
           </Card>
@@ -549,7 +549,7 @@ export default function AdminPaymentsPage() {
                 {euro(Math.abs(stats.credits.apiDeductions.total) * avgCreditPrice)}
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                {Math.abs(stats.credits.apiDeductions.total).toLocaleString("fr-FR")} credits &middot; {stats.credits.apiDeductions.count} appels
+                {Math.abs(stats.credits.apiDeductions.total).toLocaleString("fr-FR")} credits · {stats.credits.apiDeductions.count} appels
               </p>
             </CardContent>
           </Card>
@@ -850,7 +850,7 @@ export default function AdminPaymentsPage() {
                     {euro(evt.revenue)}
                   </p>
                   <p className="text-[11px] text-muted-foreground">
-                    {evt.orders} commande{evt.orders > 1 ? "s" : ""} &middot;{" "}
+                    {evt.orders} commande{evt.orders > 1 ? "s" : ""} ·{" "}
                     {dateFR(evt.date)}
                   </p>
                 </div>
@@ -878,7 +878,7 @@ export default function AdminPaymentsPage() {
                   <span className="text-lg font-bold text-emerald-700">{stats.connect.onboardedAccounts}</span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Photographes connect&eacute;s</p>
+                  <p className="text-sm font-medium text-gray-900">Photographes connectés</p>
                   <p className="text-xs text-muted-foreground">Compte Stripe actif</p>
                 </div>
               </div>

@@ -112,7 +112,7 @@ export default function StartListPage({
   }, [status, fetchEntries, fetchEventName, fetchConnectors]);
 
   const normalizeHeader = (header: string): string => {
-    const h = header.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const h = header.toLowerCase().trim().normalize("NFD").replace(/[̀-ͯ]/g, "");
     if (h.includes("dossard") || h.includes("bib") || h === "n°" || h === "no" || h === "numero" || h === "number") return "bibNumber";
     if (h.includes("prenom") || h === "first" || h === "firstname" || h === "first_name" || h === "first name") return "firstName";
     if (h.includes("nom") || h === "last" || h === "lastname" || h === "last_name" || h === "last name" || h === "name") return "lastName";
@@ -284,7 +284,7 @@ export default function StartListPage({
         href={`/photographer/events/${id}`}
         className="text-emerald hover:text-emerald-dark transition-colors mb-4 inline-block"
       >
-        &larr; Retour à {eventName || "l'événement"}
+        ← Retour à {eventName || "l'événement"}
       </Link>
 
       <h1 className="text-2xl font-bold text-slate-900 mb-6">Start-List</h1>
@@ -372,7 +372,7 @@ export default function StartListPage({
             <CardHeader>
               <CardTitle>Importer depuis une plateforme</CardTitle>
               <CardDescription>
-                Connectez-vous à une plateforme d&apos;inscription pour importer automatiquement la start-list
+                Connectez-vous à une plateforme d'inscription pour importer automatiquement la start-list
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

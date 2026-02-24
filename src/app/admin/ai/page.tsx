@@ -113,7 +113,7 @@ export default function AdminAIPage() {
     <div className="animate-fade-in">
       <div className="flex justify-between items-start mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-navy mb-2">IA &amp; Traitement</h1>
+          <h1 className="text-3xl font-bold text-navy mb-2">IA & Traitement</h1>
           <p className="text-muted-foreground">Configuration et statistiques du pipeline IA</p>
         </div>
         <Button
@@ -292,7 +292,7 @@ export default function AdminAIPage() {
             </div>
           </div>
           <p className="text-xs text-muted-foreground mt-4">
-            Pour modifier les seuils, mettez à jour les variables d&apos;environnement AI_OCR_CONFIDENCE_THRESHOLD et AI_QUALITY_THRESHOLD
+            Pour modifier les seuils, mettez à jour les variables d'environnement AI_OCR_CONFIDENCE_THRESHOLD et AI_QUALITY_THRESHOLD
           </p>
         </CardContent>
       </Card>

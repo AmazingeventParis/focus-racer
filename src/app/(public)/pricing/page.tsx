@@ -129,7 +129,7 @@ export default function PricingPage() {
                 100% gratuit pour les sportifs
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
-                Retrouvez vos photos d&apos;événements et achetez uniquement celles que vous souhaitez.
+                Retrouvez vos photos d'événements et achetez uniquement celles que vous souhaitez.
                 Le prix est fixé par le photographe.
               </p>
             </div>
@@ -143,7 +143,7 @@ export default function PricingPage() {
                   </span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Paiement uniquement à l&apos;achat de photos — prix fixé par le photographe
+                  Paiement uniquement à l'achat de photos — prix fixé par le photographe
                 </p>
               </CardHeader>
               <CardContent>
@@ -277,7 +277,7 @@ export default function PricingPage() {
                     </div>
                     <Link href="/register">
                       <Button className="w-full bg-navy hover:bg-navy-light text-white transition-all duration-200">
-                        S&apos;abonner
+                        S'abonner
                       </Button>
                     </Link>
                   </CardContent>
@@ -287,7 +287,7 @@ export default function PricingPage() {
 
             {/* Note */}
             <p className="text-center text-xs text-muted-foreground mt-8 max-w-lg mx-auto">
-              Les crédits des packs sont valables à vie. Les crédits d&apos;abonnement sont renouvelés chaque mois (non cumulables).
+              Les crédits des packs sont valables à vie. Les crédits d'abonnement sont renouvelés chaque mois (non cumulables).
               Tous les prix sont HT.
             </p>
           </div>

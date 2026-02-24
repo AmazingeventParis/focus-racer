@@ -22,50 +22,50 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     slug: "comment-retrouver-photos-course",
     title: "Comment retrouver ses photos de course : le guide complet",
     excerpt:
-      "Dossard, selfie ou nom : d&eacute;couvrez les 3 m&eacute;thodes pour retrouver vos photos d&apos;&eacute;v&eacute;nement sportif en quelques secondes gr&acirc;ce &agrave; l&apos;intelligence artificielle.",
+      "Dossard, selfie ou nom : découvrez les 3 méthodes pour retrouver vos photos d'événement sportif en quelques secondes grâce à l'intelligence artificielle.",
     category: "Sportifs",
     readTime: "6 min",
-    date: "18 f&eacute;vrier 2026",
+    date: "18 février 2026",
     icon: "🏃",
   },
   {
     slug: "golden-time-vente-photo-sportive",
-    title: "Le Golden Time : pourquoi les 24 premi&egrave;res heures d&eacute;cident de vos ventes",
+    title: "Le Golden Time : pourquoi les 24 premières heures décident de vos ventes",
     excerpt:
-      "70 % des ventes de photos sportives se font dans les 24 h suivant la course. D&eacute;couvrez comment capitaliser sur cette fen&ecirc;tre d&apos;opportunit&eacute; unique.",
+      "70 % des ventes de photos sportives se font dans les 24 h suivant la course. Découvrez comment capitaliser sur cette fenêtre d'opportunité unique.",
     category: "Photographes",
     readTime: "7 min",
-    date: "14 f&eacute;vrier 2026",
+    date: "14 février 2026",
     icon: "📸",
   },
   {
     slug: "ia-tri-automatique-photo-sport",
-    title: "Comment l&apos;IA r&eacute;volutionne le tri des photos sportives en 2026",
+    title: "Comment l'IA révolutionne le tri des photos sportives en 2026",
     excerpt:
-      "OCR de dossards, reconnaissance faciale, filtrage qualit&eacute; : plongez dans le pipeline d&apos;intelligence artificielle qui trie 1 000 photos en 2 minutes.",
+      "OCR de dossards, reconnaissance faciale, filtrage qualité : plongez dans le pipeline d'intelligence artificielle qui trie 1 000 photos en 2 minutes.",
     category: "IA & Tech",
     readTime: "8 min",
-    date: "10 f&eacute;vrier 2026",
+    date: "10 février 2026",
     icon: "🤖",
   },
   {
     slug: "organiser-couverture-photo-evenement",
-    title: "Guide : organiser la couverture photo de votre &eacute;v&eacute;nement sportif",
+    title: "Guide : organiser la couverture photo de votre événement sportif",
     excerpt:
-      "Du choix des photographes au workflow de livraison, tout ce qu&apos;un organisateur doit savoir pour offrir une exp&eacute;rience photo irr&eacute;prochable.",
+      "Du choix des photographes au workflow de livraison, tout ce qu'un organisateur doit savoir pour offrir une expérience photo irréprochable.",
     category: "Organisateurs",
     readTime: "9 min",
-    date: "5 f&eacute;vrier 2026",
+    date: "5 février 2026",
     icon: "🏆",
   },
   {
     slug: "photographe-sport-revenus-2026",
     title: "Photographe sportif : comment maximiser ses revenus en 2026",
     excerpt:
-      "March&eacute;, commissions, strat&eacute;gies de vente, upselling et partage social : le guide ultime pour vivre de la photo sportive cette ann&eacute;e.",
+      "Marché, commissions, stratégies de vente, upselling et partage social : le guide ultime pour vivre de la photo sportive cette année.",
     category: "Conseils",
     readTime: "7 min",
-    date: "1er f&eacute;vrier 2026",
+    date: "1er février 2026",
     icon: "💰",
   },
 ];
@@ -134,7 +134,7 @@ export default function BlogIndexPage() {
               Le Blog Focus Racer
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto animate-fade-in animation-delay-200">
-              Conseils, guides et actualit&eacute;s pour les sportifs, photographes et organisateurs d&apos;&eacute;v&eacute;nements.
+              Conseils, guides et actualités pour les sportifs, photographes et organisateurs d'événements.
             </p>
           </div>
         </section>
@@ -166,7 +166,7 @@ export default function BlogIndexPage() {
             <div className="max-w-6xl mx-auto">
               {filtered.length === 0 ? (
                 <div className="text-center py-16">
-                  <p className="text-gray-500 text-lg">Aucun article dans cette cat&eacute;gorie pour le moment.</p>
+                  <p className="text-gray-500 text-lg">Aucun article dans cette catégorie pour le moment.</p>
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -222,7 +222,7 @@ export default function BlogIndexPage() {
                         </p>
 
                         <div className="flex items-center gap-1 text-emerald font-semibold text-sm group-hover:gap-2 transition-all">
-                          Lire l&apos;article
+                          Lire l'article
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                           </svg>
@@ -248,10 +248,10 @@ export default function BlogIndexPage() {
                 </div>
 
                 <h2 className="text-2xl md:text-3xl font-bold text-navy mb-3">
-                  Restez inform&eacute;
+                  Restez informé
                 </h2>
                 <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                  Recevez nos derniers articles, guides et actualit&eacute;s directement dans votre bo&icirc;te mail. Pas de spam, promis.
+                  Recevez nos derniers articles, guides et actualités directement dans votre boîte mail. Pas de spam, promis.
                 </p>
 
                 {subscribed ? (
@@ -259,7 +259,7 @@ export default function BlogIndexPage() {
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Merci ! Vous &ecirc;tes inscrit &agrave; notre newsletter.
+                    Merci ! Vous êtes inscrit à notre newsletter.
                   </div>
                 ) : (
                   <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
@@ -275,7 +275,7 @@ export default function BlogIndexPage() {
                       type="submit"
                       className="px-6 py-3 bg-emerald hover:bg-emerald-dark text-white rounded-xl font-medium shadow-emerald transition-all duration-200 whitespace-nowrap"
                     >
-                      S&apos;inscrire
+                      S'inscrire
                     </button>
                   </form>
                 )}
@@ -283,7 +283,7 @@ export default function BlogIndexPage() {
                 <p className="text-xs text-gray-400 mt-4">
                   En vous inscrivant, vous acceptez notre{" "}
                   <Link href="/legal/confidentialite" className="underline hover:text-emerald">
-                    politique de confidentialit&eacute;
+                    politique de confidentialité
                   </Link>
                   .
                 </p>
@@ -299,10 +299,10 @@ export default function BlogIndexPage() {
           </div>
           <div className="container mx-auto px-4 text-center relative z-10">
             <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
-              Pr&ecirc;t &agrave; d&eacute;couvrir Focus Racer ?
+              Prêt à découvrir Focus Racer ?
             </h2>
             <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
-              Rejoignez la plateforme qui r&eacute;volutionne la photo sportive en France.
+              Rejoignez la plateforme qui révolutionne la photo sportive en France.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
@@ -315,7 +315,7 @@ export default function BlogIndexPage() {
                 href="/register"
                 className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/20 transition-all duration-300 backdrop-blur-sm text-lg"
               >
-                Cr&eacute;er un compte
+                Créer un compte
               </Link>
             </div>
           </div>

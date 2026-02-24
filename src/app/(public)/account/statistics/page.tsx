@@ -390,7 +390,7 @@ export default function RunnerStatisticsPage() {
           {/* Purchase History Timeline */}
           <Card className="glass-card rounded-2xl border-0 mb-8">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-display text-navy">Historique d&apos;achats</CardTitle>
+              <CardTitle className="text-lg font-display text-navy">Historique d'achats</CardTitle>
               <Link href="/account/purchases">
                 <Button variant="outline" size="sm" className="text-emerald-600 border-emerald-200 hover:bg-emerald-50 rounded-lg">
                   Voir tout

@@ -472,7 +472,7 @@ export default function TeamPage() {
 
               <p className="text-xs text-gray-400">
                 Recherchez un photographe inscrit sur Focus Racer par son email.
-                Pour l&apos;ajouter à votre équipe, créez une mission sur la Marketplace
+                Pour l'ajouter à votre équipe, créez une mission sur la Marketplace
                 et acceptez sa candidature.
               </p>
             </form>
