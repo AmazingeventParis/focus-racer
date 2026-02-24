@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 import { EventWithStats } from "@/types";
 
 const SPORT_LABELS: Record<string, string> = {
@@ -159,41 +160,59 @@ export default function EventsListPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredEvents.map((event) => (
             <Link key={event.id} href={`/organizer/events/${event.id}`}>
-              <Card className="bg-white border-0 shadow-card rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer h-full">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald to-emerald-700 flex items-center justify-center text-white font-bold text-lg shadow-emerald">
-                      {event.name.charAt(0)}
-                    </div>
-                    <span className={`text-xs font-medium px-2.5 py-1 rounded-md ${
-                      event.status === "PUBLISHED"
-                        ? "bg-success-light text-success-dark"
-                        : event.status === "DRAFT"
-                        ? "bg-gray-100 text-gray-600"
-                        : "bg-teal-50 text-teal"
-                    }`}>
-                      {event.status === "PUBLISHED" ? "Publié" : event.status === "DRAFT" ? "Brouillon" : "Archivé"}
-                    </span>
+              <Card className="bg-white border-0 shadow-card rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer h-full overflow-hidden">
+                <CardContent className="p-0 flex h-full">
+                  {/* Poster */}
+                  <div className="w-28 flex-shrink-0 relative bg-gradient-to-br from-emerald to-emerald-700">
+                    {(event as EventWithStats & { coverImage?: string | null }).coverImage ? (
+                      <Image
+                        src={(event as EventWithStats & { coverImage?: string | null }).coverImage!}
+                        alt={event.name}
+                        fill
+                        className="object-cover"
+                        sizes="112px"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-white/80 font-bold text-4xl">
+                        {event.name.charAt(0)}
+                      </div>
+                    )}
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">{event.name}</h3>
-                  <p className="text-sm text-gray-500 mb-4">
-                    {new Date(event.date).toLocaleDateString("fr-FR", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                    {event.location && ` • ${event.location}`}
-                  </p>
-                  <div className="flex items-center gap-3 text-sm">
-                    <span className="flex items-center gap-1.5 text-gray-600">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                      </svg>
-                      {event._count.photos} photos
-                    </span>
-                    <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md">
-                      {SPORT_LABELS[event.sportType || "RUNNING"]}
-                    </span>
+                  {/* Info */}
+                  <div className="flex-1 p-4 flex flex-col justify-between min-w-0">
+                    <div>
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <h3 className="font-semibold text-gray-900 truncate">{event.name}</h3>
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-md flex-shrink-0 ${
+                          event.status === "PUBLISHED"
+                            ? "bg-success-light text-success-dark"
+                            : event.status === "DRAFT"
+                            ? "bg-gray-100 text-gray-600"
+                            : "bg-teal-50 text-teal"
+                        }`}>
+                          {event.status === "PUBLISHED" ? "Publié" : event.status === "DRAFT" ? "Brouillon" : "Archivé"}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500">
+                        {new Date(event.date).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                        {event.location && ` • ${event.location}`}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm mt-3">
+                      <span className="flex items-center gap-1.5 text-gray-600">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                        </svg>
+                        {event._count.photos} photos
+                      </span>
+                      <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md">
+                        {SPORT_LABELS[event.sportType || "RUNNING"]}
+                      </span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
