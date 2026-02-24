@@ -212,12 +212,43 @@ const photoProtection = [
   { label: "URLs signées", desc: "Téléchargements HD via liens temporaires (24h)" },
 ];
 
-const certifications = [
-  { label: "RGPD", desc: "Union européenne", icon: "🇪🇺" },
+const euFlag = (
+  <svg className="w-12 h-12" viewBox="0 0 810 540" xmlns="http://www.w3.org/2000/svg">
+    <rect width="810" height="540" fill="#003399" />
+    {Array.from({ length: 12 }).map((_, i) => {
+      const angle = (i * 30 - 90) * (Math.PI / 180);
+      const cx = 405 + 140 * Math.cos(angle);
+      const cy = 270 + 140 * Math.sin(angle);
+      return (
+        <polygon
+          key={i}
+          points={[0, 1, 2, 3, 4]
+            .map((j) => {
+              const a = (j * 144 - 90) * (Math.PI / 180);
+              return `${cx + 20 * Math.cos(a)},${cy + 20 * Math.sin(a)}`;
+            })
+            .join(" ")}
+          fill="#FFCC00"
+        />
+      );
+    })}
+  </svg>
+);
+
+const frFlag = (
+  <svg className="w-12 h-12" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+    <rect width="300" height="600" fill="#002395" />
+    <rect x="300" width="300" height="600" fill="#FFFFFF" />
+    <rect x="600" width="300" height="600" fill="#ED2939" />
+  </svg>
+);
+
+const certifications: { label: string; desc: string; icon: React.ReactNode }[] = [
+  { label: "RGPD", desc: "Union européenne", icon: euFlag },
   { label: "DMCA Ready", desc: "Protection droits d'auteur", icon: "🛡️" },
   { label: "PCI DSS", desc: "Via Stripe (niveau 1)", icon: "💳" },
   { label: "SSL/TLS", desc: "Certificat Let's Encrypt", icon: "🔐" },
-  { label: "Made in France", desc: "Hébergé en France (OVH)", icon: "🇫🇷" },
+  { label: "Made in France", desc: "Hébergé en France (OVH)", icon: frFlag },
 ];
 
 const faqTech = [
@@ -921,7 +952,11 @@ export default function TechnologiePage() {
                 }`}
                 style={{ transitionDelay: `${i * 100}ms` }}
               >
-                <span className="text-4xl">{cert.icon}</span>
+                {typeof cert.icon === "string" ? (
+                  <span className="text-4xl">{cert.icon}</span>
+                ) : (
+                  <div className="w-12 h-12 rounded-lg overflow-hidden shadow-sm">{cert.icon}</div>
+                )}
                 <h3 className="font-bold text-gray-900 text-sm">{cert.label}</h3>
                 <p className="text-xs text-gray-500 text-center">{cert.desc}</p>
               </div>
