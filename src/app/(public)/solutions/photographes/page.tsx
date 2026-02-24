@@ -21,51 +21,51 @@ const NAV_ITEMS = [
 
 const pipelineSteps = [
   { icon: "\u{1F4E4}", label: "Upload en masse", desc: "Drag & drop ou import dossier" },
-  { icon: "\u{1F916}", label: "IA - Tri automatique", desc: "OCR dossards + visages + qualit\u00E9" },
-  { icon: "\u{1F3F7}\uFE0F", label: "Indexation intelligente", desc: "Chaque photo li\u00E9e au bon sportif" },
-  { icon: "\u{1F4B0}", label: "Vente imm\u00E9diate", desc: "Paiement direct Stripe Connect" },
+  { icon: "\u{1F916}", label: "IA - Tri automatique", desc: "OCR dossards + visages + qualité" },
+  { icon: "\u{1F3F7}️", label: "Indexation intelligente", desc: "Chaque photo liée au bon sportif" },
+  { icon: "\u{1F4B0}", label: "Vente immédiate", desc: "Paiement direct Stripe Connect" },
 ];
 
 const iaFeatures = [
   {
     icon: "\u{1F522}",
     title: "OCR automatique des dossards",
-    desc: "Notre intelligence artificielle lit les num\u00E9ros de dossard avec une pr\u00E9cision de 95%, m\u00EAme sur des photos en mouvement, avec dossards bouch\u00E9s, boueux ou partiellement masqu\u00E9s par un bras. Z\u00E9ro tri manuel n\u00E9cessaire.",
+    desc: "Notre intelligence artificielle lit les numéros de dossard avec une précision de 95%, même sur des photos en mouvement, avec dossards bouchés, boueux ou partiellement masqués par un bras. Zéro tri manuel nécessaire.",
     stat: "95%",
-    statLabel: "de pr\u00E9cision",
+    statLabel: "de précision",
   },
   {
     icon: "\u{1F464}",
-    title: "Reconnaissance faciale avanc\u00E9e",
-    desc: "Les photos sans dossard visible sont automatiquement li\u00E9es au bon sportif gr\u00E2ce \u00E0 la reconnaissance de visage. L\u2019IA croise les visages avec les noms et num\u00E9ros officiels pour garantir qu\u2019aucun sportif ne manque \u00E0 l\u2019appel.",
+    title: "Reconnaissance faciale avancée",
+    desc: "Les photos sans dossard visible sont automatiquement liées au bon sportif grâce à la reconnaissance de visage. L’IA croise les visages avec les noms et numéros officiels pour garantir qu’aucun sportif ne manque à l’appel.",
     stat: "0.3s",
     statLabel: "par photo",
   },
   {
     icon: "\u{1F4CB}",
-    title: "Compatibilit\u00E9 Start-Lists",
-    desc: "Importez vos listes de participants (fichiers CSV, Excel ou connecteurs API Njuko/KMS) pour une indexation parfaite. L\u2019IA croise automatiquement les visages avec les noms et dossards officiels.",
+    title: "Compatibilité Start-Lists",
+    desc: "Importez vos listes de participants (fichiers CSV, Excel ou connecteurs API Njuko/KMS) pour une indexation parfaite. L’IA croise automatiquement les visages avec les noms et dossards officiels.",
     stat: "100%",
-    statLabel: "automatis\u00E9",
+    statLabel: "automatisé",
   },
   {
-    icon: "\u{1F5BC}\uFE0F",
+    icon: "\u{1F5BC}️",
     title: "Retouche automatique",
-    desc: "Luminosit\u00E9, contraste, saturation et nettet\u00E9 : vos photos sont optimis\u00E9es automatiquement par notre algorithme de retouche. Option activable ou d\u00E9sactivable selon vos pr\u00E9f\u00E9rences cr\u00E9atives.",
+    desc: "Luminosité, contraste, saturation et netteté : vos photos sont optimisées automatiquement par notre algorithme de retouche. Option activable ou désactivable selon vos préférences créatives.",
     stat: "Auto",
     statLabel: "retouche IA",
   },
   {
     icon: "\u{1F4CA}",
-    title: "Filtrage qualit\u00E9 & d\u00E9doublonnage",
-    desc: "Les photos floues (d\u00E9tection Laplacian) et les doublons (pHash) sont automatiquement d\u00E9tect\u00E9s et \u00E9cart\u00E9s AVANT le traitement IA. Vos cr\u00E9dits sont pr\u00E9serv\u00E9s, seules les meilleures photos sont conserv\u00E9es.",
+    title: "Filtrage qualité & dédoublonnage",
+    desc: "Les photos floues (détection Laplacian) et les doublons (pHash) sont automatiquement détectés et écartés AVANT le traitement IA. Vos crédits sont préservés, seules les meilleures photos sont conservées.",
     stat: "2x",
-    statLabel: "moins de d\u00E9chets",
+    statLabel: "moins de déchets",
   },
   {
-    icon: "\u2702\uFE0F",
+    icon: "✂️",
     title: "Smart Crop par visage",
-    desc: "Recadrage individuel automatique centr\u00E9 sur chaque visage d\u00E9tect\u00E9. Chaque sportif obtient son portrait optimis\u00E9 en haute d\u00E9finition (800px), id\u00E9al pour les r\u00E9seaux sociaux et l\u2019identification rapide.",
+    desc: "Recadrage individuel automatique centré sur chaque visage détecté. Chaque sportif obtient son portrait optimisé en haute définition (800px), idéal pour les réseaux sociaux et l’identification rapide.",
     stat: "800px",
     statLabel: "portrait HD",
   },
@@ -75,157 +75,157 @@ const goldenTimeFeatures = [
   {
     icon: "\u{1F4F1}",
     title: "Interface 100% Mobile-First",
-    headline: "Vendez quand l\u2019\u00E9motion est au maximum",
-    desc: "Les sportifs consultent leurs r\u00E9sultats sur leur smartphone, souvent encore sur la ligne d\u2019arriv\u00E9e. Notre plateforme est ultra-responsive pour un achat fluide en quelques clics, sans aucune friction.",
+    headline: "Vendez quand l’émotion est au maximum",
+    desc: "Les sportifs consultent leurs résultats sur leur smartphone, souvent encore sur la ligne d’arrivée. Notre plateforme est ultra-responsive pour un achat fluide en quelques clics, sans aucune friction.",
   },
   {
     icon: "\u{1F3AF}",
-    title: "Tunnel de conversion strat\u00E9gique",
-    headline: "Chaque clic rapproche de l\u2019achat",
-    desc: "Navigation intuitive, panier simplifi\u00E9 et paiement s\u00E9curis\u00E9 (Apple Pay, Google Pay, SEPA, CB). Nous avons \u00E9limin\u00E9 tous les obstacles entre la d\u00E9couverte de la photo et la validation du paiement.",
+    title: "Tunnel de conversion stratégique",
+    headline: "Chaque clic rapproche de l’achat",
+    desc: "Navigation intuitive, panier simplifié et paiement sécurisé (Apple Pay, Google Pay, SEPA, CB). Nous avons éliminé tous les obstacles entre la découverte de la photo et la validation du paiement.",
   },
   {
     icon: "\u{1F3C6}",
     title: "Achat plaisir & valorisation",
-    headline: "Transformez un clich\u00E9 en troph\u00E9e",
-    desc: "Nos galeries web pr\u00E9sentent vos m\u00E9dias sous leur meilleur jour, transformant un simple clich\u00E9 en un troph\u00E9e num\u00E9rique que l\u2019on est fier de s\u2019offrir et de partager sur les r\u00E9seaux sociaux.",
+    headline: "Transformez un cliché en trophée",
+    desc: "Nos galeries web présentent vos médias sous leur meilleur jour, transformant un simple cliché en un trophée numérique que l’on est fier de s’offrir et de partager sur les réseaux sociaux.",
   },
 ];
 
 const marketingFeatures = [
   {
     icon: "\u{1F514}",
-    title: "Alertes photo instantan\u00E9es",
-    desc: "Les sportifs s\u2019inscrivent et re\u00E7oivent une notification d\u00E8s que leurs photos sont pr\u00EAtes. C\u2019est le levier n\u00B01 pour d\u00E9clencher l\u2019achat \u00E0 chaud, quand l\u2019adr\u00E9naline est encore l\u00E0.",
+    title: "Alertes photo instantanées",
+    desc: "Les sportifs s’inscrivent et reçoivent une notification dès que leurs photos sont prêtes. C’est le levier n°1 pour déclencher l’achat à chaud, quand l’adrénaline est encore là.",
   },
   {
     icon: "\u{1F4E6}",
     title: "Upselling automatique",
-    desc: "Le syst\u00E8me propose intelligemment des packs (\u00AB Toutes mes photos pour X\u20AC \u00BB), augmentant m\u00E9caniquement votre panier moyen sans effort suppl\u00E9mentaire de votre part.",
+    desc: "Le système propose intelligemment des packs (« Toutes mes photos pour X€ »), augmentant mécaniquement votre panier moyen sans effort supplémentaire de votre part.",
   },
   {
     icon: "\u{1F310}",
-    title: "Viralit\u00E9 sociale int\u00E9gr\u00E9e",
-    desc: "Partage facilit\u00E9 sur Instagram, Facebook, Strava avec filigrane dynamique. Chaque partage de photo watermark\u00E9e devient une publicit\u00E9 gratuite pour votre travail.",
+    title: "Viralité sociale intégrée",
+    desc: "Partage facilité sur Instagram, Facebook, Strava avec filigrane dynamique. Chaque partage de photo watermarkée devient une publicité gratuite pour votre travail.",
   },
   {
     icon: "\u{1F91D}",
-    title: "Horde : communaut\u00E9 sportive",
-    desc: "Les sportifs cr\u00E9ent leur \u00AB Horde \u00BB (groupe d\u2019amis), partagent et ach\u00E8tent ensemble. Effet r\u00E9seau qui multiplie vos ventes par le bouche-\u00E0-oreille num\u00E9rique.",
+    title: "Horde : communauté sportive",
+    desc: "Les sportifs créent leur « Horde » (groupe d’amis), partagent et achètent ensemble. Effet réseau qui multiplie vos ventes par le bouche-à-oreille numérique.",
   },
 ];
 
 const infraFeatures = [
   {
-    icon: "\u26A1",
-    title: "Serveur d\u00E9di\u00E9 hautes performances",
-    desc: "AMD EPYC 16 c\u0153urs / 32 threads, 64 Go RAM, 2\u00D7 NVMe 960 Go. Notre infrastructure encaisse les pics de trafic sans sourciller : 100 ou 50\u00A0000 visiteurs simultan\u00E9s, la vitesse reste constante.",
+    icon: "⚡",
+    title: "Serveur dédié hautes performances",
+    desc: "AMD EPYC 16 cœurs / 32 threads, 64 Go RAM, 2× NVMe 960 Go. Notre infrastructure encaisse les pics de trafic sans sourciller : 100 ou 50 000 visiteurs simultanés, la vitesse reste constante.",
   },
   {
     icon: "\u{1F50D}",
-    title: "SEO localis\u00E9 & performant",
-    desc: "Chaque galerie d\u2019\u00E9v\u00E9nement est optimis\u00E9e pour le r\u00E9f\u00E9rencement naturel. Exemple : \u00AB Photos Marathon de Lyon 2026 \u00BB. Vous dominez les r\u00E9sultats Google d\u00E8s la fin de la course.",
+    title: "SEO localisé & performant",
+    desc: "Chaque galerie d’événement est optimisée pour le référencement naturel. Exemple : « Photos Marathon de Lyon 2026 ». Vous dominez les résultats Google dès la fin de la course.",
   },
   {
     icon: "\u{1F512}",
-    title: "S\u00E9curit\u00E9 & RGPD natif",
-    desc: "Stockage S3 chiffr\u00E9, protection hotlink, watermark anti-vol, conformit\u00E9 RGPD compl\u00E8te avec formulaire de suppression int\u00E9gr\u00E9. Vos clients et organisateurs \u00E9voluent dans un environnement professionnel et rassurant.",
+    title: "Sécurité & RGPD natif",
+    desc: "Stockage S3 chiffré, protection hotlink, watermark anti-vol, conformité RGPD complète avec formulaire de suppression intégré. Vos clients et organisateurs évoluent dans un environnement professionnel et rassurant.",
   },
   {
     icon: "\u{1F680}",
     title: "CDN & compression Brotli",
-    desc: "Images WebP optimis\u00E9es, compression Brotli/zstd, cache immutable 1 an. Vos galeries chargent instantan\u00E9ment, m\u00EAme sur mobile en 4G. Temps de chargement < 1 seconde.",
+    desc: "Images WebP optimisées, compression Brotli/zstd, cache immutable 1 an. Vos galeries chargent instantanément, même sur mobile en 4G. Temps de chargement < 1 seconde.",
   },
 ];
 
 const pilotageFeatures = [
   {
     icon: "\u{1F4CA}",
-    title: "Tableau de bord temps r\u00E9el",
-    desc: "Suivez vos ventes, analysez vos clich\u00E9s les plus populaires, comprenez le comportement de vos acheteurs. KPIs, graphiques et tendances par \u00E9v\u00E9nement.",
+    title: "Tableau de bord temps réel",
+    desc: "Suivez vos ventes, analysez vos clichés les plus populaires, comprenez le comportement de vos acheteurs. KPIs, graphiques et tendances par événement.",
   },
   {
     icon: "\u{1F3A8}",
     title: "Branding & marque blanche",
-    desc: "Personnalisez vos galeries avec votre logo, watermark et couleurs pour renforcer votre identit\u00E9 de marque aupr\u00E8s des organisateurs et des sportifs.",
+    desc: "Personnalisez vos galeries avec votre logo, watermark et couleurs pour renforcer votre identité de marque auprès des organisateurs et des sportifs.",
   },
   {
     icon: "\u{1F4B3}",
-    title: "Stripe Connect int\u00E9gr\u00E9",
-    desc: "Recevez vos paiements directement sur votre compte bancaire. Onboarding en 3 minutes. Aucun interm\u00E9diaire, aucune commission sur vos ventes.",
+    title: "Stripe Connect intégré",
+    desc: "Recevez vos paiements directement sur votre compte bancaire. Onboarding en 3 minutes. Aucun intermédiaire, aucune commission sur vos ventes.",
   },
   {
     icon: "\u{1F4E5}",
     title: "Export CSV & reporting",
-    desc: "Exportez vos donn\u00E9es de ventes, commandes et statistiques en CSV. Facturez vos clients, d\u00E9clarez vos revenus, pilotez votre activit\u00E9 comme un pro.",
+    desc: "Exportez vos données de ventes, commandes et statistiques en CSV. Facturez vos clients, déclarez vos revenus, pilotez votre activité comme un pro.",
   },
 ];
 
 const comparatif = [
   { feature: "Tri IA automatique (OCR + visages)", focus: true, others: false },
-  { feature: "Commission sur ventes", focus: "0%", others: "15\u201340%" },
+  { feature: "Commission sur ventes", focus: "0%", others: "15–40%" },
   { feature: "Paiement direct photographe", focus: true, others: false },
-  { feature: "Temps de tri 1\u00A0000 photos", focus: "~2 min", others: "2\u20134h manuel" },
+  { feature: "Temps de tri 1 000 photos", focus: "~2 min", others: "2–4h manuel" },
   { feature: "Reconnaissance faciale", focus: true, others: false },
   { feature: "Smart Crop par visage", focus: true, others: false },
-  { feature: "Filtrage qualit\u00E9 automatique", focus: true, others: false },
+  { feature: "Filtrage qualité automatique", focus: true, others: false },
   { feature: "Mode Live (upload en direct)", focus: true, others: "Partiel" },
   { feature: "Apple Pay / Google Pay", focus: true, others: "Partiel" },
-  { feature: "SEO galeries automatis\u00E9", focus: true, others: false },
+  { feature: "SEO galeries automatisé", focus: true, others: false },
   { feature: "Alertes photo sportifs", focus: true, others: false },
-  { feature: "RGPD int\u00E9gr\u00E9", focus: true, others: "Partiel" },
-  { feature: "Branding personnalis\u00E9", focus: true, others: "Partiel" },
-  { feature: "Analytics temps r\u00E9el", focus: true, others: "Partiel" },
+  { feature: "RGPD intégré", focus: true, others: "Partiel" },
+  { feature: "Branding personnalisé", focus: true, others: "Partiel" },
+  { feature: "Analytics temps réel", focus: true, others: "Partiel" },
 ];
 
 const pricing = [
-  { name: "Pack 1K", credits: "1\u00A0000", price: "19", perPhoto: "0,019" },
-  { name: "Pack 5K", credits: "5\u00A0000", price: "85", perPhoto: "0,017", popular: true },
-  { name: "Pack 15K", credits: "15\u00A0000", price: "225", perPhoto: "0,008" },
+  { name: "Pack 1K", credits: "1 000", price: "19", perPhoto: "0,019" },
+  { name: "Pack 5K", credits: "5 000", price: "85", perPhoto: "0,017", popular: true },
+  { name: "Pack 15K", credits: "15 000", price: "225", perPhoto: "0,008" },
 ];
 
 const testimonials = [
   {
-    quote: "Avant Focus Racer, je passais 2 jours \u00E0 trier 3\u00A0000 photos apr\u00E8s chaque course. Maintenant c\u2019est fait en 6 minutes. Mes ventes ont explos\u00E9 parce que je mets en ligne le jour m\u00EAme.",
+    quote: "Avant Focus Racer, je passais 2 jours à trier 3 000 photos après chaque course. Maintenant c’est fait en 6 minutes. Mes ventes ont explosé parce que je mets en ligne le jour même.",
     author: "Photographe Marathon de Paris",
-    role: "3\u00A0000+ photos / \u00E9v\u00E9nement",
+    role: "3 000+ photos / événement",
   },
   {
-    quote: "Le z\u00E9ro commission change tout. Sur une saison \u00E0 50 \u00E9v\u00E9nements, je gardais 100% de mes 45\u00A0000\u20AC de ventes au lieu d\u2019en c\u00E9der 15\u00A0000\u20AC \u00E0 la plateforme.",
+    quote: "Le zéro commission change tout. Sur une saison à 50 événements, je gardais 100% de mes 45 000€ de ventes au lieu d’en céder 15 000€ à la plateforme.",
     author: "Agence photo trail & ultra",
-    role: "50+ \u00E9v\u00E9nements / an",
+    role: "50+ événements / an",
   },
   {
-    quote: "Les alertes photo sont magiques. Les sportifs re\u00E7oivent la notif en finissant la course et ach\u00E8tent dans les 30 minutes. Mon taux de conversion a tripl\u00E9.",
+    quote: "Les alertes photo sont magiques. Les sportifs reçoivent la notif en finissant la course et achètent dans les 30 minutes. Mon taux de conversion a triplé.",
     author: "Photographe triathlon",
-    role: "Sp\u00E9cialiste multi-sport",
+    role: "Spécialiste multi-sport",
   },
 ];
 
 const faqItems = [
   {
     q: "Comment fonctionne le tri automatique par intelligence artificielle ?",
-    a: "Notre IA combine reconnaissance optique de caract\u00E8res (OCR) pour lire les dossards et reconnaissance faciale pour identifier les sportifs. Les photos sont automatiquement li\u00E9es au bon participant en moins de 0,3 seconde chacune. Vous uploadez en masse, l\u2019IA organise tout en arri\u00E8re-plan.",
+    a: "Notre IA combine reconnaissance optique de caractères (OCR) pour lire les dossards et reconnaissance faciale pour identifier les sportifs. Les photos sont automatiquement liées au bon participant en moins de 0,3 seconde chacune. Vous uploadez en masse, l’IA organise tout en arrière-plan.",
   },
   {
     q: "Pourquoi 0% de commission sur les ventes ?",
-    a: "Focus Racer se r\u00E9mun\u00E8re uniquement sur les cr\u00E9dits de tri IA (d\u00E8s 0,008\u20AC/photo). Vous fixez vos prix librement et gardez 100% de vos revenus de vente. Les paiements arrivent directement sur votre compte via Stripe Connect Express.",
+    a: "Focus Racer se rémunère uniquement sur les crédits de tri IA (dès 0,008€/photo). Vous fixez vos prix librement et gardez 100% de vos revenus de vente. Les paiements arrivent directement sur votre compte via Stripe Connect Express.",
   },
   {
-    q: "Est-ce compatible avec mes \u00E9v\u00E9nements et mes start-lists ?",
-    a: "Oui. Focus Racer accepte les imports CSV, Excel et dispose de connecteurs API pour les principales plateformes d\u2019inscription (Njuko, KMS). L\u2019IA croise automatiquement les participants avec les visages d\u00E9tect\u00E9s.",
+    q: "Est-ce compatible avec mes événements et mes start-lists ?",
+    a: "Oui. Focus Racer accepte les imports CSV, Excel et dispose de connecteurs API pour les principales plateformes d’inscription (Njuko, KMS). L’IA croise automatiquement les participants avec les visages détectés.",
   },
   {
-    q: "Qu\u2019est-ce que le \u00AB Golden Time \u00BB et pourquoi est-ce important ?",
-    a: "Le Golden Time d\u00E9signe les 24 premi\u00E8res heures apr\u00E8s une course, quand l\u2019adr\u00E9naline est au maximum. C\u2019est pendant cette fen\u00EAtre que 70% des ventes ont lieu. Focus Racer vous permet de mettre en ligne le jour m\u00EAme gr\u00E2ce au tri IA instantan\u00E9.",
+    q: "Qu’est-ce que le « Golden Time » et pourquoi est-ce important ?",
+    a: "Le Golden Time désigne les 24 premières heures après une course, quand l’adrénaline est au maximum. C’est pendant cette fenêtre que 70% des ventes ont lieu. Focus Racer vous permet de mettre en ligne le jour même grâce au tri IA instantané.",
   },
   {
-    q: "Mes photos sont-elles prot\u00E9g\u00E9es contre le vol ?",
-    a: "Absolument. Watermark dynamique, protection hotlink, blocage clic droit, anti-screenshot CSS, headers de s\u00E9curit\u00E9 avanc\u00E9s. Les originaux HD ne sont jamais expos\u00E9s : seules les versions watermark\u00E9es sont visibles. L\u2019acc\u00E8s aux HD n\u00E9cessite un achat valid\u00E9.",
+    q: "Mes photos sont-elles protégées contre le vol ?",
+    a: "Absolument. Watermark dynamique, protection hotlink, blocage clic droit, anti-screenshot CSS, headers de sécurité avancés. Les originaux HD ne sont jamais exposés : seules les versions watermarkées sont visibles. L’accès aux HD nécessite un achat validé.",
   },
   {
-    q: "Combien co\u00FBte Focus Racer ?",
-    a: "Vous payez uniquement le tri IA : 1 cr\u00E9dit = 1 photo trait\u00E9e. Les packs d\u00E9marrent \u00E0 19\u20AC pour 1\u00A0000 cr\u00E9dits (0,019\u20AC/photo), jusqu\u2019\u00E0 0,008\u20AC/photo pour les gros volumes. Z\u00E9ro commission sur vos ventes, z\u00E9ro abonnement obligatoire.",
+    q: "Combien coûte Focus Racer ?",
+    a: "Vous payez uniquement le tri IA : 1 crédit = 1 photo traitée. Les packs démarrent à 19€ pour 1 000 crédits (0,019€/photo), jusqu’à 0,008€/photo pour les gros volumes. Zéro commission sur vos ventes, zéro abonnement obligatoire.",
   },
 ];
 
@@ -371,27 +371,27 @@ export default function SolutionsPhotographesPage() {
             <div className="text-white space-y-8">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                Plateforme de vente photo propuls\u00E9e par l&apos;IA
+                Plateforme de vente photo propulsée par l&apos;IA
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                Transformez vos clich\u00E9s en{" "}
+                Transformez vos clichés en{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">
                   profit
                 </span>
                 <br />
                 <span className="text-3xl md:text-4xl lg:text-5xl text-white/90">
-                  1\u00A0000 photos tri\u00E9es en 2 minutes
+                  1 000 photos triées en 2 minutes
                 </span>
               </h1>
               <p className="text-lg text-white/80 max-w-xl leading-relaxed">
-                Upload, tri automatique par intelligence artificielle, galerie optimis\u00E9e, vente et paiement direct.
+                Upload, tri automatique par intelligence artificielle, galerie optimisée, vente et paiement direct.
                 Concentrez-vous sur la photo, Focus Racer s&apos;occupe du tri, de la vente et du marketing.
                 <strong className="text-white"> 0% de commission sur vos ventes.</strong>
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/register">
                   <button className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-400/40 hover:-translate-y-0.5">
-                    Cr\u00E9er mon compte gratuit
+                    Créer mon compte gratuit
                   </button>
                 </Link>
                 <a href="#simulateur">
@@ -407,11 +407,11 @@ export default function SolutionsPhotographesPage() {
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-emerald-400">~2 min</div>
-                  <div className="text-white/60 text-sm">pour 1\u00A0000 photos</div>
+                  <div className="text-white/60 text-sm">pour 1 000 photos</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-emerald-400" data-count="95" data-suffix="%">0%</div>
-                  <div className="text-white/60 text-sm">pr\u00E9cision OCR</div>
+                  <div className="text-white/60 text-sm">précision OCR</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-emerald-400">+40%</div>
@@ -423,7 +423,7 @@ export default function SolutionsPhotographesPage() {
             {/* Pipeline animation */}
             <div className="hidden lg:block">
               <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-8 shadow-2xl">
-                <p className="text-white/60 text-sm mb-6 uppercase tracking-wider font-medium">Pipeline IA automatis\u00E9</p>
+                <p className="text-white/60 text-sm mb-6 uppercase tracking-wider font-medium">Pipeline IA automatisé</p>
                 <div className="space-y-3">
                   {pipelineSteps.map((step, i) => (
                     <div
@@ -456,8 +456,8 @@ export default function SolutionsPhotographesPage() {
                 </div>
                 <div className="mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-400/20">
                   <div className="flex items-center justify-between">
-                    <span className="text-white/80 text-sm">1 cr\u00E9dit = 1 photo trait\u00E9e</span>
-                    <span className="text-emerald-400 font-bold">\u00E0 partir de 0,008 &euro;/photo</span>
+                    <span className="text-white/80 text-sm">1 crédit = 1 photo traitée</span>
+                    <span className="text-emerald-400 font-bold">à partir de 0,008 &euro;/photo</span>
                   </div>
                 </div>
               </div>
@@ -478,7 +478,7 @@ export default function SolutionsPhotographesPage() {
           <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-4 text-center">
             <div>
               <span className="text-2xl font-bold text-gray-900" data-count="95" data-suffix="%">0%</span>
-              <p className="text-xs text-gray-500 mt-0.5">pr\u00E9cision IA</p>
+              <p className="text-xs text-gray-500 mt-0.5">précision IA</p>
             </div>
             <div className="w-px h-8 bg-gray-200 hidden sm:block" />
             <div>
@@ -498,7 +498,7 @@ export default function SolutionsPhotographesPage() {
             <div className="w-px h-8 bg-gray-200 hidden sm:block" />
             <div>
               <span className="text-2xl font-bold text-gray-900">24/7</span>
-              <p className="text-xs text-gray-500 mt-0.5">disponibilit\u00E9</p>
+              <p className="text-xs text-gray-500 mt-0.5">disponibilité</p>
             </div>
           </div>
         </div>
@@ -512,12 +512,12 @@ export default function SolutionsPhotographesPage() {
               Intelligence artificielle
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              L&apos;IA au service de votre libert\u00E9 : le tri sans effort
+              L&apos;IA au service de votre liberté : le tri sans effort
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
-              Notre intelligence artificielle identifie les athl\u00E8tes m\u00EAme si le dossard est masqu\u00E9, boueux ou partiellement cach\u00E9.
-              Importez vos photos en masse, l&apos;IA s&apos;occupe de l&apos;organisation en arri\u00E8re-plan pendant que vous vous reposez ou pr\u00E9parez votre prochain shooting.
-              <strong className="text-gray-900"> Workflow &laquo;&nbsp;Z\u00E9ro Latence&nbsp;&raquo;.</strong>
+              Notre intelligence artificielle identifie les athlètes même si le dossard est masqué, boueux ou partiellement caché.
+              Importez vos photos en masse, l&apos;IA s&apos;occupe de l&apos;organisation en arrière-plan pendant que vous vous reposez ou préparez votre prochain shooting.
+              <strong className="text-gray-900"> Workflow &laquo;&nbsp;Zéro Latence&nbsp;&raquo;.</strong>
             </p>
           </div>
 
@@ -550,15 +550,15 @@ export default function SolutionsPhotographesPage() {
         <div className="container mx-auto px-4">
           <div className={`max-w-3xl mx-auto text-center mb-16 transition-all duration-700 ${reveal("golden-time") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-sm font-medium mb-4">
-              Strat\u00E9gie de vente
+              Stratégie de vente
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Le &laquo;&nbsp;Golden Time&nbsp;&raquo; : vendez quand l&apos;\u00E9motion est au maximum
+              Le &laquo;&nbsp;Golden Time&nbsp;&raquo; : vendez quand l&apos;émotion est au maximum
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
-              En photographie \u00E9v\u00E9nementielle, le temps est votre pire ennemi.
-              <strong className="text-gray-900"> 70% des ventes se font dans les 24 premi\u00E8res heures</strong> apr\u00E8s la course.
-              Pass\u00E9 ce d\u00E9lai, l&apos;adr\u00E9naline redescend, et vos chances de conversion aussi. Focus Racer vous permet de mettre en ligne le jour m\u00EAme.
+              En photographie événementielle, le temps est votre pire ennemi.
+              <strong className="text-gray-900"> 70% des ventes se font dans les 24 premières heures</strong> après la course.
+              Passé ce délai, l&apos;adrénaline redescend, et vos chances de conversion aussi. Focus Racer vous permet de mettre en ligne le jour même.
             </p>
           </div>
 
@@ -569,8 +569,8 @@ export default function SolutionsPhotographesPage() {
               <div className="relative flex justify-between">
                 {[
                   { time: "J+0", label: "Fin de course", pct: "70%", color: "bg-emerald-500 text-white" },
-                  { time: "J+1", label: "24h apr\u00E8s", pct: "20%", color: "bg-amber-400 text-white" },
-                  { time: "J+3", label: "3 jours apr\u00E8s", pct: "8%", color: "bg-orange-400 text-white" },
+                  { time: "J+1", label: "24h après", pct: "20%", color: "bg-amber-400 text-white" },
+                  { time: "J+3", label: "3 jours après", pct: "8%", color: "bg-orange-400 text-white" },
                   { time: "J+7", label: "1 semaine", pct: "2%", color: "bg-red-400 text-white" },
                 ].map((step, i) => (
                   <div key={i} className="flex flex-col items-center">
@@ -586,7 +586,7 @@ export default function SolutionsPhotographesPage() {
               </div>
             </div>
             <p className="text-center text-sm text-gray-500 mt-8">
-              R\u00E9partition des ventes selon le d\u00E9lai de mise en ligne apr\u00E8s la course
+              Répartition des ventes selon le délai de mise en ligne après la course
             </p>
           </div>
 
@@ -616,12 +616,12 @@ export default function SolutionsPhotographesPage() {
               Marketing & engagement
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Marketing pr\u00E9dictif & engagement client
+              Marketing prédictif & engagement client
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
-              Un photographe utilisant notre syst\u00E8me d&apos;alertes et d&apos;identification IA voit ses ventes augmenter en moyenne de{" "}
-              <strong className="text-gray-900">40% par rapport \u00E0 une mise en ligne classique \u00E0 J+3</strong>.
-              Activez les leviers de conversion int\u00E9gr\u00E9s.
+              Un photographe utilisant notre système d&apos;alertes et d&apos;identification IA voit ses ventes augmenter en moyenne de{" "}
+              <strong className="text-gray-900">40% par rapport à une mise en ligne classique à J+3</strong>.
+              Activez les leviers de conversion intégrés.
             </p>
           </div>
 
@@ -659,7 +659,7 @@ export default function SolutionsPhotographesPage() {
               Simulateur de revenus photographe
             </h2>
             <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Estimez vos gains par \u00E9v\u00E9nement avec Focus Racer. Comparez avec une plateforme classique qui pr\u00E9l\u00E8ve 30% de commission.
+              Estimez vos gains par événement avec Focus Racer. Comparez avec une plateforme classique qui prélève 30% de commission.
             </p>
           </div>
 
@@ -669,7 +669,7 @@ export default function SolutionsPhotographesPage() {
               <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-8 space-y-8">
                 <div>
                   <div className="flex justify-between mb-2">
-                    <label className="text-white/80 text-sm font-medium">Photos par \u00E9v\u00E9nement</label>
+                    <label className="text-white/80 text-sm font-medium">Photos par événement</label>
                     <span className="text-emerald-400 font-bold">{simPhotos.toLocaleString("fr-FR")}</span>
                   </div>
                   <input
@@ -682,14 +682,14 @@ export default function SolutionsPhotographesPage() {
                     className="w-full h-2 bg-white/20 rounded-full appearance-none cursor-pointer accent-emerald-500"
                   />
                   <div className="flex justify-between text-xs text-white/40 mt-1">
-                    <span>100</span><span>10\u00A0000</span>
+                    <span>100</span><span>10 000</span>
                   </div>
                 </div>
 
                 <div>
                   <div className="flex justify-between mb-2">
                     <label className="text-white/80 text-sm font-medium">Prix moyen par photo</label>
-                    <span className="text-emerald-400 font-bold">{simPrice}\u20AC</span>
+                    <span className="text-emerald-400 font-bold">{simPrice}€</span>
                   </div>
                   <input
                     type="range"
@@ -701,7 +701,7 @@ export default function SolutionsPhotographesPage() {
                     className="w-full h-2 bg-white/20 rounded-full appearance-none cursor-pointer accent-emerald-500"
                   />
                   <div className="flex justify-between text-xs text-white/40 mt-1">
-                    <span>1\u20AC</span><span>20\u20AC</span>
+                    <span>1€</span><span>20€</span>
                   </div>
                 </div>
 
@@ -730,8 +730,8 @@ export default function SolutionsPhotographesPage() {
                     <span className="text-white font-medium">{simPhotosSold.toLocaleString("fr-FR")}</span>
                   </div>
                   <div className="flex justify-between text-white/60">
-                    <span>Co\u00FBt IA ({simCostPerPhoto}\u20AC/photo)</span>
-                    <span className="text-white font-medium">{simCostIA.toLocaleString("fr-FR", { minimumFractionDigits: 2 })}\u20AC</span>
+                    <span>Coût IA ({simCostPerPhoto}€/photo)</span>
+                    <span className="text-white font-medium">{simCostIA.toLocaleString("fr-FR", { minimumFractionDigits: 2 })}€</span>
                   </div>
                 </div>
               </div>
@@ -748,7 +748,7 @@ export default function SolutionsPhotographesPage() {
                   <div className="text-5xl font-bold text-emerald-400 mb-2">
                     {simRevenuNet.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}&euro;
                   </div>
-                  <p className="text-white/60 text-sm">revenu net par \u00E9v\u00E9nement</p>
+                  <p className="text-white/60 text-sm">revenu net par événement</p>
                   <div className="mt-4 px-4 py-3 bg-white/5 rounded-xl">
                     <p className="text-emerald-300 text-sm font-medium">
                       ROI : {simROI.toLocaleString("fr-FR")}x votre investissement IA
@@ -766,7 +766,7 @@ export default function SolutionsPhotographesPage() {
                   <div className="text-4xl font-bold text-white/50 mb-2">
                     {simTraditionalNet.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}&euro;
                   </div>
-                  <p className="text-white/40 text-sm">revenu net par \u00E9v\u00E9nement</p>
+                  <p className="text-white/40 text-sm">revenu net par événement</p>
                 </div>
 
                 {/* Gain */}
@@ -776,7 +776,7 @@ export default function SolutionsPhotographesPage() {
                     <p className="text-3xl font-bold text-emerald-400">
                       +{simGain.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}&euro;
                     </p>
-                    <p className="text-white/60 text-sm mt-1">de plus par \u00E9v\u00E9nement avec Focus Racer</p>
+                    <p className="text-white/60 text-sm mt-1">de plus par événement avec Focus Racer</p>
                   </div>
                 )}
               </div>
@@ -790,14 +790,14 @@ export default function SolutionsPhotographesPage() {
         <div className="container mx-auto px-4">
           <div className={`max-w-3xl mx-auto text-center mb-16 transition-all duration-700 ${reveal("infrastructure") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 text-sm font-medium mb-4">
-              Infrastructure & s\u00E9curit\u00E9
+              Infrastructure & sécurité
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Une infrastructure &laquo;&nbsp;indestructible&nbsp;&raquo; & visibilit\u00E9 web
+              Une infrastructure &laquo;&nbsp;indestructible&nbsp;&raquo; & visibilité web
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
-              Serveur d\u00E9di\u00E9 haute performance, SEO localis\u00E9 pour chaque \u00E9v\u00E9nement, s\u00E9curit\u00E9 de niveau professionnel.
-              Que vous ayez 100 ou 50&nbsp;000 visiteurs simultan\u00E9s, la vitesse reste constante.
+              Serveur dédié haute performance, SEO localisé pour chaque événement, sécurité de niveau professionnel.
+              Que vous ayez 100 ou 50&nbsp;000 visiteurs simultanés, la vitesse reste constante.
             </p>
           </div>
 
@@ -829,11 +829,11 @@ export default function SolutionsPhotographesPage() {
               Gestion professionnelle
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Pilotez votre activit\u00E9 comme un pro
+              Pilotez votre activité comme un pro
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
-              Tableau de bord complet, branding personnalis\u00E9, paiement direct et export de donn\u00E9es.
-              Tout ce dont vous avez besoin pour g\u00E9rer votre activit\u00E9 photo de mani\u00E8re professionnelle.
+              Tableau de bord complet, branding personnalisé, paiement direct et export de données.
+              Tout ce dont vous avez besoin pour gérer votre activité photo de manière professionnelle.
             </p>
           </div>
 
@@ -868,7 +868,7 @@ export default function SolutionsPhotographesPage() {
               Focus Racer vs plateformes classiques
             </h2>
             <p className="text-gray-600 text-lg">
-              Pourquoi les photographes passent \u00E0 Focus Racer : une comparaison fonctionnalit\u00E9 par fonctionnalit\u00E9.
+              Pourquoi les photographes passent à Focus Racer : une comparaison fonctionnalité par fonctionnalité.
             </p>
           </div>
 
@@ -878,7 +878,7 @@ export default function SolutionsPhotographesPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="bg-gray-50 border-b border-gray-100">
-                      <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Fonctionnalit\u00E9</th>
+                      <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Fonctionnalité</th>
                       <th className="text-center py-4 px-6">
                         <span className="text-sm font-bold text-emerald-600">Focus Racer</span>
                       </th>
@@ -985,7 +985,7 @@ export default function SolutionsPhotographesPage() {
               Payez uniquement le tri IA
             </h2>
             <p className="text-gray-600 text-lg">
-              1 cr\u00E9dit = 1 photo trait\u00E9e par l&apos;IA. Pas d&apos;abonnement obligatoire, pas de commission sur vos ventes. Vous ne payez que ce que vous consommez.
+              1 crédit = 1 photo traitée par l&apos;IA. Pas d&apos;abonnement obligatoire, pas de commission sur vos ventes. Vous ne payez que ce que vous consommez.
             </p>
           </div>
 
@@ -1004,7 +1004,7 @@ export default function SolutionsPhotographesPage() {
                   </div>
                 )}
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{pack.name}</h3>
-                <p className="text-gray-500 text-sm mb-6">{pack.credits} cr\u00E9dits</p>
+                <p className="text-gray-500 text-sm mb-6">{pack.credits} crédits</p>
                 <div className="mb-6">
                   <span className="text-4xl font-bold text-gray-900">{pack.price}</span>
                   <span className="text-gray-500 ml-1">&euro;</span>
@@ -1035,7 +1035,7 @@ export default function SolutionsPhotographesPage() {
         <div className="container mx-auto px-4">
           <div className={`max-w-3xl mx-auto text-center mb-16 transition-all duration-700 ${reveal("faq-photographes") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Questions fr\u00E9quentes des photographes
+              Questions fréquentes des photographes
             </h2>
             <p className="text-gray-600 text-lg">
               Tout ce que vous devez savoir avant de commencer avec Focus Racer.
@@ -1082,19 +1082,19 @@ export default function SolutionsPhotographesPage() {
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            Pr\u00EAt \u00E0 r\u00E9volutionner votre activit\u00E9 photo ?
+            Prêt à révolutionner votre activité photo ?
           </h2>
           <p className="text-white/80 text-lg mb-4 max-w-2xl mx-auto">
             Nous ne vous offrons pas juste une galerie : nous vous offrons un levier pour multiplier vos revenus actuels.
-            En combinant l&apos;identification IA la plus rapide du march\u00E9 avec une strat\u00E9gie de vente ax\u00E9e sur la psychologie de l&apos;acheteur.
+            En combinant l&apos;identification IA la plus rapide du marché avec une stratégie de vente axée sur la psychologie de l&apos;acheteur.
           </p>
           <p className="text-emerald-400 font-semibold text-lg mb-10 max-w-2xl mx-auto">
-            Un photographe utilisant Focus Racer voit ses ventes augmenter en moyenne de 40% par rapport \u00E0 une mise en ligne classique \u00E0 J+3.
+            Un photographe utilisant Focus Racer voit ses ventes augmenter en moyenne de 40% par rapport à une mise en ligne classique à J+3.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/register">
               <button className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-400/40 hover:-translate-y-0.5 text-lg">
-                Cr\u00E9er mon compte gratuit
+                Créer mon compte gratuit
               </button>
             </Link>
             <Link href="/contact">
