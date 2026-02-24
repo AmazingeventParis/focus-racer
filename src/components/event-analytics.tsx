@@ -206,27 +206,11 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-blue-400" />
-                      <span className="text-sm text-slate-600">Frais de service plateforme</span>
-                    </div>
-                    <span className="text-sm font-medium text-slate-700">{formatEuro(revenue.serviceFee)}</span>
-                  </div>
-                  <div className="flex items-center justify-between py-2">
-                    <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-orange-400" />
                       <span className="text-sm text-slate-600">Frais Stripe</span>
                     </div>
                     <span className="text-sm font-medium text-slate-700">{formatEuro(revenue.stripeFee)}</span>
                   </div>
-                  {revenue.platformFee > 0 && (
-                    <div className="flex items-center justify-between py-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-slate-400" />
-                        <span className="text-sm text-slate-600">Commission plateforme</span>
-                      </div>
-                      <span className="text-sm font-medium text-slate-700">{formatEuro(revenue.platformFee)}</span>
-                    </div>
-                  )}
                   <div className="flex items-center justify-between py-3 border-t border-slate-200 mt-1">
                     <span className="text-sm font-semibold text-slate-800">Total</span>
                     <span className="text-sm font-bold text-slate-900">{formatEuro(revenue.totalRevenue)}</span>
@@ -245,13 +229,6 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
                         title={`Photographe: ${formatEuro(revenue.photographerPayout)}`}
                       />
                     )}
-                    {revenue.serviceFee > 0 && (
-                      <div
-                        className="bg-gradient-to-r from-blue-300 to-blue-400 transition-all duration-700"
-                        style={{ width: `${(revenue.serviceFee / revenue.totalRevenue) * 100}%` }}
-                        title={`Service: ${formatEuro(revenue.serviceFee)}`}
-                      />
-                    )}
                     {revenue.stripeFee > 0 && (
                       <div
                         className="bg-gradient-to-r from-orange-300 to-orange-400 transition-all duration-700"
@@ -264,10 +241,6 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
                     <div className="flex items-center gap-1.5">
                       <div className="w-2 h-2 rounded-full bg-emerald-500" />
                       <span className="text-slate-600">Photographe ({((revenue.photographerPayout / revenue.totalRevenue) * 100).toFixed(0)}%)</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2 h-2 rounded-full bg-blue-400" />
-                      <span className="text-slate-600">Service ({((revenue.serviceFee / revenue.totalRevenue) * 100).toFixed(0)}%)</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-2 h-2 rounded-full bg-orange-400" />
