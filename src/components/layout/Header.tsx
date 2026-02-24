@@ -81,10 +81,16 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const isAdmin = session?.user?.role === "ADMIN";
+  const role = session?.user?.role;
+  const isAdmin = role === "ADMIN";
+  const isPro = ["PHOTOGRAPHER", "ORGANIZER", "AGENCY", "CLUB", "FEDERATION"].includes(role || "");
+  const isRunner = role === "RUNNER";
+
   const dashboardHref = isAdmin
     ? "/focus-mgr-7k9x/dashboard"
-    : "/photographer/dashboard";
+    : isPro
+    ? "/photographer/dashboard"
+    : "/sportif/dashboard";
 
   const isSolutionsActive = pathname.startsWith("/solutions");
 
@@ -191,11 +197,6 @@ export default function Header() {
                   </Button>
                 </Link>
               )}
-              <Link href="/register">
-                <Button variant="ghost" className="text-navy hover:text-emerald hover:bg-emerald-50/50">
-                  Créer un compte
-                </Button>
-              </Link>
               <Link href={dashboardHref}>
                 <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
                   {isAdmin ? "Admin" : "Mon espace"}
@@ -293,11 +294,6 @@ export default function Header() {
                       </Button>
                     </Link>
                   )}
-                  <Link href="/register">
-                    <Button variant="outline" className="w-full border-emerald text-emerald hover:bg-emerald-50">
-                      Créer un compte
-                    </Button>
-                  </Link>
                   <Link href={dashboardHref}>
                     <Button className="w-full bg-emerald hover:bg-emerald-dark text-white">
                       {isAdmin ? "Admin" : "Mon espace"}
