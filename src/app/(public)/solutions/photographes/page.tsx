@@ -58,7 +58,7 @@ const features = [
 const pricing = [
   { name: "Pack 1K", credits: "1 000", price: "19", perPhoto: "0,019" },
   { name: "Pack 5K", credits: "5 000", price: "85", perPhoto: "0,017", popular: true },
-  { name: "Pack 15K", credits: "15 000", price: "225", perPhoto: "0,015" },
+  { name: "Pack 15K", credits: "15 000", price: "225", perPhoto: "0,008" },
 ];
 
 const advantages = [
@@ -220,7 +220,7 @@ export default function SolutionsPhotographesPage() {
                   <div className="mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-400/20">
                     <div className="flex items-center justify-between">
                       <span className="text-white/80 text-sm">1 crédit par photo traitée</span>
-                      <span className="text-emerald-400 font-bold">à partir de 0,015 &euro;/photo</span>
+                      <span className="text-emerald-400 font-bold">à partir de 0,008 &euro;/photo</span>
                     </div>
                   </div>
                 </div>

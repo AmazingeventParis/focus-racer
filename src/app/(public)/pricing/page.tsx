@@ -67,7 +67,7 @@ const creditPacks = [
     name: "Pack 15k",
     credits: "15 000",
     price: "225",
-    pricePerCredit: "0,015",
+    pricePerCredit: "0,008",
     popular: true,
   },
 ];
