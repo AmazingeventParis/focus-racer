@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { evaluateOrganizerBadges } from "@/lib/organizer-badges";
+import { grantXp } from "@/lib/gamification/xp-service";
 
 export async function GET() {
   try {
@@ -120,6 +121,15 @@ export async function GET() {
         data: eligible.map((key) => ({ userId, badgeKey: key })),
         skipDuplicates: true,
       });
+
+      // Grant XP for each newly earned badge
+      for (const badgeKey of eligible) {
+        try {
+          await grantXp(userId, "BADGE_EARNED", { badgeKey });
+        } catch (xpErr) {
+          console.error(`Error granting badge XP for ${badgeKey}:`, xpErr);
+        }
+      }
     }
 
     // Fetch all organizer badges earned by this user

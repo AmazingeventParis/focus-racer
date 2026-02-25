@@ -8,6 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Image from "next/image";
 import { EventWithStats } from "@/types";
 import OrganizerBadgeRow from "@/components/organizer/OrganizerBadgeRow";
+import XpBar from "@/components/gamification/XpBar";
+import XpToast from "@/components/gamification/XpToast";
+import LevelUpCelebration from "@/components/gamification/LevelUpCelebration";
+import SmartAlertsList from "@/components/gamification/SmartAlertsList";
+import LeaderboardCard from "@/components/gamification/LeaderboardCard";
+import StreakCard from "@/components/gamification/StreakCard";
 
 const SPORT_LABELS: Record<string, string> = {
   RUNNING: "Course à pied",
@@ -91,6 +97,14 @@ export default function DashboardPage() {
           Bienvenue sur Focus Racer - Votre espace organisateur
         </p>
       </div>
+
+      {/* XP Progress */}
+      <div className="mb-6">
+        <XpBar />
+      </div>
+
+      {/* Smart Alerts */}
+      <SmartAlertsList />
 
       {/* Stats cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -264,8 +278,10 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Quick actions */}
+        {/* Gamification + Quick actions */}
         <div className="space-y-6">
+          <LeaderboardCard role="ORGANIZER" />
+          <StreakCard />
           <Card className="bg-white border-0 shadow-card rounded-xl">
             <CardHeader>
               <CardTitle className="text-lg font-display text-gray-900">Actions rapides</CardTitle>
@@ -339,6 +355,10 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
+
+      {/* Gamification overlays */}
+      <XpToast />
+      <LevelUpCelebration />
     </div>
   );
 }

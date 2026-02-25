@@ -4,6 +4,8 @@ import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { s3KeyToPublicPath } from "@/lib/s3";
+import { grantXp } from "@/lib/gamification/xp-service";
+import { geocodeLocation } from "@/lib/gamification/geocoding";
 
 const updateEventSchema = z.object({
   name: z.string().min(1).optional(),
@@ -109,13 +111,38 @@ export async function PUT(
     const body = await request.json();
     const data = updateEventSchema.parse(body);
 
+    // Geocode location if changed
+    let geoData: { latitude?: number; longitude?: number } = {};
+    if (data.location && data.location !== event.location) {
+      try {
+        const coords = await geocodeLocation(data.location);
+        if (coords) {
+          geoData = { latitude: coords.lat, longitude: coords.lng };
+        }
+      } catch (geoErr) {
+        console.error("Geocoding error:", geoErr);
+      }
+    }
+
+    const wasPublished = event.status === "PUBLISHED";
+
     const updated = await prisma.event.update({
       where: { id },
       data: {
         ...data,
+        ...geoData,
         date: data.date ? new Date(data.date) : undefined,
       },
     });
+
+    // Grant XP if status changed to PUBLISHED
+    if (!wasPublished && updated.status === "PUBLISHED") {
+      try {
+        await grantXp(session.user.id, "EVENT_PUBLISHED", { eventId: id });
+      } catch (xpErr) {
+        console.error("Error granting event published XP:", xpErr);
+      }
+    }
 
     return NextResponse.json(updated);
   } catch (error) {

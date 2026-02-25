@@ -5,6 +5,9 @@ import prisma from "@/lib/prisma";
 import { stripe, getStripe, SERVICE_FEE_EUR } from "@/lib/stripe";
 import { randomBytes } from "crypto";
 import { sendPurchaseConfirmation } from "@/lib/email";
+import { grantXp } from "@/lib/gamification/xp-service";
+import { recordStreakActivity } from "@/lib/gamification/streak-service";
+import { completeReferral } from "@/lib/gamification/referral-service";
 
 /**
  * Transfer pending payouts to a newly-connected Stripe account.
@@ -144,6 +147,28 @@ export async function POST(request: NextRequest) {
       } catch (emailErr) {
         console.error("Failed to send confirmation email:", emailErr);
       }
+    }
+
+    // Grant XP for purchase (sportif) and sale (photographe)
+    try {
+      if (order.userId) {
+        // Sportif XP: per photo purchased
+        for (let i = 0; i < order.items.length; i++) {
+          await grantXp(order.userId, "PHOTO_PURCHASE", { orderId: order.id, photoId: order.items[i].photoId });
+        }
+        // Record purchase streak
+        await recordStreakActivity(order.userId, "purchase");
+        // Complete referral if first purchase
+        await completeReferral(order.userId, "first_purchase");
+      }
+      // Photographe XP: per photo sold
+      if (order.event.userId) {
+        for (let i = 0; i < order.items.length; i++) {
+          await grantXp(order.event.userId, "PHOTO_SOLD", { orderId: order.id, photoId: order.items[i].photoId });
+        }
+      }
+    } catch (xpErr) {
+      console.error("Failed to grant XP:", xpErr);
     }
   }
 

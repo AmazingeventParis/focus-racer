@@ -8,6 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Image from "next/image";
 import { EventWithStats } from "@/types";
 import PhotographerBadgeRow from "@/components/photographer/PhotographerBadgeRow";
+import XpBar from "@/components/gamification/XpBar";
+import XpToast from "@/components/gamification/XpToast";
+import LevelUpCelebration from "@/components/gamification/LevelUpCelebration";
+import LeaderboardCard from "@/components/gamification/LeaderboardCard";
+import StreakCard from "@/components/gamification/StreakCard";
+import SmartAlertsList from "@/components/gamification/SmartAlertsList";
 
 const SPORT_LABELS: Record<string, string> = {
   RUNNING: "Course à pied",
@@ -90,6 +96,16 @@ export default function DashboardPage() {
         <p className="text-gray-500 mt-1">
           Bienvenue sur Focus Racer - Votre espace photographe
         </p>
+      </div>
+
+      {/* XP Bar */}
+      <div className="mb-6">
+        <XpBar />
+      </div>
+
+      {/* Smart Alerts */}
+      <div className="mb-6">
+        <SmartAlertsList />
       </div>
 
       {/* Stats cards */}
@@ -298,6 +314,12 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
+          {/* Leaderboard */}
+          <LeaderboardCard role="PHOTOGRAPHER" linkHref="/photographer/classement" />
+
+          {/* Streaks */}
+          <StreakCard />
+
           {/* Sport types distribution */}
           <Card className="bg-white border-0 shadow-card rounded-xl">
             <CardHeader>
@@ -339,6 +361,10 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
+
+      {/* Gamification overlays */}
+      <XpToast />
+      <LevelUpCelebration />
     </div>
   );
 }

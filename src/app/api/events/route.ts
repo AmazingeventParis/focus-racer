@@ -4,6 +4,9 @@ import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { s3KeyToPublicPath } from "@/lib/s3";
+import { grantXp } from "@/lib/gamification/xp-service";
+import { recordStreakActivity } from "@/lib/gamification/streak-service";
+import { geocodeLocation } from "@/lib/gamification/geocoding";
 
 const createEventSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
@@ -66,6 +69,21 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { name, date, location, description, sportType, status } = createEventSchema.parse(body);
 
+    // Geocode location if provided
+    let latitude: number | undefined;
+    let longitude: number | undefined;
+    if (location) {
+      try {
+        const coords = await geocodeLocation(location);
+        if (coords) {
+          latitude = coords.lat;
+          longitude = coords.lng;
+        }
+      } catch (geoErr) {
+        console.error("Geocoding error:", geoErr);
+      }
+    }
+
     const event = await prisma.event.create({
       data: {
         name,
@@ -75,8 +93,18 @@ export async function POST(request: NextRequest) {
         sportType: sportType || "RUNNING",
         status: status || "DRAFT",
         userId: session.user.id,
+        latitude,
+        longitude,
       },
     });
+
+    // Grant XP for event creation
+    try {
+      await grantXp(session.user.id, "EVENT_CREATED", { eventId: event.id });
+      await recordStreakActivity(session.user.id, "event_create");
+    } catch (xpErr) {
+      console.error("Error granting event creation XP:", xpErr);
+    }
 
     return NextResponse.json(event);
   } catch (error) {

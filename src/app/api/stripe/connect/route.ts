@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getStripe, APP_URL } from "@/lib/stripe";
 import prisma from "@/lib/prisma";
+import { grantXp } from "@/lib/gamification/xp-service";
 
 export async function POST() {
   try {
@@ -42,6 +43,13 @@ export async function POST() {
         where: { id: user.id },
         data: { stripeAccountId: accountId },
       });
+
+      // Grant XP for Stripe Connect (one-time)
+      try {
+        await grantXp(user.id, "STRIPE_CONNECTED");
+      } catch (xpErr) {
+        console.error("Error granting Stripe Connect XP:", xpErr);
+      }
     }
 
     const accountLink = await stripe.accountLinks.create({

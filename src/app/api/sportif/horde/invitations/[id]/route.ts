@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { grantXp } from "@/lib/gamification/xp-service";
 
 // PATCH — accepter ou décliner une invitation
 export async function PATCH(
@@ -39,6 +40,15 @@ export async function PATCH(
       joinedAt: action === "accept" ? new Date() : null,
     },
   });
+
+  // Grant XP for friend acceptance
+  if (action === "accept") {
+    try {
+      await grantXp(session.user.id, "FRIEND_ADDED", { memberId: params.id });
+    } catch (xpErr) {
+      console.error("Error granting friend XP:", xpErr);
+    }
+  }
 
   return NextResponse.json(updated);
 }

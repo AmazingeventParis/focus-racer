@@ -8,6 +8,8 @@ import { analyzeQuality, autoRetouchWebVersion, smartCropFace, findDuplicateIndi
 import { aiConfig } from "@/lib/ai-config";
 import { detectTextFromImage, indexFaces, searchFaceByImage } from "@/lib/rekognition";
 import { scheduleAutoClustering } from "@/lib/auto-cluster";
+import { grantXp } from "@/lib/gamification/xp-service";
+import { recordStreakActivity } from "@/lib/gamification/streak-service";
 import { processingQueue } from "@/lib/processing-queue";
 import {
   createUploadSession,
@@ -496,6 +498,16 @@ export async function POST(request: NextRequest) {
               data: { uploadCompletedAt: new Date() },
             });
             scheduleAutoClustering(eventId);
+
+            // Grant XP for photo upload (1 XP per photo processed)
+            try {
+              for (let i = 0; i < totalToProcess; i++) {
+                await grantXp(session.user.id, "PHOTO_UPLOADED", { eventId, batchIndex: i });
+              }
+              await recordStreakActivity(session.user.id, "upload");
+            } catch (xpErr) {
+              console.error("Error granting upload XP:", xpErr);
+            }
 
             // Notify runners who favorited this event
             try {

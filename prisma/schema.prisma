@@ -103,6 +103,20 @@ model User {
   hordeMessages           HordeMessage[]                  @relation("HordeMessageSender")
   photoAlerts             PhotoAlert[]
   badges                  UserBadge[]
+  referralCode            String?     @unique
+
+  // Gamification relations
+  xpEvents                XpEvent[]
+  userLevel               UserLevel?
+  leaderboardEntries      LeaderboardEntry[]
+  streaks                 UserStreak[]
+  referralsSent           Referral[]        @relation("ReferralReferrer")
+  referralsReceived       Referral[]        @relation("ReferralReferee")
+  photoReactions          PhotoReaction[]
+  shareEvents             ShareEvent[]
+  creditRewards           CreditReward[]
+  smartAlerts             SmartAlert[]
+  wrappedRecaps           WrappedRecap[]
 
   @@index([role])
   @@index([isActive])
@@ -131,6 +145,8 @@ model Event {
   uploadCompletedAt DateTime? // When the last photo was processed
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+  latitude     Float?
+  longitude    Float?
   favorites    EventFavorite[]
   notifications Notification[]
   photoAlerts  PhotoAlert[]
@@ -152,6 +168,8 @@ model Photo {
   eventId       String
   event         Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
   orderItems    OrderItem[]
+  reactions     PhotoReaction[]
+  shares        ShareEvent[]
   qualityScore  Float?
   isBlurry      Boolean     @default(false)
   autoEdited    Boolean     @default(false)
@@ -632,4 +650,219 @@ model Notification {
   @@index([userId])
   @@index([eventId])
   @@index([read])
+}
+
+// =========== GAMIFICATION: XP & LEVELS ===========
+
+enum XpActionType {
+  PHOTO_PURCHASE
+  EVENT_FAVORITE
+  PROFILE_COMPLETE
+  FRIEND_ADDED
+  PHOTO_SHARED
+  PHOTO_REACTION
+  REFERRAL_COMPLETED
+  PHOTO_UPLOADED
+  EVENT_PUBLISHED
+  PHOTO_SOLD
+  BADGE_EARNED
+  STRIPE_CONNECTED
+  HIGH_OCR_RATE
+  EVENT_CREATED
+  START_LIST_IMPORTED
+  HIGH_COVERAGE
+  DAILY_LOGIN
+  STREAK_BONUS
+}
+
+model XpEvent {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    XpActionType
+  xpAmount  Int
+  metadata  String?
+  createdAt DateTime     @default(now())
+
+  @@index([userId])
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}
+
+model UserLevel {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalXp        Int      @default(0)
+  level          Int      @default(1)
+  levelName      String   @default("Débutant")
+  currentLevelXp Int      @default(0)
+  nextLevelXp    Int      @default(100)
+  updatedAt      DateTime @updatedAt
+}
+
+// =========== GAMIFICATION: LEADERBOARDS ===========
+
+enum LeaderboardPeriod {
+  WEEKLY
+  MONTHLY
+  ALL_TIME
+}
+
+model LeaderboardEntry {
+  id        String            @id @default(cuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  period    LeaderboardPeriod
+  periodKey String
+  role      UserRole
+  category  String
+  score     Int               @default(0)
+  updatedAt DateTime          @updatedAt
+
+  @@unique([userId, period, periodKey, category])
+  @@index([period, periodKey, category, score])
+}
+
+// =========== GAMIFICATION: STREAKS ===========
+
+model UserStreak {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  streakType       String
+  currentStreak    Int      @default(0)
+  longestStreak    Int      @default(0)
+  lastActivityDate DateTime
+  nextDeadline     DateTime
+  updatedAt        DateTime @updatedAt
+
+  @@unique([userId, streakType])
+  @@index([nextDeadline])
+}
+
+// =========== GAMIFICATION: PHOTO REACTIONS ===========
+
+enum ReactionType {
+  LIKE
+  LOVE
+  FIRE
+  WOW
+}
+
+model PhotoReaction {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photoId   String
+  photo     Photo        @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  type      ReactionType
+  createdAt DateTime     @default(now())
+
+  @@unique([userId, photoId, type])
+  @@index([photoId])
+  @@index([userId])
+}
+
+// =========== GAMIFICATION: REFERRALS ===========
+
+enum ReferralStatus {
+  PENDING
+  COMPLETED
+  EXPIRED
+}
+
+model Referral {
+  id              String         @id @default(cuid())
+  referrerId      String
+  referrer        User           @relation("ReferralReferrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  refereeId       String?
+  referee         User?          @relation("ReferralReferee", fields: [refereeId], references: [id], onDelete: SetNull)
+  referralCode    String
+  refereeEmail    String?
+  status          ReferralStatus @default(PENDING)
+  referrerReward  Int            @default(0)
+  refereeReward   Int            @default(0)
+  completedAction String?
+  completedAt     DateTime?
+  createdAt       DateTime       @default(now())
+
+  @@index([referrerId])
+  @@index([referralCode])
+}
+
+// =========== GAMIFICATION: SOCIAL SHARING ===========
+
+model ShareEvent {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  photoId     String
+  photo       Photo    @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  shareToken  String   @unique @default(cuid())
+  platform    String?
+  viewCount   Int      @default(0)
+  rewardGiven Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([shareToken])
+  @@index([photoId])
+}
+
+// =========== GAMIFICATION: CREDIT REWARDS ===========
+
+model CreditReward {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  actionKey String
+  credits   Int
+  claimedAt DateTime @default(now())
+
+  @@unique([userId, actionKey])
+}
+
+// =========== GAMIFICATION: SMART ALERTS ===========
+
+enum AlertType {
+  PHOTOS_AVAILABLE
+  PURCHASE_REMINDER
+  SORTING_REMINDER
+  WEEKLY_STATS
+  STREAK_AT_RISK
+  BADGE_EARNED
+  LEVEL_UP
+  REFERRAL_COMPLETED
+}
+
+model SmartAlert {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  alertType   AlertType
+  title       String
+  message     String
+  metadata    String?
+  read        Boolean   @default(false)
+  emailSent   Boolean   @default(false)
+  scheduledAt DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+
+  @@index([userId, read])
+  @@index([scheduledAt])
+}
+
+// =========== GAMIFICATION: WRAPPED RECAP ===========
+
+model WrappedRecap {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  year        Int
+  role        UserRole
+  statsJson   String
+  cardImageS3 String?
+  generatedAt DateTime @default(now())
+
+  @@unique([userId, year, role])
 }

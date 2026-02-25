@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -85,8 +85,17 @@ const REFERRAL_SOURCES = [
   { value: "other", label: "Autre" },
 ];
 
-export default function RegisterPage() {
+export default function RegisterPageWrapper() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full" /></div>}>
+      <RegisterPage />
+    </Suspense>
+  );
+}
+
+function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [step, setStep] = useState<1 | 2>(1);
   const [selectedRole, setSelectedRole] = useState<string>("");
@@ -94,6 +103,21 @@ export default function RegisterPage() {
   const [acceptedCgu, setAcceptedCgu] = useState(false);
   const [newsletterOptIn, setNewsletterOptIn] = useState(false);
   const [referralSource, setReferralSource] = useState("");
+  const [referralCode, setReferralCode] = useState<string | null>(null);
+
+  // Detect ?ref= param for referral tracking
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref) {
+      setReferralCode(ref);
+      // Store in cookie for 30 days as fallback
+      document.cookie = `referral_code=${ref};path=/;max-age=${30 * 24 * 60 * 60}`;
+    } else {
+      // Check cookie fallback
+      const match = document.cookie.match(/referral_code=([^;]+)/);
+      if (match) setReferralCode(match[1]);
+    }
+  }, [searchParams]);
 
   const isProRole = ["PHOTOGRAPHER", "ORGANIZER", "AGENCY", "CLUB", "FEDERATION"].includes(selectedRole);
 
@@ -150,6 +174,19 @@ export default function RegisterPage() {
           variant: "destructive",
         });
       } else {
+        // Track referral if present
+        if (referralCode) {
+          try {
+            await fetch("/api/referral/track", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ referralCode }),
+            });
+          } catch {
+            // Silent fail — referral tracking is non-critical
+          }
+        }
+
         toast({
           title: "Inscription réussie",
           description: "Bienvenue sur Focus Racer !",
