@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { s3KeyToPublicPath } from "@/lib/s3";
+import { searchFacesByFaceId } from "@/lib/rekognition";
+import { aiConfig } from "@/lib/ai-config";
 
-// Search photos by runner name (via start-list)
+// Search photos by bib number or runner name (via start-list)
+// Bib search includes face expansion: finds additional photos of the same person
+// even when the bib is not visible (e.g. hidden by hand, back view)
 export async function GET(request: NextRequest) {
   // Rate limit: 30 searches/minute per IP
   const limited = rateLimit(request, "photo-search", { limit: 30 });
@@ -50,6 +54,61 @@ export async function GET(request: NextRequest) {
           });
         }
       });
+
+      // Face expansion: find additional photos of the same person via face recognition
+      // This catches photos where the bib is hidden (hand, back view, etc.)
+      if (aiConfig.faceIndexEnabled && photosMap.size > 0) {
+        try {
+          // Get faceIds from the photos we already found by bib
+          const bibPhotoIds = Array.from(photosMap.keys());
+          const anchorFaces = await prisma.photoFace.findMany({
+            where: { photoId: { in: bibPhotoIds } },
+            select: { faceId: true },
+          });
+
+          if (anchorFaces.length > 0) {
+            // Search for similar faces across the collection
+            const matchedPhotoIds = new Set<string>();
+            for (const face of anchorFaces) {
+              const faceMatches = await searchFacesByFaceId(face.faceId, 50, 70);
+              for (const match of faceMatches) {
+                if (match.externalImageId.startsWith(`${eventId}:`)) {
+                  const photoId = match.externalImageId.split(":")[1];
+                  if (photoId && !photosMap.has(photoId)) {
+                    matchedPhotoIds.add(photoId);
+                  }
+                }
+              }
+            }
+
+            // Fetch the additional photos found by face
+            if (matchedPhotoIds.size > 0) {
+              const extraPhotos = await prisma.photo.findMany({
+                where: { id: { in: Array.from(matchedPhotoIds) }, eventId },
+                select: {
+                  id: true,
+                  thumbnailPath: true,
+                  webPath: true,
+                  path: true,
+                  originalName: true,
+                  bibNumbers: { select: { id: true, number: true } },
+                },
+              });
+              for (const p of extraPhotos) {
+                photosMap.set(p.id, {
+                  id: p.id,
+                  src: s3KeyToPublicPath(p.thumbnailPath || p.webPath || p.path),
+                  originalName: p.originalName,
+                  bibNumbers: p.bibNumbers,
+                });
+              }
+            }
+          }
+        } catch (faceErr) {
+          // Face expansion is best-effort, don't fail the whole search
+          console.error("Face expansion error (non-blocking):", faceErr);
+        }
+      }
 
       // Try to find runner info from start-list
       const runner = await prisma.startListEntry.findUnique({
@@ -122,6 +181,54 @@ export async function GET(request: NextRequest) {
           });
         }
       });
+
+      // Face expansion for name search too
+      if (aiConfig.faceIndexEnabled && photosMap.size > 0) {
+        try {
+          const namePhotoIds = Array.from(photosMap.keys());
+          const anchorFaces = await prisma.photoFace.findMany({
+            where: { photoId: { in: namePhotoIds } },
+            select: { faceId: true },
+          });
+
+          if (anchorFaces.length > 0) {
+            const matchedPhotoIds = new Set<string>();
+            for (const face of anchorFaces) {
+              const faceMatches = await searchFacesByFaceId(face.faceId, 50, 70);
+              for (const match of faceMatches) {
+                const parts = match.externalImageId.split(":");
+                if (parts[0] === eventId && parts[1] && !photosMap.has(parts[1])) {
+                  matchedPhotoIds.add(parts[1]);
+                }
+              }
+            }
+
+            if (matchedPhotoIds.size > 0) {
+              const extraPhotos = await prisma.photo.findMany({
+                where: { id: { in: Array.from(matchedPhotoIds) }, eventId },
+                select: {
+                  id: true,
+                  thumbnailPath: true,
+                  webPath: true,
+                  path: true,
+                  originalName: true,
+                  bibNumbers: { select: { id: true, number: true } },
+                },
+              });
+              for (const p of extraPhotos) {
+                photosMap.set(p.id, {
+                  id: p.id,
+                  src: s3KeyToPublicPath(p.thumbnailPath || p.webPath || p.path),
+                  originalName: p.originalName,
+                  bibNumbers: p.bibNumbers,
+                });
+              }
+            }
+          }
+        } catch (faceErr) {
+          console.error("Face expansion error (non-blocking):", faceErr);
+        }
+      }
 
       const firstEntry = entries[0];
       return NextResponse.json({
