@@ -1,7 +1,7 @@
 import { XpActionType } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { XP_CONFIG, ACTION_LEADERBOARD_CATEGORIES } from "./xp-config";
-import { getLevelForXp, getXpProgress } from "./levels";
+import { getXpProgress } from "./levels";
 import { notificationEmitter } from "@/lib/notification-emitter";
 
 interface GrantXpResult {
@@ -15,6 +15,7 @@ interface GrantXpResult {
 /**
  * Grant XP to a user for an action.
  * Handles one-time checks, level-up detection, leaderboard updates.
+ * Uses role-specific level grids (sportif vs pro).
  */
 export async function grantXp(
   userId: string,
@@ -44,6 +45,13 @@ export async function grantXp(
     if (existing) return null;
   }
 
+  // Fetch user role for role-specific level grid
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true },
+  });
+  if (!user) return null;
+
   const xpAmount = config.xp;
 
   // Create XP event
@@ -57,15 +65,16 @@ export async function grantXp(
   });
 
   // Upsert UserLevel
+  const firstLevel = getXpProgress(0, user.role);
   const userLevel = await prisma.userLevel.upsert({
     where: { userId },
     create: {
       userId,
       totalXp: xpAmount,
       level: 1,
-      levelName: "Débutant",
+      levelName: firstLevel.level.name,
       currentLevelXp: xpAmount,
-      nextLevelXp: 100,
+      nextLevelXp: firstLevel.nextLevel?.xpMin ?? 100,
     },
     update: {
       totalXp: { increment: xpAmount },
@@ -74,7 +83,7 @@ export async function grantXp(
 
   const newTotalXp = userLevel.totalXp;
   const oldLevel = userLevel.level;
-  const progress = getXpProgress(newTotalXp);
+  const progress = getXpProgress(newTotalXp, user.role);
   const newLevel = progress.level;
 
   // Update level info
@@ -91,7 +100,7 @@ export async function grantXp(
   const levelUp = newLevel.level > oldLevel;
 
   // Update leaderboard entries
-  await updateLeaderboard(userId, action, xpAmount);
+  await updateLeaderboard(userId, user.role, action, xpAmount);
 
   // SSE notifications
   try {
@@ -133,30 +142,33 @@ export async function grantXp(
 }
 
 /**
- * Get full XP summary for a user.
+ * Get full XP summary for a user (role-aware levels).
  */
 export async function getUserXpSummary(userId: string) {
-  const userLevel = await prisma.userLevel.findUnique({
-    where: { userId },
-  });
+  const [userLevel, user] = await Promise.all([
+    prisma.userLevel.findUnique({ where: { userId } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { role: true } }),
+  ]);
+
+  const role = user?.role;
 
   if (!userLevel) {
-    const progress = getXpProgress(0);
+    const progress = getXpProgress(0, role);
     return {
       totalXp: 0,
       level: 1,
-      levelName: "Débutant",
+      levelName: progress.level.name,
       progressPercent: 0,
       currentLevelXp: 0,
       xpToNextLevel: progress.nextLevel?.xpMin ?? 100,
-      nextLevelName: progress.nextLevel?.name ?? "Amateur",
+      nextLevelName: progress.nextLevel?.name ?? null,
       frame: "none",
       discount: 0,
       perks: [] as string[],
     };
   }
 
-  const progress = getXpProgress(userLevel.totalXp);
+  const progress = getXpProgress(userLevel.totalXp, role);
 
   return {
     totalXp: userLevel.totalXp,
@@ -183,23 +195,17 @@ export async function getRecentXpEvents(userId: string, limit = 10) {
   });
 }
 
-// Internal: update leaderboard entries
+// Internal: update leaderboard entries (role passed in to avoid duplicate DB query)
 async function updateLeaderboard(
   userId: string,
+  role: string,
   action: XpActionType,
   xpAmount: number
 ) {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { role: true },
-  });
-  if (!user) return;
-
   const now = new Date();
   const weekNumber = getISOWeekString(now);
   const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
-  // Always update XP leaderboard
   const periods: Array<{ period: "WEEKLY" | "MONTHLY" | "ALL_TIME"; key: string }> = [
     { period: "WEEKLY", key: weekNumber },
     { period: "MONTHLY", key: monthKey },
@@ -221,13 +227,13 @@ async function updateLeaderboard(
         userId,
         period,
         periodKey: key,
-        role: user.role,
+        role: role as "RUNNER",
         category: "xp",
         score: xpAmount,
       },
       update: {
         score: { increment: xpAmount },
-        role: user.role,
+        role: role as "RUNNER",
       },
     });
 
@@ -247,13 +253,13 @@ async function updateLeaderboard(
           userId,
           period,
           periodKey: key,
-          role: user.role,
+          role: role as "RUNNER",
           category,
           score: 1,
         },
         update: {
           score: { increment: 1 },
-          role: user.role,
+          role: role as "RUNNER",
         },
       });
     }
