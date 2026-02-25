@@ -38,21 +38,21 @@ export async function GET() {
         orderBy: { createdAt: "desc" },
         take: 5,
       }),
-      // Order/revenue aggregates
+      // Order/revenue aggregates (PAID + DELIVERED = completed orders)
       prisma.order.aggregate({
-        where: { status: "PAID" },
+        where: { status: { in: ["PAID", "DELIVERED"] } },
         _sum: { totalAmount: true, platformFee: true },
         _count: true,
         _avg: { totalAmount: true },
       }),
       // Service fees (1€/order = platform commission on sales)
       prisma.order.aggregate({
-        where: { status: "PAID" },
+        where: { status: { in: ["PAID", "DELIVERED"] } },
         _sum: { serviceFee: true },
       }),
       // Recent orders
       prisma.order.findMany({
-        where: { status: { in: ["PAID", "REFUNDED"] } },
+        where: { status: { in: ["PAID", "DELIVERED", "REFUNDED"] } },
         select: {
           id: true,
           totalAmount: true,
@@ -74,7 +74,7 @@ export async function GET() {
           COALESCE(SUM("serviceFee"), 0)::float as revenue,
           COUNT(*)::int as orders
         FROM "Order"
-        WHERE status = 'PAID'
+        WHERE status IN ('PAID', 'DELIVERED')
           AND "createdAt" >= NOW() - INTERVAL '12 months'
         GROUP BY DATE_TRUNC('month', "createdAt")
         ORDER BY month DESC
