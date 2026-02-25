@@ -633,6 +633,42 @@ export default function PublicEventPage({
         </Card>
       </div>
 
+      {/* Tarifs — always visible, right below search */}
+      {packs.length > 0 && (
+        <div className="px-4 mt-6">
+          <div className="max-w-3xl mx-auto">
+            <h3 className="text-xl font-bold text-navy text-center mb-4">Tarifs</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {packs.map((pack) => {
+                const unitPrice = pack.quantity && pack.quantity > 1
+                  ? (pack.price / pack.quantity).toFixed(2).replace(".", ",")
+                  : null;
+                return (
+                  <div
+                    key={pack.id}
+                    className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow"
+                  >
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{pack.name}</p>
+                    <p className="text-2xl font-bold mt-1" style={{ color: primaryColor }}>
+                      {pack.price.toFixed(2).replace(".", ",")}€
+                    </p>
+                    {pack.quantity && pack.quantity > 1 ? (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {pack.quantity} photos — {unitPrice}€/photo
+                      </p>
+                    ) : pack.type === "ALL_INCLUSIVE" ? (
+                      <p className="text-xs text-muted-foreground mt-1">Toutes vos photos</p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground mt-1">1 photo</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Search results — only visible after search */}
       {searchResult && (
         <div className="container mx-auto px-4 py-8">
@@ -749,40 +785,6 @@ export default function PublicEventPage({
               <p className="text-sm text-muted-foreground">recherche par IA</p>
             </div>
           </div>
-
-          {/* Tarifs */}
-          {packs.length > 0 && (
-            <div className="mt-12 max-w-3xl mx-auto">
-              <h3 className="text-xl font-bold text-navy text-center mb-6">Tarifs</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {packs.map((pack) => {
-                  const unitPrice = pack.quantity && pack.quantity > 1
-                    ? (pack.price / pack.quantity).toFixed(2).replace(".", ",")
-                    : null;
-                  return (
-                    <div
-                      key={pack.id}
-                      className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow"
-                    >
-                      <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{pack.name}</p>
-                      <p className="text-3xl font-bold mt-2" style={{ color: primaryColor }}>
-                        {pack.price.toFixed(2).replace(".", ",")}€
-                      </p>
-                      {pack.quantity && pack.quantity > 1 ? (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {pack.quantity} photos — {unitPrice}€/photo
-                        </p>
-                      ) : pack.type === "ALL_INCLUSIVE" ? (
-                        <p className="text-xs text-muted-foreground mt-1">Toutes vos photos</p>
-                      ) : (
-                        <p className="text-xs text-muted-foreground mt-1">1 photo</p>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
 
           {/* Call to action */}
           <div className="text-center mt-10">
