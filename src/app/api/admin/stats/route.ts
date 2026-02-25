@@ -12,8 +12,11 @@ export async function GET() {
       totalBibNumbers,
       recentUsers,
       orderStats,
+      serviceFeesStats,
       recentOrders,
       monthlyRevenue,
+      creditPurchaseRevenueResult,
+      creditApiDeductions,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.user.groupBy({
@@ -42,6 +45,11 @@ export async function GET() {
         _count: true,
         _avg: { totalAmount: true },
       }),
+      // Service fees (1€/order = platform commission on sales)
+      prisma.order.aggregate({
+        where: { status: "PAID" },
+        _sum: { serviceFee: true },
+      }),
       // Recent orders
       prisma.order.findMany({
         where: { status: { in: ["PAID", "REFUNDED"] } },
@@ -63,7 +71,7 @@ export async function GET() {
       prisma.$queryRaw<{ month: string; revenue: number; orders: number }[]>`
         SELECT
           TO_CHAR(DATE_TRUNC('month', "createdAt"), 'YYYY-MM') as month,
-          COALESCE(SUM("totalAmount"), 0)::float as revenue,
+          COALESCE(SUM("serviceFee"), 0)::float as revenue,
           COUNT(*)::int as orders
         FROM "Order"
         WHERE status = 'PAID'
@@ -71,7 +79,38 @@ export async function GET() {
         GROUP BY DATE_TRUNC('month', "createdAt")
         ORDER BY month DESC
       `,
+      // Credit purchase revenue (based on known pack prices)
+      prisma.$queryRaw<{ total: number }[]>`
+        SELECT COALESCE(SUM(
+          CASE
+            WHEN "amount" = 1000 THEN 19.0
+            WHEN "amount" = 5000 THEN 85.0
+            WHEN "amount" = 15000 THEN 225.0
+            WHEN "amount" = 20000 THEN 199.0
+            WHEN "amount" = 50000 THEN 399.0
+            ELSE "amount" * 0.019
+          END
+        ), 0)::float as total
+        FROM "CreditTransaction"
+        WHERE "type" = 'PURCHASE'
+      `,
+      // API credit deductions (for API revenue calc)
+      prisma.creditTransaction.aggregate({
+        where: { type: "DEDUCTION", reason: { contains: "API" } },
+        _sum: { amount: true },
+      }),
     ]);
+
+    // Platform CA = service fees + credit purchases + API usage revenue
+    const serviceFees = serviceFeesStats._sum.serviceFee || 0;
+    const creditPurchaseRevenue = creditPurchaseRevenueResult[0]?.total || 0;
+    const totalCreditsPurchased = (await prisma.creditTransaction.aggregate({
+      where: { type: "PURCHASE" },
+      _sum: { amount: true },
+    }))._sum.amount || 1;
+    const avgCreditPrice = creditPurchaseRevenue / totalCreditsPurchased;
+    const apiRevenue = Math.abs(creditApiDeductions._sum.amount || 0) * avgCreditPrice;
+    const platformCA = serviceFees + creditPurchaseRevenue + apiRevenue;
 
     const roleStats = usersByRole.reduce(
       (acc, item) => {
@@ -94,10 +133,12 @@ export async function GET() {
       totalPhotos,
       totalBibNumbers,
       recentUsers,
-      // Revenue data
+      // Revenue data — platformCA = what the platform actually earns
       revenue: {
-        totalCA: orderStats._sum.totalAmount || 0,
-        totalPlatformFees: orderStats._sum.platformFee || 0,
+        totalCA: platformCA,
+        serviceFees,
+        creditPurchaseRevenue,
+        apiRevenue,
         totalOrders: orderStats._count,
         avgOrderValue: orderStats._avg.totalAmount || 0,
         pendingOrders,

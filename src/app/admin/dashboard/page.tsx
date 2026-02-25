@@ -85,12 +85,12 @@ export default function AdminDashboardPage() {
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card className="glass-card border-l-4 border-l-emerald overflow-hidden">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Chiffre d'affaires</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">CA Plateforme</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold text-emerald">{stats.revenue.totalCA.toFixed(2)}€</p>
             <p className="text-xs text-muted-foreground mt-1">
-              {stats.revenue.totalOrders} commande{stats.revenue.totalOrders > 1 ? "s" : ""} payée{stats.revenue.totalOrders > 1 ? "s" : ""}
+              Commissions + crédits + API
             </p>
           </CardContent>
         </Card>

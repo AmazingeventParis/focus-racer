@@ -30,13 +30,13 @@ export async function GET(request: NextRequest) {
         prisma.order.count({ where: whereDate }),
         // Refunded orders count
         prisma.order.count({ where: { ...whereDate, status: "REFUNDED" } }),
-        // Monthly revenue (last 6 months) using raw SQL
+        // Monthly platform revenue (service fees only, last 6 months)
         prisma.$queryRaw<
           { month: string; revenue: number; orders: number }[]
         >`
         SELECT
           TO_CHAR(DATE_TRUNC('month', "createdAt"), 'YYYY-MM') as month,
-          COALESCE(SUM("totalAmount"), 0)::float as revenue,
+          COALESCE(SUM("serviceFee"), 0)::float as revenue,
           COUNT(*)::int as orders
         FROM "Order"
         WHERE "status" = 'PAID'
@@ -138,9 +138,18 @@ export async function GET(request: NextRequest) {
     const onboardedCount = connectStats.find((c) => c.onboarded)?.count || 0;
     const notOnboardedCount = connectStats.find((c) => !c.onboarded)?.count || 0;
 
+    // Platform CA = service fees + credit purchases + API usage revenue
+    const serviceFees = feeStats._sum.serviceFee || 0;
+    const creditPurchaseRevenue = creditPurchaseRevenueResult[0]?.total || 0;
+    const totalCreditsPurchased = (creditPurchases._sum.amount || 1);
+    const avgCreditPrice = totalCreditsPurchased > 0 ? creditPurchaseRevenue / totalCreditsPurchased : 0.019;
+    const apiRevenue = Math.abs(creditApiDeductions._sum.amount || 0) * avgCreditPrice;
+    const platformCA = serviceFees + creditPurchaseRevenue + apiRevenue;
+
     return NextResponse.json({
       revenue: {
         total: totalRevenue._sum.totalAmount || 0,
+        platformCA,
         avgBasket: totalRevenue._avg.totalAmount || 0,
         paidOrders: totalRevenue._count,
       },

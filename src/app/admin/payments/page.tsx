@@ -486,19 +486,19 @@ export default function AdminPaymentsPage() {
         </div>
       ) : stats ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* CA total */}
+          {/* CA Plateforme */}
           <Card className="glass-card rounded-2xl border-l-4 border-l-emerald overflow-hidden">
             <CardHeader className="pb-1 pt-4 px-4">
               <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Chiffre d'affaires
+                CA Plateforme
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
               <p className="text-2xl font-bold text-emerald">
-                {euro(stats.revenue.total)}
+                {euro(stats.revenue.platformCA)}
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                {stats.revenue.paidOrders} commandes · Panier moy. {euro(stats.revenue.avgBasket)}
+                Commissions + crédits + API
               </p>
             </CardContent>
           </Card>
