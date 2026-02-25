@@ -78,6 +78,13 @@ model User {
   acceptedCguAt    DateTime?
   newsletterOptIn  Boolean   @default(false)
   credits          Int       @default(0)
+  stripeCustomerId           String?   @unique
+  stripeSubscriptionId       String?   @unique
+  subscriptionStatus         String?   // "active", "past_due", "canceled", "ended"
+  subscriptionPlan           String?   // "20000" ou "50000"
+  subscriptionStartedAt      DateTime?
+  subscriptionEndsAt         DateTime? // date anniversaire (fin engagement)
+  subscriptionCancelRequestedAt DateTime? // date de demande de résiliation
   avgRating        Float     @default(0)
   totalReviews     Int       @default(0)
   sportifId        String?   @unique
@@ -344,17 +351,18 @@ enum TransactionType {
 }
 
 model CreditTransaction {
-  id            String          @id @default(cuid())
-  userId        String
-  user          User            @relation(fields: [userId], references: [id])
-  type          TransactionType
-  amount        Int
-  balanceBefore Int
-  balanceAfter  Int
-  reason        String?
-  photoId       String?
-  eventId       String?
-  createdAt     DateTime        @default(now())
+  id              String          @id @default(cuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  type            TransactionType
+  amount          Int
+  balanceBefore   Int
+  balanceAfter    Int
+  reason          String?
+  photoId         String?
+  eventId         String?
+  stripeSessionId String?         @unique // idempotence : empêche double-créditage
+  createdAt       DateTime        @default(now())
 
   @@index([userId])
   @@index([createdAt])

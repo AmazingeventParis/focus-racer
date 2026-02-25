@@ -152,16 +152,12 @@ export async function POST(request: NextRequest) {
     // Grant XP for purchase (sportif) and sale (photographe)
     try {
       if (order.userId) {
-        // Sportif XP: per photo purchased
         for (let i = 0; i < order.items.length; i++) {
           await grantXp(order.userId, "PHOTO_PURCHASE", { orderId: order.id, photoId: order.items[i].photoId });
         }
-        // Record purchase streak
         await recordStreakActivity(order.userId, "purchase");
-        // Complete referral if first purchase
         await completeReferral(order.userId, "first_purchase");
       }
-      // Photographe XP: per photo sold
       if (order.event.userId) {
         for (let i = 0; i < order.items.length; i++) {
           await grantXp(order.event.userId, "PHOTO_SOLD", { orderId: order.id, photoId: order.items[i].photoId });
@@ -172,40 +168,56 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Helper to fulfill a credit purchase
-  async function fulfillCreditPurchase(userId: string, creditAmount: number, reason: string) {
+  // Idempotent + atomic credit fulfillment
+  async function fulfillCreditPurchase(userId: string, creditAmount: number, reason: string, stripeSessionId: string) {
+    // 1. Check idempotence via stripeSessionId unique constraint
+    const existing = await prisma.creditTransaction.findUnique({
+      where: { stripeSessionId },
+    });
+    if (existing) {
+      console.log(`Credit fulfillment already processed for session ${stripeSessionId}, skipping`);
+      return;
+    }
+
+    // 2. Atomic credit update via raw SQL (no read-then-write race)
+    await prisma.$executeRaw`UPDATE "User" SET credits = credits + ${creditAmount} WHERE id = ${userId}`;
+
+    // 3. Read updated balance
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { credits: true },
     });
-    if (!user) {
-      console.error("Credit fulfillment: user not found", userId);
-      return;
+
+    // 4. Create transaction with stripeSessionId (unique constraint protects against duplicates)
+    try {
+      await prisma.creditTransaction.create({
+        data: {
+          userId,
+          type: "PURCHASE",
+          amount: creditAmount,
+          balanceBefore: (user?.credits || 0) - creditAmount,
+          balanceAfter: user?.credits || 0,
+          reason,
+          stripeSessionId,
+        },
+      });
+    } catch (err) {
+      // If unique constraint violation, another webhook already processed this
+      if ((err as { code?: string }).code === "P2002") {
+        console.log(`Credit transaction already exists for session ${stripeSessionId} (race condition caught)`);
+        return;
+      }
+      throw err;
     }
-    const balanceBefore = user.credits;
-    const balanceAfter = balanceBefore + creditAmount;
-    await prisma.user.update({
-      where: { id: userId },
-      data: { credits: balanceAfter },
-    });
-    await prisma.creditTransaction.create({
-      data: {
-        userId,
-        type: "PURCHASE",
-        amount: creditAmount,
-        balanceBefore,
-        balanceAfter,
-        reason,
-      },
-    });
-    console.log(`Credits fulfilled: +${creditAmount} for user ${userId} (${balanceBefore} -> ${balanceAfter})`);
+
+    console.log(`Credits fulfilled: +${creditAmount} for user ${userId} (balance now ${user?.credits || 0})`);
   }
 
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
 
-      // Credit purchase fulfillment
+      // Credit pack purchase fulfillment
       if (session.metadata?.type === "credit_purchase") {
         const userId = session.metadata.userId;
         const creditAmount = parseInt(session.metadata.creditAmount, 10);
@@ -213,22 +225,38 @@ export async function POST(request: NextRequest) {
           await fulfillCreditPurchase(
             userId,
             creditAmount,
-            `Achat de ${creditAmount.toLocaleString("fr-FR")} credits`
+            `Achat de ${creditAmount.toLocaleString("fr-FR")} crédits`,
+            session.id
           );
         }
         break;
       }
 
-      // Credit subscription first payment (checkout completed)
+      // Credit subscription: save subscription info on User, do NOT credit here
+      // Credits will come via invoice.payment_succeeded
       if (session.metadata?.type === "credit_subscription") {
         const userId = session.metadata.userId;
-        const creditAmount = parseInt(session.metadata.creditAmount, 10);
-        if (userId && creditAmount > 0) {
-          await fulfillCreditPurchase(
-            userId,
-            creditAmount,
-            `Abonnement ${creditAmount.toLocaleString("fr-FR")} credits/mois - premier mois`
-          );
+        const creditAmount = session.metadata.creditAmount;
+        const subscriptionId = session.subscription as string;
+
+        if (userId && subscriptionId) {
+          const now = new Date();
+          const endsAt = new Date(now);
+          endsAt.setFullYear(endsAt.getFullYear() + 1);
+
+          await prisma.user.update({
+            where: { id: userId },
+            data: {
+              stripeSubscriptionId: subscriptionId,
+              subscriptionStatus: "active",
+              subscriptionPlan: creditAmount,
+              subscriptionStartedAt: now,
+              subscriptionEndsAt: endsAt,
+              subscriptionCancelRequestedAt: null,
+            },
+          });
+
+          console.log(`Subscription created: user ${userId}, plan ${creditAmount} credits/month, ends ${endsAt.toISOString()}`);
         }
         break;
       }
@@ -247,7 +275,7 @@ export async function POST(request: NextRequest) {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
       const orderId = paymentIntent.metadata?.orderId;
       if (!orderId) {
-        break; // Not our payment intent
+        break; // Not our payment intent (could be subscription payment)
       }
       await fulfillOrder(orderId, paymentIntent.id);
 
@@ -280,7 +308,6 @@ export async function POST(request: NextRequest) {
         const photographerPayout = Math.max(totalAmount - serviceFeeAmount - stripeFee, 0);
 
         if (photographerStripeAccountId) {
-          // Photographer has connected Stripe → create a manual Transfer
           try {
             const transferAmountCents = Math.round(photographerPayout * 100);
             if (transferAmountCents > 0) {
@@ -315,7 +342,6 @@ export async function POST(request: NextRequest) {
             }
           } catch (transferErr) {
             console.error(`Error creating transfer for order ${orderId}:`, transferErr);
-            // Still record the fees even if transfer fails
             await prisma.order.updateMany({
               where: { id: orderId },
               data: {
@@ -326,8 +352,6 @@ export async function POST(request: NextRequest) {
             });
           }
         } else {
-          // Photographer not connected — deferred payout
-          // Record exact amounts, payoutStatus stays PENDING
           await prisma.order.updateMany({
             where: { id: orderId },
             data: {
@@ -355,7 +379,6 @@ export async function POST(request: NextRequest) {
           data: { stripeOnboarded: true },
         });
 
-        // Process deferred payouts when a photographer completes Stripe onboarding
         if (updatedUsers.count > 0) {
           await processDeferredPayouts(account.id);
         }
@@ -370,12 +393,60 @@ export async function POST(request: NextRequest) {
         const userId = subMeta.userId;
         const creditAmount = parseInt(subMeta.creditAmount, 10);
         if (userId && creditAmount > 0) {
+          // Use invoice.id as stripeSessionId for idempotence
+          const isFirstMonth = invoice.billing_reason === "subscription_create";
+          const label = isFirstMonth ? "premier mois" : "renouvellement";
           await fulfillCreditPurchase(
             userId,
             creditAmount,
-            `Abonnement ${creditAmount.toLocaleString("fr-FR")} credits/mois - renouvellement`
+            `Abonnement ${creditAmount.toLocaleString("fr-FR")} crédits/mois — ${label}`,
+            invoice.id
           );
         }
+      }
+      break;
+    }
+
+    case "invoice.payment_failed": {
+      const invoice = event.data.object as Stripe.Invoice;
+      const subMeta = invoice.subscription_details?.metadata;
+      if (subMeta?.type === "credit_subscription" && subMeta.userId) {
+        await prisma.user.update({
+          where: { id: subMeta.userId },
+          data: { subscriptionStatus: "past_due" },
+        });
+        console.log(`Subscription payment failed for user ${subMeta.userId}, status set to past_due`);
+      }
+      break;
+    }
+
+    case "customer.subscription.deleted": {
+      const subscription = event.data.object as Stripe.Subscription;
+      const userId = subscription.metadata?.userId;
+      if (userId) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            subscriptionStatus: "ended",
+            stripeSubscriptionId: null,
+          },
+        });
+        console.log(`Subscription ended for user ${userId}`);
+      }
+      break;
+    }
+
+    case "customer.subscription.updated": {
+      const subscription = event.data.object as Stripe.Subscription;
+      const userId = subscription.metadata?.userId;
+      if (userId) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            subscriptionStatus: subscription.status,
+          },
+        });
+        console.log(`Subscription updated for user ${userId}: status=${subscription.status}`);
       }
       break;
     }

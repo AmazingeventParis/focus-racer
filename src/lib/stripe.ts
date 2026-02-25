@@ -29,3 +29,8 @@ export const SERVICE_FEE_DISPLAY = "1,00 €";
 
 export const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+export const SUBSCRIPTION_PLANS = [
+  { credits: 20000, priceInCents: 19900, label: "20 000 crédits/mois" },
+  { credits: 50000, priceInCents: 39900, label: "50 000 crédits/mois" },
+];

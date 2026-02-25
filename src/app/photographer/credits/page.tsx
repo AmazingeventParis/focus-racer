@@ -1,8 +1,7 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +15,17 @@ interface CreditTransaction {
   balanceAfter: number;
   reason: string | null;
   createdAt: string;
+}
+
+interface SubscriptionInfo {
+  hasSubscription: boolean;
+  status?: string;
+  plan?: string;
+  startedAt?: string;
+  endsAt?: string;
+  cancelRequestedAt?: string;
+  nextInvoiceDate?: string;
+  nextInvoiceAmount?: number;
 }
 
 const CREDIT_PACKS = [
@@ -37,7 +47,6 @@ const TYPE_LABELS: Record<string, { label: string; color: string }> = {
 };
 
 export default function CreditsPage() {
-  const { data: session } = useSession();
   const { toast } = useToast();
   const [credits, setCredits] = useState<number>(0);
   const [isTestMode, setIsTestMode] = useState(false);
@@ -45,22 +54,22 @@ export default function CreditsPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loadingPack, setLoadingPack] = useState<number | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
+  const [cancelLoading, setCancelLoading] = useState(false);
 
   const searchParams = useSearchParams();
 
-  // Show success toast on redirect back from Stripe
   useEffect(() => {
     if (searchParams.get("success") === "true") {
       toast({
         title: "Paiement confirmé",
         description: "Vos crédits seront ajoutés sous quelques instants.",
       });
-      // Clean up URL
       window.history.replaceState({}, "", "/photographer/credits");
-      // Refresh balance after a short delay (webhook processing)
       const timer = setTimeout(() => {
         fetchCredits();
         fetchTransactions(1);
+        fetchSubscription();
         setPage(1);
       }, 3000);
       return () => clearTimeout(timer);
@@ -94,10 +103,23 @@ export default function CreditsPage() {
     }
   }, []);
 
+  const fetchSubscription = useCallback(async () => {
+    try {
+      const res = await fetch("/api/credits/subscription");
+      if (res.ok) {
+        const data = await res.json();
+        setSubscription(data);
+      }
+    } catch (error) {
+      console.error("Error fetching subscription:", error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchCredits();
     fetchTransactions(1);
-  }, [fetchCredits, fetchTransactions]);
+    fetchSubscription();
+  }, [fetchCredits, fetchTransactions, fetchSubscription]);
 
   const buyCredits = async (pack: typeof CREDIT_PACKS[number]) => {
     setLoadingPack(pack.amount);
@@ -115,11 +137,12 @@ export default function CreditsPage() {
           return;
         }
       }
-      throw new Error("Erreur");
-    } catch {
+      const errData = await res.json().catch(() => null);
+      throw new Error(errData?.error || "Erreur");
+    } catch (err) {
       toast({
         title: "Erreur",
-        description: "Impossible de lancer le paiement.",
+        description: err instanceof Error ? err.message : "Impossible de lancer le paiement.",
         variant: "destructive",
       });
       setLoadingPack(null);
@@ -142,14 +165,45 @@ export default function CreditsPage() {
           return;
         }
       }
-      throw new Error("Erreur");
-    } catch {
+      const errData = await res.json().catch(() => null);
+      throw new Error(errData?.error || "Erreur");
+    } catch (err) {
       toast({
         title: "Erreur",
-        description: "Impossible de lancer le paiement.",
+        description: err instanceof Error ? err.message : "Impossible de lancer le paiement.",
         variant: "destructive",
       });
       setLoadingPack(null);
+    }
+  };
+
+  const cancelSubscription = async () => {
+    if (!confirm("Êtes-vous sûr de vouloir résilier votre abonnement ?\n\nVotre abonnement restera actif jusqu'à la date anniversaire de votre engagement.")) {
+      return;
+    }
+    setCancelLoading(true);
+    try {
+      const res = await fetch("/api/credits/subscription", {
+        method: "POST",
+      });
+      if (res.ok) {
+        toast({
+          title: "Résiliation enregistrée",
+          description: "Votre abonnement restera actif jusqu'à la fin de votre engagement annuel.",
+        });
+        fetchSubscription();
+      } else {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "Erreur");
+      }
+    } catch (err) {
+      toast({
+        title: "Erreur",
+        description: err instanceof Error ? err.message : "Impossible de résilier l'abonnement.",
+        variant: "destructive",
+      });
+    } finally {
+      setCancelLoading(false);
     }
   };
 
@@ -157,6 +211,8 @@ export default function CreditsPage() {
     setPage(newPage);
     fetchTransactions(newPage);
   };
+
+  const hasActiveSubscription = subscription?.hasSubscription && subscription.status === "active";
 
   return (
     <div className="p-8 animate-fade-in">
@@ -167,6 +223,86 @@ export default function CreditsPage() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          {/* Active subscription card */}
+          {subscription?.hasSubscription && (
+            <Card className="bg-white border-0 shadow-card rounded-xl border-l-4 border-l-emerald-500">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg font-display text-gray-900">Abonnement actif</CardTitle>
+                  {subscription.status === "past_due" && (
+                    <Badge className="bg-red-100 text-red-700 border-0">Paiement en échec</Badge>
+                  )}
+                  {subscription.status === "active" && !subscription.cancelRequestedAt && (
+                    <Badge className="bg-emerald-100 text-emerald-700 border-0">Actif</Badge>
+                  )}
+                  {subscription.cancelRequestedAt && (
+                    <Badge className="bg-amber-100 text-amber-700 border-0">Résiliation demandée</Badge>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-500">Plan</p>
+                    <p className="font-semibold text-gray-900">
+                      {parseInt(subscription.plan || "0").toLocaleString("fr-FR")} crédits/mois
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Début</p>
+                    <p className="font-semibold text-gray-900">
+                      {subscription.startedAt
+                        ? new Date(subscription.startedAt).toLocaleDateString("fr-FR")
+                        : "-"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Fin d'engagement</p>
+                    <p className="font-semibold text-gray-900">
+                      {subscription.endsAt
+                        ? new Date(subscription.endsAt).toLocaleDateString("fr-FR")
+                        : "-"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Prochain paiement</p>
+                    <p className="font-semibold text-gray-900">
+                      {subscription.nextInvoiceDate
+                        ? `${new Date(subscription.nextInvoiceDate).toLocaleDateString("fr-FR")} — ${subscription.nextInvoiceAmount?.toFixed(2).replace(".", ",")} €`
+                        : "-"}
+                    </p>
+                  </div>
+                </div>
+
+                {subscription.status === "past_due" && (
+                  <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm">
+                    Le dernier paiement a échoué. Veuillez mettre à jour votre moyen de paiement pour éviter l'interruption du service.
+                  </div>
+                )}
+
+                {subscription.cancelRequestedAt && (
+                  <div className="p-3 rounded-lg bg-amber-50 text-amber-700 text-sm">
+                    Résiliation demandée le {new Date(subscription.cancelRequestedAt).toLocaleDateString("fr-FR")}.
+                    Votre abonnement reste actif jusqu'au{" "}
+                    <strong>{subscription.endsAt ? new Date(subscription.endsAt).toLocaleDateString("fr-FR") : "-"}</strong>.
+                  </div>
+                )}
+
+                {subscription.status === "active" && !subscription.cancelRequestedAt && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-red-600 border-red-200 hover:bg-red-50"
+                    onClick={cancelSubscription}
+                    disabled={cancelLoading}
+                  >
+                    {cancelLoading ? "Résiliation en cours..." : "Résilier l'abonnement"}
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           {/* Packs crédits */}
           <Card className="bg-white border-0 shadow-card rounded-xl">
             <CardHeader>
@@ -203,38 +339,40 @@ export default function CreditsPage() {
             </CardContent>
           </Card>
 
-          {/* Abonnements annuels */}
-          <Card className="bg-white border-0 shadow-card rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-lg font-display text-gray-900">Abonnements annuels</CardTitle>
-              <CardDescription className="text-gray-500">
-                Crédits rechargés automatiquement chaque mois. Idéal pour les photographes réguliers.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                {SUBSCRIPTIONS.map((sub) => (
-                  <div
-                    key={sub.id}
-                    className="relative border border-gray-200 rounded-xl p-5 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all cursor-pointer group"
-                    onClick={() => buySubscription(sub)}
-                  >
-                    <div className="flex flex-col items-center text-center gap-2">
-                      <span className="text-2xl font-bold text-gray-900">{sub.credits.toLocaleString("fr-FR")}</span>
-                      <span className="text-xs text-gray-500">crédits / mois</span>
-                      <div className="mt-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-semibold">
-                        {sub.price}
+          {/* Abonnements annuels — hidden if already subscribed */}
+          {!hasActiveSubscription && (
+            <Card className="bg-white border-0 shadow-card rounded-xl">
+              <CardHeader>
+                <CardTitle className="text-lg font-display text-gray-900">Abonnements annuels</CardTitle>
+                <CardDescription className="text-gray-500">
+                  Crédits rechargés automatiquement chaque mois. Idéal pour les photographes réguliers.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  {SUBSCRIPTIONS.map((sub) => (
+                    <div
+                      key={sub.id}
+                      className="relative border border-gray-200 rounded-xl p-5 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all cursor-pointer group"
+                      onClick={() => buySubscription(sub)}
+                    >
+                      <div className="flex flex-col items-center text-center gap-2">
+                        <span className="text-2xl font-bold text-gray-900">{sub.credits.toLocaleString("fr-FR")}</span>
+                        <span className="text-xs text-gray-500">crédits / mois</span>
+                        <div className="mt-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-semibold">
+                          {sub.price}
+                        </div>
+                        <span className="text-xs font-medium text-gray-500 mt-1 px-2 py-0.5 bg-gray-100 rounded-full">{(sub.priceValue / sub.credits).toFixed(3).replace(".", ",")} €/photo</span>
                       </div>
-                      <span className="text-xs font-medium text-gray-500 mt-1 px-2 py-0.5 bg-gray-100 rounded-full">{(sub.priceValue / sub.credits).toFixed(3).replace(".", ",")} €/photo</span>
                     </div>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-gray-400 mt-3 text-center">
-                Engagement annuel, paiement mensuel via Stripe.
-              </p>
-            </CardContent>
-          </Card>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-400 mt-3 text-center">
+                  Engagement annuel, paiement mensuel via Stripe.
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Transaction history */}
           <Card className="bg-white border-0 shadow-card rounded-xl">
@@ -303,7 +441,6 @@ export default function CreditsPage() {
                     </table>
                   </div>
 
-                  {/* Pagination */}
                   {totalPages > 1 && (
                     <div className="flex justify-center gap-2 mt-4 pt-4 border-t border-gray-100">
                       <Button
