@@ -214,22 +214,6 @@ export default function SportifDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total dépensé</p>
-                <p className="text-3xl font-bold text-navy mt-1">{(data?.kpis.totalDepense || 0).toFixed(0)}€</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
-                <svg className="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card rounded-2xl">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
                 <p className="text-sm text-muted-foreground">Commandes</p>
                 <p className="text-3xl font-bold text-navy mt-1">{data?.kpis.nbCommandes || 0}</p>
               </div>
