@@ -180,7 +180,7 @@ const comparatif = [
 const pricing = [
   { name: "Pack 1K", credits: "1 000", price: "19", perPhoto: "0,019" },
   { name: "Pack 5K", credits: "5 000", price: "85", perPhoto: "0,017", popular: true },
-  { name: "Pack 15K", credits: "15 000", price: "225", perPhoto: "0,008" },
+  { name: "Pack 15K", credits: "15 000", price: "225", perPhoto: "0,015" },
 ];
 
 const testimonials = [
@@ -377,7 +377,7 @@ export default function SolutionsOrganisateursPage() {
   const simTotalPhotos = simParticipants * simPhotosPerRunner;
   const simPhotosSold = Math.round(simParticipants * simPhotosPerRunner * (simConversion / 100));
   const simRevenuBrut = simPhotosSold * simPricePerPhoto;
-  const simCostPerPhoto = simTotalPhotos <= 1000 ? 0.019 : simTotalPhotos <= 5000 ? 0.017 : 0.008;
+  const simCostPerPhoto = 0.008;
   const simCostIA = Math.round(simTotalPhotos * simCostPerPhoto * 100) / 100;
   const simRevenuNet = simRevenuBrut - simCostIA;
   const simROI = simCostIA > 0 ? Math.round((simRevenuNet / simCostIA) * 100) / 100 : 0;
@@ -735,7 +735,7 @@ export default function SolutionsOrganisateursPage() {
               Simulateur de revenus événement
             </h2>
             <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Estimez les revenus photo que votre événement peut générer. Comparez Focus Racer (0% commission) avec une plateforme classique (30%).
+              Estimez les revenus photo que votre événement peut générer avec Focus Racer. 0% de commission, revenus maximisés.
             </p>
           </div>
 
@@ -829,7 +829,7 @@ export default function SolutionsOrganisateursPage() {
                     <span className="text-white font-medium">{simPhotosSold.toLocaleString("fr-FR")}</span>
                   </div>
                   <div className="flex justify-between text-white/60">
-                    <span>Coût IA ({simCostPerPhoto}€/photo)</span>
+                    <span>Coût IA (à partir de {simCostPerPhoto}€/photo)</span>
                     <span className="text-white font-medium">{simCostIA.toLocaleString("fr-FR", { minimumFractionDigits: 2 })}€</span>
                   </div>
                 </div>
@@ -854,27 +854,18 @@ export default function SolutionsOrganisateursPage() {
                   </div>
                 </div>
 
+                {/* Projection annuelle */}
                 <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-3 h-3 rounded-full bg-red-400" />
-                    <h3 className="text-white/70 font-semibold">Plateforme classique</h3>
-                    <span className="ml-auto px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs font-bold">30% commission</span>
+                    <div className="w-3 h-3 rounded-full bg-blue-400" />
+                    <h3 className="text-white font-semibold">Projection annuelle</h3>
+                    <span className="ml-auto px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-bold">×4 éditions</span>
                   </div>
-                  <div className="text-4xl font-bold text-white/50 mb-2">
-                    {simTraditionalNet.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€
+                  <div className="text-4xl font-bold text-blue-400 mb-2">
+                    {(simRevenuNet * 4).toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€
                   </div>
-                  <p className="text-white/40 text-sm">revenu net par événement</p>
+                  <p className="text-white/60 text-sm">revenu net estimé sur 4 éditions/an</p>
                 </div>
-
-                {simGain > 0 && (
-                  <div className="bg-gradient-to-r from-emerald-500/20 to-teal-500/20 backdrop-blur-xl rounded-2xl border border-emerald-400/20 p-6 text-center">
-                    <p className="text-white/80 text-sm mb-1">Votre événement gagne</p>
-                    <p className="text-3xl font-bold text-emerald-400">
-                      +{simGain.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}€
-                    </p>
-                    <p className="text-white/60 text-sm mt-1">de plus par édition avec Focus Racer</p>
-                  </div>
-                )}
               </div>
             </div>
           </div>
