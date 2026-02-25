@@ -22,7 +22,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     slug: "comment-retrouver-photos-course",
     title: "Comment retrouver ses photos de course : le guide complet",
     excerpt:
-      "Dossard, selfie ou nom : découvrez les 3 méthodes pour retrouver vos photos d'événement sportif en quelques secondes grâce à l'intelligence artificielle.",
+      "Dossard, selfie ou nom : découvrez les 3 méthodes pour retrouver vos photos d'événement sportif grâce à l'intelligence artificielle.",
     category: "Sportifs",
     readTime: "6 min",
     date: "18 février 2026",
@@ -42,7 +42,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     slug: "ia-tri-automatique-photo-sport",
     title: "Comment l'IA révolutionne le tri des photos sportives en 2026",
     excerpt:
-      "OCR de dossards, reconnaissance faciale, filtrage qualité : plongez dans le pipeline d'intelligence artificielle qui trie 1 000 photos en 2 minutes.",
+      "OCR de dossards, reconnaissance faciale, filtrage qualité : plongez dans le pipeline d'intelligence artificielle qui trie 10 000 photos en 5 minutes.",
     category: "IA & Tech",
     readTime: "8 min",
     date: "10 février 2026",

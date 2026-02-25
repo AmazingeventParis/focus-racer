@@ -47,7 +47,7 @@ function CTA({ href, children }: { href: string; children: React.ReactNode }) {
 const article1Content = (
   <>
     <p className="text-lg text-gray-600 leading-relaxed mb-6">
-      Vous venez de franchir la ligne d'arrivée, l'adrénaline retombe, et une question vous brûle les lèvres : <strong>« Où sont mes photos ? »</strong> Chaque année, des millions de photos sont prises lors d'événements sportifs. Pourtant, les retrouver reste souvent un parcours du combattant. Ce guide complet vous présente les trois méthodes disponibles sur Focus Racer pour retrouver vos clichés en quelques secondes.
+      Vous venez de franchir la ligne d'arrivée, l'adrénaline retombe, et une question vous brûle les lèvres : <strong>« Où sont mes photos ? »</strong> Chaque année, des millions de photos sont prises lors d'événements sportifs. Pourtant, les retrouver reste souvent un parcours du combattant. Ce guide complet vous présente les trois méthodes disponibles sur Focus Racer pour retrouver vos clichés en une fraction de seconde.
     </p>
 
     <h2 id="methode-dossard" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
@@ -81,7 +81,7 @@ const article1Content = (
     <ul className="list-disc list-inside space-y-2 text-gray-600 mb-6 pl-4">
       <li>Cliquez sur « Recherche par selfie » sur la page de l'événement.</li>
       <li>Prenez un selfie ou importez une photo récente de votre visage.</li>
-      <li>L'IA compare votre visage avec les photos indexées en moins de 2 secondes.</li>
+      <li>L'IA compare votre visage avec les photos indexées en moins d'une seconde.</li>
       <li>Vous obtenez les résultats classés par degré de confiance.</li>
     </ul>
     <p className="text-gray-600 leading-relaxed mb-4">
@@ -105,7 +105,7 @@ const article1Content = (
       Avant l'intelligence artificielle, retrouver ses photos impliquait de faire défiler des centaines, parfois des milliers de clichés. Un événement de 500 participants avec 3 photographes génère facilement <strong>5 000 à 10 000 photos</strong>. Faire défiler manuellement ces images prend 30 minutes à 1 heure.
     </p>
     <p className="text-gray-600 leading-relaxed mb-4">
-      Avec Focus Racer, le tri est <strong>100 % automatisé</strong>. L'IA traite 1 000 photos en environ 2 minutes. Chaque photo est analysée, indexée et liée au bon sportif. La recherche prend ensuite <strong>moins de 3 secondes</strong>.
+      Avec Focus Racer, le tri est <strong>100 % automatisé</strong>. L'IA traite 10 000 photos en environ 5 minutes (30ms par photo). Chaque photo est analysée, indexée et liée au bon sportif. La recherche prend ensuite <strong>moins d'une seconde</strong>.
     </p>
     <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 my-6">
       <div className="flex items-start gap-3">
@@ -180,7 +180,7 @@ const article2Content = (
     </p>
     <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
       <li><strong>Uploadez pendant la course</strong> : avec le mode Live de Focus Racer, vous pouvez envoyer vos photos en temps réel depuis le terrain. Les sportifs voient leurs photos avant même d'avoir quitté le site.</li>
-      <li><strong>Laissez l'IA trier</strong> : le tri manuel prend des heures. Notre pipeline automatique indexe 1 000 photos en 2 minutes. Aucun temps perdu entre l'upload et la mise en vente.</li>
+      <li><strong>Laissez l'IA trier</strong> : le tri manuel prend des heures. Notre pipeline automatique indexe 10 000 photos en 5 minutes. Aucun temps perdu entre l'upload et la mise en vente.</li>
       <li><strong>Envoyez des notifications</strong> : Focus Racer peut envoyer un e-mail aux sportifs dès que leurs photos sont disponibles, les ramenant directement vers la galerie.</li>
       <li><strong>Activez le partage social</strong> : quand un sportif partage sa photo watermarkée sur Instagram ou Facebook, il génère des visites supplémentaires — et donc des ventes potentielles.</li>
     </ul>
@@ -247,7 +247,7 @@ const article2Content = (
 const article3Content = (
   <>
     <p className="text-lg text-gray-600 leading-relaxed mb-6">
-      En 2026, l'intelligence artificielle n'est plus un gadget futuriste — c'est le moteur qui propulse la photo sportive dans une nouvelle ère. Chez Focus Racer, notre pipeline IA traite, trie et indexe <strong>1 000 photos en 2 minutes</strong>, là où un tri manuel prendrait une journée entière. Décortiquons les technologies qui rendent cela possible.
+      En 2026, l'intelligence artificielle n'est plus un gadget futuriste — c'est le moteur qui propulse la photo sportive dans une nouvelle ère. Chez Focus Racer, notre pipeline IA traite, trie et indexe <strong>10 000 photos en 5 minutes</strong> (30ms par image), là où un tri manuel prendrait une journée entière. Décortiquons les technologies qui rendent cela possible.
     </p>
 
     <h2 id="ocr-dossards" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
@@ -337,7 +337,7 @@ const article3Content = (
           </tr>
         </thead>
         <tbody className="text-gray-600">
-          <tr><td className="p-3 border-b border-gray-100">1 000 photos</td><td className="p-3 text-center border-b border-gray-100">4-6 h</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">~2 min</td></tr>
+          <tr><td className="p-3 border-b border-gray-100">10 000 photos</td><td className="p-3 text-center border-b border-gray-100">1-2 jours</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">~5 min</td></tr>
           <tr><td className="p-3 border-b border-gray-100">Précision dossard</td><td className="p-3 text-center border-b border-gray-100">99 % (humain)</td><td className="p-3 text-center border-b border-gray-100">85-95 %</td></tr>
           <tr><td className="p-3 border-b border-gray-100">Photos orphelines récupérées</td><td className="p-3 text-center border-b border-gray-100">0 % (ignorées)</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">~15 % (via visage)</td></tr>
           <tr><td className="p-3 border-b border-gray-100">Filtre flou + doublons</td><td className="p-3 text-center border-b border-gray-100">Non (trop long)</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">Automatique</td></tr>
@@ -363,7 +363,7 @@ const article3Content = (
       En résumé
     </h2>
     <p className="text-gray-600 leading-relaxed mb-6">
-      L'IA a transformé la photographie sportive d'un métier à forte intensité manuelle en un processus fluide et automatisé. OCR, reconnaissance faciale, filtrage qualité et dédoublonnage travaillent de concert pour que chaque photo trouve son propriétaire en quelques secondes. Focus Racer place cette technologie entre les mains de tous les photographes, sans compétence technique requise.
+      L'IA a transformé la photographie sportive d'un métier à forte intensité manuelle en un processus fluide et automatisé. OCR, reconnaissance faciale, filtrage qualité et dédoublonnage travaillent de concert pour que chaque photo trouve son propriétaire en 30 millisecondes. Focus Racer place cette technologie entre les mains de tous les photographes, sans compétence technique requise.
     </p>
     <CTA href="/solutions/photographes">Tester le pipeline IA</CTA>
   </>
@@ -439,7 +439,7 @@ const article4Content = (
     <ol className="list-decimal list-inside space-y-2 text-gray-600 mb-6 pl-4">
       <li><strong>Pendant la course</strong> : utilisez le mode Live pour envoyer vos photos en temps réel depuis votre smartphone (via Wi-Fi ou 4G).</li>
       <li><strong>Après la course</strong> : uploadez le reste des photos en masse (drag & drop, jusqu'à 25 photos par lot).</li>
-      <li><strong>L'IA travaille</strong> : tri, indexation, watermark et retouche automatiques en 2 minutes pour 1 000 photos.</li>
+      <li><strong>L'IA travaille</strong> : tri, indexation, watermark et retouche automatiques en 5 minutes pour 10 000 photos.</li>
       <li><strong>Annoncez</strong> : les sportifs reçoivent une notification e-mail avec le lien vers leurs photos.</li>
       <li><strong>Vendez</strong> : les sportifs trouvent, achètent et téléchargent directement.</li>
     </ol>
@@ -581,7 +581,7 @@ const article5Content = (
       Au-delà du 0 % de commission, Focus Racer vous donne des outils que les plateformes traditionnelles ne proposent pas :
     </p>
     <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
-      <li><strong>Tri IA automatique</strong> : ne perdez plus 6 heures à trier manuellement. L'IA traite 1 000 photos en 2 minutes.</li>
+      <li><strong>Tri IA automatique</strong> : ne perdez plus 6 heures à trier manuellement. L'IA traite 10 000 photos en 5 minutes.</li>
       <li><strong>Mode Live</strong> : publiez en temps réel, pendant la course. Captez le Golden Time dès la ligne d'arrivée.</li>
       <li><strong>Stripe Connect direct</strong> : les paiements arrivent directement sur votre compte bancaire, sans délai ni intermédiaire.</li>
       <li><strong>Crédits IA abordables</strong> : à partir de 0,019 €/photo (pack 1 000 crédits à 19 €). Dégressif jusqu'à 0,015 €/photo pour les gros volumes.</li>
@@ -622,7 +622,7 @@ const ARTICLES: Record<string, FullArticle> = {
     readTime: "6 min",
     date: "18 février 2026",
     icon: "🏃",
-    metaDescription: "Dossard, selfie ou nom : découvrez les 3 méthodes pour retrouver vos photos de course en quelques secondes grâce à l'intelligence artificielle Focus Racer.",
+    metaDescription: "Dossard, selfie ou nom : découvrez les 3 méthodes pour retrouver vos photos de course en une fraction de seconde grâce à l'intelligence artificielle Focus Racer.",
     toc: [
       { id: "methode-dossard", label: "Recherche par dossard" },
       { id: "methode-selfie", label: "Recherche par selfie" },
@@ -658,7 +658,7 @@ const ARTICLES: Record<string, FullArticle> = {
     readTime: "8 min",
     date: "10 février 2026",
     icon: "🤖",
-    metaDescription: "OCR de dossards, reconnaissance faciale, filtrage qualité : découvrez le pipeline d'intelligence artificielle de Focus Racer qui trie 1 000 photos en 2 minutes.",
+    metaDescription: "OCR de dossards, reconnaissance faciale, filtrage qualité : découvrez le pipeline d'intelligence artificielle de Focus Racer qui trie 10 000 photos en 5 minutes.",
     toc: [
       { id: "ocr-dossards", label: "OCR des dossards" },
       { id: "reconnaissance-faciale", label: "Reconnaissance faciale" },

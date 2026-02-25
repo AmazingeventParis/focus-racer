@@ -239,7 +239,7 @@ export default function ExplorePage() {
             </h1>
             <p className="text-white/70 max-w-lg mx-auto mb-8 text-lg">
               Sélectionnez un événement, puis recherchez vos photos par dossard, selfie ou nom.
-              Notre IA vous trouve en quelques secondes parmi des milliers d'images.
+              Notre IA vous trouve instantanément parmi des milliers d'images.
             </p>
 
             {/* Search bar */}

@@ -16,7 +16,7 @@ const missionValues = [
   {
     icon: "⚡",
     title: "Rapidité",
-    desc: "1 000 photos triées en 2 minutes. Le sportif trouve ses photos en 3 secondes.",
+    desc: "10 000 photos triées en 5 minutes. Le sportif trouve ses photos en une fraction de seconde.",
   },
   {
     icon: "🤝",
@@ -81,7 +81,7 @@ const teamMembers = [
     initials: "SC",
     name: "Sophie Chen",
     role: "CTO",
-    bio: "Experte en intelligence artificielle et computer vision, ex-ingénieure AWS. Sophie a conçu le pipeline de reconnaissance d'images qui permet de traiter 1 000 photos en moins de 2 minutes.",
+    bio: "Experte en intelligence artificielle et computer vision, ex-ingénieure AWS. Sophie a conçu le pipeline de reconnaissance d'images qui permet de traiter 10 000 photos en 5 minutes (30ms par image).",
     funFact: "A entraîné son premier modèle de deep learning à 19 ans — pour reconnaître les races de chats.",
     gradient: "from-blue-400 to-indigo-500",
   },
@@ -179,7 +179,7 @@ const audiences = [
   {
     icon: "🏃",
     title: "Sportifs",
-    desc: "Retrouvez vos photos en un clic grâce à l'IA. Recherche gratuite par dossard, selfie ou nom. Achat en quelques secondes.",
+    desc: "Retrouvez vos photos en un clic grâce à l'IA. Recherche gratuite par dossard, selfie ou nom. Achat en un clic.",
     link: "/solutions/sportifs",
     color: "from-emerald-400 to-teal-500",
   },
@@ -369,7 +369,7 @@ export default function AboutPage() {
                 <p>
                   <strong className="text-gray-900">Focus Racer résout ce problème</strong> en combinant intelligence
                   artificielle de pointe et expérience utilisateur soignée. Notre IA lit les dossards, reconnaît
-                  les visages et trie automatiquement chaque photo vers le bon sportif — en moins de 0,3 seconde
+                  les visages et trie automatiquement chaque photo vers le bon sportif — en seulement 30 millisecondes
                   par image.
                 </p>
                 <p>
@@ -383,7 +383,7 @@ export default function AboutPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </span>
-                    <span><strong className="text-gray-900">Les sportifs</strong> retrouvent leurs photos en quelques secondes, gratuitement</span>
+                    <span><strong className="text-gray-900">Les sportifs</strong> retrouvent leurs photos instantanément, gratuitement</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-emerald-500 mt-1">

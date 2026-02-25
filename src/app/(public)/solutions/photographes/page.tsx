@@ -38,7 +38,7 @@ const iaFeatures = [
     icon: "\u{1F464}",
     title: "Reconnaissance faciale avancée",
     desc: "Les photos sans dossard visible sont automatiquement liées au bon sportif grâce à la reconnaissance de visage. L’IA croise les visages avec les noms et numéros officiels pour garantir qu’aucun sportif ne manque à l’appel.",
-    stat: "0.3s",
+    stat: "0.03s",
     statLabel: "par photo",
   },
   {
@@ -165,7 +165,7 @@ const comparatif = [
   { feature: "Tri IA automatique (OCR + visages)", focus: true, others: false },
   { feature: "Commission sur ventes", focus: "0%", others: "15–40%" },
   { feature: "Paiement direct photographe", focus: true, others: false },
-  { feature: "Temps de tri 1 000 photos", focus: "~2 min", others: "2–4h manuel" },
+  { feature: "Temps de tri 10 000 photos", focus: "~5 min", others: "1–2 jours manuel" },
   { feature: "Reconnaissance faciale", focus: true, others: false },
   { feature: "Smart Crop par visage", focus: true, others: false },
   { feature: "Filtrage qualité automatique", focus: true, others: false },
@@ -205,7 +205,7 @@ const testimonials = [
 const faqItems = [
   {
     q: "Comment fonctionne le tri automatique par intelligence artificielle ?",
-    a: "Notre IA combine reconnaissance optique de caractères (OCR) pour lire les dossards et reconnaissance faciale pour identifier les sportifs. Les photos sont automatiquement liées au bon participant en moins de 0,3 seconde chacune. Vous uploadez en masse, l’IA organise tout en arrière-plan.",
+    a: "Notre IA combine reconnaissance optique de caractères (OCR) pour lire les dossards et reconnaissance faciale pour identifier les sportifs. Les photos sont automatiquement liées au bon participant en seulement 30 millisecondes chacune (10 000 photos en 5 minutes). Vous uploadez en masse, l’IA organise tout en arrière-plan.",
   },
   {
     q: "Pourquoi 0% de commission sur les ventes ?",
@@ -419,7 +419,7 @@ export default function SolutionsPhotographesPage() {
                 </span>
                 <br />
                 <span className="text-3xl md:text-4xl lg:text-5xl text-white/90">
-                  1 000 photos triées en 2 minutes
+                  10 000 photos triées en 5 minutes
                 </span>
               </h1>
               <p className="text-lg text-white/80 max-w-xl leading-relaxed">
@@ -445,8 +445,8 @@ export default function SolutionsPhotographesPage() {
                   <div className="text-white/60 text-sm">commission sur ventes</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-emerald-400">~2 min</div>
-                  <div className="text-white/60 text-sm">pour 1 000 photos</div>
+                  <div className="text-2xl font-bold text-emerald-400">0.03s</div>
+                  <div className="text-white/60 text-sm">par photo</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-emerald-400" data-count="95" data-suffix="%">0%</div>
@@ -521,7 +521,7 @@ export default function SolutionsPhotographesPage() {
             </div>
             <div className="w-px h-8 bg-gray-200 hidden sm:block" />
             <div>
-              <span className="text-2xl font-bold text-gray-900">0,3s</span>
+              <span className="text-2xl font-bold text-gray-900">0,03s</span>
               <p className="text-xs text-gray-500 mt-0.5">par photo</p>
             </div>
             <div className="w-px h-8 bg-gray-200 hidden sm:block" />

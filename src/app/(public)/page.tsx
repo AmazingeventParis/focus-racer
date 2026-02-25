@@ -93,7 +93,7 @@ export default function HomePage() {
     {
       question: "Comment retrouver mes photos de course ?",
       answer:
-        "Rendez-vous sur Focus Racer, sélectionnez votre événement et entrez votre numéro de dossard. Vous pouvez aussi utiliser un selfie pour retrouver vos photos grâce à la reconnaissance faciale. Le processus prend moins de 3 secondes.",
+        "Rendez-vous sur Focus Racer, sélectionnez votre événement et entrez votre numéro de dossard. Vous pouvez aussi utiliser un selfie pour retrouver vos photos grâce à la reconnaissance faciale. Le processus prend moins d'une seconde.",
     },
     {
       question: "Quels types d’événements sont couverts ?",
@@ -103,7 +103,7 @@ export default function HomePage() {
     {
       question: "Comment fonctionne la reconnaissance de dossard ?",
       answer:
-        "Notre intelligence artificielle analyse automatiquement chaque photo uploadée pour détecter et lire les numéros de dossard grâce à un moteur OCR avancé. Le processus est entièrement automatique et prend quelques secondes par photo, même avec des images floues ou en mouvement.",
+        "Notre intelligence artificielle analyse automatiquement chaque photo uploadée pour détecter et lire les numéros de dossard grâce à un moteur OCR avancé. Le processus est entièrement automatique : 30 millisecondes par photo, soit 10 000 photos traitées en 5 minutes. Fonctionne même avec des images floues ou en mouvement.",
     },
     {
       question: "Je suis photographe, comment vendre mes photos ?",
@@ -179,7 +179,7 @@ export default function HomePage() {
                 name: "Comment fonctionne la reconnaissance de dossard ?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Notre intelligence artificielle analyse automatiquement chaque photo uploadée pour détecter et lire les numéros de dossard. Le processus est entièrement automatique et prend quelques secondes par photo.",
+                  text: "Notre intelligence artificielle analyse automatiquement chaque photo uploadée pour détecter et lire les numéros de dossard. Le processus est entièrement automatique : 30 millisecondes par photo, soit 10 000 photos traitées en 5 minutes.",
                 },
               },
               {
@@ -225,7 +225,7 @@ export default function HomePage() {
             </h1>
             <p className="hero-description">
               Notre IA détecte automatiquement votre dossard et votre visage pour retrouver toutes vos photos
-              d'événement en quelques secondes. Gratuit pour les sportifs.
+              d'événement instantanément. Gratuit pour les sportifs.
             </p>
             <div className="hero-ctas">
               <Link href="/explore">
@@ -243,7 +243,7 @@ export default function HomePage() {
               <div className="float-icon green">✅</div>
               <div>
                 <div className="float-label">Dossard détecté</div>
-                <div className="float-value">#1247 — 0.3s</div>
+                <div className="float-value">#1247 — 0.03s</div>
               </div>
             </div>
             <div className="hero-float-card card-2">
@@ -282,7 +282,7 @@ export default function HomePage() {
                 </div>
                 <div className="pipeline-stats">
                   <div className="pipeline-stat">
-                    <span className="pipeline-stat-value">0.3s</span>
+                    <span className="pipeline-stat-value">0.03s</span>
                     <span className="pipeline-stat-label">par photo</span>
                   </div>
                   <div className="pipeline-stat">
@@ -431,8 +431,8 @@ export default function HomePage() {
             <div className="step-icon">🤖</div>
             <h3>Analyse IA automatique</h3>
             <p>
-              Notre intelligence artificielle détecte les numéros de dossard et les visages en quelques
-              secondes. Tri et indexation instantanés.
+              Notre intelligence artificielle détecte les numéros de dossard et les visages en 30 millisecondes
+              par photo. 10 000 photos triées en 5 minutes.
             </p>
           </div>
           <div className="step-card reveal stagger-3">
@@ -556,7 +556,7 @@ export default function HomePage() {
               <div className="audience-img-placeholder">🏃‍♂️</div>
             </div>
             <div className="audience-info">
-              <h3>Retrouvez vos souvenirs en quelques secondes</h3>
+              <h3>Retrouvez vos souvenirs instantanément</h3>
               <p>
                 Fini les heures passées à chercher vos photos parmi des milliers de clichés. Focus
                 Racer vous les livre instantanément, triées et identifiées.
@@ -566,7 +566,7 @@ export default function HomePage() {
                   <span className="benefit-check">✓</span>Recherche par dossard, nom ou selfie
                 </li>
                 <li>
-                  <span className="benefit-check">✓</span>Résultats en moins de 3 secondes
+                  <span className="benefit-check">✓</span>Résultats en moins d'une seconde
                 </li>
                 <li>
                   <span className="benefit-check">✓</span>Photos haute résolution téléchargeables

@@ -262,7 +262,7 @@ const faqTech = [
   },
   {
     q: "Quelle est la capacité de traitement maximale du serveur ?",
-    a: "Avec 16 workers IA parallèles sur un processeur AMD EPYC 4344P (32 threads), le serveur traite environ 1000 photos en 2 minutes. Chaque photo passe par 4 étapes parallélisées (qualité + watermark + OCR + reconnaissance faciale) en ~300ms. Le heap Node.js est configuré à 16 Go avec garbage collection exposé.",
+    a: "Avec 16 workers IA parallèles sur un processeur AMD EPYC 4344P (32 threads), le serveur traite 10 000 photos en environ 5 minutes (30ms par photo). Chaque photo passe par 4 étapes parallélisées (qualité + watermark + OCR + reconnaissance faciale). Le heap Node.js est configuré à 16 Go avec garbage collection exposé.",
   },
   {
     q: "Comment sont protégées les photos HD originales ?",
@@ -375,7 +375,7 @@ export default function TechnologiePage() {
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               Une infrastructure de pointe au service de la simplicité. Découvrez comment notre pipeline IA traite
-              des milliers de photos en quelques minutes, avec une précision de 95% et une conformité RGPD native.
+              10 000 photos en 5 minutes, avec une précision de 95% et une conformité RGPD native.
             </p>
           </div>
         </div>
@@ -390,7 +390,7 @@ export default function TechnologiePage() {
               <div className="text-sm text-white/80 mt-1">Précision OCR</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold" data-count="0.3" data-suffix="s" data-decimal="true">0</div>
+              <div className="text-3xl md:text-4xl font-bold">0.03s</div>
               <div className="text-sm text-white/80 mt-1">Par photo</div>
             </div>
             <div>
@@ -417,7 +417,7 @@ export default function TechnologiePage() {
             </h2>
             <p className="text-gray-600 text-lg">
               De l'upload à la publication, chaque photo traverse 8 étapes automatisées
-              en moins de 300 millisecondes.
+              en seulement 30 millisecondes. 10 000 photos traitées en 5 minutes.
             </p>
           </div>
 
@@ -735,7 +735,7 @@ export default function TechnologiePage() {
             </h2>
             <p className="text-gray-600 text-lg">
               Un serveur dédié OVH hébergé en France, dimensionné pour traiter
-              des milliers de photos simultanément.
+              plus de 10 000 photos en quelques minutes.
             </p>
           </div>
 
@@ -780,7 +780,7 @@ export default function TechnologiePage() {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm text-gray-600">Focus Racer (16 workers)</span>
-                      <span className="text-sm font-bold text-emerald-600">~2 min</span>
+                      <span className="text-sm font-bold text-emerald-600">~30 sec</span>
                     </div>
                     <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full" style={{ width: "8%" }} />
@@ -805,18 +805,18 @@ export default function TechnologiePage() {
                     </div>
                   </div>
                 </div>
-                <p className="text-xs text-gray-400 mt-3">Base : 1000 photos, tri + indexation + watermark</p>
+                <p className="text-xs text-gray-400 mt-3">Base : 1 000 photos, tri + indexation + watermark</p>
               </div>
 
               {/* Key metrics */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white rounded-xl p-5 border border-gray-200 text-center shadow-sm">
-                  <div className="text-3xl font-bold text-gray-900" data-count="300" data-suffix="ms">0</div>
+                  <div className="text-3xl font-bold text-gray-900" data-count="30" data-suffix="ms">0</div>
                   <p className="text-sm text-gray-500 mt-1">Traitement par photo</p>
                 </div>
                 <div className="bg-white rounded-xl p-5 border border-gray-200 text-center shadow-sm">
-                  <div className="text-3xl font-bold text-gray-900" data-count="1000" data-suffix=" photos">0</div>
-                  <p className="text-sm text-gray-500 mt-1">En ~2 minutes</p>
+                  <div className="text-3xl font-bold text-gray-900" data-count="10000" data-suffix=" photos">0</div>
+                  <p className="text-sm text-gray-500 mt-1">En ~5 minutes</p>
                 </div>
                 <div className="bg-white rounded-xl p-5 border border-gray-200 text-center shadow-sm">
                   <div className="text-3xl font-bold text-gray-900">&lt; 1s</div>

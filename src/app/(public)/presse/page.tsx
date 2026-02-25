@@ -34,7 +34,7 @@ const stats = [
   { value: 150, suffix: "+", label: "Événements couverts" },
   { value: 30, suffix: "+", label: "Sports" },
   { value: 95, suffix: "%", label: "Précision IA" },
-  { value: 2, suffix: "min", label: "Tri de 1 000 photos" },
+  { value: 10000, suffix: "", label: "Photos triées en 5 min" },
   { value: 0, suffix: "%", label: "Commission" },
 ];
 
@@ -65,7 +65,7 @@ const pressReleases: PressRelease[] = [
     title: "Focus Racer franchit le cap des 150 événements couverts",
     excerpt:
       "En quatre mois, la plateforme a séduit photographes et organisateurs à travers plus de 30 disciplines sportives en France.",
-    body: "Focus Racer célèbre une étape importante : plus de 150 événements sportifs ont été couverts via la plateforme depuis son lancement en février 2026. De la course à pied au trail, du cyclisme à la natation en eau libre, plus de 30 disciplines sont désormais représentées. La technologie d’IA atteint 95 % de précision dans la détection des dossards et permet de trier 1 000 photos en moins de 2 minutes. L’entreprise ambitionne de couvrir 500 événements d’ici fin 2026.",
+    body: "Focus Racer célèbre une étape importante : plus de 150 événements sportifs ont été couverts via la plateforme depuis son lancement en février 2026. De la course à pied au trail, du cyclisme à la natation en eau libre, plus de 30 disciplines sont désormais représentées. La technologie d’IA atteint 95 % de précision dans la détection des dossards et permet de trier 10 000 photos en 5 minutes (30ms par image). L’entreprise ambitionne de couvrir 500 événements d’ici fin 2026.",
   },
 ];
 
@@ -77,7 +77,7 @@ const brandColors = [
 ];
 
 const boilerplate =
-  "Focus Racer est une plateforme SaaS française qui automatise le tri et la vente de photos de courses sportives grâce à l’intelligence artificielle. En combinant OCR, reconnaissance faciale et Stripe Connect, elle permet aux photographes de vendre leurs photos sans commission et aux sportifs de retrouver leurs clichés en quelques secondes. Fondée en 2024 et lancée en 2026, Focus Racer couvre plus de 30 disciplines sportives en France.";
+  "Focus Racer est une plateforme SaaS française qui automatise le tri et la vente de photos de courses sportives grâce à l’intelligence artificielle. En combinant OCR, reconnaissance faciale et Stripe Connect, elle permet aux photographes de vendre leurs photos sans commission et aux sportifs de retrouver leurs clichés instantanément. Fondée en 2024 et lancée en 2026, Focus Racer couvre plus de 30 disciplines sportives en France.";
 
 /* ═══════════════════════════════════════════════════
    COMPONENT

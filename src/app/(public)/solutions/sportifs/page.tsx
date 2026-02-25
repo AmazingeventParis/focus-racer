@@ -19,17 +19,17 @@ const NAV_ITEMS = [
 ];
 
 const searchSteps = [
-  { icon: "\u{1F522}", label: "Par dossard", desc: "Tapez votre numéro de dossard", time: "0.3s" },
-  { icon: "\u{1F933}", label: "Par selfie", desc: "L'IA compare votre visage", time: "1.2s" },
-  { icon: "\u{1F464}", label: "Par nom", desc: "Depuis la start-list officielle", time: "0.5s" },
+  { icon: "\u{1F522}", label: "Par dossard", desc: "Tapez votre numéro de dossard", time: "0.03s" },
+  { icon: "\u{1F933}", label: "Par selfie", desc: "L'IA compare votre visage", time: "0.8s" },
+  { icon: "\u{1F464}", label: "Par nom", desc: "Depuis la start-list officielle", time: "0.1s" },
 ];
 
 const searchCards = [
   {
     icon: "\u{1F522}",
     title: "Recherche par dossard",
-    desc: "Tapez votre numéro de dossard et retrouvez instantanément toutes vos photos. Notre IA lit les dossards sur chaque cliché grâce à la reconnaissance optique de caractères (OCR), même si le dossard est partiellement caché, boueux ou froissé. La méthode la plus rapide : résultat en 0,3 seconde.",
-    stat: "0.3s",
+    desc: "Tapez votre numéro de dossard et retrouvez instantanément toutes vos photos. Notre IA lit les dossards sur chaque cliché grâce à la reconnaissance optique de caractères (OCR), même si le dossard est partiellement caché, boueux ou froissé. La méthode la plus rapide : résultat en 0,03 seconde.",
+    stat: "0.03s",
     statLabel: "temps de recherche",
     color: "from-emerald-400 to-emerald-600",
     detail: "L'OCR analyse les pixels de chaque photo pour détecter et lire les chiffres imprimés sur votre dossard. Précision de 95% même en conditions difficiles.",
@@ -93,9 +93,9 @@ const iaFeatures = [
   {
     icon: "\u{26A1}",
     title: "Traitement ultra-rapide",
-    desc: "1 000 photos analysées en environ 2 minutes. Grâce à notre serveur dédié haute performance (16 cœurs, 64 Go RAM), vos photos sont disponibles très rapidement après la course.",
-    stat: "~2 min",
-    statLabel: "pour 1 000 photos",
+    desc: "10 000 photos analysées en 5 minutes. Grâce à notre serveur dédié haute performance (16 cœurs, 64 Go RAM), vos photos sont disponibles quasi instantanément après la course.",
+    stat: "0.03s",
+    statLabel: "par photo",
   },
 ];
 
@@ -220,7 +220,7 @@ const testimonials = [
 const faqItems = [
   {
     q: "Comment retrouver mes photos de course gratuitement ?",
-    a: "Rendez-vous sur la galerie de votre événement sur Focus Racer. Tapez votre numéro de dossard, votre nom, ou prenez un selfie. L'intelligence artificielle retrouve automatiquement toutes vos photos en quelques secondes. La recherche et la consultation sont 100% gratuites. Vous ne payez que si vous décidez d'acheter les photos en haute définition sans filigrane.",
+    a: "Rendez-vous sur la galerie de votre événement sur Focus Racer. Tapez votre numéro de dossard, votre nom, ou prenez un selfie. L'intelligence artificielle retrouve automatiquement toutes vos photos en une fraction de seconde. La recherche et la consultation sont 100% gratuites. Vous ne payez que si vous décidez d'acheter les photos en haute définition sans filigrane.",
   },
   {
     q: "Est-ce que Focus Racer fonctionne avec tous les sports ?",
@@ -448,7 +448,7 @@ export default function SolutionsSportifsPage() {
                   <div className="text-white/60 text-sm">de recherche</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-emerald-400">0.3s</div>
+                  <div className="text-2xl font-bold text-emerald-400">0.03s</div>
                   <div className="text-white/60 text-sm">par photo</div>
                 </div>
                 <div>
@@ -550,7 +550,7 @@ export default function SolutionsSportifsPage() {
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
               Que vous connaissiez votre numéro de dossard, votre nom d'inscription ou simplement votre visage,
-              Focus Racer vous retrouve parmi des milliers de photos en quelques secondes.
+              Focus Racer vous retrouve parmi des milliers de photos en une fraction de seconde.
               <strong className="text-gray-900"> Choisissez votre méthode préférée.</strong>
             </p>
           </div>
@@ -965,7 +965,7 @@ export default function SolutionsSportifsPage() {
             Prêt à retrouver vos photos de course ?
           </h2>
           <p className="text-white/80 text-lg mb-4 max-w-2xl mx-auto">
-            Recherche gratuite, résultat en quelques secondes. Dossard, selfie ou nom : notre IA vous retrouve
+            Recherche gratuite, résultat instantané. Dossard, selfie ou nom : notre IA vous retrouve
             parmi des milliers de photos. Rejoignez des milliers de sportifs qui utilisent déjà Focus Racer.
           </p>
           <p className="text-emerald-400 font-semibold text-lg mb-10 max-w-2xl mx-auto">

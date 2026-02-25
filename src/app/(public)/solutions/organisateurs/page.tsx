@@ -37,7 +37,7 @@ const iaFeatures = [
     icon: "\u{1F464}",
     title: "Reconnaissance faciale avancée",
     desc: "Les photos où le dossard n'est pas visible sont automatiquement liées au bon sportif grâce à la reconnaissance de visage. Idéal pour les disciplines où le dossard est masqué : natation, cyclisme, sports collectifs.",
-    stat: "0.3s",
+    stat: "0.03s",
     statLabel: "par photo",
   },
   {
@@ -164,7 +164,7 @@ const comparatif = [
   { feature: "Tri IA automatique (OCR + visages)", focus: true, others: false },
   { feature: "Commission sur ventes photos", focus: "0%", others: "15–40%" },
   { feature: "Import start-lists automatique", focus: true, others: false },
-  { feature: "Temps de mise en ligne 1 000 photos", focus: "~2 min", others: "2–4h manuel" },
+  { feature: "Temps de mise en ligne 10 000 photos", focus: "~5 min", others: "1–2 jours manuel" },
   { feature: "Reconnaissance faciale", focus: true, others: false },
   { feature: "Recherche par selfie", focus: true, others: false },
   { feature: "Filtrage qualité automatique", focus: true, others: false },
@@ -204,7 +204,7 @@ const testimonials = [
 const faqItems = [
   {
     q: "Comment fonctionne le tri automatique pour mon événement ?",
-    a: "Vos photographes uploadent leurs photos sur Focus Racer. Notre IA analyse chaque cliché en temps réel : lecture du dossard (OCR), reconnaissance faciale, filtrage qualité. En moins de 2 minutes pour 1 000 photos, chaque sportif retrouve automatiquement ses photos dans la galerie. Aucun tri manuel nécessaire.",
+    a: "Vos photographes uploadent leurs photos sur Focus Racer. Notre IA analyse chaque cliché en temps réel : lecture du dossard (OCR), reconnaissance faciale, filtrage qualité. 10 000 photos traitées en 5 minutes (30ms par photo), chaque sportif retrouve automatiquement ses photos dans la galerie. Aucun tri manuel nécessaire.",
   },
   {
     q: "Combien ça coûte pour un organisateur ?",
@@ -483,8 +483,8 @@ export default function SolutionsOrganisateursPage() {
                   <div className="text-white/60 text-sm">logistique photo</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-emerald-400">~2 min</div>
-                  <div className="text-white/60 text-sm">pour 1 000 photos</div>
+                  <div className="text-2xl font-bold text-emerald-400">0.03s</div>
+                  <div className="text-white/60 text-sm">par photo 000 photos</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-emerald-400" data-count="95" data-suffix="%">0%</div>
