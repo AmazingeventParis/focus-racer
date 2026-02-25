@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Event } from "@/types";
 import ProcessingScreen from "@/components/processing-screen";
 import { UploadTimeline } from "@/components/upload-timeline";
-import BibRunner from "@/components/game/bib-runner";
+import FocusCatcher from "@/components/game/focus-catcher";
 
 function generateSessionId(): string {
   return `upload_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
@@ -490,9 +490,9 @@ export default function UploadPage({
           </p>
         </div>
 
-        {/* Bib Runner Game */}
+        {/* Focus Catcher Game */}
         <div className="w-full max-w-2xl px-8 mb-6 relative z-10">
-          <BibRunner progress={combinedProgress} isComplete={false} />
+          <FocusCatcher progress={combinedProgress} isComplete={false} />
 
           {/* Progress bar */}
           <div className="h-3 bg-slate-700 rounded-full overflow-hidden mt-4">
