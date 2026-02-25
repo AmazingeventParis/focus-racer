@@ -432,8 +432,8 @@ export default function EventDetailPage({
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="edit-date">Date *</Label>
-                        <Input id="edit-date" type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} required />
+                        <Label htmlFor="edit-date" className="text-gray-400">Date</Label>
+                        <Input id="edit-date" type="date" value={editDate} disabled className="opacity-50 cursor-not-allowed" />
                       </div>
                       <div className="space-y-2">
                         <Label>Sport</Label>

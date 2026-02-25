@@ -25,6 +25,7 @@ export async function GET(
         userId: true,
         createdAt: true,
         uploadStartedAt: true,
+        processingStartedAt: true,
         uploadCompletedAt: true,
       },
     });
@@ -78,13 +79,14 @@ export async function GET(
         ? totalAssociations / uniqueBibs.size
         : 0;
 
-    // Processing time (upload start to completion)
+    // Processing time (AI processing only, excludes upload time)
     let avgProcessingTime = 0;
     let totalProcessingTime = 0;
 
-    if (event.uploadStartedAt && event.uploadCompletedAt) {
-      // Real processing time from start to end
-      totalProcessingTime = event.uploadCompletedAt.getTime() - event.uploadStartedAt.getTime();
+    const processingStart = event.processingStartedAt || event.uploadStartedAt;
+    if (processingStart && event.uploadCompletedAt) {
+      // Real processing time: from AI processing start to completion
+      totalProcessingTime = event.uploadCompletedAt.getTime() - processingStart.getTime();
 
       // Average per photo
       if (totalPhotos > 0) {

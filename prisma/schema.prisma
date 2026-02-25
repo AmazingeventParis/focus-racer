@@ -142,6 +142,7 @@ model Event {
   orders       Order[]
   faceClusteredAt DateTime? // When face clustering was last run
   uploadStartedAt DateTime? // When the first batch upload started
+  processingStartedAt DateTime? // When AI processing started (after file save)
   uploadCompletedAt DateTime? // When the last photo was processed
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt

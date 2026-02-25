@@ -459,6 +459,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Record processing start timestamp (excludes upload/save time)
+    await prisma.event.update({
+      where: { id: eventId },
+      data: { processingStartedAt: new Date() },
+    });
+
     // Enqueue remaining photos for processing
     const totalToProcess = photosToProcess.length;
     let processedCount = 0;
