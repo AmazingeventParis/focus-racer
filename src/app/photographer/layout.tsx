@@ -85,17 +85,6 @@ export default function PhotographerLayout({
     return null;
   }
 
-  // Daily login XP — once per browser session
-  useEffect(() => {
-    if (status === "authenticated" && typeof window !== "undefined") {
-      const key = "dailyLoginClaimed";
-      if (!sessionStorage.getItem(key)) {
-        sessionStorage.setItem(key, "1");
-        fetch("/api/gamification/daily-login", { method: "POST" }).catch(() => {});
-      }
-    }
-  }, [status]);
-
   return (
     <div className="flex min-h-screen">
       <ClientSidebar />

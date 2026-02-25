@@ -88,6 +88,14 @@ export const BADGE_DEFINITIONS: BadgeDef[] = [
     color: "#EF4444",
     colorLight: "#FEE2E2",
   },
+  {
+    key: "ambassadeur",
+    emoji: "\u{1F31F}",
+    labelFr: "Ambassadeur",
+    descriptionFr: "Parrainage réussi — exclusif",
+    color: "#D946EF",
+    colorLight: "#FAE8FF",
+  },
 ];
 
 export const BADGE_MAP = new Map(BADGE_DEFINITIONS.map((b) => [b.key, b]));
@@ -100,6 +108,7 @@ export interface BadgeEvalData {
   hordeSize: number;
   totalSpent: number;
   createdAt: Date;
+  completedReferrals: number;
 }
 
 export function evaluateBadges(data: BadgeEvalData): string[] {
@@ -115,6 +124,7 @@ export function evaluateBadges(data: BadgeEvalData): string[] {
   if (data.hordeSize >= 10) earned.push("leader_10");
   if (data.totalSpent >= 100) earned.push("patron_100");
   if (data.createdAt.getFullYear() === 2026) earned.push("pioneer");
+  if (data.completedReferrals >= 1) earned.push("ambassadeur");
 
   return earned;
 }

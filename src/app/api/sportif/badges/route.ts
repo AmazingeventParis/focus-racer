@@ -22,6 +22,7 @@ export async function GET() {
       hordeData,
       spentAgg,
       userData,
+      completedReferrals,
     ] = await Promise.all([
       prisma.order.count({ where: { userId, status: "PAID" } }),
       prisma.orderItem.count({
@@ -50,6 +51,7 @@ export async function GET() {
         where: { id: userId },
         select: { createdAt: true },
       }),
+      prisma.referral.count({ where: { referrerId: userId, status: "COMPLETED" } }),
     ]);
 
     const distinctSportTypes = new Set(
@@ -64,6 +66,7 @@ export async function GET() {
       hordeSize: hordeData?.members.length ?? 0,
       totalSpent: spentAgg._sum.totalAmount ?? 0,
       createdAt: userData?.createdAt ?? new Date(),
+      completedReferrals,
     });
 
     // Persist newly earned badges

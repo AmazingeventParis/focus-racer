@@ -38,6 +38,9 @@ export default function LoginPage() {
           variant: "destructive",
         });
       } else {
+        // Grant daily login XP (backend dedup ensures once per day)
+        fetch("/api/gamification/daily-login", { method: "POST" }).catch(() => {});
+
         // Fetch session to get role for redirect
         const res = await fetch("/api/auth/session");
         const session = await res.json();
