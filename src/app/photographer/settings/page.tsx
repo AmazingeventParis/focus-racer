@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { getRoleLabel } from "@/lib/role-helpers";
 import PreferencesCard from "@/components/PreferencesCard";
+import ReferralCard from "@/components/gamification/ReferralCard";
 import { useLocale } from "@/components/providers/LocaleProvider";
 
 export default function SettingsPage() {
@@ -204,6 +205,17 @@ export default function SettingsPage() {
                 </div>
               ))}
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Parrainage */}
+        <Card className="bg-white border-0 shadow-card rounded-xl">
+          <CardHeader>
+            <CardTitle className="text-lg font-display text-gray-900">Parrainage</CardTitle>
+            <CardDescription className="text-gray-500">Parrainez des photographes et recevez des crédits gratuits</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ReferralCard />
           </CardContent>
         </Card>
 

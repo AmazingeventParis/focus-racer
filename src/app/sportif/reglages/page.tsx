@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useLocale } from "@/components/providers/LocaleProvider";
 import PreferencesCard from "@/components/PreferencesCard";
+import ReferralCard from "@/components/gamification/ReferralCard";
 
 interface Profile {
   id: string;
@@ -318,6 +319,19 @@ export default function SportifReglagesPage() {
               )}
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Parrainage */}
+      <Card className="glass-card rounded-2xl">
+        <CardHeader>
+          <CardTitle className="text-lg">Parrainage</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            Invitez vos amis sportifs et recevez des crédits gratuits pour chaque inscription validée.
+          </p>
+          <ReferralCard />
         </CardContent>
       </Card>
 
