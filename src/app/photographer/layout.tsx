@@ -6,6 +6,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useSSENotifications } from "@/hooks/useSSENotifications";
 import ClientSidebar from "@/components/layout/ClientSidebar";
 import MobileNav, { type MobileNavItem } from "@/components/layout/MobileNav";
+import XpToast from "@/components/gamification/XpToast";
+import LevelUpCelebration from "@/components/gamification/LevelUpCelebration";
 import { getRoleLabel } from "@/lib/role-helpers";
 
 const icon = (d: string) => (
@@ -83,11 +85,24 @@ export default function PhotographerLayout({
     return null;
   }
 
+  // Daily login XP — once per browser session
+  useEffect(() => {
+    if (status === "authenticated" && typeof window !== "undefined") {
+      const key = "dailyLoginClaimed";
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
+        fetch("/api/gamification/daily-login", { method: "POST" }).catch(() => {});
+      }
+    }
+  }, [status]);
+
   return (
     <div className="flex min-h-screen">
       <ClientSidebar />
       <PhotographerMobileNav />
       <main className="flex-1 bg-interface overflow-auto scrollbar-thin pt-14 pb-16 md:pt-0 md:pb-0">{children}</main>
+      <XpToast />
+      <LevelUpCelebration />
     </div>
   );
 }

@@ -8,9 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Image from "next/image";
 import { EventWithStats } from "@/types";
 import PhotographerBadgeRow from "@/components/photographer/PhotographerBadgeRow";
-import XpBar from "@/components/gamification/XpBar";
-import XpToast from "@/components/gamification/XpToast";
-import LevelUpCelebration from "@/components/gamification/LevelUpCelebration";
 import LeaderboardCard from "@/components/gamification/LeaderboardCard";
 import StreakCard from "@/components/gamification/StreakCard";
 import SmartAlertsList from "@/components/gamification/SmartAlertsList";
@@ -96,11 +93,6 @@ export default function DashboardPage() {
         <p className="text-gray-500 mt-1">
           Bienvenue sur Focus Racer - Votre espace photographe
         </p>
-      </div>
-
-      {/* XP Bar */}
-      <div className="mb-6">
-        <XpBar />
       </div>
 
       {/* Smart Alerts */}
@@ -362,9 +354,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Gamification overlays */}
-      <XpToast />
-      <LevelUpCelebration />
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { getRoleLabel } from "@/lib/role-helpers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSSENotifications } from "@/hooks/useSSENotifications";
 import { useLocale } from "@/components/providers/LocaleProvider";
+import XpBar from "@/components/gamification/XpBar";
 
 interface NavItem {
   href: string;
@@ -212,8 +213,11 @@ export default function OrganizerSidebar() {
         <p className="text-navy-200 text-xs mt-2 ml-10">{getRoleLabel(userRole)}</p>
       </div>
 
+      {/* XP Bar */}
+      <XpBar />
+
       {/* Navigation */}
-      <nav className="flex-1 px-3 mt-2">
+      <nav className="flex-1 px-3">
         <ul className="space-y-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");

@@ -31,7 +31,7 @@ export const XP_CONFIG: Record<XpActionType, XpActionConfig> = {
   HIGH_COVERAGE:      { xp: 50, oneTime: false, perEntity: true },
 
   // Tous rôles
-  DAILY_LOGIN:        { xp: 2,  oneTime: false },
+  DAILY_LOGIN:        { xp: 5,  oneTime: false },
   STREAK_BONUS:       { xp: 10, oneTime: false },
 };
 

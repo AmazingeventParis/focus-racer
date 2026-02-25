@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 import { useSSENotifications } from "@/hooks/useSSENotifications";
 import { useLocale } from "@/components/providers/LocaleProvider";
+import XpBar from "@/components/gamification/XpBar";
 
 interface NavItemDef {
   href: string;
@@ -179,8 +180,11 @@ export default function SportifSidebar() {
         <p className="text-navy-200 text-xs mt-2 ml-10">{t("nav.space")}</p>
       </div>
 
+      {/* XP Bar */}
+      <XpBar />
+
       {/* Navigation */}
-      <nav className="flex-1 px-3 mt-2">
+      <nav className="flex-1 px-3">
         <ul className="space-y-1">
           {navItemDefs.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");

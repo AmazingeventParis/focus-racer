@@ -9,9 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import BadgeRow from "@/components/sportif/BadgeRow";
 import SeasonRecap from "@/components/sportif/SeasonRecap";
 import RecommendationCards from "@/components/sportif/RecommendationCards";
-import XpBar from "@/components/gamification/XpBar";
-import XpToast from "@/components/gamification/XpToast";
-import LevelUpCelebration from "@/components/gamification/LevelUpCelebration";
 import LeaderboardCard from "@/components/gamification/LeaderboardCard";
 import StreakCard from "@/components/gamification/StreakCard";
 import SmartAlertsList from "@/components/gamification/SmartAlertsList";
@@ -172,11 +169,6 @@ export default function SportifDashboard() {
             )}
           </button>
         </div>
-      </div>
-
-      {/* XP Bar */}
-      <div className="mb-6">
-        <XpBar />
       </div>
 
       {/* Smart Alerts */}
@@ -405,9 +397,6 @@ export default function SportifDashboard() {
         loading={recosLoading}
       />
 
-      {/* Gamification overlays */}
-      <XpToast />
-      <LevelUpCelebration />
     </div>
   );
 }
