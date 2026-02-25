@@ -13,7 +13,7 @@ export const PHOTOGRAPHER_BADGE_DEFINITIONS: BadgeDef[] = [
     key: "eagle_eye",
     emoji: "👁",
     labelFr: "Œil de Lynx",
-    descriptionFr: "95%+ de dossards détectés sur un événement",
+    descriptionFr: "99%+ de dossards détectés sur un événement",
     color: "#0EA5E9",
     colorLight: "#E0F2FE",
   },

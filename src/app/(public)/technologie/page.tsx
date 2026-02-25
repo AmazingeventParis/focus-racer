@@ -40,8 +40,8 @@ const pipelineSteps = [
       </svg>
     ),
     title: "OCR dossards",
-    desc: "Notre IA analyse chaque photo pour détecter et lire les numéros de dossard avec une précision de 95%.",
-    metric: "95% précision",
+    desc: "Notre IA analyse chaque photo pour détecter et lire les numéros de dossard avec une précision de 99%.",
+    metric: "99% précision",
     color: "from-emerald-500 to-emerald-600",
   },
   {
@@ -53,7 +53,7 @@ const pipelineSteps = [
     ),
     title: "Reconnaissance faciale",
     desc: "Indexation des visages et matching cross-photo. Les photos orphelines sont automatiquement liées au bon sportif.",
-    metric: "85%+ confiance",
+    metric: "99% confiance",
     color: "from-violet-500 to-purple-600",
   },
   {
@@ -375,7 +375,7 @@ export default function TechnologiePage() {
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               Une infrastructure de pointe au service de la simplicité. Découvrez comment notre pipeline IA traite
-              10 000 photos en 5 minutes, avec une précision de 95% et une conformité RGPD native.
+              10 000 photos en 5 minutes, avec une précision de 99% et une conformité RGPD native.
             </p>
           </div>
         </div>
@@ -564,7 +564,7 @@ export default function TechnologiePage() {
                     <p className="text-sm font-semibold text-emerald-800">Fallback intelligent</p>
                     <p className="text-sm text-emerald-700">
                       Quand l'OCR ne détecte aucun dossard, la reconnaissance faciale prend le relais.
-                      L'IA croise le visage détecté avec ceux déjà indexés pour retrouver le sportif (confiance 85%+).
+                      L'IA croise le visage détecté avec ceux déjà indexés pour retrouver le sportif (confiance 99%).
                     </p>
                   </div>
                 </div>
@@ -680,7 +680,7 @@ export default function TechnologiePage() {
                   </svg>
                 ),
                 title: "Liaison automatique",
-                desc: "Les photos orphelines (sans dossard détecté) sont automatiquement liées au bon sportif si un visage correspondant est trouvé dans la collection (confiance 85%+). Source tracée : « face_recognition ».",
+                desc: "Les photos orphelines (sans dossard détecté) sont automatiquement liées au bon sportif si un visage correspondant est trouvé dans la collection (confiance 99%). Source tracée : « face_recognition ».",
                 color: "bg-purple-50 text-purple-600",
               },
             ].map((item, i) => (

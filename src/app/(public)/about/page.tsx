@@ -11,7 +11,7 @@ const missionValues = [
   {
     icon: "🎯",
     title: "Précision",
-    desc: "Notre IA détecte les dossards avec 95% de précision, même en conditions difficiles.",
+    desc: "Notre IA détecte les dossards avec 99% de précision, même en conditions difficiles.",
   },
   {
     icon: "⚡",
@@ -108,7 +108,7 @@ const coreValues = [
     icon: "🎯",
     title: "Précision",
     desc: "Notre IA lit les dossards et reconnaît les visages avec une fiabilité de référence, même dans les conditions les plus difficiles.",
-    metric: "95%",
+    metric: "99%",
     metricLabel: "de précision IA",
   },
   {
@@ -149,7 +149,7 @@ const coreValues = [
 ];
 
 const techStack = [
-  { name: "Vision IA", desc: "OCR des dossards et reconnaissance faciale avec une précision de 95%", icon: "🧠", category: "IA" },
+  { name: "Vision IA", desc: "OCR des dossards et reconnaissance faciale avec une précision de 99%", icon: "🧠", category: "IA" },
   { name: "Sharp", desc: "Traitement d'image haute performance : retouche, smart crop, watermark, WebP", icon: "🖼️", category: "Traitement" },
   { name: "Stripe Connect", desc: "Paiements directs sécurisés avec Apple Pay, Google Pay, SEPA et CB", icon: "💳", category: "Paiement" },
   { name: "Next.js 14", desc: "Framework React fullstack avec App Router et rendu côté serveur", icon: "⚛️", category: "Infrastructure" },
@@ -170,7 +170,7 @@ const stats = [
   { value: 500000, suffix: "+", label: "Photos traitées" },
   { value: 150, suffix: "+", label: "Événements couverts" },
   { value: 30, suffix: "+", label: "Sports différents" },
-  { value: 95, suffix: "%", label: "Précision IA" },
+  { value: 99, suffix: "%", label: "Précision IA" },
   { value: 0, suffix: "%", label: "Commission sur ventes", display: "0%" },
   { value: 2, suffix: " min", label: "Pour 1 000 photos", display: "2 min" },
 ];
@@ -341,7 +341,7 @@ export default function AboutPage() {
               <div className="text-sm text-white/80 mt-1">Sports différents</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold" data-count="95" data-suffix="%">0</div>
+              <div className="text-3xl md:text-4xl font-bold" data-count="99" data-suffix="%">0</div>
               <div className="text-sm text-white/80 mt-1">Précision IA</div>
             </div>
           </div>

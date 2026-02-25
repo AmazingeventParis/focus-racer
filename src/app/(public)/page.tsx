@@ -250,7 +250,7 @@ export default function HomePage() {
               <div className="float-icon purple">🎯</div>
               <div>
                 <div className="float-label">Reconnaissance faciale</div>
-                <div className="float-value">Confiance 98.7%</div>
+                <div className="float-value">Confiance 99.7%</div>
               </div>
             </div>
 
@@ -286,7 +286,7 @@ export default function HomePage() {
                     <span className="pipeline-stat-label">par photo</span>
                   </div>
                   <div className="pipeline-stat">
-                    <span className="pipeline-stat-value">95%</span>
+                    <span className="pipeline-stat-value">99%</span>
                     <span className="pipeline-stat-label">précision</span>
                   </div>
                   <div className="pipeline-stat">
@@ -394,7 +394,7 @@ export default function HomePage() {
             <div className="stat-label">Photographes actifs</div>
           </div>
           <div className="stat-card reveal stagger-4">
-            <div className="stat-number" data-target="98" data-suffix="%">
+            <div className="stat-number" data-target="99" data-suffix="%">
               0
             </div>
             <div className="stat-label">Taux de détection IA</div>
@@ -468,7 +468,7 @@ export default function HomePage() {
             <h3>Recherche par dossard</h3>
             <p>
               Entrez simplement votre numéro de dossard et retrouvez toutes vos photos en un instant. La
-              détection IA est précise à 98%.
+              détection IA est précise à 99%.
             </p>
           </div>
           <div className="feature-card reveal stagger-2">

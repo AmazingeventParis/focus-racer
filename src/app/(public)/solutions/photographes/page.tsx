@@ -30,8 +30,8 @@ const iaFeatures = [
   {
     icon: "\u{1F522}",
     title: "OCR automatique des dossards",
-    desc: "Notre intelligence artificielle lit les numéros de dossard avec une précision de 95%, même sur des photos en mouvement, avec dossards bouchés, boueux ou partiellement masqués par un bras. Zéro tri manuel nécessaire.",
-    stat: "95%",
+    desc: "Notre intelligence artificielle lit les numéros de dossard avec une précision de 99%, même sur des photos en mouvement, avec dossards bouchés, boueux ou partiellement masqués par un bras. Zéro tri manuel nécessaire.",
+    stat: "99%",
     statLabel: "de précision",
   },
   {

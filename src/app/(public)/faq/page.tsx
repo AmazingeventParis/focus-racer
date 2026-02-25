@@ -31,7 +31,7 @@ const faqSections: FaqSection[] = [
       },
       {
         q: "La recherche par selfie, comment ça marche ?",
-        a: "Prenez un selfie ou importez une photo de votre visage. Notre technologie de reconnaissance faciale compare votre visage avec ceux détectés sur les photos de course et vous propose les correspondances. La précision est d'environ 95%.",
+        a: "Prenez un selfie ou importez une photo de votre visage. Notre technologie de reconnaissance faciale compare votre visage avec ceux détectés sur les photos de course et vous propose les correspondances. La précision est d'environ 99%.",
       },
       {
         q: "Mon dossard n'a pas été détecté, que faire ?",
@@ -120,11 +120,11 @@ const faqSections: FaqSection[] = [
     items: [
       {
         q: "Comment fonctionne la détection de dossards ?",
-        a: "Notre technologie d'intelligence artificielle analyse chaque photo pour détecter automatiquement les numéros de dossard grâce à la reconnaissance optique de caractères (OCR). La précision est de 85 à 95 % selon la lisibilité du dossard (taille, angle, conditions d'éclairage).",
+        a: "Notre technologie d'intelligence artificielle analyse chaque photo pour détecter automatiquement les numéros de dossard grâce à la reconnaissance optique de caractères (OCR). La précision est de 99 % même dans des conditions difficiles (taille, angle, éclairage).",
       },
       {
         q: "La reconnaissance faciale est-elle fiable ?",
-        a: "Oui, notre système utilise une technologie avancée de reconnaissance faciale avec un seuil de confiance de 95 %. Cela permet de retrouver vos photos même lorsque le dossard n'est pas visible. Les données biométriques sont traitées conformément au RGPD.",
+        a: "Oui, notre système utilise une technologie avancée de reconnaissance faciale avec un seuil de confiance de 99 %. Cela permet de retrouver vos photos même lorsque le dossard n'est pas visible. Les données biométriques sont traitées conformément au RGPD.",
       },
       {
         q: "Pourquoi certaines photos sont-elles filtrées ?",

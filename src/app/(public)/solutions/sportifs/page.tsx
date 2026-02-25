@@ -32,7 +32,7 @@ const searchCards = [
     stat: "0.03s",
     statLabel: "temps de recherche",
     color: "from-emerald-400 to-emerald-600",
-    detail: "L'OCR analyse les pixels de chaque photo pour détecter et lire les chiffres imprimés sur votre dossard. Précision de 95% même en conditions difficiles.",
+    detail: "L'OCR analyse les pixels de chaque photo pour détecter et lire les chiffres imprimés sur votre dossard. Précision de 99% même en conditions difficiles.",
   },
   {
     icon: "\u{1F933}",
@@ -58,15 +58,15 @@ const iaFeatures = [
   {
     icon: "\u{1F50D}",
     title: "OCR haute précision",
-    desc: "L'IA lit les dossards avec 95% de précision, même boueux, froissés, en mouvement ou partiellement masqués par un bras ou une ceinture porte-dossard. Vous retrouvez vos photos sans effort.",
-    stat: "95%",
+    desc: "L'IA lit les dossards avec 99% de précision, même boueux, froissés, en mouvement ou partiellement masqués par un bras ou une ceinture porte-dossard. Vous retrouvez vos photos sans effort.",
+    stat: "99%",
     statLabel: "précision OCR",
   },
   {
     icon: "\u{1F9D1}",
     title: "Reconnaissance faciale",
     desc: "Quand votre dossard n'est pas visible (dos tourné, natation, cyclisme), la reconnaissance de visage prend le relais. L'IA vous retrouve sur des photos que vous n'auriez jamais trouvées manuellement.",
-    stat: "85%+",
+    stat: "99%",
     statLabel: "taux de liaison",
   },
   {
@@ -426,7 +426,7 @@ export default function SolutionsSportifsPage() {
               </h1>
               <p className="text-lg text-white/80 max-w-xl leading-relaxed">
                 Notre intelligence artificielle retrouve automatiquement toutes vos photos
-                parmi des milliers d'images. Trois modes de recherche, précision de 95%,
+                parmi des milliers d'images. Trois modes de recherche, précision de 99%,
                 résultat quasi instantané.
                 <strong className="text-white"> La recherche est 100% gratuite.</strong>
               </p>

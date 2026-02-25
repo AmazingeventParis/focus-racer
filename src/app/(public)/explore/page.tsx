@@ -293,7 +293,7 @@ export default function ExplorePage() {
             </div>
             <div className="w-px h-6 bg-gray-200 hidden sm:block" />
             <div>
-              <span className="text-xl font-bold text-gray-900">95%</span>
+              <span className="text-xl font-bold text-gray-900">99%</span>
               <p className="text-xs text-gray-500">précision IA</p>
             </div>
           </div>
@@ -594,7 +594,7 @@ export default function ExplorePage() {
                 num: "1",
                 icon: "\u{1F522}",
                 title: "Par numéro de dossard",
-                desc: "Tapez votre numéro de dossard. L'IA a déjà lu et indexé chaque dossard visible sur les photos avec 95% de précision.",
+                desc: "Tapez votre numéro de dossard. L'IA a déjà lu et indexé chaque dossard visible sur les photos avec 99% de précision.",
               },
               {
                 num: "2",

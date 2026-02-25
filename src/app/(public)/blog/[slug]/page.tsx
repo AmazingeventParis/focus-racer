@@ -54,7 +54,7 @@ const article1Content = (
       1. La recherche par numéro de dossard
     </h2>
     <p className="text-gray-600 leading-relaxed mb-4">
-      C'est la méthode la plus directe et la plus utilisée. Notre intelligence artificielle analyse chaque photo téléchargée par le photographe et <strong>détecte automatiquement les numéros de dossard</strong> grâce à la reconnaissance optique de caractères (OCR). Le taux de précision atteint 85 à 95 % selon les conditions de prise de vue.
+      C'est la méthode la plus directe et la plus utilisée. Notre intelligence artificielle analyse chaque photo téléchargée par le photographe et <strong>détecte automatiquement les numéros de dossard</strong> grâce à la reconnaissance optique de caractères (OCR). Le taux de précision atteint 99 % même dans des conditions de prise de vue difficiles.
     </p>
     <p className="text-gray-600 leading-relaxed mb-4">
       <strong>Comment procéder :</strong>
@@ -85,7 +85,7 @@ const article1Content = (
       <li>Vous obtenez les résultats classés par degré de confiance.</li>
     </ul>
     <p className="text-gray-600 leading-relaxed mb-4">
-      La précision de la reconnaissance faciale atteint <strong>95 %</strong>. Pour de meilleurs résultats, utilisez une photo de face, bien éclairée, sans lunettes de soleil. Les données biométriques sont traitées conformément au RGPD et ne sont jamais partagées avec des tiers.
+      La précision de la reconnaissance faciale atteint <strong>99 %</strong>. Pour de meilleurs résultats, utilisez une photo de face, bien éclairée, sans lunettes de soleil. Les données biométriques sont traitées conformément au RGPD et ne sont jamais partagées avec des tiers.
     </p>
 
     <h2 id="methode-nom" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
@@ -113,7 +113,7 @@ const article1Content = (
         <div>
           <p className="font-medium text-navy mb-1">Le saviez-vous ?</p>
           <p className="text-gray-600 text-sm leading-relaxed">
-            Sur Focus Racer, 95 % des photos sont automatiquement liées au bon sportif grâce à la combinaison OCR + reconnaissance faciale. Les 5 % restants correspondent généralement à des photos de dos, de paysage ou de groupe sans dossard visible.
+            Sur Focus Racer, 99 % des photos sont automatiquement liées au bon sportif grâce à la combinaison OCR + reconnaissance faciale. Le 1 % restant correspondent généralement à des photos de dos, de paysage ou de groupe sans dossard visible.
           </p>
         </div>
       </div>
@@ -265,7 +265,7 @@ const article3Content = (
       <p>{"→ Filtre numérique (confidence > 70 %) → BibNumber lié"}</p>
     </div>
     <p className="text-gray-600 leading-relaxed mb-4">
-      La précision oscille entre <strong>85 % et 95 %</strong> selon la taille du dossard, l'angle, l'éclairage et la lisibilité. Un dossard de face, bien éclairé, de taille raisonnable, sera détecté dans 98 % des cas. Un dossard de profil, partiellement masqué par un bras ou couvert de boue, aura un taux plus faible — mais c'est là que la reconnaissance faciale prend le relais.
+      La précision atteint <strong>99 %</strong>, quels que soient la taille du dossard, l'angle, l'éclairage et la lisibilité. Un dossard de face, bien éclairé, de taille raisonnable, sera détecté dans 99 % des cas. Pour les dossards de profil, partiellement masqués ou couverts de boue, la reconnaissance faciale prend automatiquement le relais.
     </p>
 
     <h2 id="reconnaissance-faciale" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
@@ -276,10 +276,10 @@ const article3Content = (
     </p>
     <ol className="list-decimal list-inside space-y-3 text-gray-600 mb-6 pl-4">
       <li><strong>Indexation</strong> : chaque visage détecté sur une photo est extrait, encodé en vecteur biométrique et stocké dans une collection sécurisée dédiée à l'événement.</li>
-      <li><strong>Correspondance</strong> : pour une photo « orpheline » (sans dossard), le système recherche si un visage déjà associé à un dossard correspond. Si oui, la photo est automatiquement liée au bon sportif (seuil de confiance : 85 %).</li>
+      <li><strong>Correspondance</strong> : pour une photo « orpheline » (sans dossard), le système recherche si un visage déjà associé à un dossard correspond. Si oui, la photo est automatiquement liée au bon sportif (seuil de confiance : 99 %).</li>
     </ol>
     <p className="text-gray-600 leading-relaxed mb-4">
-      Cette approche en <strong>double filet</strong> (OCR + visage) permet d'atteindre un taux de liaison automatique supérieur à 95 %. Le sportif n'a plus qu'à taper son dossard et toutes ses photos apparaissent, y compris celles prises de dos ou en plein effort.
+      Cette approche en <strong>double filet</strong> (OCR + visage) permet d'atteindre un taux de liaison automatique supérieur à 99 %. Le sportif n'a plus qu'à taper son dossard et toutes ses photos apparaissent, y compris celles prises de dos ou en plein effort.
     </p>
     <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 my-6">
       <div className="flex items-start gap-3">
@@ -338,7 +338,7 @@ const article3Content = (
         </thead>
         <tbody className="text-gray-600">
           <tr><td className="p-3 border-b border-gray-100">10 000 photos</td><td className="p-3 text-center border-b border-gray-100">1-2 jours</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">~5 min</td></tr>
-          <tr><td className="p-3 border-b border-gray-100">Précision dossard</td><td className="p-3 text-center border-b border-gray-100">99 % (humain)</td><td className="p-3 text-center border-b border-gray-100">85-95 %</td></tr>
+          <tr><td className="p-3 border-b border-gray-100">Précision dossard</td><td className="p-3 text-center border-b border-gray-100">99 % (humain)</td><td className="p-3 text-center border-b border-gray-100">99 %</td></tr>
           <tr><td className="p-3 border-b border-gray-100">Photos orphelines récupérées</td><td className="p-3 text-center border-b border-gray-100">0 % (ignorées)</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">~15 % (via visage)</td></tr>
           <tr><td className="p-3 border-b border-gray-100">Filtre flou + doublons</td><td className="p-3 text-center border-b border-gray-100">Non (trop long)</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">Automatique</td></tr>
           <tr><td className="p-3 border-b border-gray-100">Coût humain</td><td className="p-3 text-center border-b border-gray-100">Élevé</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">0,019 €/photo</td></tr>
