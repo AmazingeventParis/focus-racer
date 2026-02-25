@@ -6,48 +6,33 @@ import { searchFacesByFaceId } from "@/lib/rekognition";
 import { aiConfig } from "@/lib/ai-config";
 
 // Face expansion: find additional photos of the same person via face recognition.
-// Only uses the LARGEST face per anchor photo (main subject, not background people)
-// to avoid false positives from spectators or other runners in the background.
+// Searches by ALL faces in anchor photos (supports pelotons/group shots).
+// Filters out false positives by excluding photos that already have a DIFFERENT
+// bib number detected — if a photo has bib #10 visible, it's not runner #42.
 async function expandByFace(
   eventId: string,
+  searchedBibs: string[],
   photosMap: Map<string, unknown>
 ): Promise<void> {
   if (!aiConfig.faceIndexEnabled || photosMap.size === 0) return;
 
   const anchorPhotoIds = Array.from(photosMap.keys());
 
-  // Get ALL faces from anchor photos, with bounding box to pick the largest
+  // Get ALL faces from anchor photos (all runners, not just the largest)
   const allFaces = await prisma.photoFace.findMany({
     where: { photoId: { in: anchorPhotoIds } },
-    select: { faceId: true, photoId: true, boundingBox: true },
+    select: { faceId: true },
   });
 
   if (allFaces.length === 0) return;
 
-  // Pick only the largest face per photo (highest bbox area = main subject)
-  const largestByPhoto = new Map<string, { faceId: string; area: number }>();
-  for (const face of allFaces) {
-    let area = 0;
-    if (face.boundingBox) {
-      try {
-        const bbox = typeof face.boundingBox === "string"
-          ? JSON.parse(face.boundingBox)
-          : face.boundingBox;
-        area = (bbox.width || 0) * (bbox.height || 0);
-      } catch {}
-    }
-    const existing = largestByPhoto.get(face.photoId);
-    if (!existing || area > existing.area) {
-      largestByPhoto.set(face.photoId, { faceId: face.faceId, area });
-    }
-  }
+  // Deduplicate faceIds
+  const uniqueFaceIds = [...new Set(allFaces.map((f) => f.faceId))];
 
-  const mainFaces = Array.from(largestByPhoto.values());
-
-  // Search for similar faces — threshold 80% (balanced: catches real matches, avoids false positives)
+  // Search for similar faces — threshold 85% for high confidence
   const matchedPhotoIds = new Set<string>();
-  for (const face of mainFaces) {
-    const faceMatches = await searchFacesByFaceId(face.faceId, 50, 80);
+  for (const faceId of uniqueFaceIds) {
+    const faceMatches = await searchFacesByFaceId(faceId, 50, 85);
     for (const match of faceMatches) {
       const parts = match.externalImageId.split(":");
       if (parts[0] === eventId && parts[1] && !photosMap.has(parts[1])) {
@@ -58,8 +43,8 @@ async function expandByFace(
 
   if (matchedPhotoIds.size === 0) return;
 
-  // Fetch the additional photos found by face
-  const extraPhotos = await prisma.photo.findMany({
+  // Fetch candidate photos WITH their bib numbers
+  const candidatePhotos = await prisma.photo.findMany({
     where: { id: { in: Array.from(matchedPhotoIds) }, eventId },
     select: {
       id: true,
@@ -71,13 +56,24 @@ async function expandByFace(
     },
   });
 
-  for (const p of extraPhotos) {
-    photosMap.set(p.id, {
-      id: p.id,
-      src: s3KeyToPublicPath(p.thumbnailPath || p.webPath || p.path),
-      originalName: p.originalName,
-      bibNumbers: p.bibNumbers,
-    });
+  // Filter: only keep photos that either have NO bib detected, or have
+  // the SAME bib as what we're searching for. Exclude photos with a
+  // different bib — they belong to a different runner who happened to
+  // share a group photo with our target.
+  const searchedBibSet = new Set(searchedBibs);
+  for (const p of candidatePhotos) {
+    const photoBibs = p.bibNumbers.map((b) => b.number);
+    const hasConflictingBib = photoBibs.length > 0 &&
+      photoBibs.every((b) => !searchedBibSet.has(b));
+
+    if (!hasConflictingBib) {
+      photosMap.set(p.id, {
+        id: p.id,
+        src: s3KeyToPublicPath(p.thumbnailPath || p.webPath || p.path),
+        originalName: p.originalName,
+        bibNumbers: p.bibNumbers,
+      });
+    }
   }
 }
 
@@ -133,7 +129,7 @@ export async function GET(request: NextRequest) {
 
       // Face expansion (best-effort, catches photos where bib is hidden)
       try {
-        await expandByFace(eventId, photosMap);
+        await expandByFace(eventId, [bib], photosMap);
       } catch (faceErr) {
         console.error("Face expansion error (non-blocking):", faceErr);
       }
@@ -212,7 +208,7 @@ export async function GET(request: NextRequest) {
 
       // Face expansion (best-effort)
       try {
-        await expandByFace(eventId, photosMap);
+        await expandByFace(eventId, bibNums, photosMap);
       } catch (faceErr) {
         console.error("Face expansion error (non-blocking):", faceErr);
       }
