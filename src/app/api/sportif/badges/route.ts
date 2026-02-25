@@ -69,15 +69,26 @@ export async function GET() {
       completedReferrals,
     });
 
+    // Fetch existing badges to detect truly new ones
+    const existingBadges = await prisma.userBadge.findMany({
+      where: { userId },
+      select: { badgeKey: true, earnedAt: true },
+      orderBy: { earnedAt: "asc" },
+    });
+    const existingKeys = new Set(existingBadges.map((b) => b.badgeKey));
+
+    // Only new badges that weren't already earned
+    const trulyNew = eligible.filter((k) => !existingKeys.has(k));
+
     // Persist newly earned badges
-    if (eligible.length > 0) {
+    if (trulyNew.length > 0) {
       await prisma.userBadge.createMany({
-        data: eligible.map((key) => ({ userId, badgeKey: key })),
+        data: trulyNew.map((key) => ({ userId, badgeKey: key })),
         skipDuplicates: true,
       });
 
-      // Grant XP for each newly earned badge
-      for (const badgeKey of eligible) {
+      // Grant XP only for truly new badges
+      for (const badgeKey of trulyNew) {
         try {
           await grantXp(userId, "BADGE_EARNED", { badgeKey });
         } catch (xpErr) {
@@ -86,23 +97,16 @@ export async function GET() {
       }
     }
 
-    // Fetch all earned badges from DB
-    const earned = await prisma.userBadge.findMany({
-      where: { userId },
-      select: { badgeKey: true, earnedAt: true },
-      orderBy: { earnedAt: "asc" },
-    });
+    // Fetch all earned badges from DB (including newly created)
+    const earned = trulyNew.length > 0
+      ? await prisma.userBadge.findMany({
+          where: { userId },
+          select: { badgeKey: true, earnedAt: true },
+          orderBy: { earnedAt: "asc" },
+        })
+      : existingBadges;
 
-    const existingKeys = new Set(earned.map((b) => b.badgeKey));
-    const newlyEarned = eligible.filter(
-      (k) =>
-        !existingKeys.has(k) ||
-        earned.find(
-          (b) =>
-            b.badgeKey === k &&
-            Date.now() - new Date(b.earnedAt).getTime() < 5000
-        )
-    );
+    const newlyEarned = trulyNew;
 
     return NextResponse.json({ earned, newlyEarned });
   } catch (error) {

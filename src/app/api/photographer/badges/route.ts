@@ -96,15 +96,29 @@ export async function GET() {
       bestCleanRate,
     });
 
-    // Persist newly earned badges
-    if (eligible.length > 0) {
+    // Fetch existing badges to detect truly new ones
+    const photoBadgeKeys = [
+      "first_shoot", "eagle_eye", "marathon_image", "golden_photographer",
+      "best_seller", "cash_machine", "multi_terrain", "faithful",
+      "stripe_connected", "zero_waste",
+    ];
+    const existingBadges = await prisma.userBadge.findMany({
+      where: { userId, badgeKey: { in: photoBadgeKeys } },
+      select: { badgeKey: true, earnedAt: true },
+      orderBy: { earnedAt: "asc" },
+    });
+    const existingKeys = new Set(existingBadges.map((b) => b.badgeKey));
+
+    const trulyNew = eligible.filter((k) => !existingKeys.has(k));
+
+    // Persist and grant XP only for truly new badges
+    if (trulyNew.length > 0) {
       await prisma.userBadge.createMany({
-        data: eligible.map((key) => ({ userId, badgeKey: key })),
+        data: trulyNew.map((key) => ({ userId, badgeKey: key })),
         skipDuplicates: true,
       });
 
-      // Grant XP for each newly earned badge
-      for (const badgeKey of eligible) {
+      for (const badgeKey of trulyNew) {
         try {
           await grantXp(userId, "BADGE_EARNED", { badgeKey });
         } catch (xpErr) {
@@ -113,30 +127,17 @@ export async function GET() {
       }
     }
 
-    // Fetch all photographer badges earned by this user
-    const photoBadgeKeys = [
-      "first_shoot", "eagle_eye", "marathon_image", "golden_photographer",
-      "best_seller", "cash_machine", "multi_terrain", "faithful",
-      "stripe_connected", "zero_waste",
-    ];
-    const photographerEarned = await prisma.userBadge.findMany({
-      where: { userId, badgeKey: { in: photoBadgeKeys } },
-      select: { badgeKey: true, earnedAt: true },
-      orderBy: { earnedAt: "asc" },
-    });
+    const earned = trulyNew.length > 0
+      ? await prisma.userBadge.findMany({
+          where: { userId, badgeKey: { in: photoBadgeKeys } },
+          select: { badgeKey: true, earnedAt: true },
+          orderBy: { earnedAt: "asc" },
+        })
+      : existingBadges;
 
-    const existingKeys = new Set(photographerEarned.map((b) => b.badgeKey));
-    const newlyEarned = eligible.filter(
-      (k) =>
-        !existingKeys.has(k) ||
-        photographerEarned.find(
-          (b) =>
-            b.badgeKey === k &&
-            Date.now() - new Date(b.earnedAt).getTime() < 5000
-        )
-    );
+    const newlyEarned = trulyNew;
 
-    return NextResponse.json({ earned: photographerEarned, newlyEarned });
+    return NextResponse.json({ earned, newlyEarned });
   } catch (error) {
     console.error("Error fetching photographer badges:", error);
     return NextResponse.json(
