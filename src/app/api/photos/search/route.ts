@@ -2,13 +2,39 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { s3KeyToPublicPath } from "@/lib/s3";
-import { searchFacesByFaceId } from "@/lib/rekognition";
+import { searchFacesByFaceId, searchFaceByImage } from "@/lib/rekognition";
 import { aiConfig } from "@/lib/ai-config";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+
+// Get photo image buffer from S3 for face search
+async function getPhotoBuffer(s3Key: string): Promise<Buffer | null> {
+  try {
+    const s3 = new S3Client({
+      region: process.env.AWS_REGION || "eu-west-1",
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      },
+    });
+    const resp = await s3.send(new GetObjectCommand({
+      Bucket: process.env.AWS_S3_BUCKET!,
+      Key: s3Key,
+    }));
+    if (!resp.Body) return null;
+    const chunks: Uint8Array[] = [];
+    for await (const chunk of resp.Body as AsyncIterable<Uint8Array>) {
+      chunks.push(chunk);
+    }
+    return Buffer.concat(chunks);
+  } catch {
+    return null;
+  }
+}
 
 // Face expansion: find additional photos of the same person via face recognition.
-// Searches by ALL faces in anchor photos (supports pelotons/group shots).
-// Filters out false positives by excluding photos that already have a DIFFERENT
-// bib number detected — if a photo has bib #10 visible, it's not runner #42.
+// Strategy 1: Use PhotoFace DB records + SearchFaces API (fast, cheap)
+// Strategy 2: If no PhotoFace records, fallback to SearchFacesByImage using
+//             the anchor photo's web version from S3 (slower, but always works)
 async function expandByFace(
   eventId: string,
   searchedBibs: string[],
@@ -17,28 +43,59 @@ async function expandByFace(
   if (!aiConfig.faceIndexEnabled || photosMap.size === 0) return;
 
   const anchorPhotoIds = Array.from(photosMap.keys());
+  const matchedPhotoIds = new Set<string>();
 
-  // Get ALL faces from anchor photos (all runners, not just the largest)
+  // Strategy 1: Use PhotoFace records (fast path)
   const allFaces = await prisma.photoFace.findMany({
     where: { photoId: { in: anchorPhotoIds } },
     select: { faceId: true },
   });
 
-  if (allFaces.length === 0) return;
+  if (allFaces.length > 0) {
+    const uniqueFaceIds = [...new Set(allFaces.map((f) => f.faceId))];
+    console.log(`[FaceExpand] Strategy 1: ${uniqueFaceIds.length} face(s) from PhotoFace for ${anchorPhotoIds.length} anchor photo(s)`);
 
-  // Deduplicate faceIds
-  const uniqueFaceIds = [...new Set(allFaces.map((f) => f.faceId))];
-
-  // Search for similar faces — threshold 85% for high confidence
-  const matchedPhotoIds = new Set<string>();
-  for (const faceId of uniqueFaceIds) {
-    const faceMatches = await searchFacesByFaceId(faceId, 50, 85);
-    for (const match of faceMatches) {
-      const parts = match.externalImageId.split(":");
-      if (parts[0] === eventId && parts[1] && !photosMap.has(parts[1])) {
-        matchedPhotoIds.add(parts[1]);
+    for (const faceId of uniqueFaceIds) {
+      const faceMatches = await searchFacesByFaceId(faceId, 50, 80);
+      for (const match of faceMatches) {
+        const parts = match.externalImageId.split(":");
+        if (parts[0] === eventId && parts[1] && !photosMap.has(parts[1])) {
+          matchedPhotoIds.add(parts[1]);
+        }
       }
     }
+    console.log(`[FaceExpand] Strategy 1 found ${matchedPhotoIds.size} candidate photo(s)`);
+  } else {
+    // Strategy 2: No PhotoFace records, fallback to SearchFacesByImage
+    // This handles photos processed before PhotoFace was implemented,
+    // or edge cases where face indexing succeeded in Rekognition but DB insert failed
+    console.log(`[FaceExpand] Strategy 2: No PhotoFace records, using SearchFacesByImage`);
+
+    const anchorPhotos = await prisma.photo.findMany({
+      where: { id: { in: anchorPhotoIds } },
+      select: { id: true, webPath: true, path: true },
+    });
+
+    for (const photo of anchorPhotos) {
+      const s3Key = photo.webPath || photo.path;
+      if (!s3Key) continue;
+
+      const buffer = await getPhotoBuffer(s3Key);
+      if (!buffer) continue;
+
+      try {
+        const faceMatches = await searchFaceByImage(buffer, 50, 80);
+        for (const match of faceMatches) {
+          const parts = match.externalImageId.split(":");
+          if (parts[0] === eventId && parts[1] && !photosMap.has(parts[1])) {
+            matchedPhotoIds.add(parts[1]);
+          }
+        }
+      } catch (err) {
+        console.error(`[FaceExpand] SearchFacesByImage error for ${photo.id}:`, err);
+      }
+    }
+    console.log(`[FaceExpand] Strategy 2 found ${matchedPhotoIds.size} candidate photo(s)`);
   }
 
   if (matchedPhotoIds.size === 0) return;
@@ -61,6 +118,7 @@ async function expandByFace(
   // different bib — they belong to a different runner who happened to
   // share a group photo with our target.
   const searchedBibSet = new Set(searchedBibs);
+  let added = 0;
   for (const p of candidatePhotos) {
     const photoBibs = p.bibNumbers.map((b) => b.number);
     const hasConflictingBib = photoBibs.length > 0 &&
@@ -73,8 +131,10 @@ async function expandByFace(
         originalName: p.originalName,
         bibNumbers: p.bibNumbers,
       });
+      added++;
     }
   }
+  console.log(`[FaceExpand] Added ${added} photo(s) after filtering (${candidatePhotos.length - added} excluded for conflicting bibs)`);
 }
 
 // Search photos by bib number or runner name (via start-list)
