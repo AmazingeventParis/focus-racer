@@ -100,6 +100,9 @@ export async function getLeaderboard(params: {
     setCache(cacheKey, { entries, total });
   }
 
+  // Deep-clone cached entries to avoid mutating shared cache
+  entries = entries.map((e) => ({ ...e }));
+
   // Mark current user
   let userRank: LeaderboardRow | null = null;
   if (currentUserId) {

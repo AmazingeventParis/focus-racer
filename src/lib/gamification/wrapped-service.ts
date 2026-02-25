@@ -37,21 +37,22 @@ export async function getWrappedStats(
   userId: string,
   year: number
 ): Promise<WrappedStats | null> {
-  // Check cache
+  // Get user role first to use correct cache key
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true },
+  });
+  if (!user) return null;
+
+  // Check cache with correct role
   const existing = await prisma.wrappedRecap.findUnique({
-    where: { userId_year_role: { userId, year, role: "RUNNER" } },
+    where: { userId_year_role: { userId, year, role: user.role } },
   });
 
   // If generated less than 24h ago, use cache
   if (existing && Date.now() - existing.generatedAt.getTime() < 24 * 60 * 60 * 1000) {
     return JSON.parse(existing.statsJson);
   }
-
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { role: true },
-  });
-  if (!user) return null;
 
   const yearStart = new Date(`${year}-01-01T00:00:00Z`);
   const yearEnd = new Date(`${year + 1}-01-01T00:00:00Z`);

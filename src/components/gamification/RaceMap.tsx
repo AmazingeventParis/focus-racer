@@ -103,7 +103,7 @@ export default function RaceMap({ apiUrl }: Props) {
           className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white"
         >
           <option value="">Toutes les années</option>
-          {[2026, 2025, 2024].map((y) => (
+          {Array.from({ length: 3 }, (_, i) => new Date().getFullYear() - i).map((y) => (
             <option key={y} value={y}>{y}</option>
           ))}
         </select>

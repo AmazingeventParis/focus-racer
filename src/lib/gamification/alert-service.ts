@@ -128,13 +128,26 @@ export async function processScheduledAlerts() {
     },
   });
 
+  // Batch: collect all emails from start lists, find users in one query
+  const allEmails = new Set<string>();
+  for (const event of eventsWithPhotos) {
+    for (const entry of event.startListEntries) {
+      if (entry.email) allEmails.add(entry.email);
+    }
+  }
+
+  const users = allEmails.size > 0
+    ? await prisma.user.findMany({
+        where: { email: { in: [...allEmails] } },
+        select: { id: true, email: true },
+      })
+    : [];
+  const userByEmail = new Map(users.map((u) => [u.email, u]));
+
   for (const event of eventsWithPhotos) {
     for (const entry of event.startListEntries) {
       if (!entry.email) continue;
-      const user = await prisma.user.findFirst({
-        where: { email: entry.email },
-        select: { id: true },
-      });
+      const user = userByEmail.get(entry.email);
       if (!user) continue;
 
       // Check if user already purchased for this event

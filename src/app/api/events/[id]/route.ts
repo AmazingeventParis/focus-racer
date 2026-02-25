@@ -139,6 +139,9 @@ export async function PUT(
     if (!wasPublished && updated.status === "PUBLISHED") {
       try {
         await grantXp(session.user.id, "EVENT_PUBLISHED", { eventId: id });
+        // Auto-claim first_event credit reward
+        const { claimCreditReward } = await import("@/lib/gamification/credit-reward-service");
+        await claimCreditReward(session.user.id, "first_event");
       } catch (xpErr) {
         console.error("Error granting event published XP:", xpErr);
       }

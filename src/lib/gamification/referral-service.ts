@@ -84,6 +84,14 @@ export async function completeReferral(
 
   if (!referral) return false;
 
+  // Fetch current balances for accurate transaction tracking
+  const [referrer, referee] = await Promise.all([
+    prisma.user.findUnique({ where: { id: referral.referrerId }, select: { credits: true } }),
+    prisma.user.findUnique({ where: { id: refereeId }, select: { credits: true } }),
+  ]);
+  const referrerBalance = referrer?.credits ?? 0;
+  const refereeBalance = referee?.credits ?? 0;
+
   // Grant credits to both
   await prisma.$transaction([
     prisma.referral.update({
@@ -106,8 +114,8 @@ export async function completeReferral(
         userId: referral.referrerId,
         type: "ADMIN_GRANT",
         amount: REFERRER_CREDITS,
-        balanceBefore: 0, // Will be approximate
-        balanceAfter: 0,
+        balanceBefore: referrerBalance,
+        balanceAfter: referrerBalance + REFERRER_CREDITS,
         reason: `Parrainage réussi (+${REFERRER_CREDITS} crédits)`,
       },
     }),
@@ -121,8 +129,8 @@ export async function completeReferral(
         userId: refereeId,
         type: "ADMIN_GRANT",
         amount: REFEREE_CREDITS,
-        balanceBefore: 0,
-        balanceAfter: 0,
+        balanceBefore: refereeBalance,
+        balanceAfter: refereeBalance + REFEREE_CREDITS,
         reason: `Bonus parrainage bienvenue (+${REFEREE_CREDITS} crédits)`,
       },
     }),

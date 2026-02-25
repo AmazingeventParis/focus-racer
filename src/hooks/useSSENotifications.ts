@@ -61,11 +61,11 @@ function disconnect() {
  * Shares a single EventSource connection across all consumers in the same tab.
  *
  * @param eventTypes - Array of event types to listen for (e.g. ["admin_unread", "connected"])
- * @param onNotification - Callback invoked when a matching event arrives
+ * @param onNotification - Callback invoked when a matching event arrives, receives full SSE data
  */
 export function useSSENotifications(
   eventTypes: string[],
-  onNotification: () => void
+  onNotification: (data: { type: string; [key: string]: unknown }) => void
 ) {
   const callbackRef = useRef(onNotification);
   callbackRef.current = onNotification;
@@ -75,7 +75,7 @@ export function useSSENotifications(
   const listener = useCallback(
     (data: { type: string }) => {
       if (eventTypes.includes(data.type)) {
-        callbackRef.current();
+        callbackRef.current(data as { type: string; [key: string]: unknown });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

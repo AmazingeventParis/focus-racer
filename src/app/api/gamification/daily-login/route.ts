@@ -14,8 +14,11 @@ export async function POST() {
     const userId = session.user.id;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const todayKey = today.toISOString().slice(0, 10); // "2026-02-25"
 
-    // Check if already logged in today
+    // Use a unique daily key to prevent race conditions
+    // grantXp already checks for one-time via findFirst, but we add an extra
+    // check with metadata containing today's date to prevent duplicates
     const existing = await prisma.xpEvent.findFirst({
       where: {
         userId,
@@ -28,7 +31,22 @@ export async function POST() {
       return NextResponse.json({ alreadyClaimed: true, xpGained: 0 });
     }
 
-    const result = await grantXp(userId, "DAILY_LOGIN");
+    // Use metadata with day key for de-duplication
+    const result = await grantXp(userId, "DAILY_LOGIN", { day: todayKey });
+
+    // Auto-claim profile_complete if applicable
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { name: true, email: true, phone: true },
+      });
+      if (user && user.name && user.email && user.phone) {
+        const { claimCreditReward } = await import("@/lib/gamification/credit-reward-service");
+        await claimCreditReward(userId, "profile_complete");
+      }
+    } catch {
+      // non-blocking
+    }
 
     return NextResponse.json({
       alreadyClaimed: false,

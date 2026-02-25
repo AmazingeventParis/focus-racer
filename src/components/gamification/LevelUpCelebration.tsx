@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useSSENotifications } from "@/hooks/useSSENotifications";
 
 interface LevelUpData {
@@ -12,47 +12,33 @@ export default function LevelUpCelebration() {
   const [levelUp, setLevelUp] = useState<LevelUpData | null>(null);
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; color: string; delay: number }>>([]);
 
-  const handleNotification = useCallback(() => {
-    // Refetch via polling since SSE data isn't passed
+  const handleNotification = useCallback((data: { type: string; [key: string]: unknown }) => {
+    if (data.type === "level_up" && data.newLevel) {
+      setLevelUp({
+        newLevel: data.newLevel as number,
+        newName: (data.newName as string) || "",
+      });
+
+      // Generate confetti particles
+      const colors = ["#10B981", "#14B8A6", "#F59E0B", "#8B5CF6", "#EF4444", "#3B82F6"];
+      const newParticles = Array.from({ length: 50 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        delay: Math.random() * 0.5,
+      }));
+      setParticles(newParticles);
+
+      // Auto-dismiss after 5s
+      setTimeout(() => {
+        setLevelUp(null);
+        setParticles([]);
+      }, 5000);
+    }
   }, []);
 
   useSSENotifications(["level_up"], handleNotification);
-
-  // Listen for level_up events
-  useEffect(() => {
-    const handler = (event: Event) => {
-      try {
-        const data = (event as MessageEvent).data;
-        if (!data) return;
-        const parsed = JSON.parse(data);
-        if (parsed.type === "level_up") {
-          setLevelUp({ newLevel: parsed.newLevel, newName: parsed.newName });
-
-          // Generate confetti particles
-          const colors = ["#10B981", "#14B8A6", "#F59E0B", "#8B5CF6", "#EF4444", "#3B82F6"];
-          const newParticles = Array.from({ length: 50 }, (_, i) => ({
-            id: i,
-            x: Math.random() * 100,
-            y: Math.random() * 100,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            delay: Math.random() * 0.5,
-          }));
-          setParticles(newParticles);
-
-          // Auto-dismiss after 5s
-          setTimeout(() => {
-            setLevelUp(null);
-            setParticles([]);
-          }, 5000);
-        }
-      } catch {
-        // ignore
-      }
-    };
-
-    window.addEventListener("focusracer-levelup", handler);
-    return () => window.removeEventListener("focusracer-levelup", handler);
-  }, []);
 
   if (!levelUp) return null;
 

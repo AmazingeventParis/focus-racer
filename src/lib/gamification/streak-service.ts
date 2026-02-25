@@ -18,6 +18,22 @@ export const STREAK_DEFINITIONS: StreakDef[] = [
 
 const STREAK_MAP = new Map(STREAK_DEFINITIONS.map((s) => [s.type, s]));
 
+function isSameISOWeek(d1: Date, d2: Date): boolean {
+  const getWeekKey = (d: Date) => {
+    const t = new Date(d);
+    t.setHours(0, 0, 0, 0);
+    t.setDate(t.getDate() + 3 - ((t.getDay() + 6) % 7));
+    const w1 = new Date(t.getFullYear(), 0, 4);
+    const wn = 1 + Math.round(((t.getTime() - w1.getTime()) / 86400000 - 3 + ((w1.getDay() + 6) % 7)) / 7);
+    return `${t.getFullYear()}-W${wn}`;
+  };
+  return getWeekKey(d1) === getWeekKey(d2);
+}
+
+function isSameMonth(d1: Date, d2: Date): boolean {
+  return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth();
+}
+
 /**
  * Record a streak activity for a user.
  * Increments the streak if within period, resets if gap.
@@ -52,10 +68,13 @@ export async function recordStreakActivity(
     return { currentStreak: 1, milestone: false };
   }
 
-  // Check if already counted in current period
-  const timeSinceLast = now.getTime() - existing.lastActivityDate.getTime();
-  if (timeSinceLast < periodMs * 0.5) {
-    // Activity too recent, already counted for this period
+  // Check if already counted in current period using calendar periods
+  const lastDate = existing.lastActivityDate;
+  const isSamePeriod = def.periodDays <= 7
+    ? isSameISOWeek(lastDate, now)
+    : isSameMonth(lastDate, now);
+  if (isSamePeriod) {
+    // Already counted for this period
     return { currentStreak: existing.currentStreak, milestone: false };
   }
 

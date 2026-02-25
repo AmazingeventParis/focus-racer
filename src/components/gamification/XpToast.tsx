@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useSSENotifications } from "@/hooks/useSSENotifications";
 
 interface XpToastData {
@@ -26,47 +26,31 @@ const ACTION_LABELS: Record<string, string> = {
   STRIPE_CONNECTED: "Stripe",
   DAILY_LOGIN: "Connexion",
   STREAK_BONUS: "Série",
+  HIGH_OCR_RATE: "OCR performant",
+  EVENT_CREATED: "Événement créé",
+  START_LIST_IMPORTED: "Start-list",
+  HIGH_COVERAGE: "Couverture complète",
 };
 
 export default function XpToast() {
   const [toasts, setToasts] = useState<XpToastData[]>([]);
 
-  const handleNotification = useCallback(() => {
-    // The SSE data is not passed directly, so we'll use a workaround
-    // by listening to the event source directly
+  const handleNotification = useCallback((data: { type: string; [key: string]: unknown }) => {
+    if (data.type === "xp_gained" && data.amount) {
+      const toast: XpToastData = {
+        id: ++nextId,
+        amount: data.amount as number,
+        action: (data.action as string) || "",
+      };
+      setToasts((prev) => [...prev, toast]);
+
+      // Auto-remove after 3s
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== toast.id));
+      }, 3000);
+    }
   }, []);
 
-  // Listen for xp_gained SSE events
-  useEffect(() => {
-    const handler = (event: Event) => {
-      try {
-        const data = (event as MessageEvent).data;
-        if (!data) return;
-        const parsed = JSON.parse(data);
-        if (parsed.type === "xp_gained" && parsed.amount) {
-          const toast: XpToastData = {
-            id: ++nextId,
-            amount: parsed.amount,
-            action: parsed.action || "",
-          };
-          setToasts((prev) => [...prev, toast]);
-
-          // Auto-remove after 3s
-          setTimeout(() => {
-            setToasts((prev) => prev.filter((t) => t.id !== toast.id));
-          }, 3000);
-        }
-      } catch {
-        // ignore
-      }
-    };
-
-    // Subscribe to SSE events via custom event
-    window.addEventListener("focusracer-xp", handler);
-    return () => window.removeEventListener("focusracer-xp", handler);
-  }, []);
-
-  // Also use SSE hook as fallback
   useSSENotifications(["xp_gained"], handleNotification);
 
   if (toasts.length === 0) return null;

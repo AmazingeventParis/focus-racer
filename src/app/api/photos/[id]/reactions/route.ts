@@ -75,6 +75,14 @@ export async function POST(
     // Grant XP for reacting
     await grantXp(userId, "PHOTO_REACTION", { photoId, type });
 
+    // Auto-claim first_reaction credit reward
+    try {
+      const { claimCreditReward } = await import("@/lib/gamification/credit-reward-service");
+      await claimCreditReward(userId, "first_reaction");
+    } catch {
+      // non-blocking
+    }
+
     // Notify photographer
     const photo = await prisma.photo.findUnique({
       where: { id: photoId },

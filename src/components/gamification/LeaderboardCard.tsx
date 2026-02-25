@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface LeaderboardRow {
   rank: number;
+  userId: string;
   userName: string;
   score: number;
   level: number;
@@ -66,7 +67,7 @@ export default function LeaderboardCard({ role, linkHref }: Props) {
           <div className="space-y-2">
             {top3.map((entry) => (
               <div
-                key={entry.rank}
+                key={entry.userId}
                 className="flex items-center gap-2 py-1.5"
               >
                 <span className="w-6 text-center text-sm">

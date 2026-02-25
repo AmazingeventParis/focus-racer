@@ -12,7 +12,6 @@ export const CREDIT_REWARDS: RewardDef[] = [
   { actionKey: "profile_complete", labelFr: "Profil complété", credits: 10, roles: ["ALL"], autoClaim: true },
   { actionKey: "first_reaction", labelFr: "Première réaction", credits: 5, roles: ["RUNNER"], autoClaim: true },
   { actionKey: "first_review", labelFr: "Premier avis marketplace", credits: 5, roles: ["RUNNER"], autoClaim: true },
-  { actionKey: "referral_complete", labelFr: "Parrainage réussi", credits: 50, roles: ["ALL"], autoClaim: true },
   { actionKey: "bug_report", labelFr: "Bug signalé (validé)", credits: 20, roles: ["ALL"], autoClaim: false },
   { actionKey: "first_event", labelFr: "Premier événement publié", credits: 10, roles: ["PHOTOGRAPHER", "ORGANIZER"], autoClaim: true },
 ];
