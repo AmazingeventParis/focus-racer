@@ -10,8 +10,17 @@ interface AnalyticsVisualProps {
   totalAssociations: number;
   uniqueBibs: number;
   avgPhotosPerBib: number;
-  avgProcessingTime: number;
-  totalProcessingTime: number;
+  avgProcessingTimeMs: number;
+  totalProcessingTimeMs: number;
+}
+
+function formatDuration(ms: number): string {
+  const totalSeconds = ms / 1000;
+  if (totalSeconds < 1) return `${Math.round(ms)}ms`;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+  if (minutes === 0) return `${seconds}s`;
+  return `${minutes}m${seconds.toString().padStart(2, "0")}s`;
 }
 
 export function AnalyticsVisual({
@@ -22,8 +31,8 @@ export function AnalyticsVisual({
   totalAssociations,
   uniqueBibs,
   avgPhotosPerBib,
-  avgProcessingTime,
-  totalProcessingTime,
+  avgProcessingTimeMs,
+  totalProcessingTimeMs,
 }: AnalyticsVisualProps) {
   const sortedPercentage = totalPhotos > 0 ? (photosWithBibs / totalPhotos) * 100 : 0;
   const bibsPerPhoto = photosWithBibs > 0 ? totalAssociations / photosWithBibs : 0;
@@ -120,9 +129,9 @@ export function AnalyticsVisual({
               <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Traitement</span>
             </div>
             <p className="text-3xl font-bold text-indigo-600 mb-1">
-              {Math.floor(totalProcessingTime / 60)}<span className="text-xl">m</span>
+              {formatDuration(totalProcessingTimeMs)}
             </p>
-            <p className="text-xs text-slate-500">{avgProcessingTime}s par photo</p>
+            <p className="text-xs text-slate-500">{(avgProcessingTimeMs / 1000).toFixed(2)}s par photo</p>
           </div>
         </div>
 

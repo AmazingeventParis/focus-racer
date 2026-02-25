@@ -12,8 +12,8 @@ interface Analytics {
     totalAssociations: number;
     uniqueBibs: number;
     avgPhotosPerBib: number;
-    avgProcessingTime: number;
-    totalProcessingTime: number;
+    avgProcessingTimeMs: number;
+    totalProcessingTimeMs: number;
   };
   revenue: {
     totalRevenue: number;
@@ -89,8 +89,8 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
         totalAssociations={summary.totalAssociations}
         uniqueBibs={summary.uniqueBibs}
         avgPhotosPerBib={summary.avgPhotosPerBib}
-        avgProcessingTime={summary.avgProcessingTime}
-        totalProcessingTime={summary.totalProcessingTime}
+        avgProcessingTimeMs={summary.avgProcessingTimeMs}
+        totalProcessingTimeMs={summary.totalProcessingTimeMs}
       />
 
       {/* Financial Metrics */}

@@ -200,8 +200,8 @@ export async function GET(
         uniqueBibs: uniqueBibs.size,
         avgPhotosPerBib: Math.round(avgPhotosPerBib * 10) / 10,
         successRate: totalPhotos > 0 ? Math.round((photosWithBibs.length / totalPhotos) * 100) : 0,
-        avgProcessingTime: Math.round(avgProcessingTime / 1000), // seconds
-        totalProcessingTime: Math.round(totalProcessingTime / 1000), // seconds
+        avgProcessingTimeMs: Math.round(avgProcessingTime), // milliseconds (raw)
+        totalProcessingTimeMs: Math.round(totalProcessingTime), // milliseconds (raw)
         creditsDeducted,
         creditsRefunded,
         netCreditsUsed,
