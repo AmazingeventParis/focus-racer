@@ -388,12 +388,40 @@ export async function POST(request: NextRequest) {
 
     case "invoice.payment_succeeded": {
       const invoice = event.data.object as Stripe.Invoice;
-      const subMeta = invoice.subscription_details?.metadata;
+
+      // Metadata can be in multiple places depending on Stripe API version:
+      // 1. invoice.subscription_details.metadata (newer API)
+      // 2. invoice.lines.data[0].metadata (line item metadata from subscription_data)
+      // 3. Fallback: fetch subscription directly
+      let subMeta = invoice.subscription_details?.metadata as Record<string, string> | undefined;
+
+      if (!subMeta?.type) {
+        // Try line items metadata
+        const lines = (invoice as unknown as { lines?: { data?: Array<{ metadata?: Record<string, string> }> } }).lines;
+        const lineMeta = lines?.data?.[0]?.metadata;
+        if (lineMeta?.type === "credit_subscription") {
+          subMeta = lineMeta;
+        }
+      }
+
+      if (!subMeta?.type && invoice.subscription) {
+        // Fallback: fetch subscription metadata from Stripe
+        try {
+          const stripeClient = getStripe();
+          const subId = typeof invoice.subscription === "string" ? invoice.subscription : invoice.subscription.id;
+          const sub = await stripeClient.subscriptions.retrieve(subId);
+          if (sub.metadata?.type === "credit_subscription") {
+            subMeta = sub.metadata as Record<string, string>;
+          }
+        } catch (fetchErr) {
+          console.error("Error fetching subscription metadata:", fetchErr);
+        }
+      }
+
       if (subMeta?.type === "credit_subscription") {
         const userId = subMeta.userId;
         const creditAmount = parseInt(subMeta.creditAmount, 10);
         if (userId && creditAmount > 0) {
-          // Use invoice.id as stripeSessionId for idempotence
           const isFirstMonth = invoice.billing_reason === "subscription_create";
           const label = isFirstMonth ? "premier mois" : "renouvellement";
           await fulfillCreditPurchase(
