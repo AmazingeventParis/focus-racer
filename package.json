@@ -47,7 +47,7 @@
     "react-day-picker": "^9.13.2",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.0",
-    "react-leaflet": "^5.0.0",
+    "react-leaflet": "^4.2.1",
     "resend": "^6.9.1",
     "sharp": "^0.33.0",
     "stripe": "^20.3.0",
