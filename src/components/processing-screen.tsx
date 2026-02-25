@@ -4,7 +4,6 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { getFactForMilestone } from "@/lib/runner-facts";
 import Link from "next/link";
-import BibRunner from "@/components/game/bib-runner";
 import { UploadTimeline } from "@/components/upload-timeline";
 
 interface ProcessingScreenProps {
@@ -147,12 +146,9 @@ export default function ProcessingScreen({
         </p>
       </div>
 
-      {/* Bib Runner Game */}
+      {/* Progress bar */}
       <div className="w-full max-w-2xl px-8 mb-6 relative z-10">
-        <BibRunner progress={progress.percent} isComplete={progress.complete} />
-
-        {/* Progress bar */}
-        <div className="h-3 bg-slate-700 rounded-full overflow-hidden mt-4">
+        <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-700 ease-out"
             style={{ width: `${runnerPosition}%` }}
@@ -165,7 +161,7 @@ export default function ProcessingScreen({
       </div>
 
       {/* Processing badges */}
-      <div className="flex flex-wrap gap-3 justify-center mb-8 relative z-10">
+      <div className="flex flex-wrap gap-3 justify-center mb-6 relative z-10">
         <ProcessingBadge
           label="Qualité"
           active={progress.percent >= 5}
@@ -188,11 +184,11 @@ export default function ProcessingScreen({
         />
       </div>
 
-      {/* Fun fact */}
+      {/* Fun fact — prominent during processing */}
       {currentFact && (
-        <div className="max-w-lg mx-auto px-6 py-4 bg-white/5 border border-white/10 rounded-xl text-center mb-8 relative z-10 animate-fade-in">
-          <p className="text-sm text-slate-300">
-            <span className="text-emerald-400 font-medium mr-1">Le saviez-vous ?</span>
+        <div className="max-w-xl mx-auto px-8 py-6 bg-white/5 border border-white/10 rounded-2xl text-center mb-8 relative z-10 animate-fade-in">
+          <p className="text-emerald-400 font-semibold text-sm mb-2">Le saviez-vous ?</p>
+          <p className="text-base text-slate-200 leading-relaxed">
             {currentFact}
           </p>
         </div>

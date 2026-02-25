@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Event } from "@/types";
 import ProcessingScreen from "@/components/processing-screen";
 import { UploadTimeline } from "@/components/upload-timeline";
+import BibRunner from "@/components/game/bib-runner";
 
 function generateSessionId(): string {
   return `upload_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
@@ -465,61 +466,36 @@ export default function UploadPage({
       },
     ] as const;
 
+    // Combined progress: compression = 0-50%, upload = 50-100%
+    const combinedProgress = isCompressing
+      ? Math.round(compressProgress / 2)
+      : Math.round(50 + uploadProgress / 2);
+
     return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white p-8">
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden p-8">
         {/* Timeline */}
         <UploadTimeline steps={timelineSteps} />
 
-        <div className="w-full max-w-md px-8 text-center mt-8">
-          {/* Animated icon */}
-          <div className="mb-6">
-            {isCompressing ? (
-              <svg
-                className="mx-auto h-16 w-16 text-amber-400 animate-pulse"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
-              </svg>
-            ) : (
-              <svg
-                className="mx-auto h-16 w-16 text-emerald-400 upload-arrow-bounce"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-              </svg>
-            )}
-          </div>
-
-          <h2 className="text-xl font-bold mb-2">
+        {/* Title */}
+        <div className="text-center mb-6 mt-4 relative z-10">
+          <h2 className="text-xl md:text-2xl font-bold mb-1">
             {isCompressing
               ? `Compression de ${selectedFiles.length} photo${selectedFiles.length > 1 ? "s" : ""}...`
               : `Envoi au serveur...`}
           </h2>
-          <p className="text-slate-400 text-sm mb-6">
+          <p className="text-slate-400 text-sm">
             {isCompressing
               ? "Optimisation pour un envoi plus rapide"
               : "Ne fermez pas cette page pendant l'envoi"}
           </p>
+        </div>
 
-          {/* Step indicators */}
-          <div className="flex items-center justify-center gap-3 mb-5 text-xs">
-            <span className={isCompressing ? "text-amber-400 font-bold" : "text-emerald-400"}>
-              {isCompressing ? "⏳" : "✓"} Compression
-            </span>
-            <span className="text-slate-600">—</span>
-            <span className={!isCompressing ? "text-emerald-400 font-bold" : "text-slate-500"}>
-              {!isCompressing ? "⏳" : "○"} Envoi
-            </span>
-          </div>
+        {/* Bib Runner Game */}
+        <div className="w-full max-w-2xl px-8 mb-6 relative z-10">
+          <BibRunner progress={combinedProgress} isComplete={false} />
 
           {/* Progress bar */}
-          <div className="h-4 bg-slate-700 rounded-full overflow-hidden mb-3">
+          <div className="h-3 bg-slate-700 rounded-full overflow-hidden mt-4">
             <div
               className={`h-full rounded-full transition-all duration-300 ease-out ${
                 isCompressing
@@ -529,20 +505,15 @@ export default function UploadPage({
               style={{ width: `${currentPercent}%` }}
             />
           </div>
-          <p className={`font-bold text-lg ${isCompressing ? "text-amber-400" : "text-emerald-400"}`}>
-            {currentPercent}%
-          </p>
+          <div className="flex justify-between mt-2 text-sm">
+            <span className="text-slate-400">
+              {isCompressing ? "Compression" : "Envoi"} — {currentPercent}%
+            </span>
+            <span className={`font-bold ${isCompressing ? "text-amber-400" : "text-emerald-400"}`}>
+              {isCompressing ? "1/2" : "2/2"}
+            </span>
+          </div>
         </div>
-
-        <style jsx>{`
-          .upload-arrow-bounce {
-            animation: arrowBounce 1s ease-in-out infinite;
-          }
-          @keyframes arrowBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-          }
-        `}</style>
       </div>
     );
   }
