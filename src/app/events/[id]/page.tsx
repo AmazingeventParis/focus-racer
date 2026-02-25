@@ -77,6 +77,7 @@ export default function PublicEventPage({
   const [alertBib, setAlertBib] = useState("");
   const [alertLoading, setAlertLoading] = useState(false);
   const [alertCreated, setAlertCreated] = useState(false);
+  const [packs, setPacks] = useState<{ id: string; name: string; type: string; price: number; quantity: number | null }[]>([]);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -117,7 +118,14 @@ export default function PublicEventPage({
         setIsLoading(false);
       }
     };
+    const fetchPacks = async () => {
+      try {
+        const res = await fetch(`/api/events/${id}/packs/public`);
+        if (res.ok) setPacks(await res.json());
+      } catch {}
+    };
     fetchEvent();
+    fetchPacks();
   }, [id]);
 
   // Check if user follows this event
@@ -407,13 +415,19 @@ export default function PublicEventPage({
             Focus Racer
           </Link>
           <div className="flex items-center gap-3">
-            {favCount > 0 && (
-              <Link href={`/events/${id}/favorites`}>
-                <Button variant="outline" size="sm" className="rounded-xl">
-                  <span className="text-emerald mr-1">&hearts;</span> {favCount} favori{favCount > 1 ? "s" : ""}
-                </Button>
-              </Link>
-            )}
+            <Link href={`/events/${id}/favorites`}>
+              <Button variant="outline" size="sm" className="rounded-xl relative">
+                <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                </svg>
+                Panier{favCount > 0 ? ` (${favCount})` : ""}
+                {favCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-emerald text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {favCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
             <Link href="/explore">
               <Button variant="outline" size="sm" className="rounded-xl">Tous les événements</Button>
             </Link>
@@ -670,11 +684,15 @@ export default function PublicEventPage({
                     />
                     <button
                       onClick={(e) => { e.stopPropagation(); toggleFavorite(photo.id); }}
-                      className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center hover:bg-white transition-colors z-10"
+                      className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-colors z-10 ${
+                        favorites.has(photo.id)
+                          ? "bg-emerald text-white"
+                          : "bg-white/80 text-muted-foreground hover:bg-white"
+                      }`}
                     >
-                      <span className={favorites.has(photo.id) ? "text-emerald fill-emerald" : "text-muted-foreground"}>
-                        {favorites.has(photo.id) ? "♥" : "♡"}
-                      </span>
+                      <svg className="w-4 h-4" fill={favorites.has(photo.id) ? "currentColor" : "none"} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                      </svg>
                     </button>
                   </div>
                   {photo.bibNumbers.length > 0 && (
@@ -731,6 +749,40 @@ export default function PublicEventPage({
               <p className="text-sm text-muted-foreground">recherche par IA</p>
             </div>
           </div>
+
+          {/* Tarifs */}
+          {packs.length > 0 && (
+            <div className="mt-12 max-w-3xl mx-auto">
+              <h3 className="text-xl font-bold text-navy text-center mb-6">Tarifs</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {packs.map((pack) => {
+                  const unitPrice = pack.quantity && pack.quantity > 1
+                    ? (pack.price / pack.quantity).toFixed(2).replace(".", ",")
+                    : null;
+                  return (
+                    <div
+                      key={pack.id}
+                      className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow"
+                    >
+                      <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{pack.name}</p>
+                      <p className="text-3xl font-bold mt-2" style={{ color: primaryColor }}>
+                        {pack.price.toFixed(2).replace(".", ",")}€
+                      </p>
+                      {pack.quantity && pack.quantity > 1 ? (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {pack.quantity} photos — {unitPrice}€/photo
+                        </p>
+                      ) : pack.type === "ALL_INCLUSIVE" ? (
+                        <p className="text-xs text-muted-foreground mt-1">Toutes vos photos</p>
+                      ) : (
+                        <p className="text-xs text-muted-foreground mt-1">1 photo</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Call to action */}
           <div className="text-center mt-10">
@@ -793,13 +845,20 @@ export default function PublicEventPage({
             ×
           </button>
 
-          {/* Favorite button */}
+          {/* Cart button */}
           <button
-            className="absolute top-4 left-4 text-2xl z-10"
+            className={`absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-2 rounded-xl transition-colors ${
+              favorites.has(viewerPhoto.id)
+                ? "bg-emerald text-white"
+                : "bg-white/20 text-white/80 hover:bg-white/30"
+            }`}
             onClick={(e) => { e.stopPropagation(); toggleFavorite(viewerPhoto.id); }}
           >
-            <span className={favorites.has(viewerPhoto.id) ? "text-emerald fill-emerald" : "text-white/70"}>
-              {favorites.has(viewerPhoto.id) ? "♥" : "♡"}
+            <svg className="w-5 h-5" fill={favorites.has(viewerPhoto.id) ? "currentColor" : "none"} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+            </svg>
+            <span className="text-sm font-medium">
+              {favorites.has(viewerPhoto.id) ? "Dans le panier" : "Ajouter au panier"}
             </span>
           </button>
 
