@@ -88,7 +88,7 @@ Focus Racer/
 
 ## 4. Modèles de données (PostgreSQL)
 
-**User** • Event • Photo • BibNumber • StartListEntry • PricePack • Order • OrderItem • GdprRequest • GdprAuditLog • MarketplaceListing • MarketplaceApplication • MarketplaceReview • PhotoFace • CreditTransaction • PlatformSettings
+**User** • Event • Photo • BibNumber • StartListEntry • PricePack • Order • OrderItem • GdprRequest • GdprAuditLog • MarketplaceListing • MarketplaceApplication • MarketplaceReview • PhotoFace • CreditTransaction • PlatformSettings • NotificationPreference
 
 **Photo** : path (HD), webPath (1600px optimisée), thumbnailPath (watermark), s3Key, qualityScore, isBlurry, autoEdited, labels (JSON), faceIndexed, ocrProvider, creditDeducted, creditRefunded
 
@@ -270,6 +270,48 @@ Focus Racer/
 - **Page Pricing** : packs renommés (Pack 1k/5k/15k), best-seller sur 15k, pictos contextuels, badge 0% commission
 - **CSS mobile** : responsive padding, grid-cols-3→2 mobile, safe-area-bottom
 
+### ✅ Badges gamification + Fix financier + Stripe webhook (Session 24)
+- **Fix centimes→euros** : suppression `toEuros()` divisant par 100 (DB stocke déjà en euros) dans analytics API
+- **KPIs ventes enrichis** : 6 KPIs (Total CA, Panier moyen, Conversion, Ventes totales, Packs, Unitaires) en grille 3x2
+- **Détail financier simplifié** : retrait lignes "Frais de service plateforme" et "Commission plateforme"
+- **Stripe webhook configuré** : endpoint `we_1T4NAdFeQbxycmAHy48wZwSb` créé via API Stripe, STRIPE_WEBHOOK_SECRET mis à jour dans Coolify
+- **30 badges custom PNG** avec artwork transparent (fond noir retiré via Sharp) :
+  - **10 sportif** : Premier achat, Collectionneur, Passionné, Multi-sport, Fidèle, Explorateur, Social, Leader, Mécène, Pionnier
+  - **10 photographe** : Premier Shoot, Œil de Lynx, Marathonien de l'Image, Photographe d'Or, Best-Seller, Machine à Cash, Multi-Terrain, Fidèle au Poste, Connecté Stripe, Zéro Déchet
+  - **10 organisateur** : Premier Départ, Peloton, Organisateur Série, Galerie Complète, Fan de Data, Importateur Pro, Parrain, Multi-Discipline, Roi du Branding, Vétéran
+- **BadgeIcon** : composant unifié supportant 3 badge maps (sportif + photographe + organisateur)
+- **APIs badges** : `/api/sportif/badges`, `/api/photographer/badges`, `/api/organizer/badges` — évaluation auto + persistance UserBadge
+- **Dashboards** : badges intégrés photographe (PhotographerBadgeRow), organisateur (OrganizerBadgeRow), sportif (BadgeRow)
+- **Affiches événements** : coverImage en miniature dans "Événements récents" (dashboards photographe + organisateur)
+- **Admin DELETE orders** : endpoint pour reset stats financières
+
+### ✅ Système de notifications complet + Préférences (Session 26)
+- **Modèle NotificationPreference** : 15 champs booléens opt-out (tout activé par défaut, l'utilisateur désactive)
+  - photosAvailable, eventPublished, supportReply, badgeEarned, streakAtRisk, purchaseReminder, sortingReminder, stripeOnboarded, newSupportMessage, newSale, newFollower, lowCredits, productUpdates, referralCompleted, newsletter
+- **12 templates email** (table-based, Outlook-safe, Gmail SMTP) :
+  - Transactionnels (toujours envoyés) : confirmation achat, paiement abonnement échoué, renouvellement abonnement, résiliation abonnement
+  - Non-transactionnels (préférence + List-Unsubscribe) : réponse support, photos disponibles, Stripe Connect activé, badge gagné, nouveau message admin, événement publié, nouvelle vente, nouveau follower, crédits bas
+- **10 triggers** branchés dans les routes API :
+  1. Réponse support → utilisateur (`/api/admin/messages/[id]`)
+  2. Photos disponibles → followers (`/api/photos/batch-upload`)
+  3. Paiement abonnement échoué (`/api/webhooks/stripe` — invoice.payment_failed)
+  4. Stripe Connect activé (`/api/webhooks/stripe` — account.updated)
+  5. Renouvellement abonnement (`/api/webhooks/stripe` — invoice.payment_succeeded)
+  6. Abonnement résilié (`/api/webhooks/stripe` — customer.subscription.deleted)
+  7. Smart alerts (purchase_reminder, sorting_reminder, streak_at_risk) — `alert-service.ts`
+  8. Premier badge gagné → (`/api/{sportif,photographer,organizer}/badges`)
+  9. Nouveau message → admin (`/api/support` + `/api/contact`)
+  10. Événement publié → followers (`/api/events/[id]`)
+  11. Nouvelle vente → photographe (`/api/webhooks/stripe` — payment_intent.succeeded)
+  12. Nouveau follower → photographe (`/api/events/[id]/favorite`)
+  13. Crédits bas (< 100) → photographe (`/api/photos/batch-upload`)
+- **Préférences notification** : `canSendEmail(userId, key)` vérifie avant chaque envoi non-transactionnel
+- **One-click unsubscribe** : header List-Unsubscribe + lien token base64url dans chaque email → `/api/notifications/unsubscribe`
+- **UI accordéon** : `NotificationPreferencesCard` avec panneaux déroulants (fermés par défaut), badge compteur activés/total, intégré dans réglages sportif + photographe + organisateur
+- **API préférences** : GET + PATCH `/api/notifications/preferences`
+- **Prochaine recharge crédits** : affiché dans la carte verte "Solde disponible" quand abonnement actif (date + heure)
+- **Fix Stripe API 2025+** : `current_period_end` supprimé → fallback `latest_invoice.lines.data[0].period.end` → fallback `billing_cycle_anchor` + calcul mensuel
+
 ### ✅ Footer + FAQ + Contact API (Session 20)
 - **Page FAQ** : `/faq` — 18 questions/réponses en 6 sections accordéon (Coureurs, Photographes, Organisateurs, Paiements, Technique & IA, RGPD)
 - **API Contact** : `POST /api/contact` — pas d'auth requise, guest OK (guestName + guestEmail), crée un SupportMessage
@@ -296,7 +338,7 @@ Focus Racer/
 **Database** : `DATABASE_URL`, `DB_PASSWORD`
 **NextAuth** : `NEXTAUTH_SECRET`, `NEXTAUTH_URL` (https://focusracer.swipego.app)
 **Stripe** : `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-**Email** : `RESEND_API_KEY`, `EMAIL_FROM`
+**Email** : `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM` (Gmail SMTP via Nodemailer)
 **AWS** : `AWS_REGION` (eu-west-1), `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REKOGNITION_COLLECTION_ID`, `AWS_S3_BUCKET` (focusracer-1771162064453), `AWS_CLOUDFRONT_URL`
 **IA** : `AI_OCR_CONFIDENCE_THRESHOLD` (70), `AI_QUALITY_THRESHOLD` (30), `AI_AUTO_EDIT_ENABLED`, `AI_FACE_INDEX_ENABLED`, `AI_LABEL_DETECTION_ENABLED`, `AI_MAX_CONCURRENT` (16)
 **Node.js** : `NODE_OPTIONS` (--max-old-space-size=16384 --expose-gc), `UV_THREADPOOL_SIZE` (16)
@@ -328,8 +370,10 @@ Focus Racer/
 | **20** | 2026-02-20 | Page FAQ (18 Q&A, 6 sections accordéon), API contact guest+auth, refonte page contact (catégories, pré-remplissage), footer restructuré, admin messages guest |
 | **21** | 2026-02-20 | Chat Horde (groupe + DM, SSE temps réel, 5 composants), page Ma Horde restructurée (3 onglets : Membres/Chat/Demandes), badge non lus sidebar, nouvelle homepage React (12 sections, conversion HTML→JSX) |
 | **22** | 2026-02-21 | Navigation mobile (MobileNav, bottom tab bar, sheet Plus), dashboard Ventes complet (7 KPIs, graphiques, filtres, CSV), fusion orders+payments en page unique "Ventes", suppression pages payments, messagerie sportif bidirectionnelle, pricing refonte (pictos, packs renommés, 0% commission) |
+| **24** | 2026-02-24 | Fix financier centimes→euros, KPIs ventes (total/packs/unitaires), Stripe webhook configuré (`we_1T4NAdFeQbxycmAHy48wZwSb`), 30 badges PNG custom (10 sportif + 10 photographe + 10 organisateur) avec artwork transparent, affiches événements dans dashboard, endpoint admin DELETE orders |
+| **26** | 2026-02-26 | Système de notifications complet (15 préférences opt-out, 12 templates email, 13 triggers, UI accordéon, one-click unsubscribe, List-Unsubscribe header), prochaine recharge crédits dans carte solde, fix Stripe API 2025+ (current_period_end supprimé) |
 
-**Fichiers clés créés** : `src/components/layout/MobileNav.tsx`, `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`, `src/app/api/sportif/horde/conversations/route.ts`, `src/app/api/sportif/horde/conversations/[id]/messages/route.ts`, `src/app/api/sportif/horde/conversations/[id]/read/route.ts`, `src/app/api/sportif/horde/conversations/unread-total/route.ts`, `src/components/horde/HordeChat.tsx`, `src/components/horde/ConversationList.tsx`, `src/components/horde/MessageThread.tsx`, `src/components/horde/CreateGroupDialog.tsx`, `src/components/horde/CreateDMDialog.tsx`, `src/app/homepage.css`
+**Fichiers clés créés** : `src/lib/notification-preferences.ts`, `src/app/api/notifications/preferences/route.ts`, `src/app/api/notifications/unsubscribe/route.ts`, `src/components/NotificationPreferencesCard.tsx`, `src/components/layout/MobileNav.tsx`, `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`, `src/app/api/sportif/horde/conversations/route.ts`, `src/app/api/sportif/horde/conversations/[id]/messages/route.ts`, `src/app/api/sportif/horde/conversations/[id]/read/route.ts`, `src/app/api/sportif/horde/conversations/unread-total/route.ts`, `src/components/horde/HordeChat.tsx`, `src/components/horde/ConversationList.tsx`, `src/components/horde/MessageThread.tsx`, `src/components/horde/CreateGroupDialog.tsx`, `src/components/horde/CreateDMDialog.tsx`, `src/app/homepage.css`, `src/lib/photographer-badges.ts`, `src/lib/organizer-badges.ts`, `src/app/api/photographer/badges/route.ts`, `src/app/api/organizer/badges/route.ts`, `src/components/photographer/PhotographerBadgeRow.tsx`, `src/components/organizer/OrganizerBadgeRow.tsx`, `public/badges/` (30 PNG)
 
 ---
 
@@ -493,10 +537,26 @@ orga@test.com / orga123
 - [x] Supprimer `autoEditImage()` morte dans `image-processing.ts` (Session 17)
 - [x] Stripe Checkout pour achat crédits (packs + abonnements) (Session 19)
 - [x] Espace organisateur dupliqué depuis photographe (Session 19)
-- [ ] Configurer Stripe webhook sur serveur dédié (env `STRIPE_WEBHOOK_SECRET`)
+- [x] Configurer Stripe webhook sur serveur dédié (Session 24 — webhook `we_1T4NAdFeQbxycmAHy48wZwSb`)
 - [ ] Différencier espace organisateur vs photographe (dashboard, upload, marketplace, crédits, branding, équipe)
 - [ ] Implémenter features Phase 7 restantes (Sync Chrono, Détection émotions, Social Teaser, QR Codes)
 
+### Priorité 4 — Rétention & Gamification
+- [ ] Système de niveaux / XP (actions = XP, niveaux Débutant→Légende, barre progression, 3 rôles)
+- [ ] Classements / Leaderboards (top sportifs, photographes, organisateurs — hebdo/mensuel avec reset)
+- [ ] Séries (Streaks) : achats/uploads consécutifs → badge + réduction
+- [ ] Challenges temporaires : missions hebdo/mensuelles avec countdown + progression + récompenses
+- [ ] Missions onboarding gamifié : checklist nouveau sportif/photographe/organisateur avec récompense par étape
+- [ ] Parrainage : code unique, crédits parrain+filleul, tableau de suivi
+- [ ] Réactions sur photos : likes, "Photo de ouf", notifications photographe/sportif
+- [ ] Partage social avec incentive : partage watermarké → HD gratuite, story templates auto
+- [ ] Programme fidélité à points : 1€ = 10 pts, seuils réductions, expirables 12 mois
+- [ ] Réductions dynamiques : photos invendues -30% après 48h, early bird -15%, bundles multi-courses
+- [ ] Crédits gratuits pour actions : profil complet, 1ère review, bug signalé
+- [x] Alertes intelligentes : photos dispo, relance achat, rappel tri, nouvelle vente, nouveau follower, crédits bas (Session 26)
+- [ ] Récap annuel (Wrapped style) : stats personnalisées sportif/photographe/organisateur, partageable social
+- [ ] Carte des courses : carte interactive événements suivis/couverts, badges régions
+
 ---
 
-**Dernière mise à jour** : Session 22, 2026-02-21 (navigation mobile, dashboard Ventes, fusion orders+payments, messagerie sportif, pricing refonte)
+**Dernière mise à jour** : Session 26, 2026-02-26 (système notifications complet, 15 préférences, 12 templates, 13 triggers, UI accordéon, prochaine recharge crédits, fix Stripe API 2025+)

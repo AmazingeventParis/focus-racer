@@ -1,6 +1,6 @@
 # Focus Racer - État du Projet
 
-> **Dernière mise à jour** : Session 23, 2026-02-23
+> **Dernière mise à jour** : Session 26, 2026-02-26
 
 ## Vue d'ensemble
 Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives par IA.
@@ -9,7 +9,7 @@ Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 - **Coolify UUID** : `ms440oowockwkso0k0c8okgc`
 - **Repo** : https://github.com/AmazingeventParis/focus-racer.git (remote `amazingevent`)
 - **Serveur** : OVH dédié `217.182.89.133` — AMD EPYC 4344P, 64GB RAM, 2x NVMe 960GB
-- **Status** : Production, 23 sessions de dev
+- **Status** : Production, 26 sessions de dev
 
 ## Stack
 - Next.js 14.2 (App Router) + React 18 + TypeScript + Tailwind + shadcn/ui
@@ -18,7 +18,7 @@ Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 - AWS Rekognition (OCR dossards, détection visages)
 - AWS S3 (stockage photos exclusif — pas de disque local)
 - Stripe Connect Express + Payment Element
-- Resend (emails transactionnels)
+- Gmail SMTP via Nodemailer (12 templates email, notifications préférences opt-out)
 - Sharp (traitement images, 1 thread/worker, 2GB cache)
 - next-themes (dark mode)
 - Docker multi-stage + Caddy (reverse proxy, auto-SSL)
@@ -100,13 +100,14 @@ src/lib/
   auto-cluster.ts      - Clustering debounced 30s
   ai-config.ts         - Config IA centralisée
   notification-emitter.ts - SSE temps réel
+  notification-preferences.ts - Préférences email opt-out (canSendEmail, unsubscribe tokens)
 src/hooks/
   usePWAInstall.ts     - Hook PWA (beforeinstallprompt)
   useFontScale.ts      - Hook taille texte (localStorage)
 ```
 
 ## DB (modèles Prisma)
-User, Event, Photo, BibNumber, PhotoFace, StartListEntry, PricePack, Order, OrderItem, CreditTransaction, SupportMessage, MarketplaceListing, MarketplaceApplication, MarketplaceReview, GdprRequest, GdprAuditLog, ApiKey, PlatformSettings, Horde, HordeMember, HordeConversation, HordeConversationParticipant, HordeMessage, Notification, FriendRequest, FavoriteEvent
+User, Event, Photo, BibNumber, PhotoFace, StartListEntry, PricePack, Order, OrderItem, CreditTransaction, SupportMessage, MarketplaceListing, MarketplaceApplication, MarketplaceReview, GdprRequest, GdprAuditLog, ApiKey, PlatformSettings, Horde, HordeMember, HordeConversation, HordeConversationParticipant, HordeMessage, Notification, FriendRequest, FavoriteEvent, NotificationPreference
 
 ## Fonctionnalités complètes
 
@@ -123,9 +124,12 @@ User, Event, Photo, BibNumber, PhotoFace, StartListEntry, PricePack, Order, Orde
 - Statistiques détaillées
 - Marketplace (annonces, candidatures, avis)
 - Messagerie support
+- 10 badges photographe (Premier Shoot, Œil de Lynx, Marathonien, Photographe d'Or, Best-Seller, Machine à Cash, Multi-Terrain, Fidèle au Poste, Connecté Stripe, Zéro Déchet)
+- 10 badges organisateur (Premier Départ, Peloton, Organisateur Série, Galerie Complète, Fan de Data, Importateur Pro, Parrain, Multi-Discipline, Roi du Branding, Vétéran)
+- Affiches événements dans dashboard (coverImage en miniature)
 
 ### Espace Sportif
-- Dashboard personnel
+- Dashboard personnel + 10 badges (Premier achat, Collectionneur, Passionné, Multi-sport, Fidèle, Explorateur, Social, Leader, Mécène, Pionnier)
 - Mes courses + photos
 - Ma Horde (membres, chat temps réel groupe/DM, demandes d'ami)
 - Messagerie (support bidirectionnel)
@@ -158,6 +162,17 @@ User, Event, Photo, BibNumber, PhotoFace, StartListEntry, PricePack, Order, Orde
 - Dark mode toggle dans sheet "Plus" + réglages
 - PWA installable (manifest.json, hook usePWAInstall)
 
+### Notifications email (Session 26)
+- **15 préférences opt-out** : modèle NotificationPreference (tout activé par défaut, l'utilisateur désactive)
+- **12 templates email** : table-based, Outlook-safe, Gmail SMTP (`swipegoapp@gmail.com`)
+  - Transactionnels (toujours envoyés) : confirmation achat, paiement échoué, renouvellement, résiliation
+  - Non-transactionnels : réponse support, photos disponibles, Stripe Connect, badge gagné, message admin, événement publié, nouvelle vente, nouveau follower, crédits bas
+- **13 triggers** : support reply, photos available, 4 Stripe webhooks, smart alerts (3 types), premier badge, message admin, événement publié, nouvelle vente, nouveau follower, crédits bas
+- **canSendEmail(userId, key)** : vérifie préférence avant chaque envoi non-transactionnel
+- **One-click unsubscribe** : header List-Unsubscribe + token base64url → `/api/notifications/unsubscribe`
+- **UI accordéon** : `NotificationPreferencesCard` avec panneaux déroulants fermés par défaut, badge compteur
+- **Prochaine recharge** : date + heure dans carte "Solde disponible" (fix Stripe API 2025+ : current_period_end → invoice line period.end → billing_cycle_anchor fallback)
+
 ### Transversal
 - Dark mode (next-themes, attribute="class", persisté localStorage)
 - i18n FR/EN (dictionnaires, LocaleProvider, labels navigation traduits)
@@ -174,7 +189,7 @@ User, Event, Photo, BibNumber, PhotoFace, StartListEntry, PricePack, Order, Orde
 - Credit Packs : 1000 (19€), 5000 (85€), 15000 (225€)
 - Subscriptions : 20000/mois (199€), 50000/mois (399€)
 - Checkout Sessions (redirect Stripe hébergé) pour crédits
-- Webhooks : payment_intent.succeeded, account.updated, checkout.session.completed, invoice.payment_succeeded
+- Webhooks : payment_intent.succeeded, account.updated, checkout.session.completed, invoice.payment_succeeded, invoice.payment_failed, customer.subscription.deleted, customer.subscription.updated, checkout.session.expired
 
 ## Sécurité
 - Admin URL secrète : /focus-mgr-7k9x/ (redirect 404 sur /admin/*)
@@ -192,7 +207,7 @@ DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL
 STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET
 AWS_REGION (eu-west-1), AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 AWS_REKOGNITION_COLLECTION_ID, AWS_S3_BUCKET (focusracer-1771162064453)
-RESEND_API_KEY, EMAIL_FROM
+SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM
 AI_MAX_CONCURRENT=16
 NODE_OPTIONS="--max-old-space-size=16384 --expose-gc"
 UV_THREADPOOL_SIZE=16
@@ -200,7 +215,7 @@ UV_THREADPOOL_SIZE=16
 
 ## TODO restant
 - [ ] Différencier espace organisateur vs photographe (dashboard, upload, marketplace, crédits, branding, équipe)
-- [ ] Configurer Stripe webhook sur serveur dédié
+- [x] Configurer Stripe webhook sur serveur dédié (Session 24 — webhook créé `we_1T4NAdFeQbxycmAHy48wZwSb`)
 - [ ] Sync Chrono (données course temps réel)
 - [ ] Détection émotions
 - [ ] Social Teaser (partage réseaux sociaux)
@@ -209,6 +224,22 @@ UV_THREADPOOL_SIZE=16
 - [ ] Reset password flow
 - [ ] Brancher detectLabels() dans le pipeline ou retirer le flag
 - [ ] CloudFront CDN (optionnel, S3 direct pour l'instant)
+
+### Rétention & Gamification (à implémenter)
+- [ ] **Système de niveaux / XP** : actions = XP (achat, favori, partage, profil complet), niveaux Débutant→Légende, barre progression, 3 rôles
+- [ ] **Classements / Leaderboards** : top sportifs, photographes, organisateurs (hebdo/mensuel avec reset)
+- [ ] **Séries (Streaks)** : achats/uploads consécutifs → badge + réduction
+- [ ] **Challenges temporaires** : missions hebdo/mensuelles avec countdown + progression + récompenses
+- [ ] **Missions onboarding gamifié** : checklist nouveau sportif/photographe/organisateur avec récompense par étape
+- [ ] **Parrainage** : code unique, crédits parrain+filleul, tableau de suivi
+- [ ] **Réactions sur photos** : likes, "Photo de ouf", notifications photographe/sportif
+- [ ] **Partage social avec incentive** : partage watermarké → HD gratuite, story templates auto
+- [ ] **Programme fidélité à points** : 1€ = 10 pts, seuils réductions, expirables 12 mois
+- [ ] **Réductions dynamiques** : photos invendues -30% après 48h, early bird -15%, bundles multi-courses
+- [ ] **Crédits gratuits pour actions** : profil complet, 1ère review, bug signalé
+- [x] **Alertes intelligentes** : photos dispo, relance achat, rappel tri, nouvelle vente, nouveau follower, crédits bas (Session 26)
+- [ ] **Récap annuel (Wrapped)** : stats personnalisées sportif/photographe/organisateur, partageable social
+- [ ] **Carte des courses** : carte interactive événements suivis/couverts, badges régions
 
 ## Conventions
 - **Toujours** utiliser les accents français : é, è, ê, à, ù, ç, î, ô
@@ -243,3 +274,5 @@ curl -s "http://217.182.89.133:8000/api/v1/deploy?uuid=ms440oowockwkso0k0c8okgc&
 | 21 | Chat Horde (groupe + DM, SSE), page Horde 3 onglets, nouvelle homepage React |
 | 22 | Navigation mobile (MobileNav), dashboard Ventes, fusion orders+payments, messagerie sportif, pricing |
 | 23 | Dark mode, PWA, i18n FR/EN, taille texte, partage profil, pages Solutions (sportifs/photographes/organisateurs), page À propos, Header/Footer unifiés (route group public), fix header readability |
+| 24 | Fix affichage financier (centimes→euros), KPIs ventes (total/packs/unitaires), Stripe webhook configuré, badges PNG (10 sportif + 10 photographe + 10 organisateur avec artwork custom), affiches événements dans dashboard |
+| 26 | Système notifications complet (15 préférences opt-out, 12 templates email, 13 triggers, UI accordéon, one-click unsubscribe), prochaine recharge crédits (date+heure), fix Stripe API 2025+ (current_period_end supprimé) |
