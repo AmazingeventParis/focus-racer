@@ -34,7 +34,6 @@ const SPORT_ICONS: Record<string, string> = {
 const TIME_FILTERS = [
   { label: "Tous", value: "all" },
   { label: "Aujourd'hui", value: "today" },
-  { label: "À venir", value: "upcoming" },
   { label: "Ce mois", value: "month" },
   { label: "Cette année", value: "year" },
   { label: "Passés", value: "past" },
@@ -190,7 +189,6 @@ export default function ExplorePage() {
       if (selectedDate) {
         matchesTime = eventDateStr === selectedDate;
       } else if (selectedTime === "today") matchesTime = eventDateStr === todayStr;
-      else if (selectedTime === "upcoming") matchesTime = eventDate >= now;
       else if (selectedTime === "month") matchesTime = eventDate >= startOfMonth;
       else if (selectedTime === "year") matchesTime = eventDate >= startOfYear;
       else if (selectedTime === "past") matchesTime = eventDate < now;
@@ -340,7 +338,17 @@ export default function ExplorePage() {
             {/* Time + Sort row */}
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-medium text-gray-500">Période :</span>
+                <span className="text-sm font-medium text-gray-500">Date d&apos;événement :</span>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => { setSelectedDate(e.target.value); if (e.target.value) setSelectedTime("all"); }}
+                  className={`text-xs rounded-lg px-2.5 py-1 border transition-all duration-200 cursor-pointer ${
+                    selectedDate
+                      ? "bg-gray-900 text-white border-gray-900"
+                      : "bg-gray-100 text-gray-600 border-transparent hover:bg-gray-200"
+                  }`}
+                />
                 <div className="flex gap-1 flex-wrap">
                   {TIME_FILTERS.map((tf) => (
                     <button
@@ -356,16 +364,6 @@ export default function ExplorePage() {
                     </button>
                   ))}
                 </div>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => { setSelectedDate(e.target.value); if (e.target.value) setSelectedTime("all"); }}
-                  className={`text-xs rounded-lg px-2.5 py-1 border transition-all duration-200 cursor-pointer ${
-                    selectedDate
-                      ? "bg-gray-900 text-white border-gray-900"
-                      : "bg-gray-100 text-gray-600 border-transparent hover:bg-gray-200"
-                  }`}
-                />
               </div>
 
               <div className="flex items-center gap-2 ml-auto">
