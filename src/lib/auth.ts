@@ -2,6 +2,13 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import prisma from "./prisma";
+import {
+  checkLoginAllowed,
+  recordLoginFailure,
+  clearLoginFailures,
+  formatLockoutTime,
+} from "./login-protection";
+import { getRequestIp } from "./request-context";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -16,11 +23,24 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Email et mot de passe requis");
         }
 
+        const ip = getRequestIp();
+        const email = credentials.email;
+
+        // Check brute force lockout
+        const lockout = checkLoginAllowed(ip, email);
+        if (lockout.locked) {
+          const timeStr = formatLockoutTime(lockout.remainingMs);
+          throw new Error(
+            `Trop de tentatives. Réessayez dans ${timeStr}.`
+          );
+        }
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email },
         });
 
         if (!user) {
+          recordLoginFailure(ip, email);
           throw new Error("Email ou mot de passe incorrect");
         }
 
@@ -34,8 +54,12 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!isPasswordValid) {
+          recordLoginFailure(ip, email);
           throw new Error("Email ou mot de passe incorrect");
         }
+
+        // Success: clear failure tracking
+        clearLoginFailures(ip, email);
 
         return {
           id: user.id,

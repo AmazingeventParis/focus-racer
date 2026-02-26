@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+import { rateLimit } from "@/lib/rate-limit";
 
 const listingSchema = z.object({
   title: z.string().min(5, "Titre trop court (5 caractères min)"),
@@ -16,6 +17,10 @@ const listingSchema = z.object({
 
 // GET: List all open marketplace listings
 export async function GET(request: NextRequest) {
+  // Rate limit: 30 requests per minute
+  const rateLimited = rateLimit(request, "marketplace", { limit: 30 });
+  if (rateLimited) return rateLimited;
+
   try {
     const { searchParams } = new URL(request.url);
     const sport = searchParams.get("sport");

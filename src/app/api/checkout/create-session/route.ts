@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { stripe, APP_URL, SERVICE_FEE_EUR } from "@/lib/stripe";
 import { calculateOptimalPricing } from "@/lib/pricing";
+import { rateLimit } from "@/lib/rate-limit";
 
 const checkoutSchema = z.object({
   eventId: z.string(),
@@ -15,6 +16,10 @@ const checkoutSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 10 requests per minute
+  const rateLimited = rateLimit(request, "checkout", { limit: 10 });
+  if (rateLimited) return rateLimited;
+
   try {
     const session = await getServerSession(authOptions);
     const body = await request.json();

@@ -1,10 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(
-  _request: Request,
+  request: NextRequest,
   { params }: { params: { sportifId: string } }
 ) {
+  // Rate limit: 20 requests per minute
+  const rateLimited = rateLimit(request, "profil", { limit: 20 });
+  if (rateLimited) return rateLimited;
+
   try {
     const { sportifId } = params;
 

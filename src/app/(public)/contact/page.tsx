@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import TurnstileWidget from "@/components/TurnstileWidget";
 
 const categories = [
   { value: "OTHER", label: "Question générale" },
@@ -34,6 +35,8 @@ export default function ContactPage() {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [category, setCategory] = useState("OTHER");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   useEffect(() => {
     if (session?.user) {
@@ -47,10 +50,16 @@ export default function ContactPage() {
     setIsLoading(true);
 
     try {
+      // Honeypot check — don't even send the request
+      if (honeypot) {
+        setSent(true);
+        return;
+      }
+
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, subject, message, category }),
+        body: JSON.stringify({ name, email, subject, message, category, turnstileToken }),
       });
 
       if (!res.ok) {
@@ -261,6 +270,23 @@ export default function ContactPage() {
                             className="flex w-full rounded-xl border border-white/30 bg-white/50 px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
                           />
                         </div>
+                        {/* Honeypot — hidden from real users */}
+                        <div className="absolute -left-[9999px]" aria-hidden="true">
+                          <input
+                            type="text"
+                            name="website"
+                            tabIndex={-1}
+                            autoComplete="off"
+                            value={honeypot}
+                            onChange={(e) => setHoneypot(e.target.value)}
+                          />
+                        </div>
+
+                        <TurnstileWidget
+                          onVerify={setTurnstileToken}
+                          onExpire={() => setTurnstileToken("")}
+                        />
+
                         <Button
                           type="submit"
                           className="w-full bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200"

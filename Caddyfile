@@ -32,6 +32,8 @@ focusracer.swipego.app {
         Referrer-Policy "strict-origin-when-cross-origin"
         # Permissions policy — block camera/mic/geolocation
         Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        # HSTS — force HTTPS for 2 years
+        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
         # Remove server header
         -Server
     }

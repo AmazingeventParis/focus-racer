@@ -5,10 +5,33 @@ import prisma from "@/lib/prisma";
 import { notificationEmitter } from "@/lib/notification-emitter";
 import { sendContactConfirmation, sendNewSupportMessageEmail } from "@/lib/email";
 import { canSendEmail, generateUnsubscribeUrl } from "@/lib/notification-preferences";
+import { verifyTurnstileToken } from "@/lib/turnstile";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 3 requests per minute
+  const rateLimited = rateLimit(request, "contact", { limit: 3 });
+  if (rateLimited) return rateLimited;
+
   const body = await request.json();
-  const { name, email, subject, message, category } = body;
+  const { name, email, subject, message, category, turnstileToken, website } = body;
+
+  // Honeypot check — bots fill hidden fields
+  if (website) {
+    return NextResponse.json({ success: true }, { status: 200 });
+  }
+
+  // Verify Turnstile token
+  const ip =
+    request.headers.get("x-real-ip") ||
+    request.headers.get("x-forwarded-for")?.split(",")[0].trim();
+  const turnstileValid = await verifyTurnstileToken(turnstileToken, ip || undefined);
+  if (!turnstileValid) {
+    return NextResponse.json(
+      { error: "Vérification de sécurité échouée. Veuillez réessayer." },
+      { status: 403 }
+    );
+  }
 
   if (!name || !email || !subject || !message) {
     return NextResponse.json(

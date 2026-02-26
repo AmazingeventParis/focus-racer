@@ -3,8 +3,13 @@ import prisma from "@/lib/prisma";
 import { aiConfig } from "@/lib/ai-config";
 import { searchFaceByImage } from "@/lib/rekognition";
 import { s3KeyToPublicPath } from "@/lib/s3";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 5 searches per minute (computationally expensive)
+  const rateLimited = rateLimit(request, "search-face", { limit: 5 });
+  if (rateLimited) return rateLimited;
+
   try {
     if (!aiConfig.faceIndexEnabled) {
       return NextResponse.json(

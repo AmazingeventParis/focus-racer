@@ -141,8 +141,8 @@ async function expandByFace(
 // Bib/name search includes face expansion: finds additional photos of the same person
 // even when the bib is not visible (e.g. hidden by hand, back view)
 export async function GET(request: NextRequest) {
-  // Rate limit: 30 searches/minute per IP
-  const limited = rateLimit(request, "photo-search", { limit: 30 });
+  // Rate limit: 15 searches/minute per IP
+  const limited = rateLimit(request, "photo-search", { limit: 15 });
   if (limited) return limited;
   const { searchParams } = new URL(request.url);
   const eventId = searchParams.get("eventId");

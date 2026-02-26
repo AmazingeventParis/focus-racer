@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 
 const gdprRequestSchema = z.object({
   type: z.enum(["DELETION", "ACCESS", "RECTIFICATION"]).default("DELETION"),
@@ -13,6 +14,10 @@ const gdprRequestSchema = z.object({
 
 // Public endpoint - no auth required
 export async function POST(request: NextRequest) {
+  // Rate limit: 3 requests per hour
+  const rateLimited = rateLimit(request, "gdpr", { limit: 3, windowMs: 3_600_000 });
+  if (rateLimited) return rateLimited;
+
   try {
     const body = await request.json();
     const data = gdprRequestSchema.parse(body);

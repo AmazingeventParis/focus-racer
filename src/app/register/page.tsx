@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import TurnstileWidget from "@/components/TurnstileWidget";
 
 const ACCOUNT_TYPES = [
   {
@@ -104,6 +105,8 @@ function RegisterPage() {
   const [newsletterOptIn, setNewsletterOptIn] = useState(false);
   const [referralSource, setReferralSource] = useState("");
   const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   // Detect ?ref= param for referral tracking
   useEffect(() => {
@@ -144,6 +147,13 @@ function RegisterPage() {
     const city = formData.get("city") as string;
     const portfolio = formData.get("portfolio") as string;
 
+    // Honeypot check
+    if (honeypot) {
+      toast({ title: "Inscription réussie", description: "Bienvenue sur Focus Racer !" });
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
@@ -162,6 +172,7 @@ function RegisterPage() {
           referralSource: referralSource || undefined,
           acceptedCgu,
           newsletterOptIn,
+          turnstileToken,
         }),
       });
 
@@ -462,6 +473,23 @@ function RegisterPage() {
                     Je souhaite recevoir la newsletter et les actualités Focus Racer
                   </Label>
                 </div>
+
+                {/* Honeypot — hidden from real users */}
+                <div className="absolute -left-[9999px]" aria-hidden="true">
+                  <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                  />
+                </div>
+
+                <TurnstileWidget
+                  onVerify={setTurnstileToken}
+                  onExpire={() => setTurnstileToken("")}
+                />
 
                 {/* Row 10: Submit */}
                 <Button

@@ -4,6 +4,8 @@ import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { generateSportifId } from "@/lib/sportif-id";
 import { sendWelcomeEmail } from "@/lib/email";
+import { verifyTurnstileToken } from "@/lib/turnstile";
+import { rateLimit } from "@/lib/rate-limit";
 
 const registerSchema = z.object({
   firstName: z.string().min(1, "Le prénom est requis"),
@@ -19,16 +21,39 @@ const registerSchema = z.object({
   referralSource: z.string().optional(),
   acceptedCgu: z.boolean().refine(v => v === true, "Vous devez accepter les CGU"),
   newsletterOptIn: z.boolean().optional(),
+  turnstileToken: z.string().optional(),
+  website: z.string().optional(), // honeypot
 });
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 3 registrations per hour
+  const rateLimited = rateLimit(request, "register", { limit: 3, windowMs: 3_600_000 });
+  if (rateLimited) return rateLimited;
+
   try {
     const body = await request.json();
     const {
       firstName, lastName, email, password, role,
       phone, company, postalCode, city, portfolio,
-      referralSource, newsletterOptIn,
+      referralSource, newsletterOptIn, turnstileToken, website,
     } = registerSchema.parse(body);
+
+    // Honeypot check
+    if (website) {
+      return NextResponse.json({ id: "ok", email, name: `${firstName} ${lastName}`, role });
+    }
+
+    // Verify Turnstile token
+    const ip =
+      request.headers.get("x-real-ip") ||
+      request.headers.get("x-forwarded-for")?.split(",")[0].trim();
+    const turnstileValid = await verifyTurnstileToken(turnstileToken, ip || undefined);
+    if (!turnstileValid) {
+      return NextResponse.json(
+        { error: "Vérification de sécurité échouée. Veuillez réessayer." },
+        { status: 403 }
+      );
+    }
 
     const existingUser = await prisma.user.findUnique({
       where: { email },

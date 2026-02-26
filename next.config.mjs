@@ -57,6 +57,21 @@ const nextConfig = {
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://challenges.cloudflare.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https://*.amazonaws.com https://challenges.cloudflare.com",
+              "font-src 'self' data:",
+              "frame-src https://js.stripe.com https://challenges.cloudflare.com",
+              "connect-src 'self' https://api.stripe.com https://challenges.cloudflare.com https://*.amazonaws.com",
+              "worker-src 'self' blob:",
+              "media-src 'self' blob:",
+            ].join('; '),
+          },
         ],
       },
       {
