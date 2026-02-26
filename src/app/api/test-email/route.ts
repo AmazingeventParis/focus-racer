@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       <p>Bonjour,</p>
       <p>Ceci est un <strong>email de test</strong> envoyé depuis Focus Racer.</p>
       <div style="background:#f0f9ff; border-radius:8px; padding:16px; margin:16px 0; border-left:4px solid #14B8A6;">
-        <p style="margin:0; font-size:14px;">Si vous recevez cet email, la configuration Resend est opérationnelle.</p>
+        <p style="margin:0; font-size:14px;">Si vous recevez cet email, la configuration email est opérationnelle.</p>
       </div>
       <p style="color:#6b7280; font-size:14px;">Envoyé le ${new Date().toLocaleString("fr-FR")}.</p>
     `,
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, message: `Email envoyé à ${to}` });
   } else {
     return NextResponse.json(
-      { success: false, message: "Resend non configuré ou erreur d'envoi" },
+      { success: false, message: "SMTP non configuré ou erreur d'envoi" },
       { status: 500 }
     );
   }

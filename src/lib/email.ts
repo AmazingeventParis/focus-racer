@@ -1,10 +1,20 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== "re_PLACEHOLDER"
-  ? new Resend(process.env.RESEND_API_KEY)
+const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || "587", 10);
+const SMTP_USER = process.env.SMTP_USER || "";
+const SMTP_PASS = process.env.SMTP_PASS || "";
+
+const transporter = SMTP_USER && SMTP_PASS
+  ? nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: SMTP_PORT === 465,
+      auth: { user: SMTP_USER, pass: SMTP_PASS },
+    })
   : null;
 
-const EMAIL_FROM = process.env.EMAIL_FROM || "Focus Racer <noreply@focusracer.swipego.app>";
+const EMAIL_FROM = process.env.EMAIL_FROM || `Focus Racer <${SMTP_USER || "noreply@focusracer.swipego.app"}>`;
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 // =========== BASE LAYOUT ===========
@@ -80,13 +90,13 @@ async function sendEmail({
   subject: string;
   html: string;
 }): Promise<boolean> {
-  if (!resend) {
-    console.log(`[Email] Resend non configur\u00e9, email ignor\u00e9 \u00e0 : ${to} | Sujet : ${subject}`);
+  if (!transporter) {
+    console.log(`[Email] SMTP non configur\u00e9, email ignor\u00e9 \u00e0 : ${to} | Sujet : ${subject}`);
     return false;
   }
 
   try {
-    await resend.emails.send({ from: EMAIL_FROM, to, subject, html });
+    await transporter.sendMail({ from: EMAIL_FROM, to, subject, html });
     console.log(`[Email] Envoy\u00e9 \u00e0 ${to} : ${subject}`);
     return true;
   } catch (err) {
