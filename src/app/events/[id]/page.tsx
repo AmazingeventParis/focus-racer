@@ -81,6 +81,17 @@ const SPORT_ICON_PATHS: Record<string, string[][]> = {
   ],
 };
 
+const RETENTION_DAYS = 30;
+
+function getDaysBeforeDeletion(eventDate: string): number | null {
+  const now = new Date();
+  const d = new Date(eventDate);
+  if (d >= now) return null;
+  const daysSince = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+  const remaining = RETENTION_DAYS - daysSince;
+  return remaining > 0 ? remaining : null;
+}
+
 function SportPatternOverlay({ sportType }: { sportType: string }) {
   const elements = useMemo(() => {
     const icons = SPORT_ICON_PATHS[sportType] || SPORT_ICON_PATHS.OTHER;
@@ -598,6 +609,22 @@ export default function PublicEventPage({
                   </svg>
                   Recherche IA
                 </span>
+                {(() => {
+                  const daysLeft = getDaysBeforeDeletion(event.date);
+                  if (daysLeft === null) return null;
+                  return (
+                    <span className={`inline-flex items-center gap-1.5 backdrop-blur-sm border rounded-full px-3 py-1.5 text-sm font-medium ${
+                      daysLeft <= 7
+                        ? "bg-red-500/20 border-red-400/30 text-red-200"
+                        : "bg-amber-500/20 border-amber-400/30 text-amber-200"
+                    }`}>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {daysLeft}j avant suppression
+                    </span>
+                  );
+                })()}
               </div>
 
               {/* Description */}

@@ -33,11 +33,23 @@ const SPORT_ICONS: Record<string, string> = {
 
 const TIME_FILTERS = [
   { label: "Tous", value: "all" },
+  { label: "Aujourd'hui", value: "today" },
   { label: "À venir", value: "upcoming" },
   { label: "Ce mois", value: "month" },
   { label: "Cette année", value: "year" },
   { label: "Passés", value: "past" },
 ];
+
+const RETENTION_DAYS = 30;
+
+function getDaysBeforeDeletion(eventDate: string): number | null {
+  const now = new Date();
+  const d = new Date(eventDate);
+  if (d >= now) return null; // event not past yet
+  const daysSince = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+  const remaining = RETENTION_DAYS - daysSince;
+  return remaining > 0 ? remaining : null;
+}
 
 const SORT_OPTIONS = [
   { label: "Plus récents", value: "date-desc" },
@@ -68,6 +80,7 @@ export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSport, setSelectedSport] = useState("all");
   const [selectedTime, setSelectedTime] = useState("all");
+  const [selectedDate, setSelectedDate] = useState("");
   const [sortBy, setSortBy] = useState("date-desc");
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
 
@@ -171,8 +184,13 @@ export default function ExplorePage() {
 
       // Time filter
       const eventDate = new Date(event.date);
+      const eventDateStr = eventDate.toISOString().slice(0, 10);
+      const todayStr = now.toISOString().slice(0, 10);
       let matchesTime = true;
-      if (selectedTime === "upcoming") matchesTime = eventDate >= now;
+      if (selectedDate) {
+        matchesTime = eventDateStr === selectedDate;
+      } else if (selectedTime === "today") matchesTime = eventDateStr === todayStr;
+      else if (selectedTime === "upcoming") matchesTime = eventDate >= now;
       else if (selectedTime === "month") matchesTime = eventDate >= startOfMonth;
       else if (selectedTime === "year") matchesTime = eventDate >= startOfYear;
       else if (selectedTime === "past") matchesTime = eventDate < now;
@@ -190,16 +208,17 @@ export default function ExplorePage() {
     });
 
     return filtered;
-  }, [events, searchQuery, selectedSport, selectedTime, sortBy]);
+  }, [events, searchQuery, selectedSport, selectedTime, selectedDate, sortBy]);
 
   const resetFilters = () => {
     setSearchQuery("");
+    setSelectedDate("");
     setSelectedSport("all");
     setSelectedTime("all");
     setSortBy("date-desc");
   };
 
-  const hasActiveFilters = searchQuery || selectedSport !== "all" || selectedTime !== "all" || sortBy !== "date-desc";
+  const hasActiveFilters = searchQuery || selectedSport !== "all" || selectedTime !== "all" || selectedDate || sortBy !== "date-desc";
 
   return (
     <main className="bg-white min-h-screen">
@@ -320,15 +339,15 @@ export default function ExplorePage() {
 
             {/* Time + Sort row */}
             <div className="flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-medium text-gray-500">Période :</span>
-                <div className="flex gap-1">
+                <div className="flex gap-1 flex-wrap">
                   {TIME_FILTERS.map((tf) => (
                     <button
                       key={tf.value}
-                      onClick={() => setSelectedTime(tf.value)}
+                      onClick={() => { setSelectedTime(tf.value); setSelectedDate(""); }}
                       className={`px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
-                        selectedTime === tf.value
+                        !selectedDate && selectedTime === tf.value
                           ? "bg-gray-900 text-white"
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
@@ -337,6 +356,16 @@ export default function ExplorePage() {
                     </button>
                   ))}
                 </div>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => { setSelectedDate(e.target.value); if (e.target.value) setSelectedTime("all"); }}
+                  className={`text-xs rounded-lg px-2.5 py-1 border transition-all duration-200 cursor-pointer ${
+                    selectedDate
+                      ? "bg-gray-900 text-white border-gray-900"
+                      : "bg-gray-100 text-gray-600 border-transparent hover:bg-gray-200"
+                  }`}
+                />
               </div>
 
               <div className="flex items-center gap-2 ml-auto">
@@ -419,6 +448,7 @@ export default function ExplorePage() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {filteredEvents.map((event, i) => {
                 const isPast = new Date(event.date) < new Date();
+                const daysLeft = getDaysBeforeDeletion(event.date);
                 return (
                   <Link
                     key={event.id}
@@ -436,7 +466,12 @@ export default function ExplorePage() {
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
                           {isPast && (
-                            <div className="absolute top-3 right-3">
+                            <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                              {daysLeft !== null && (
+                                <span className={`px-2 py-0.5 backdrop-blur-sm text-[10px] rounded-full font-medium ${daysLeft <= 7 ? "bg-red-500/80 text-white" : "bg-amber-500/80 text-white"}`}>
+                                  {daysLeft}j restant{daysLeft > 1 ? "s" : ""}
+                                </span>
+                              )}
                               <span className="px-2 py-0.5 bg-black/50 backdrop-blur-sm text-white text-[10px] rounded-full font-medium">Terminé</span>
                             </div>
                           )}
@@ -448,7 +483,12 @@ export default function ExplorePage() {
                             {event.name}
                           </span>
                           {isPast && (
-                            <div className="absolute top-3 right-3">
+                            <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                              {daysLeft !== null && (
+                                <span className={`px-2 py-0.5 text-[10px] rounded-full font-medium ${daysLeft <= 7 ? "bg-red-100 text-red-600" : "bg-amber-100 text-amber-600"}`}>
+                                  {daysLeft}j restant{daysLeft > 1 ? "s" : ""}
+                                </span>
+                              )}
                               <span className="px-2 py-0.5 bg-gray-200 text-gray-600 text-[10px] rounded-full font-medium">Terminé</span>
                             </div>
                           )}
