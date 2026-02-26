@@ -1,6 +1,6 @@
 # Focus Racer - État du Projet
 
-> **Dernière mise à jour** : Session 26, 2026-02-26
+> **Dernière mise à jour** : Session 27, 2026-02-26
 
 ## Vue d'ensemble
 Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives par IA.
@@ -9,7 +9,7 @@ Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 - **Coolify UUID** : `ms440oowockwkso0k0c8okgc`
 - **Repo** : https://github.com/AmazingeventParis/focus-racer.git (remote `amazingevent`)
 - **Serveur** : OVH dédié `217.182.89.133` — AMD EPYC 4344P, 64GB RAM, 2x NVMe 960GB
-- **Status** : Production, 26 sessions de dev
+- **Status** : Production, 27 sessions de dev
 
 ## Stack
 - Next.js 14.2 (App Router) + React 18 + TypeScript + Tailwind + shadcn/ui
@@ -21,6 +21,7 @@ Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 - Gmail SMTP via Nodemailer (12 templates email, notifications préférences opt-out)
 - Sharp (traitement images, 1 thread/worker, 2GB cache)
 - next-themes (dark mode)
+- Cloudflare Turnstile (CAPTCHA invisible) + bot detection + brute force protection
 - Docker multi-stage + Caddy (reverse proxy, auto-SSL)
 
 ## Rôles utilisateurs (7)
@@ -88,12 +89,14 @@ src/components/
   providers/
     ThemeProvider.tsx   - next-themes (dark mode, attribute="class")
     LocaleProvider.tsx  - i18n FR/EN (context + dictionnaires)
+  TurnstileWidget.tsx  - Cloudflare Turnstile CAPTCHA (refs stables, script dedup)
   horde/               - Chat composants (HordeChat, ConversationList, MessageThread, etc.)
   ui/                  - shadcn/ui components
 src/lib/
   auth.ts, ocr.ts, rekognition.ts, s3.ts, storage.ts
   watermark.ts, image-processing.ts, face-clustering.ts
   email.ts, pricing.ts, rate-limit.ts, stripe.ts
+  turnstile.ts, login-protection.ts, bot-detection.ts, request-context.ts
   i18n.ts              - Dictionnaires FR/EN
   sharp-config.ts      - Config Sharp centralisée
   processing-queue.ts  - File d'attente bornée (16 workers)
@@ -193,12 +196,19 @@ User, Event, Photo, BibNumber, PhotoFace, StartListEntry, PricePack, Order, Orde
 
 ## Sécurité
 - Admin URL secrète : /focus-mgr-7k9x/ (redirect 404 sur /admin/*)
+- **Cloudflare Turnstile** : CAPTCHA invisible sur login, register, contact (`src/lib/turnstile.ts`, `src/components/TurnstileWidget.tsx`)
+- **Brute force login** : lockout progressif 5→15min, 10→1h, dual IP+email (`src/lib/login-protection.ts`)
+- **Bot detection middleware** : 25+ UA bloqués, crawlers agressifs, validation headers navigateur, anti-scraping 15req/10s (`src/lib/bot-detection.ts`)
+- **Honeypot** : champ caché sur login, register, contact — fake success si rempli
+- **Rate limiting** : 13 routes protégées (contact 3/min, register 3/h, checkout 10/min, search 15/min, profil 20/min, marketplace 30/min, search-face 5/min, GDPR 3/h, etc.)
+- **robots.txt** : bloque 12 crawlers agressifs, Disallow /api/ /photographer/ /organizer/ /sportif/
+- **CSP** : script-src self + Turnstile, frame-src Stripe + Turnstile, connect-src self + Stripe + S3
+- **HSTS** : max-age=63072000 (2 ans), includeSubDomains, preload
 - ProtectedImage (anti-drag, anti-clic-droit, overlay transparent)
 - Hotlink protection (Caddy Referer + API côté serveur)
 - Watermarks sur toutes les images publiques
 - HD jamais exposées (signed URLs 24h seulement)
-- Rate limiting in-memory (60/min events, 30/min search, 120/min uploads)
-- Security headers (X-Frame-Options, X-Content-Type-Options, etc.)
+- Security headers (X-Frame-Options, X-Content-Type-Options, Permissions-Policy, Referrer-Policy)
 - DMCA/Legal page
 
 ## Env vars clés
@@ -208,6 +218,7 @@ STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET
 AWS_REGION (eu-west-1), AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 AWS_REKOGNITION_COLLECTION_ID, AWS_S3_BUCKET (focusracer-1771162064453)
 SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM
+NEXT_PUBLIC_TURNSTILE_SITE_KEY, TURNSTILE_SECRET_KEY
 AI_MAX_CONCURRENT=16
 NODE_OPTIONS="--max-old-space-size=16384 --expose-gc"
 UV_THREADPOOL_SIZE=16
@@ -276,3 +287,4 @@ curl -s "http://217.182.89.133:8000/api/v1/deploy?uuid=ms440oowockwkso0k0c8okgc&
 | 23 | Dark mode, PWA, i18n FR/EN, taille texte, partage profil, pages Solutions (sportifs/photographes/organisateurs), page À propos, Header/Footer unifiés (route group public), fix header readability |
 | 24 | Fix affichage financier (centimes→euros), KPIs ventes (total/packs/unitaires), Stripe webhook configuré, badges PNG (10 sportif + 10 photographe + 10 organisateur avec artwork custom), affiches événements dans dashboard |
 | 26 | Système notifications complet (15 préférences opt-out, 12 templates email, 13 triggers, UI accordéon, one-click unsubscribe), prochaine recharge crédits (date+heure), fix Stripe API 2025+ (current_period_end supprimé) |
+| 27 | Protection anti-bot complète : Cloudflare Turnstile CAPTCHA (vraies clés prod), brute force login (lockout progressif), bot detection middleware (25+ UA, anti-scraping), honeypot 3 formulaires, rate limiting 13 routes, robots.txt, CSP + HSTS |

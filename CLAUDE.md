@@ -37,6 +37,8 @@
 
 **Serveur** : AMD EPYC 4344P (16 cores / 32 threads) • 64 GB RAM • 2x NVMe 960 GB • Ubuntu 24.04
 
+**Sécurité** : Cloudflare Turnstile (CAPTCHA) • Brute force login protection • Bot detection middleware • Honeypot fields • Rate limiting (13 routes) • CSP + HSTS • robots.txt
+
 **Config prod** : Body size 100MB (Caddy + Next.js) • Output standalone • AI workers 16 • NODE_OPTIONS=16384MB • Sharp config centralisée (`src/lib/sharp-config.ts`) concurrency=1/worker cache=2GB • WebP web versions • Chunks 25
 
 ---
@@ -312,6 +314,37 @@ Focus Racer/
 - **Prochaine recharge crédits** : affiché dans la carte verte "Solde disponible" quand abonnement actif (date + heure)
 - **Fix Stripe API 2025+** : `current_period_end` supprimé → fallback `latest_invoice.lines.data[0].period.end` → fallback `billing_cycle_anchor` + calcul mensuel
 
+### ✅ Protection anti-bot complète (Session 27)
+- **Cloudflare Turnstile** : CAPTCHA invisible sur login, register, contact
+  - Composant `TurnstileWidget.tsx` (script dedup, refs stables, cleanup)
+  - Vérification serveur `src/lib/turnstile.ts` (fail closed, dev bypass si pas de clé)
+  - Endpoint pré-login `POST /api/auth/verify-turnstile` (rate limité 10/min)
+  - Site key : `0x4AAAAAACir9Q54rTI0lWLo` (Cloudflare dashboard)
+  - Env vars : `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`
+- **Protection brute force login** : `src/lib/login-protection.ts`
+  - Tracking dual IP + email, lockout progressif (5 échecs → 15min, 10 → 1h)
+  - `AsyncLocalStorage` (`src/lib/request-context.ts`) pour passer l'IP au callback NextAuth `authorize()`
+  - Wrapper `runWithIp()` dans `src/app/api/auth/[...nextauth]/route.ts`
+  - Messages d'erreur français ("Trop de tentatives. Réessayez dans X minutes.")
+- **Détection de bots** : `src/lib/bot-detection.ts` + `src/middleware.ts`
+  - Blocage 25+ User-Agents (curl, python-requests, scrapy, selenium, puppeteer, etc.)
+  - Bots légitimes autorisés sur pages (Googlebot, Bingbot) mais bloqués sur /api/
+  - 12 crawlers agressifs toujours bloqués (AhrefsBot, SemrushBot, GPTBot, ClaudeBot, etc.)
+  - Validation headers navigateur (Accept, Accept-Language) sur les pages
+  - Détection pattern scraping (15 req/10s même route → 429)
+  - Middleware restructuré : bot detection → auth check (matcher étendu à `/api/:path*`)
+- **Honeypot** : champ `website` caché (CSS `absolute -left-[9999px]`, tabIndex=-1, aria-hidden)
+  - Appliqué sur contact, register, login — fake success 200 si rempli
+- **Rate limiting étendu** (9 routes ajoutées) :
+  - Contact 3/min, Register 3/h, Verify-turnstile 10/min, Profil 20/min
+  - Marketplace 30/min, Search-face 5/min, Checkout 10/min, GDPR 3/h
+  - Photos/search resserré 30→15/min
+  - `getClientIp()` exporté depuis `rate-limit.ts`
+- **robots.txt** : `public/robots.txt` — Allow pages publiques, Disallow /api/ /photographer/ /organizer/ /sportif/ /focus-mgr-*
+- **Headers sécurité** :
+  - CSP : script-src self + Turnstile, img-src self + S3, frame-src Stripe + Turnstile, connect-src self + Stripe + Turnstile + S3
+  - HSTS : max-age=63072000 (2 ans), includeSubDomains, preload (next.config + Caddyfile)
+
 ### ✅ Footer + FAQ + Contact API (Session 20)
 - **Page FAQ** : `/faq` — 18 questions/réponses en 6 sections accordéon (Coureurs, Photographes, Organisateurs, Paiements, Technique & IA, RGPD)
 - **API Contact** : `POST /api/contact` — pas d'auth requise, guest OK (guestName + guestEmail), crée un SupportMessage
@@ -341,6 +374,7 @@ Focus Racer/
 **Email** : `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM` (Gmail SMTP via Nodemailer)
 **AWS** : `AWS_REGION` (eu-west-1), `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REKOGNITION_COLLECTION_ID`, `AWS_S3_BUCKET` (focusracer-1771162064453), `AWS_CLOUDFRONT_URL`
 **IA** : `AI_OCR_CONFIDENCE_THRESHOLD` (70), `AI_QUALITY_THRESHOLD` (30), `AI_AUTO_EDIT_ENABLED`, `AI_FACE_INDEX_ENABLED`, `AI_LABEL_DETECTION_ENABLED`, `AI_MAX_CONCURRENT` (16)
+**Turnstile** : `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (0x4AAAAAACir9Q54rTI0lWLo), `TURNSTILE_SECRET_KEY`
 **Node.js** : `NODE_OPTIONS` (--max-old-space-size=16384 --expose-gc), `UV_THREADPOOL_SIZE` (16)
 
 ---
@@ -372,8 +406,9 @@ Focus Racer/
 | **22** | 2026-02-21 | Navigation mobile (MobileNav, bottom tab bar, sheet Plus), dashboard Ventes complet (7 KPIs, graphiques, filtres, CSV), fusion orders+payments en page unique "Ventes", suppression pages payments, messagerie sportif bidirectionnelle, pricing refonte (pictos, packs renommés, 0% commission) |
 | **24** | 2026-02-24 | Fix financier centimes→euros, KPIs ventes (total/packs/unitaires), Stripe webhook configuré (`we_1T4NAdFeQbxycmAHy48wZwSb`), 30 badges PNG custom (10 sportif + 10 photographe + 10 organisateur) avec artwork transparent, affiches événements dans dashboard, endpoint admin DELETE orders |
 | **26** | 2026-02-26 | Système de notifications complet (15 préférences opt-out, 12 templates email, 13 triggers, UI accordéon, one-click unsubscribe, List-Unsubscribe header), prochaine recharge crédits dans carte solde, fix Stripe API 2025+ (current_period_end supprimé) |
+| **27** | 2026-02-26 | Protection anti-bot complète : Cloudflare Turnstile (CAPTCHA invisible, vraies clés prod), brute force login (lockout progressif 5→15min 10→1h), bot detection middleware (25+ UA bloqués, scraping pattern 15/10s), honeypot 3 formulaires, rate limiting 9 routes ajoutées, robots.txt, CSP + HSTS |
 
-**Fichiers clés créés** : `src/lib/notification-preferences.ts`, `src/app/api/notifications/preferences/route.ts`, `src/app/api/notifications/unsubscribe/route.ts`, `src/components/NotificationPreferencesCard.tsx`, `src/components/layout/MobileNav.tsx`, `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`, `src/app/api/sportif/horde/conversations/route.ts`, `src/app/api/sportif/horde/conversations/[id]/messages/route.ts`, `src/app/api/sportif/horde/conversations/[id]/read/route.ts`, `src/app/api/sportif/horde/conversations/unread-total/route.ts`, `src/components/horde/HordeChat.tsx`, `src/components/horde/ConversationList.tsx`, `src/components/horde/MessageThread.tsx`, `src/components/horde/CreateGroupDialog.tsx`, `src/components/horde/CreateDMDialog.tsx`, `src/app/homepage.css`, `src/lib/photographer-badges.ts`, `src/lib/organizer-badges.ts`, `src/app/api/photographer/badges/route.ts`, `src/app/api/organizer/badges/route.ts`, `src/components/photographer/PhotographerBadgeRow.tsx`, `src/components/organizer/OrganizerBadgeRow.tsx`, `public/badges/` (30 PNG)
+**Fichiers clés créés** : `src/lib/turnstile.ts`, `src/lib/login-protection.ts`, `src/lib/bot-detection.ts`, `src/lib/request-context.ts`, `src/components/TurnstileWidget.tsx`, `src/app/api/auth/verify-turnstile/route.ts`, `public/robots.txt`, `src/lib/notification-preferences.ts`, `src/app/api/notifications/preferences/route.ts`, `src/app/api/notifications/unsubscribe/route.ts`, `src/components/NotificationPreferencesCard.tsx`, `src/components/layout/MobileNav.tsx`, `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`, `src/app/api/sportif/horde/conversations/route.ts`, `src/app/api/sportif/horde/conversations/[id]/messages/route.ts`, `src/app/api/sportif/horde/conversations/[id]/read/route.ts`, `src/app/api/sportif/horde/conversations/unread-total/route.ts`, `src/components/horde/HordeChat.tsx`, `src/components/horde/ConversationList.tsx`, `src/components/horde/MessageThread.tsx`, `src/components/horde/CreateGroupDialog.tsx`, `src/components/horde/CreateDMDialog.tsx`, `src/app/homepage.css`, `src/lib/photographer-badges.ts`, `src/lib/organizer-badges.ts`, `src/app/api/photographer/badges/route.ts`, `src/app/api/organizer/badges/route.ts`, `src/components/photographer/PhotographerBadgeRow.tsx`, `src/components/organizer/OrganizerBadgeRow.tsx`, `public/badges/` (30 PNG)
 
 ---
 
@@ -467,7 +502,7 @@ Focus Racer/
 - **Security headers** : X-Frame-Options SAMEORIGIN, X-Content-Type-Options nosniff, Permissions-Policy, Referrer-Policy
 - **Watermarks** : protection principale — toutes les images publiques sont watermarkées (1200px max)
 - **HD originals** : jamais exposés publiquement, uniquement après achat via signed URLs
-- **Rate limiting** : sliding window in-memory (`src/lib/rate-limit.ts`) — events 60/min, search 30/min, uploads 120/min, list 30/min
+- **Rate limiting** : sliding window in-memory (`src/lib/rate-limit.ts`) — events 60/min, search 15/min, uploads 120/min, list 30/min, contact 3/min, register 3/h, checkout 10/min, profil 20/min, marketplace 30/min, search-face 5/min, GDPR 3/h, verify-turnstile 10/min
 - **DMCA / Legal** : page `/legal` avec sections protection photos, droits d'auteur, procédure DMCA, sanctions (Code PI)
 - **Copyright notice** : mention discrète en bas de chaque galerie publique avec lien vers `/legal#protection-photos`
 - **Admin slug secret** : `/focus-mgr-7k9x/` remplace `/admin/` — URL non devinable, redirect 404 sur `/admin/*`
@@ -559,4 +594,4 @@ orga@test.com / orga123
 
 ---
 
-**Dernière mise à jour** : Session 26, 2026-02-26 (système notifications complet, 15 préférences, 12 templates, 13 triggers, UI accordéon, prochaine recharge crédits, fix Stripe API 2025+)
+**Dernière mise à jour** : Session 27, 2026-02-26 (protection anti-bot complète : Turnstile CAPTCHA, brute force login, bot detection middleware, honeypot, rate limiting 13 routes, robots.txt, CSP + HSTS)
