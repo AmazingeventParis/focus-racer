@@ -192,22 +192,6 @@ export default function ExplorePage() {
     return filtered;
   }, [events, searchQuery, selectedSport, selectedTime, sortBy]);
 
-  // Featured events (most photos, upcoming preferred)
-  const featuredEvents = useMemo(() => {
-    const now = new Date();
-    const upcoming = events
-      .filter((e) => new Date(e.date) >= now && e._count.photos > 0)
-      .sort((a, b) => b._count.photos - a._count.photos)
-      .slice(0, 3);
-    if (upcoming.length >= 3) return upcoming;
-    // Fill with recent past events
-    const past = events
-      .filter((e) => new Date(e.date) < now && e._count.photos > 0)
-      .sort((a, b) => b._count.photos - a._count.photos)
-      .slice(0, 3 - upcoming.length);
-    return [...upcoming, ...past];
-  }, [events]);
-
   const resetFilters = () => {
     setSearchQuery("");
     setSelectedSport("all");
@@ -299,75 +283,6 @@ export default function ExplorePage() {
           </div>
         </div>
       </section>
-
-      {/* ═══════════ FEATURED EVENTS ═══════════ */}
-      {featuredEvents.length > 0 && !hasActiveFilters && (
-        <section id="featured" data-reveal className="pt-4 pb-8 bg-white border-b border-gray-100">
-          <div className="container mx-auto px-4">
-            <div className={`flex items-center justify-between mb-5 transition-all duration-700 ${reveal("featured") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-xs font-medium mb-2">
-                  En vedette
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900">Événements populaires</h2>
-              </div>
-              <Link href="#tous" className="text-emerald-600 hover:text-emerald-700 text-sm font-medium hidden sm:block">
-                Voir tous →
-              </Link>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6">
-              {featuredEvents.map((event, i) => (
-                <Link
-                  key={event.id}
-                  href={`/events/${event.id}`}
-                  className={`group block transition-all duration-500 ${reveal("featured") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-                  style={{ transitionDelay: `${i * 100}ms` }}
-                >
-                  <div className="relative rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-emerald-200 hover:-translate-y-1">
-                    {event.coverImage ? (
-                      <div className="aspect-[16/9] relative overflow-hidden">
-                        <Image
-                          src={event.coverImage}
-                          alt={event.name}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        <div className="absolute bottom-0 left-0 right-0 p-5">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Badge className="bg-white/90 text-gray-900 text-xs hover:bg-white/90">{SPORT_LABELS[event.sportType] || event.sportType}</Badge>
-                            <Badge className="bg-emerald-500/90 text-white text-xs hover:bg-emerald-500/90">
-                              {event._count.photos} photos
-                            </Badge>
-                          </div>
-                          <h3 className="text-lg font-bold text-white">{event.name}</h3>
-                          <p className="text-white/80 text-sm">
-                            {new Date(event.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
-                            {event.location && ` • ${event.location}`}
-                          </p>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="aspect-[16/9] flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-5">
-                        <span className="text-4xl mb-3">{SPORT_ICONS[event.sportType] || "\u{1F3C5}"}</span>
-                        <h3 className="text-lg font-bold text-gray-900 text-center">{event.name}</h3>
-                        <p className="text-gray-500 text-sm mt-1">
-                          {new Date(event.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
-                        </p>
-                        <div className="flex gap-2 mt-3">
-                          <Badge variant="outline" className="border-emerald-200 text-emerald-600 text-xs">{SPORT_LABELS[event.sportType]}</Badge>
-                          <Badge className="bg-emerald-50 text-emerald-600 text-xs hover:bg-emerald-50">{event._count.photos} photos</Badge>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ═══════════ FILTERS + GRID ═══════════ */}
       <section id="tous" className="pb-10">
