@@ -1,5 +1,7 @@
 import nodemailer from "nodemailer";
 
+// =========== SMTP CONFIG ===========
+
 const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || "587", 10);
 const SMTP_USER = process.env.SMTP_USER || "";
@@ -16,65 +18,214 @@ const transporter = SMTP_USER && SMTP_PASS
 
 const EMAIL_FROM = process.env.EMAIL_FROM || `Focus Racer <${SMTP_USER || "noreply@focusracer.swipego.app"}>`;
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+const LOGO_URL = `${APP_URL}/logo-focus-racer-white.png`;
+const CURRENT_YEAR = new Date().getFullYear();
 
-// =========== BASE LAYOUT ===========
+// =========== DESIGN TOKENS ===========
+
+const C = {
+  navy: "#042F2E",
+  navyLight: "#134E4A",
+  emerald: "#10B981",
+  emeraldDark: "#059669",
+  emeraldPale: "#D1FAE5",
+  teal: "#14B8A6",
+  bg: "#F8FAFC",
+  white: "#FFFFFF",
+  grayLight: "#F1F5F9",
+  grayBorder: "#E2E8F0",
+  textPrimary: "#1E293B",
+  textSecondary: "#475569",
+  textMuted: "#64748B",
+  textLight: "#94A3B8",
+} as const;
+
+const FONT = `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif`;
+
+// =========== HELPERS HTML ===========
+
+/** Bouton CTA compatible Outlook (VML fallback) */
+function ctaButton(url: string, label: string): string {
+  return `
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin: 28px auto;">
+  <tr>
+    <td align="center" style="border-radius: 8px; background: ${C.emerald};" bgcolor="${C.emerald}">
+      <!--[if mso]>
+      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${url}" style="height:48px;v-text-anchor:middle;width:220px;" arcsize="17%" strokecolor="${C.emeraldDark}" fillcolor="${C.emerald}">
+        <w:anchorlock/>
+        <center style="color:#ffffff;font-family:${FONT};font-size:16px;font-weight:600;">${label}</center>
+      </v:roundrect>
+      <![endif]-->
+      <!--[if !mso]><!-->
+      <a href="${url}" target="_blank" style="display: inline-block; padding: 14px 32px; color: ${C.white}; background: ${C.emerald}; text-decoration: none; font-family: ${FONT}; font-size: 16px; font-weight: 600; border-radius: 8px; mso-padding-alt: 0; text-align: center;">
+        ${label}
+      </a>
+      <!--<![endif]-->
+    </td>
+  </tr>
+</table>`;
+}
+
+/** Boite info (fond clair + bordure gauche emeraude) */
+function infoBox(content: string): string {
+  return `
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 24px 0;">
+  <tr>
+    <td style="width: 4px; background: ${C.emerald};" bgcolor="${C.emerald}">&nbsp;</td>
+    <td style="padding: 16px 20px; background: ${C.grayLight}; font-family: ${FONT}; font-size: 14px; color: ${C.textSecondary}; line-height: 1.6;" bgcolor="${C.grayLight}">
+      ${content}
+    </td>
+  </tr>
+</table>`;
+}
+
+/** Ligne info (label + valeur) */
+function infoRow(label: string, value: string): string {
+  return `
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 4px;">
+  <tr>
+    <td style="font-family: ${FONT}; font-size: 13px; color: ${C.textMuted}; padding: 2px 0; width: 40%;">${label}</td>
+    <td style="font-family: ${FONT}; font-size: 14px; color: ${C.textPrimary}; font-weight: 600; padding: 2px 0;">${value}</td>
+  </tr>
+</table>`;
+}
+
+/** Ligne commande (label + montant aligné droite) */
+function orderRow(label: string, value: string, isTotal = false): string {
+  const topBorder = isTotal ? `border-top: 2px solid ${C.grayBorder}; padding-top: 12px; margin-top: 8px;` : "";
+  const fontSize = isTotal ? "16px" : "14px";
+  const fontWeight = isTotal ? "700" : "400";
+  return `
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="${topBorder}">
+  <tr>
+    <td style="font-family: ${FONT}; font-size: ${fontSize}; color: ${isTotal ? C.textPrimary : C.textSecondary}; font-weight: ${fontWeight}; padding: 6px 0;">${label}</td>
+    <td align="right" style="font-family: ${FONT}; font-size: ${fontSize}; color: ${C.textPrimary}; font-weight: 600; padding: 6px 0;">${value}</td>
+  </tr>
+</table>`;
+}
+
+/** Séparateur horizontal */
+function divider(): string {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 24px 0;"><tr><td style="border-top: 1px solid ${C.grayBorder}; font-size: 0; line-height: 0;" height="1">&nbsp;</td></tr></table>`;
+}
+
+// =========== BASE LAYOUT (TABLES, OUTLOOK-SAFE) ===========
 
 function emailLayout({
   body,
+  preheader,
   unsubscribeUrl,
   footerNote,
 }: {
   body: string;
+  preheader?: string;
   unsubscribeUrl?: string;
   footerNote?: string;
 }): string {
-  return `<!DOCTYPE html>
-<html>
+  const preheaderHtml = preheader
+    ? `<div style="display:none;font-size:1px;color:${C.bg};line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${preheader}${"&nbsp;&zwnj;".repeat(30)}</div>`
+    : "";
+
+  const unsubscribeHtml = unsubscribeUrl
+    ? `<tr><td style="padding-top: 12px;"><a href="${unsubscribeUrl}" style="font-family: ${FONT}; font-size: 12px; color: ${C.textLight}; text-decoration: underline;">Se d\u00e9sabonner de ces notifications</a></td></tr>`
+    : "";
+
+  const footerNoteHtml = footerNote
+    ? `<tr><td style="padding-top: 12px; font-family: ${FONT}; font-size: 11px; color: ${C.textLight}; line-height: 1.5;">${footerNote}</td></tr>`
+    : "";
+
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="fr">
 <head>
-  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f9fafb; }
-    .wrapper { background: #f9fafb; padding: 24px 0; }
-    .container { max-width: 600px; margin: 0 auto; padding: 0 20px; }
-    .card { background: #ffffff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; }
-    .header { text-align: center; padding: 24px 20px 16px; border-bottom: 2px solid #14B8A6; }
-    .header h1 { color: #1f2937; margin: 0; font-size: 24px; font-weight: 700; }
-    .content { padding: 28px 24px; }
-    .info-box { background: #f0f9ff; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #14B8A6; }
-    .info-row { padding: 4px 0; }
-    .info-label { color: #6b7280; font-size: 14px; }
-    .info-value { font-weight: 600; }
-    .order-box { background: #f9fafb; border-radius: 8px; padding: 20px; margin: 20px 0; }
-    .order-row { padding: 6px 0; }
-    .order-row .label { color: #6b7280; }
-    .order-row .value { font-weight: 600; float: right; }
-    .total-row { border-top: 1px solid #e5e7eb; margin-top: 8px; padding-top: 12px; font-size: 18px; }
-    .btn { display: inline-block; background: #14B8A6; color: white; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 16px; margin: 20px 0; }
-    .note { color: #6b7280; font-size: 14px; }
-    .footer { padding: 16px 24px; color: #9ca3af; font-size: 12px; text-align: center; }
-    .footer a { color: #14B8A6; text-decoration: none; }
-    .clearfix::after { content: ""; display: table; clear: both; }
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+  <title>Focus Racer</title>
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+  <style>table{border-collapse:collapse;}td,th{mso-line-height-rule:exactly;}</style>
+  <![endif]-->
+  <style type="text/css">
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+    body { margin: 0; padding: 0; width: 100% !important; -webkit-font-smoothing: antialiased; }
+    @media only screen and (max-width: 620px) {
+      .email-container { width: 100% !important; max-width: 100% !important; }
+      .content-cell { padding-left: 20px !important; padding-right: 20px !important; }
+      .stack-column { display: block !important; width: 100% !important; }
+    }
   </style>
 </head>
-<body>
-  <div class="wrapper">
-    <div class="container">
-      <div class="card">
-        <div class="header">
-          <h1>Focus Racer</h1>
-        </div>
-        <div class="content">
-          ${body}
-        </div>
-      </div>
-      <div class="footer">
-        <p>Focus Racer &mdash; Plateforme de photos de courses sportives</p>
-        ${footerNote ? `<p style="margin-top: 8px; font-size: 11px;">${footerNote}</p>` : ""}
-        ${unsubscribeUrl ? `<p style="margin-top: 8px; font-size: 11px;"><a href="${unsubscribeUrl}">Se d\u00e9sabonner</a></p>` : ""}
-      </div>
-    </div>
-  </div>
+<body style="margin: 0; padding: 0; background-color: ${C.bg}; -webkit-font-smoothing: antialiased;" bgcolor="${C.bg}">
+
+  ${preheaderHtml}
+
+  <!-- WRAPPER TABLE -->
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: ${C.bg};" bgcolor="${C.bg}">
+    <tr>
+      <td align="center" style="padding: 32px 16px;">
+
+        <!-- EMAIL CONTAINER (600px) -->
+        <!--[if mso]><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" align="center"><tr><td><![endif]-->
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" class="email-container" style="max-width: 600px; width: 100%;">
+
+          <!-- ======== HEADER (Navy) ======== -->
+          <tr>
+            <td align="center" style="background: ${C.navy}; padding: 28px 24px; border-radius: 12px 12px 0 0;" bgcolor="${C.navy}">
+              <a href="${APP_URL}" target="_blank" style="text-decoration: none;">
+                <img src="${LOGO_URL}" alt="Focus Racer" width="160" height="auto" style="display: block; max-width: 160px; height: auto;">
+              </a>
+            </td>
+          </tr>
+
+          <!-- ======== CONTENT (White) ======== -->
+          <tr>
+            <td class="content-cell" style="background: ${C.white}; padding: 36px 32px; font-family: ${FONT}; font-size: 15px; line-height: 1.7; color: ${C.textSecondary};" bgcolor="${C.white}">
+              ${body}
+            </td>
+          </tr>
+
+          <!-- ======== FOOTER (Navy) ======== -->
+          <tr>
+            <td style="background: ${C.navy}; padding: 28px 32px; border-radius: 0 0 12px 12px;" bgcolor="${C.navy}">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                <!-- Links -->
+                <tr>
+                  <td align="center" style="padding-bottom: 16px;">
+                    <a href="${APP_URL}/faq" style="font-family: ${FONT}; font-size: 13px; color: ${C.emerald}; text-decoration: none; padding: 0 8px;">FAQ</a>
+                    <span style="color: ${C.navyLight};">&bull;</span>
+                    <a href="${APP_URL}/contact" style="font-family: ${FONT}; font-size: 13px; color: ${C.emerald}; text-decoration: none; padding: 0 8px;">Contact</a>
+                    <span style="color: ${C.navyLight};">&bull;</span>
+                    <a href="${APP_URL}/legal" style="font-family: ${FONT}; font-size: 13px; color: ${C.emerald}; text-decoration: none; padding: 0 8px;">Mentions l\u00e9gales</a>
+                  </td>
+                </tr>
+                <!-- Tagline -->
+                <tr>
+                  <td align="center" style="font-family: ${FONT}; font-size: 12px; color: ${C.textLight}; line-height: 1.5;">
+                    Plateforme de photos de courses sportives
+                  </td>
+                </tr>
+                <!-- Copyright -->
+                <tr>
+                  <td align="center" style="font-family: ${FONT}; font-size: 11px; color: ${C.textMuted}; padding-top: 8px;">
+                    &copy; ${CURRENT_YEAR} Focus Racer &mdash; Tous droits r\u00e9serv\u00e9s
+                  </td>
+                </tr>
+                ${footerNoteHtml}
+                ${unsubscribeHtml}
+              </table>
+            </td>
+          </tr>
+
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+
+      </td>
+    </tr>
+  </table>
+
 </body>
 </html>`;
 }
@@ -85,10 +236,12 @@ async function sendEmail({
   to,
   subject,
   html,
+  headers,
 }: {
   to: string;
   subject: string;
   html: string;
+  headers?: Record<string, string>;
 }): Promise<boolean> {
   if (!transporter) {
     console.log(`[Email] SMTP non configur\u00e9, email ignor\u00e9 \u00e0 : ${to} | Sujet : ${subject}`);
@@ -96,7 +249,16 @@ async function sendEmail({
   }
 
   try {
-    await transporter.sendMail({ from: EMAIL_FROM, to, subject, html });
+    await transporter.sendMail({
+      from: EMAIL_FROM,
+      to,
+      subject,
+      html,
+      headers: {
+        "X-Mailer": "Focus Racer",
+        ...headers,
+      },
+    });
     console.log(`[Email] Envoy\u00e9 \u00e0 ${to} : ${subject}`);
     return true;
   } catch (err) {
@@ -176,44 +338,27 @@ export async function sendRunnerNotification(data: RunnerNotificationData) {
   const galleryUrl = `${APP_URL}/explore/${data.eventId}/search?bib=${data.bibNumber}`;
 
   const body = `
-    <p>Bonjour ${data.firstName},</p>
-    <p>Vos photos de course sont disponibles ! Nous avons identifi\u00e9 <strong>${data.photoCount} photo${data.photoCount > 1 ? "s" : ""}</strong> avec votre dossard <strong>#${data.bibNumber}</strong>.</p>
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.firstName},</p>
+    <p style="margin: 0 0 24px;">Vos photos de course sont disponibles ! Nous avons identifi\u00e9 <strong style="color: ${C.textPrimary};">${data.photoCount} photo${data.photoCount > 1 ? "s" : ""}</strong> avec votre dossard <strong style="color: ${C.emerald};">#${data.bibNumber}</strong>.</p>
 
-    <div class="info-box">
-      <div class="info-row">
-        <span class="info-label">\u00c9v\u00e9nement</span><br>
-        <span class="info-value">${data.eventName}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Date</span><br>
-        <span class="info-value">${eventDateFormatted}</span>
-      </div>
-      ${data.eventLocation ? `
-      <div class="info-row">
-        <span class="info-label">Lieu</span><br>
-        <span class="info-value">${data.eventLocation}</span>
-      </div>` : ""}
-      <div class="info-row">
-        <span class="info-label">Dossard</span><br>
-        <span class="info-value">#${data.bibNumber}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Photos trouv\u00e9es</span><br>
-        <span class="info-value">${data.photoCount}</span>
-      </div>
-    </div>
+    ${infoBox(`
+      ${infoRow("\u00c9v\u00e9nement", data.eventName)}
+      ${infoRow("Date", eventDateFormatted)}
+      ${data.eventLocation ? infoRow("Lieu", data.eventLocation) : ""}
+      ${infoRow("Dossard", `#${data.bibNumber}`)}
+      ${infoRow("Photos trouv\u00e9es", String(data.photoCount))}
+    `)}
 
-    <div style="text-align: center;">
-      <a href="${galleryUrl}" class="btn">Voir mes photos</a>
-    </div>
+    ${ctaButton(galleryUrl, "Voir mes photos")}
 
-    <p class="note">
-      Retrouvez toutes vos photos, s\u00e9lectionnez vos pr\u00e9f\u00e9r\u00e9es et commandez-les en haute d\u00e9finition sans filigrane.
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      S\u00e9lectionnez vos pr\u00e9f\u00e9r\u00e9es et commandez-les en haute d\u00e9finition sans filigrane.
     </p>`;
 
   const html = emailLayout({
     body,
-    footerNote: `Vous recevez cet email car votre adresse est associ\u00e9e au dossard #${data.bibNumber} sur la start-list de ${data.eventName}. Si ce n'est pas vous, ignorez simplement cet email.`,
+    preheader: `${data.photoCount} photos trouv\u00e9es pour le dossard #${data.bibNumber} \u2014 ${data.eventName}`,
+    footerNote: `Vous recevez cet email car votre adresse est associ\u00e9e au dossard #${data.bibNumber} sur la start-list de ${data.eventName}.`,
   });
 
   return sendEmail({
@@ -236,61 +381,45 @@ export async function sendPurchaseConfirmation(data: PurchaseEmailData) {
 
   let itemsHtml = "";
   if (data.items && data.items.length > 0) {
-    itemsHtml = data.items.map(item => `
-      <div class="order-row clearfix">
-        <span class="label">${item.name}</span>
-        <span class="value">${item.price.toFixed(2).replace(".", ",")} \u20ac</span>
-      </div>`).join("");
+    itemsHtml = data.items.map(item =>
+      orderRow(item.name, `${item.price.toFixed(2).replace(".", ",")} \u20ac`)
+    ).join("");
   }
 
   const body = `
-    <p>Bonjour ${data.name},</p>
-    <p>Merci pour votre achat ! Vos photos sont pr\u00eates \u00e0 \u00eatre t\u00e9l\u00e9charg\u00e9es.</p>
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">Merci pour votre achat ! Vos photos sont pr\u00eates \u00e0 \u00eatre t\u00e9l\u00e9charg\u00e9es.</p>
 
-    <div class="order-box">
-      <div class="order-row clearfix">
-        <span class="label">Commande</span>
-        <span class="value">#${orderRef}</span>
-      </div>
-      <div class="order-row clearfix">
-        <span class="label">\u00c9v\u00e9nement</span>
-        <span class="value">${data.eventName}</span>
-      </div>
-      ${data.eventDate ? `
-      <div class="order-row clearfix">
-        <span class="label">Date</span>
-        <span class="value">${data.eventDate.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
-      </div>` : ""}
-      <div class="order-row clearfix">
-        <span class="label">Photos</span>
-        <span class="value">${data.photoCount} photo${data.photoCount > 1 ? "s" : ""} HD</span>
-      </div>
-      ${itemsHtml}
-      ${data.serviceFee ? `
-      <div class="order-row clearfix">
-        <span class="label">Frais de service</span>
-        <span class="value">${data.serviceFee.toFixed(2).replace(".", ",")} \u20ac</span>
-      </div>` : ""}
-      <div class="order-row total-row clearfix">
-        <span class="label">Total pay\u00e9</span>
-        <span class="value">${data.totalAmount.toFixed(2).replace(".", ",")} \u20ac</span>
-      </div>
-    </div>
+    <!-- Order details -->
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background: ${C.grayLight}; border-radius: 8px; margin: 24px 0;">
+      <tr>
+        <td style="padding: 20px 24px;">
+          ${orderRow("Commande", `#${orderRef}`)}
+          ${orderRow("\u00c9v\u00e9nement", data.eventName)}
+          ${data.eventDate ? orderRow("Date", data.eventDate.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })) : ""}
+          ${orderRow("Photos", `${data.photoCount} photo${data.photoCount > 1 ? "s" : ""} HD`)}
+          ${itemsHtml}
+          ${data.serviceFee ? orderRow("Frais de service", `${data.serviceFee.toFixed(2).replace(".", ",")} \u20ac`) : ""}
+          ${orderRow(`Total pay\u00e9`, `${data.totalAmount.toFixed(2).replace(".", ",")} \u20ac`, true)}
+        </td>
+      </tr>
+    </table>
 
-    <div style="text-align: center;">
-      <a href="${downloadUrl}" class="btn">T\u00e9l\u00e9charger mes photos</a>
-    </div>
+    ${ctaButton(downloadUrl, "T\u00e9l\u00e9charger mes photos")}
 
-    <p class="note">
-      Ce lien est valable jusqu'au ${expiresFormatted}.
-      Si vous avez un compte, vous pouvez r\u00e9g\u00e9n\u00e9rer un lien depuis votre espace "Mes Achats".
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      Lien valable jusqu'au ${expiresFormatted}.<br>
+      Vous pouvez r\u00e9g\u00e9n\u00e9rer un lien depuis votre espace \u00ab&nbsp;Mes Achats&nbsp;\u00bb.
     </p>`;
 
-  const html = emailLayout({ body });
+  const html = emailLayout({
+    body,
+    preheader: `Commande #${orderRef} confirm\u00e9e \u2014 ${data.photoCount} photos HD pr\u00eates \u00e0 t\u00e9l\u00e9charger`,
+  });
 
   return sendEmail({
     to: data.to,
-    subject: `Vos photos de ${data.eventName} sont pr\u00eates !`,
+    subject: `Commande confirm\u00e9e \u2014 Vos photos de ${data.eventName} sont pr\u00eates !`,
     html,
   });
 }
@@ -303,31 +432,31 @@ export async function sendGuestPhotoNotification(data: GuestPhotoNotificationDat
 
   const greeting = data.name ? `Bonjour ${data.name},` : "Bonjour,";
   const bibLine = data.bibNumber
-    ? ` Votre dossard <strong>#${data.bibNumber}</strong> a \u00e9t\u00e9 rep\u00e9r\u00e9.`
+    ? ` Votre dossard <strong style="color: ${C.emerald};">#${data.bibNumber}</strong> a \u00e9t\u00e9 rep\u00e9r\u00e9.`
     : "";
 
   const body = `
-    <p>${greeting}</p>
-    <p><strong>${data.photoCount} photo${data.photoCount > 1 ? "s" : ""}</strong> viennent d'\u00eatre publi\u00e9es pour <strong>${data.eventName}</strong>.${bibLine}</p>
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">${greeting}</p>
+    <p style="margin: 0 0 24px;"><strong style="color: ${C.textPrimary};">${data.photoCount} photo${data.photoCount > 1 ? "s" : ""}</strong> viennent d'\u00eatre publi\u00e9es pour <strong style="color: ${C.textPrimary};">${data.eventName}</strong>.${bibLine}</p>
 
-    <div style="text-align: center;">
-      <a href="${galleryUrl}" class="btn">Voir les photos</a>
-    </div>
+    ${ctaButton(galleryUrl, "Voir les photos")}
 
-    <p class="note">
-      Retrouvez vos photos, s\u00e9lectionnez vos pr\u00e9f\u00e9r\u00e9es et commandez-les en haute d\u00e9finition sans filigrane.
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      S\u00e9lectionnez vos pr\u00e9f\u00e9r\u00e9es et commandez-les en haute d\u00e9finition sans filigrane.
     </p>`;
 
   const html = emailLayout({
     body,
+    preheader: `${data.photoCount} nouvelles photos pour ${data.eventName}${data.bibNumber ? ` \u2014 dossard #${data.bibNumber}` : ""}`,
     unsubscribeUrl,
-    footerNote: `Vous recevez cet email car vous suivez l'\u00e9v\u00e9nement "${data.eventName}" sur Focus Racer.`,
+    footerNote: `Vous recevez cet email car vous suivez l'\u00e9v\u00e9nement \u00ab\u00a0${data.eventName}\u00a0\u00bb sur Focus Racer.`,
   });
 
   return sendEmail({
     to: data.to,
     subject: `Photos disponibles pour ${data.eventName} !`,
     html,
+    headers: { "List-Unsubscribe": `<${unsubscribeUrl}>` },
   });
 }
 
@@ -346,54 +475,56 @@ export async function sendWelcomeEmail(data: WelcomeEmailData) {
     : `${APP_URL}/photographer/dashboard`;
 
   const body = `
-    <p>Bonjour ${data.firstName},</p>
-    <p>Bienvenue sur <strong>Focus Racer</strong> ! Votre compte ${roleLabel} est cr\u00e9\u00e9 et pr\u00eat \u00e0 l'emploi.</p>
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.firstName},</p>
+    <p style="margin: 0 0 24px;">Bienvenue sur <strong style="color: ${C.textPrimary};">Focus Racer</strong> ! Votre compte ${roleLabel} est cr\u00e9\u00e9 et pr\u00eat \u00e0 l'emploi.</p>
 
-    <div class="info-box">
-      <div class="info-row">
-        <span class="info-label">Votre espace</span><br>
-        <span class="info-value">${roleLabel.charAt(0).toUpperCase() + roleLabel.slice(1)}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Cr\u00e9dits offerts</span><br>
-        <span class="info-value">100 cr\u00e9dits de bienvenue</span>
-      </div>
-    </div>
+    ${infoBox(`
+      ${infoRow("Votre espace", roleLabel.charAt(0).toUpperCase() + roleLabel.slice(1))}
+      ${infoRow("Cr\u00e9dits offerts", "100 cr\u00e9dits de bienvenue")}
+    `)}
 
-    <div style="text-align: center;">
-      <a href="${dashboardUrl}" class="btn">Acc\u00e9der \u00e0 mon espace</a>
-    </div>
+    ${ctaButton(dashboardUrl, "Acc\u00e9der \u00e0 mon espace")}
 
-    <p class="note">
-      Besoin d'aide ? Consultez notre <a href="${APP_URL}/faq" style="color:#14B8A6;">FAQ</a> ou contactez-nous via la page <a href="${APP_URL}/contact" style="color:#14B8A6;">Contact</a>.
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      Besoin d'aide ? <a href="${APP_URL}/faq" style="color: ${C.emerald}; text-decoration: none;">FAQ</a> &bull; <a href="${APP_URL}/contact" style="color: ${C.emerald}; text-decoration: none;">Contact</a>
     </p>`;
 
-  const html = emailLayout({ body });
+  const html = emailLayout({
+    body,
+    preheader: `Bienvenue ${data.firstName} ! Votre compte ${roleLabel} Focus Racer est pr\u00eat.`,
+  });
 
   return sendEmail({
     to: data.to,
-    subject: "Bienvenue sur Focus Racer !",
+    subject: `Bienvenue sur Focus Racer, ${data.firstName} !`,
     html,
   });
 }
 
 export async function sendContactConfirmation(data: ContactConfirmationData) {
   const body = `
-    <p>Bonjour ${data.name},</p>
-    <p>Nous avons bien re\u00e7u votre message : <strong>"${data.subject}"</strong>.</p>
-    <p>Notre \u00e9quipe vous r\u00e9pondra dans les plus brefs d\u00e9lais.</p>
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">Nous avons bien re\u00e7u votre message\u00a0: <strong style="color: ${C.textPrimary};">\u00ab\u00a0${data.subject}\u00a0\u00bb</strong>.</p>
+    <p style="margin: 0 0 24px;">Notre \u00e9quipe vous r\u00e9pondra dans les plus brefs d\u00e9lais.</p>
 
-    <div class="info-box">
-      <p style="margin: 0; font-size: 14px; color: #6b7280;">
-        D\u00e9lai moyen de r\u00e9ponse : <strong>24-48h</strong> en jours ouvr\u00e9s.
-      </p>
-    </div>
+    ${infoBox(`
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+          <td style="font-family: ${FONT}; font-size: 14px; color: ${C.textSecondary};">
+            D\u00e9lai moyen de r\u00e9ponse\u00a0: <strong style="color: ${C.textPrimary};">24-48h</strong> en jours ouvr\u00e9s.
+          </td>
+        </tr>
+      </table>
+    `)}
 
-    <p class="note">
-      En attendant, consultez notre <a href="${APP_URL}/faq" style="color:#14B8A6;">FAQ</a> pour des r\u00e9ponses imm\u00e9diates.
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      En attendant, consultez notre <a href="${APP_URL}/faq" style="color: ${C.emerald}; text-decoration: none;">FAQ</a> pour des r\u00e9ponses imm\u00e9diates.
     </p>`;
 
-  const html = emailLayout({ body });
+  const html = emailLayout({
+    body,
+    preheader: `Message re\u00e7u \u2014 nous vous r\u00e9pondrons sous 24-48h.`,
+  });
 
   return sendEmail({
     to: data.to,
@@ -404,17 +535,18 @@ export async function sendContactConfirmation(data: ContactConfirmationData) {
 
 export async function sendSmartAlertEmail(data: SmartAlertEmailData) {
   const ctaHtml = data.ctaUrl
-    ? `<div style="text-align: center;">
-        <a href="${data.ctaUrl}" class="btn">${data.ctaLabel || "Voir"}</a>
-      </div>`
+    ? ctaButton(data.ctaUrl, data.ctaLabel || "Voir")
     : "";
 
   const body = `
-    <p>Bonjour ${data.name},</p>
-    <p>${data.message}</p>
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">${data.message}</p>
     ${ctaHtml}`;
 
-  const html = emailLayout({ body });
+  const html = emailLayout({
+    body,
+    preheader: data.title,
+  });
 
   return sendEmail({
     to: data.to,
@@ -425,3 +557,5 @@ export async function sendSmartAlertEmail(data: SmartAlertEmailData) {
 
 // Re-export for test endpoint
 export { sendEmail as _sendEmail, emailLayout as _emailLayout };
+// Export helpers for use in other templates
+export { ctaButton, infoBox, infoRow, orderRow, divider, C, FONT, APP_URL };
