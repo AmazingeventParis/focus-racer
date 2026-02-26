@@ -229,7 +229,7 @@ export default function ClientSidebar() {
                   <span className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-navy-300/40 cursor-not-allowed select-none">
                     <span className="text-navy-300/30">{item.icon}</span>
                     {item.labelKey ? t(item.labelKey) : item.label}
-                    <span className="ml-auto text-[10px] uppercase tracking-wide text-navy-300/30 font-semibold">Bientôt</span>
+                    <span className="ml-auto text-[10px] uppercase tracking-wide text-navy-300/30 font-semibold">Nous contacter</span>
                   </span>
                 </li>
               );
