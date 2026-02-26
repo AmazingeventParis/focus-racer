@@ -269,7 +269,7 @@ export default function ExplorePage() {
       </section>
 
       {/* ═══════════ STATS BAR ═══════════ */}
-      <section className="py-4 bg-gray-50 border-b border-gray-100">
+      <section className="py-3 bg-gray-50 border-b border-gray-100">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-center">
             <div>
@@ -302,7 +302,7 @@ export default function ExplorePage() {
 
       {/* ═══════════ FEATURED EVENTS ═══════════ */}
       {featuredEvents.length > 0 && !hasActiveFilters && (
-        <section id="featured" data-reveal className="py-12 bg-white border-b border-gray-100">
+        <section id="featured" data-reveal className="pt-6 pb-10 bg-white border-b border-gray-100">
           <div className="container mx-auto px-4">
             <div className={`flex items-center justify-between mb-8 transition-all duration-700 ${reveal("featured") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               <div>
