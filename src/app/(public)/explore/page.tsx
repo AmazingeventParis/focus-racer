@@ -401,16 +401,16 @@ export default function ExplorePage() {
 
           {/* Grid */}
           {isLoading ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="rounded-2xl overflow-hidden border border-gray-100">
-                  <div className="aspect-video bg-gray-100 animate-pulse" />
-                  <div className="p-5 space-y-3">
-                    <div className="h-5 bg-gray-100 rounded animate-pulse w-3/4" />
-                    <div className="h-4 bg-gray-100 rounded animate-pulse w-1/2" />
-                    <div className="flex gap-2">
-                      <div className="h-6 w-16 bg-gray-100 rounded-full animate-pulse" />
-                      <div className="h-6 w-20 bg-gray-100 rounded-full animate-pulse" />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+                <div key={i} className="rounded-xl overflow-hidden border border-gray-100">
+                  <div className="aspect-[3/4] bg-gray-100 animate-pulse" />
+                  <div className="p-2.5 space-y-2">
+                    <div className="h-4 bg-gray-100 rounded animate-pulse w-3/4" />
+                    <div className="h-3 bg-gray-100 rounded animate-pulse w-1/2" />
+                    <div className="flex gap-1.5">
+                      <div className="h-5 w-12 bg-gray-100 rounded-full animate-pulse" />
+                      <div className="h-5 w-14 bg-gray-100 rounded-full animate-pulse" />
                     </div>
                   </div>
                 </div>
@@ -441,7 +441,7 @@ export default function ExplorePage() {
               )}
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {filteredEvents.map((event, i) => {
                 const isPast = new Date(event.date) < new Date();
                 const daysLeft = getDaysBeforeDeletion(event.date);
@@ -451,69 +451,64 @@ export default function ExplorePage() {
                     href={`/events/${event.id}`}
                     className="block group"
                   >
-                    <Card className="rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 h-full border-gray-100 hover:border-emerald-200 hover:-translate-y-0.5 bg-white">
+                    <Card className="rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 h-full border-gray-100 hover:border-emerald-200 hover:-translate-y-0.5 bg-white">
                       {event.coverImage ? (
-                        <div className="aspect-video relative overflow-hidden">
+                        <div className="aspect-[3/4] relative overflow-hidden">
                           <Image
                             src={event.coverImage}
                             alt={`Photos ${event.name}`}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-500"
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                           />
                           {isPast && (
-                            <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                            <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
                               {daysLeft !== null && (
-                                <span className={`px-2 py-0.5 backdrop-blur-sm text-[10px] rounded-full font-medium ${daysLeft <= 7 ? "bg-red-500/80 text-white" : "bg-amber-500/80 text-white"}`}>
+                                <span className={`px-1.5 py-0.5 backdrop-blur-sm text-[9px] rounded-full font-medium ${daysLeft <= 7 ? "bg-red-500/80 text-white" : "bg-amber-500/80 text-white"}`}>
                                   {daysLeft}j restant{daysLeft > 1 ? "s" : ""}
                                 </span>
                               )}
-                              <span className="px-2 py-0.5 bg-black/50 backdrop-blur-sm text-white text-[10px] rounded-full font-medium">Terminé</span>
+                              <span className="px-1.5 py-0.5 bg-black/50 backdrop-blur-sm text-white text-[9px] rounded-full font-medium">Terminé</span>
                             </div>
                           )}
                         </div>
                       ) : (
-                        <div className="aspect-video flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 border-b border-gray-100 relative">
-                          <span className="text-5xl mb-2 opacity-60">{SPORT_ICONS[event.sportType] || "\u{1F3C5}"}</span>
-                          <span className="text-sm font-bold text-gray-700 text-center px-4 leading-tight">
+                        <div className="aspect-[3/4] flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 border-b border-gray-100 relative">
+                          <span className="text-4xl mb-2 opacity-60">{SPORT_ICONS[event.sportType] || "\u{1F3C5}"}</span>
+                          <span className="text-xs font-bold text-gray-700 text-center px-3 leading-tight">
                             {event.name}
                           </span>
                           {isPast && (
-                            <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                            <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
                               {daysLeft !== null && (
-                                <span className={`px-2 py-0.5 text-[10px] rounded-full font-medium ${daysLeft <= 7 ? "bg-red-100 text-red-600" : "bg-amber-100 text-amber-600"}`}>
+                                <span className={`px-1.5 py-0.5 text-[9px] rounded-full font-medium ${daysLeft <= 7 ? "bg-red-100 text-red-600" : "bg-amber-100 text-amber-600"}`}>
                                   {daysLeft}j restant{daysLeft > 1 ? "s" : ""}
                                 </span>
                               )}
-                              <span className="px-2 py-0.5 bg-gray-200 text-gray-600 text-[10px] rounded-full font-medium">Terminé</span>
+                              <span className="px-1.5 py-0.5 bg-gray-200 text-gray-600 text-[9px] rounded-full font-medium">Terminé</span>
                             </div>
                           )}
                         </div>
                       )}
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-1">{event.name}</CardTitle>
-                        <CardDescription className="text-sm">
+                      <div className="p-2.5">
+                        <h3 className="text-sm font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-1">{event.name}</h3>
+                        <p className="text-xs text-gray-500 mt-0.5">
                           {new Date(event.date).toLocaleDateString("fr-FR", {
                             day: "numeric",
-                            month: "long",
+                            month: "short",
                             year: "numeric",
                           })}
                           {event.location && ` • ${event.location}`}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex justify-between items-center">
-                          <div className="flex gap-2">
-                            <Badge variant="outline" className="border-emerald-200 text-emerald-600 text-xs">
-                              {SPORT_ICONS[event.sportType]} {SPORT_LABELS[event.sportType] || event.sportType}
-                            </Badge>
-                            <Badge className="bg-emerald-50 text-emerald-600 hover:bg-emerald-50 text-xs">
-                              {event._count.photos} photo{event._count.photos !== 1 ? "s" : ""}
-                            </Badge>
-                          </div>
-                          <span className="text-xs text-gray-400">par {event.user.name}</span>
+                        </p>
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          <Badge variant="outline" className="border-emerald-200 text-emerald-600 text-[10px] px-1.5 py-0">
+                            {SPORT_ICONS[event.sportType]} {SPORT_LABELS[event.sportType] || event.sportType}
+                          </Badge>
+                          <Badge className="bg-emerald-50 text-emerald-600 hover:bg-emerald-50 text-[10px] px-1.5 py-0">
+                            {event._count.photos} photo{event._count.photos !== 1 ? "s" : ""}
+                          </Badge>
                         </div>
-                      </CardContent>
+                      </div>
                     </Card>
                   </Link>
                 );
