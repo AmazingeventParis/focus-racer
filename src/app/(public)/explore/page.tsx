@@ -269,7 +269,7 @@ export default function ExplorePage() {
       </section>
 
       {/* ═══════════ STATS BAR ═══════════ */}
-      <section className="py-3 bg-gray-50 border-b border-gray-100">
+      <section className="py-2 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-center">
             <div>
@@ -370,10 +370,10 @@ export default function ExplorePage() {
       )}
 
       {/* ═══════════ FILTERS + GRID ═══════════ */}
-      <section id="tous" className="pt-6 pb-10">
-        <div className="container mx-auto px-4">
+      <section id="tous" className="pb-10">
+        <div className="container mx-auto px-4 pt-4">
           {/* Filters bar */}
-          <div className="mb-8 space-y-4">
+          <div className="mb-6 space-y-3">
             {/* Sport pills */}
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-medium text-gray-500 mr-1">Sport :</span>
