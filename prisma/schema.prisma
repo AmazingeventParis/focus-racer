@@ -155,9 +155,10 @@ model Event {
   updatedAt    DateTime    @updatedAt
   latitude     Float?
   longitude    Float?
-  favorites    EventFavorite[]
-  notifications Notification[]
-  photoAlerts  PhotoAlert[]
+  favorites      EventFavorite[]
+  notifications  Notification[]
+  photoAlerts    PhotoAlert[]
+  guestFollowers GuestEventFollower[]
 
   @@index([userId])
   @@index([status])
@@ -874,4 +875,22 @@ model WrappedRecap {
   generatedAt DateTime @default(now())
 
   @@unique([userId, year, role])
+}
+
+// =========== GUEST EVENT FOLLOWERS ===========
+
+model GuestEventFollower {
+  id               String    @id @default(cuid())
+  email            String
+  name             String?
+  eventId          String
+  event            Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  bibNumber        String?
+  unsubscribeToken String    @unique @default(cuid())
+  verified         Boolean   @default(true)
+  notifiedAt       DateTime?
+  createdAt        DateTime  @default(now())
+
+  @@unique([email, eventId])
+  @@index([eventId])
 }

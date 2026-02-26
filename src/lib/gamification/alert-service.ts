@@ -1,8 +1,9 @@
 import prisma from "@/lib/prisma";
 import { notificationEmitter } from "@/lib/notification-emitter";
+import { sendSmartAlertEmail } from "@/lib/email";
 
 /**
- * Create a smart alert and optionally notify via SSE.
+ * Create a smart alert and optionally notify via SSE and/or email.
  */
 export async function createSmartAlert(params: {
   userId: string;
@@ -11,6 +12,11 @@ export async function createSmartAlert(params: {
   message: string;
   metadata?: Record<string, unknown>;
   notifySSE?: boolean;
+  sendEmail?: boolean;
+  userEmail?: string;
+  userName?: string;
+  ctaUrl?: string;
+  ctaLabel?: string;
 }) {
   const alert = await prisma.smartAlert.create({
     data: {
@@ -31,6 +37,29 @@ export async function createSmartAlert(params: {
       });
     } catch {
       // SSE errors should not block
+    }
+  }
+
+  // Send email if requested and user email provided
+  if (params.sendEmail && params.userEmail) {
+    try {
+      const sent = await sendSmartAlertEmail({
+        to: params.userEmail,
+        name: params.userName || "sportif",
+        alertType: params.alertType,
+        title: params.title,
+        message: params.message,
+        ctaUrl: params.ctaUrl,
+        ctaLabel: params.ctaLabel,
+      });
+      if (sent) {
+        await prisma.smartAlert.update({
+          where: { id: alert.id },
+          data: { emailSent: true },
+        });
+      }
+    } catch {
+      // Email errors should not block
     }
   }
 

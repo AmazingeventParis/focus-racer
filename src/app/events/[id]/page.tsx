@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useSession } from "next-auth/react";
 import Footer from "@/components/layout/Footer";
+import GuestFollowForm from "@/components/GuestFollowForm";
 
 const SPORT_LABELS: Record<string, string> = {
   RUNNING: "Course à pied",
@@ -663,6 +664,11 @@ export default function PublicEventPage({
                     {alertCreated ? "Alerte créée !" : "Créer une alerte"}
                   </Button>
                 </div>
+              )}
+
+              {/* Guest follow form for non-authenticated visitors */}
+              {!session?.user && (
+                <GuestFollowForm eventId={id} />
               )}
             </div>
           </div>

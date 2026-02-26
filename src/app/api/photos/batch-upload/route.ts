@@ -10,6 +10,7 @@ import { detectTextFromImage, indexFaces, searchFaceByImage } from "@/lib/rekogn
 import { scheduleAutoClustering } from "@/lib/auto-cluster";
 import { grantXp } from "@/lib/gamification/xp-service";
 import { recordStreakActivity } from "@/lib/gamification/streak-service";
+import { sendGuestPhotoNotification } from "@/lib/email";
 import { processingQueue } from "@/lib/processing-queue";
 import {
   createUploadSession,
@@ -538,6 +539,41 @@ export async function POST(request: NextRequest) {
               }
             } catch (notifErr) {
               console.error("Error creating notifications:", notifErr);
+            }
+
+            // Notify guest followers by email
+            try {
+              const guestFollowers = await prisma.guestEventFollower.findMany({
+                where: { eventId, verified: true },
+              });
+              const photoTotal = await prisma.photo.count({ where: { eventId } });
+              const eventData = await prisma.event.findUnique({
+                where: { id: eventId },
+                select: { name: true },
+              });
+              const evtName = eventData?.name || "votre événement";
+
+              for (const guest of guestFollowers) {
+                try {
+                  await sendGuestPhotoNotification({
+                    to: guest.email,
+                    name: guest.name || undefined,
+                    eventName: evtName,
+                    eventId,
+                    photoCount: photoTotal,
+                    bibNumber: guest.bibNumber || undefined,
+                    unsubscribeToken: guest.unsubscribeToken,
+                  });
+                  await prisma.guestEventFollower.update({
+                    where: { id: guest.id },
+                    data: { notifiedAt: new Date() },
+                  });
+                } catch (emailErr) {
+                  console.error(`[Email] Error notifying guest ${guest.email}:`, emailErr);
+                }
+              }
+            } catch (guestNotifErr) {
+              console.error("Error notifying guest followers:", guestNotifErr);
             }
           }
         }

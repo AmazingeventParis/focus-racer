@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { notificationEmitter } from "@/lib/notification-emitter";
+import { sendContactConfirmation } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -51,6 +52,13 @@ export async function POST(request: NextRequest) {
   });
 
   notificationEmitter.notifyAdmin();
+
+  // Send confirmation email (non-blocking)
+  sendContactConfirmation({
+    to: email,
+    name,
+    subject,
+  }).catch((err) => console.error("[Email] Contact confirmation error:", err));
 
   return NextResponse.json(supportMessage, { status: 201 });
 }

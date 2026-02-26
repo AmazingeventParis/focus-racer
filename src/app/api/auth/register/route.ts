@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { generateSportifId } from "@/lib/sportif-id";
+import { sendWelcomeEmail } from "@/lib/email";
 
 const registerSchema = z.object({
   firstName: z.string().min(1, "Le prénom est requis"),
@@ -91,6 +92,13 @@ export async function POST(request: NextRequest) {
 
       return newUser;
     });
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail({
+      to: user.email,
+      firstName: firstName,
+      role: user.role,
+    }).catch((err) => console.error("[Email] Welcome email error:", err));
 
     return NextResponse.json({
       id: user.id,
