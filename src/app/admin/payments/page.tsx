@@ -85,9 +85,14 @@ interface CreditBreakdownItem {
   count: number;
 }
 
+interface CreditBreakdownWithRevenue extends CreditBreakdownItem {
+  revenue: number;
+}
+
 interface PaymentStats {
   revenue: {
     total: number;
+    platformCA: number;
     avgBasket: number;
     paidOrders: number;
   };
@@ -107,6 +112,8 @@ interface PaymentStats {
   credits: {
     inCirculation: number;
     purchaseRevenue: number;
+    packPurchases: CreditBreakdownWithRevenue;
+    subPurchases: CreditBreakdownWithRevenue;
     purchases: CreditBreakdownItem;
     importDeductions: CreditBreakdownItem;
     apiDeductions: CreditBreakdownItem;
@@ -485,9 +492,9 @@ export default function AdminPaymentsPage() {
           ))}
         </div>
       ) : stats ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           {/* CA Plateforme */}
-          <Card className="glass-card rounded-2xl border-l-4 border-l-emerald overflow-hidden">
+          <Card className="glass-card rounded-2xl border-l-4 border-l-emerald overflow-hidden col-span-2 lg:col-span-1">
             <CardHeader className="pb-1 pt-4 px-4">
               <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 CA Plateforme
@@ -520,19 +527,36 @@ export default function AdminPaymentsPage() {
             </CardContent>
           </Card>
 
-          {/* Vente de credits */}
+          {/* Packs de credits */}
           <Card className="glass-card rounded-2xl border-l-4 border-l-blue-500 overflow-hidden">
             <CardHeader className="pb-1 pt-4 px-4">
               <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Vente de credits
+                Packs crédits
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
               <p className="text-2xl font-bold text-blue-600">
-                {euro(stats.credits.purchaseRevenue)}
+                {euro(stats.credits.packPurchases.revenue)}
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                {stats.credits.purchases.total.toLocaleString("fr-FR")} credits · {stats.credits.purchases.count} transactions
+                {stats.credits.packPurchases.total.toLocaleString("fr-FR")} crédits · {stats.credits.packPurchases.count} achats
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Abonnements credits */}
+          <Card className="glass-card rounded-2xl border-l-4 border-l-indigo-500 overflow-hidden">
+            <CardHeader className="pb-1 pt-4 px-4">
+              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Abonnements crédits
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 pb-4">
+              <p className="text-2xl font-bold text-indigo-600">
+                {euro(stats.credits.subPurchases.revenue)}
+              </p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                {stats.credits.subPurchases.total.toLocaleString("fr-FR")} crédits · {stats.credits.subPurchases.count} mois
               </p>
             </CardContent>
           </Card>
@@ -549,7 +573,7 @@ export default function AdminPaymentsPage() {
                 {euro(Math.abs(stats.credits.apiDeductions.total) * avgCreditPrice)}
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                {Math.abs(stats.credits.apiDeductions.total).toLocaleString("fr-FR")} credits · {stats.credits.apiDeductions.count} appels
+                {Math.abs(stats.credits.apiDeductions.total).toLocaleString("fr-FR")} crédits · {stats.credits.apiDeductions.count} appels
               </p>
             </CardContent>
           </Card>
@@ -561,13 +585,15 @@ export default function AdminPaymentsPage() {
       {/* ============================================================ */}
       {stats && (() => {
         const salesAmount = stats.connect.totalServiceFees;
-        const creditPurchaseAmount = stats.credits.purchaseRevenue;
+        const packAmount = stats.credits.packPurchases.revenue;
+        const subAmount = stats.credits.subPurchases.revenue;
         const apiAmount = Math.abs(stats.credits.apiDeductions.total) * avgCreditPrice;
-        const totalSources = salesAmount + creditPurchaseAmount + apiAmount;
+        const totalSources = salesAmount + packAmount + subAmount + apiAmount;
 
         const revenueSlices: PieSlice[] = [
           { value: salesAmount, color: "#8b5cf6", label: "Commission ventes" },
-          { value: creditPurchaseAmount, color: "#2563eb", label: "Vente credits" },
+          { value: packAmount, color: "#2563eb", label: "Packs crédits" },
+          { value: subAmount, color: "#6366f1", label: "Abonnements crédits" },
           { value: apiAmount, color: "#ea580c", label: "API" },
         ];
 
@@ -631,18 +657,23 @@ export default function AdminPaymentsPage() {
             {/* Credits Summary */}
             <Card className="glass-card rounded-2xl">
               <CardHeader>
-                <CardTitle className="text-navy">Resume credits plateforme</CardTitle>
+                <CardTitle className="text-navy">Résumé crédits plateforme</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-                  <div className="text-center p-4 bg-gray-50 rounded-xl">
+                <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+                  <div className="text-center p-4 bg-gray-50 rounded-xl col-span-2 lg:col-span-1">
                     <p className="text-2xl font-bold text-navy">{stats.credits.inCirculation.toLocaleString("fr-FR")}</p>
                     <p className="text-xs text-muted-foreground mt-1">En circulation</p>
                   </div>
                   <div className="text-center p-4 bg-blue-50 rounded-xl">
-                    <p className="text-2xl font-bold text-blue-600">+{stats.credits.purchases.total.toLocaleString("fr-FR")}</p>
-                    <p className="text-xs text-blue-500 font-medium">{euro(stats.credits.purchaseRevenue)}</p>
-                    <p className="text-xs text-muted-foreground mt-1">Achetes ({stats.credits.purchases.count})</p>
+                    <p className="text-2xl font-bold text-blue-600">+{stats.credits.packPurchases.total.toLocaleString("fr-FR")}</p>
+                    <p className="text-xs text-blue-500 font-medium">{euro(stats.credits.packPurchases.revenue)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Packs ({stats.credits.packPurchases.count})</p>
+                  </div>
+                  <div className="text-center p-4 bg-indigo-50 rounded-xl">
+                    <p className="text-2xl font-bold text-indigo-600">+{stats.credits.subPurchases.total.toLocaleString("fr-FR")}</p>
+                    <p className="text-xs text-indigo-500 font-medium">{euro(stats.credits.subPurchases.revenue)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Abonnements ({stats.credits.subPurchases.count})</p>
                   </div>
                   <div className="text-center p-4 bg-red-50 rounded-xl">
                     <p className="text-2xl font-bold text-red-600">{stats.credits.importDeductions.total.toLocaleString("fr-FR")}</p>

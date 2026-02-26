@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const whereDate: Record<string, unknown> = {};
     if (from || to) whereDate.createdAt = dateFilter;
 
-    const [totalRevenue, totalOrders, refundedOrders, monthlyRevenue, packBreakdown, topEvents, connectStats, feeStats, creditPurchases, creditImportDeductions, creditApiDeductions, creditAdminGrants, totalCreditsInCirculation, creditPurchaseRevenueResult] =
+    const [totalRevenue, totalOrders, refundedOrders, monthlyRevenue, packBreakdown, topEvents, connectStats, feeStats, creditPackPurchases, creditSubPurchases, creditImportDeductions, creditApiDeductions, creditAdminGrants, creditNetCirculation, packRevenueResult, subRevenueResult] =
       await Promise.all([
         // Total revenue from paid orders (with optional date filter)
         prisma.order.aggregate({
@@ -91,9 +91,15 @@ export async function GET(request: NextRequest) {
           where: { ...whereDate, status: "PAID" },
           _sum: { serviceFee: true, stripeFee: true, photographerPayout: true },
         }),
-        // Credit purchases (all users, with date filter)
+        // Credit PACK purchases (1000, 5000, 15000 = one-time packs)
         prisma.creditTransaction.aggregate({
-          where: { type: "PURCHASE", ...whereDate },
+          where: { type: "PURCHASE", amount: { in: [1000, 5000, 15000] }, ...whereDate },
+          _sum: { amount: true },
+          _count: true,
+        }),
+        // Credit SUBSCRIPTION purchases (20000, 50000 = monthly subscriptions)
+        prisma.creditTransaction.aggregate({
+          where: { type: "PURCHASE", amount: { in: [20000, 50000] }, ...whereDate },
           _sum: { amount: true },
           _count: true,
         }),
@@ -115,22 +121,35 @@ export async function GET(request: NextRequest) {
           _sum: { amount: true },
           _count: true,
         }),
-        // Total credits in circulation (current state, no date filter)
-        prisma.user.aggregate({ _sum: { credits: true } }),
-        // Estimated revenue from credit purchases (based on known pack prices)
+        // Credits in circulation = net sum of ALL transactions (purchases positive, deductions negative)
+        prisma.$queryRaw<{ net: number }[]>`
+          SELECT COALESCE(SUM("amount"), 0)::int as net
+          FROM "CreditTransaction"
+        `,
+        // Revenue from credit PACKS (one-time)
         prisma.$queryRaw<{ total: number }[]>`
           SELECT COALESCE(SUM(
             CASE
               WHEN "amount" = 1000 THEN 19.0
               WHEN "amount" = 5000 THEN 85.0
               WHEN "amount" = 15000 THEN 225.0
+              ELSE "amount" * 0.019
+            END
+          ), 0)::float as total
+          FROM "CreditTransaction"
+          WHERE "type" = 'PURCHASE' AND "amount" IN (1000, 5000, 15000)
+        `,
+        // Revenue from credit SUBSCRIPTIONS (monthly)
+        prisma.$queryRaw<{ total: number }[]>`
+          SELECT COALESCE(SUM(
+            CASE
               WHEN "amount" = 20000 THEN 199.0
               WHEN "amount" = 50000 THEN 399.0
               ELSE "amount" * 0.019
             END
           ), 0)::float as total
           FROM "CreditTransaction"
-          WHERE "type" = 'PURCHASE'
+          WHERE "type" = 'PURCHASE' AND "amount" IN (20000, 50000)
         `,
       ]);
 
@@ -138,10 +157,12 @@ export async function GET(request: NextRequest) {
     const onboardedCount = connectStats.find((c) => c.onboarded)?.count || 0;
     const notOnboardedCount = connectStats.find((c) => !c.onboarded)?.count || 0;
 
-    // Platform CA = service fees + credit purchases + API usage revenue
+    // Revenue breakdown
     const serviceFees = feeStats._sum.serviceFee || 0;
-    const creditPurchaseRevenue = creditPurchaseRevenueResult[0]?.total || 0;
-    const totalCreditsPurchased = (creditPurchases._sum.amount || 1);
+    const packRevenue = packRevenueResult[0]?.total || 0;
+    const subRevenue = subRevenueResult[0]?.total || 0;
+    const creditPurchaseRevenue = packRevenue + subRevenue;
+    const totalCreditsPurchased = (creditPackPurchases._sum.amount || 0) + (creditSubPurchases._sum.amount || 0) || 1;
     const avgCreditPrice = totalCreditsPurchased > 0 ? creditPurchaseRevenue / totalCreditsPurchased : 0.019;
     const apiRevenue = Math.abs(creditApiDeductions._sum.amount || 0) * avgCreditPrice;
     const platformCA = serviceFees + creditPurchaseRevenue + apiRevenue;
@@ -170,11 +191,21 @@ export async function GET(request: NextRequest) {
         totalAccounts: onboardedCount + notOnboardedCount,
       },
       credits: {
-        inCirculation: totalCreditsInCirculation._sum.credits || 0,
-        purchaseRevenue: creditPurchaseRevenueResult[0]?.total || 0,
+        inCirculation: creditNetCirculation[0]?.net || 0,
+        purchaseRevenue: creditPurchaseRevenue,
+        packPurchases: {
+          total: creditPackPurchases._sum.amount || 0,
+          count: creditPackPurchases._count,
+          revenue: packRevenue,
+        },
+        subPurchases: {
+          total: creditSubPurchases._sum.amount || 0,
+          count: creditSubPurchases._count,
+          revenue: subRevenue,
+        },
         purchases: {
-          total: creditPurchases._sum.amount || 0,
-          count: creditPurchases._count,
+          total: (creditPackPurchases._sum.amount || 0) + (creditSubPurchases._sum.amount || 0),
+          count: creditPackPurchases._count + creditSubPurchases._count,
         },
         importDeductions: {
           total: creditImportDeductions._sum.amount || 0,
