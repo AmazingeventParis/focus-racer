@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { evaluateBadges } from "@/lib/badges";
+import { evaluateBadges, BADGE_MAP } from "@/lib/badges";
 import { grantXp } from "@/lib/gamification/xp-service";
+import { canSendEmail, generateUnsubscribeUrl } from "@/lib/notification-preferences";
+import { sendBadgeEarnedEmail } from "@/lib/email";
 
 export async function GET() {
   try {
@@ -93,6 +95,31 @@ export async function GET() {
           await grantXp(userId, "BADGE_EARNED", { badgeKey });
         } catch (xpErr) {
           console.error(`Error granting badge XP for ${badgeKey}:`, xpErr);
+        }
+      }
+
+      // Send email if this is the user's very first badge
+      if (existingKeys.size === 0 && trulyNew.length > 0) {
+        try {
+          const ok = await canSendEmail(userId, "badgeEarned");
+          if (ok) {
+            const user = await prisma.user.findUnique({
+              where: { id: userId },
+              select: { email: true, name: true },
+            });
+            if (user) {
+              const firstBadge = BADGE_MAP.get(trulyNew[0]);
+              await sendBadgeEarnedEmail({
+                to: user.email,
+                name: user.name || "sportif",
+                badgeName: firstBadge?.labelFr || trulyNew[0],
+                badgeDescription: firstBadge?.descriptionFr || "",
+                unsubscribeUrl: generateUnsubscribeUrl(userId, "badgeEarned"),
+              });
+            }
+          }
+        } catch (emailErr) {
+          console.error("[Email] First badge email error:", emailErr);
         }
       }
     }

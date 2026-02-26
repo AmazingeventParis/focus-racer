@@ -125,6 +125,8 @@ model User {
   smartAlerts             SmartAlert[]
   wrappedRecaps           WrappedRecap[]
 
+  notificationPreference  NotificationPreference?
+
   @@index([role])
   @@index([isActive])
 }
@@ -893,4 +895,32 @@ model GuestEventFollower {
 
   @@unique([email, eventId])
   @@index([eventId])
+}
+
+// =========== NOTIFICATION PREFERENCES ===========
+
+model NotificationPreference {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Non-transactional preferences (opt-out: true = enabled by default)
+  photosAvailable     Boolean  @default(true)
+  eventPublished      Boolean  @default(true)
+  supportReply        Boolean  @default(true)
+  badgeEarned         Boolean  @default(true)
+  streakAtRisk        Boolean  @default(true)
+  purchaseReminder    Boolean  @default(true)
+  sortingReminder     Boolean  @default(true)
+  stripeOnboarded     Boolean  @default(true)
+  newSupportMessage   Boolean  @default(true)
+  newSale             Boolean  @default(true)
+  newFollower         Boolean  @default(true)
+  lowCredits          Boolean  @default(true)
+  productUpdates      Boolean  @default(true)
+  referralCompleted   Boolean  @default(true)
+  newsletter          Boolean  @default(true)
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }

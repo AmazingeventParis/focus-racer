@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getRoleLabel } from "@/lib/role-helpers";
 import PreferencesCard from "@/components/PreferencesCard";
 import ReferralCard from "@/components/gamification/ReferralCard";
+import NotificationPreferencesCard from "@/components/NotificationPreferencesCard";
 import { useLocale } from "@/components/providers/LocaleProvider";
 
 export default function SettingsPage() {
@@ -180,33 +181,8 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-        {/* Notifications */}
-        <Card className="bg-white border-0 shadow-card rounded-xl">
-          <CardHeader>
-            <CardTitle className="text-lg font-display text-gray-900">Notifications</CardTitle>
-            <CardDescription className="text-gray-500">Configurez vos préférences de notification</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { id: "orders", label: "Nouvelles commandes", desc: "Recevez un email à chaque vente" },
-                { id: "marketing", label: "Newsletter", desc: "Actualités et conseils Focus Racer" },
-                { id: "marketplace", label: "Marketplace", desc: "Nouvelles opportunités correspondant à votre profil" },
-              ].map((notif) => (
-                <div key={notif.id} className="flex items-center justify-between p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
-                  <div>
-                    <p className="font-medium text-gray-900 text-sm">{notif.label}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{notif.desc}</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-emerald/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald"></div>
-                  </label>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Notifications email */}
+        <NotificationPreferencesCard />
 
         {/* Parrainage */}
         <Card className="bg-white border-0 shadow-card rounded-xl">

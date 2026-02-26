@@ -555,6 +555,496 @@ export async function sendSmartAlertEmail(data: SmartAlertEmailData) {
   });
 }
 
+// =========== TRANSACTIONAL EMAILS (toujours envoyés) ===========
+
+interface SubscriptionPaymentFailedData {
+  to: string;
+  name: string;
+  plan: string;
+  amount: string;
+}
+
+export async function sendSubscriptionPaymentFailedEmail(data: SubscriptionPaymentFailedData) {
+  const billingUrl = `${APP_URL}/photographer/credits`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">Le paiement de votre abonnement <strong style="color: ${C.textPrimary};">${data.plan}</strong> a échoué. Veuillez mettre à jour votre moyen de paiement pour conserver vos crédits mensuels.</p>
+
+    ${infoBox(`
+      ${infoRow("Abonnement", data.plan)}
+      ${infoRow("Montant", data.amount)}
+      ${infoRow("Statut", '<span style="color: #EF4444; font-weight: 600;">Paiement échoué</span>')}
+    `)}
+
+    ${ctaButton(billingUrl, "Mettre à jour le paiement")}
+
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      Sans action de votre part, votre abonnement sera suspendu sous 7 jours.
+    </p>`;
+
+  const html = emailLayout({
+    body,
+    preheader: `Paiement échoué — mettez à jour votre moyen de paiement`,
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: "Paiement échoué — mettez à jour votre moyen de paiement",
+    html,
+  });
+}
+
+interface SubscriptionRenewalData {
+  to: string;
+  name: string;
+  plan: string;
+  creditAmount: number;
+  amount: string;
+  nextDate: string;
+}
+
+export async function sendSubscriptionRenewalEmail(data: SubscriptionRenewalData) {
+  const creditsUrl = `${APP_URL}/photographer/credits`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">Votre abonnement <strong style="color: ${C.textPrimary};">${data.plan}</strong> a été renouvelé. <strong style="color: ${C.emerald};">+${data.creditAmount.toLocaleString("fr-FR")} crédits</strong> ont été ajoutés à votre compte.</p>
+
+    ${infoBox(`
+      ${infoRow("Abonnement", data.plan)}
+      ${infoRow("Crédits ajoutés", `+${data.creditAmount.toLocaleString("fr-FR")}`)}
+      ${infoRow("Montant", data.amount)}
+      ${infoRow("Prochain renouvellement", data.nextDate)}
+    `)}
+
+    ${ctaButton(creditsUrl, "Voir mes crédits")}`;
+
+  const html = emailLayout({
+    body,
+    preheader: `Abonnement renouvelé — +${data.creditAmount.toLocaleString("fr-FR")} crédits ajoutés`,
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: `Abonnement renouvelé — +${data.creditAmount.toLocaleString("fr-FR")} crédits`,
+    html,
+  });
+}
+
+interface SubscriptionCanceledData {
+  to: string;
+  name: string;
+  plan: string;
+  endsAt: string;
+}
+
+export async function sendSubscriptionCanceledEmail(data: SubscriptionCanceledData) {
+  const pricingUrl = `${APP_URL}/pricing`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">Votre abonnement <strong style="color: ${C.textPrimary};">${data.plan}</strong> a été résilié. Vos crédits restants sont toujours utilisables.</p>
+
+    ${infoBox(`
+      ${infoRow("Abonnement", data.plan)}
+      ${infoRow("Statut", '<span style="color: #EF4444; font-weight: 600;">Résilié</span>')}
+      ${infoRow("Fin d\'accès", data.endsAt)}
+    `)}
+
+    <p style="margin: 0 0 24px; font-size: 14px; color: ${C.textSecondary};">
+      Vous pouvez réactiver votre abonnement à tout moment ou acheter des packs de crédits à l'unité.
+    </p>
+
+    ${ctaButton(pricingUrl, "Voir les offres")}`;
+
+  const html = emailLayout({
+    body,
+    preheader: `Votre abonnement a été résilié`,
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: "Votre abonnement a été résilié",
+    html,
+  });
+}
+
+// =========== NON-TRANSACTIONAL EMAILS (préférences + List-Unsubscribe) ===========
+
+interface SupportReplyEmailData {
+  to: string;
+  name: string;
+  subject: string;
+  replyContent: string;
+  repliedBy: string;
+  unsubscribeUrl: string;
+}
+
+export async function sendSupportReplyEmail(data: SupportReplyEmailData) {
+  const supportUrl = `${APP_URL}/sportif/messagerie`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">Vous avez reçu une réponse à votre demande <strong style="color: ${C.textPrimary};">«\u00a0${data.subject}\u00a0»</strong>.</p>
+
+    ${infoBox(`
+      <p style="font-family: ${FONT}; font-size: 14px; color: ${C.textPrimary}; margin: 0; white-space: pre-wrap;">${data.replyContent}</p>
+      <p style="font-family: ${FONT}; font-size: 12px; color: ${C.textMuted}; margin: 8px 0 0;">— ${data.repliedBy}</p>
+    `)}
+
+    ${ctaButton(supportUrl, "Voir la conversation")}`;
+
+  const html = emailLayout({
+    body,
+    preheader: `Réponse à votre demande «\u00a0${data.subject}\u00a0»`,
+    unsubscribeUrl: data.unsubscribeUrl,
+    footerNote: "Vous recevez cet email car vous avez un ticket de support ouvert.",
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: `Réponse à votre demande : ${data.subject}`,
+    html,
+    headers: { "List-Unsubscribe": `<${data.unsubscribeUrl}>` },
+  });
+}
+
+interface PhotosAvailableEmailData {
+  to: string;
+  name: string;
+  eventName: string;
+  eventId: string;
+  photoCount: number;
+  unsubscribeUrl: string;
+}
+
+export async function sendPhotosAvailableEmail(data: PhotosAvailableEmailData) {
+  const galleryUrl = `${APP_URL}/events/${data.eventId}`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;"><strong style="color: ${C.textPrimary};">${data.photoCount} photo${data.photoCount > 1 ? "s" : ""}</strong> viennent d'être publiées pour <strong style="color: ${C.textPrimary};">${data.eventName}</strong>.</p>
+
+    ${ctaButton(galleryUrl, "Voir les photos")}
+
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      Retrouvez vos photos, sélectionnez vos préférées et commandez-les en haute définition.
+    </p>`;
+
+  const html = emailLayout({
+    body,
+    preheader: `${data.photoCount} nouvelles photos pour ${data.eventName}`,
+    unsubscribeUrl: data.unsubscribeUrl,
+    footerNote: `Vous recevez cet email car vous suivez l'événement «\u00a0${data.eventName}\u00a0» sur Focus Racer.`,
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: `${data.photoCount} photos disponibles pour ${data.eventName} !`,
+    html,
+    headers: { "List-Unsubscribe": `<${data.unsubscribeUrl}>` },
+  });
+}
+
+interface StripeOnboardedEmailData {
+  to: string;
+  name: string;
+  unsubscribeUrl: string;
+}
+
+export async function sendStripeOnboardedEmail(data: StripeOnboardedEmailData) {
+  const dashboardUrl = `${APP_URL}/photographer/orders`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">Votre compte <strong style="color: ${C.emerald};">Stripe Connect</strong> est maintenant activé ! Vous pouvez recevoir vos paiements directement sur votre compte bancaire.</p>
+
+    ${infoBox(`
+      ${infoRow("Statut", '<span style="color: #10B981; font-weight: 600;">Activé ✓</span>')}
+      ${infoRow("Virements", "Automatiques après chaque vente")}
+      ${infoRow("Frais", "1\u00a0€ de frais de service par commande")}
+    `)}
+
+    ${ctaButton(dashboardUrl, "Voir mes ventes")}`;
+
+  const html = emailLayout({
+    body,
+    preheader: `Votre compte Stripe Connect est activé — recevez vos paiements directement`,
+    unsubscribeUrl: data.unsubscribeUrl,
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: "Stripe Connect activé — recevez vos paiements directement",
+    html,
+    headers: { "List-Unsubscribe": `<${data.unsubscribeUrl}>` },
+  });
+}
+
+interface BadgeEarnedEmailData {
+  to: string;
+  name: string;
+  badgeName: string;
+  badgeDescription: string;
+  unsubscribeUrl: string;
+}
+
+export async function sendBadgeEarnedEmail(data: BadgeEarnedEmailData) {
+  const badgesUrl = `${APP_URL}/sportif/dashboard`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">Félicitations ! Vous venez de gagner votre premier badge 🏆</p>
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 24px 0;">
+      <tr>
+        <td align="center" style="padding: 24px; background: ${C.grayLight}; border-radius: 12px;">
+          <p style="font-family: ${FONT}; font-size: 20px; font-weight: 700; color: ${C.textPrimary}; margin: 0 0 8px;">${data.badgeName}</p>
+          <p style="font-family: ${FONT}; font-size: 14px; color: ${C.textSecondary}; margin: 0;">${data.badgeDescription}</p>
+        </td>
+      </tr>
+    </table>
+
+    ${ctaButton(badgesUrl, "Voir mes badges")}
+
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      Continuez à utiliser Focus Racer pour débloquer d'autres badges !
+    </p>`;
+
+  const html = emailLayout({
+    body,
+    preheader: `Nouveau badge débloqué : ${data.badgeName}`,
+    unsubscribeUrl: data.unsubscribeUrl,
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: `Badge débloqué : ${data.badgeName} !`,
+    html,
+    headers: { "List-Unsubscribe": `<${data.unsubscribeUrl}>` },
+  });
+}
+
+interface NewSupportMessageEmailData {
+  to: string;
+  senderName: string;
+  senderEmail: string;
+  subject: string;
+  category: string;
+  unsubscribeUrl: string;
+}
+
+export async function sendNewSupportMessageEmail(data: NewSupportMessageEmailData) {
+  const adminUrl = `${APP_URL}/focus-mgr-7k9x/messages`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Nouveau message support</p>
+    <p style="margin: 0 0 24px;">Un nouveau message a été reçu sur la plateforme.</p>
+
+    ${infoBox(`
+      ${infoRow("De", `${data.senderName} (${data.senderEmail})`)}
+      ${infoRow("Sujet", data.subject)}
+      ${infoRow("Catégorie", data.category)}
+    `)}
+
+    ${ctaButton(adminUrl, "Voir les messages")}`;
+
+  const html = emailLayout({
+    body,
+    preheader: `Nouveau message support de ${data.senderName} — ${data.subject}`,
+    unsubscribeUrl: data.unsubscribeUrl,
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: `[Support] ${data.subject} — ${data.senderName}`,
+    html,
+    headers: { "List-Unsubscribe": `<${data.unsubscribeUrl}>` },
+  });
+}
+
+interface EventPublishedEmailData {
+  to: string;
+  name: string;
+  eventName: string;
+  eventId: string;
+  eventDate: string;
+  eventLocation?: string;
+  unsubscribeUrl: string;
+}
+
+export async function sendEventPublishedEmail(data: EventPublishedEmailData) {
+  const eventUrl = `${APP_URL}/events/${data.eventId}`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">L'événement <strong style="color: ${C.textPrimary};">${data.eventName}</strong> que vous suivez vient d'être publié !</p>
+
+    ${infoBox(`
+      ${infoRow("Événement", data.eventName)}
+      ${infoRow("Date", data.eventDate)}
+      ${data.eventLocation ? infoRow("Lieu", data.eventLocation) : ""}
+    `)}
+
+    ${ctaButton(eventUrl, "Voir l'événement")}
+
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      Les photos seront disponibles prochainement. Nous vous préviendrons !
+    </p>`;
+
+  const html = emailLayout({
+    body,
+    preheader: `${data.eventName} est maintenant publié sur Focus Racer`,
+    unsubscribeUrl: data.unsubscribeUrl,
+    footerNote: `Vous recevez cet email car vous suivez l'événement «\u00a0${data.eventName}\u00a0» sur Focus Racer.`,
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: `${data.eventName} est publié !`,
+    html,
+    headers: { "List-Unsubscribe": `<${data.unsubscribeUrl}>` },
+  });
+}
+
+// =========== NEW SALE → PHOTOGRAPHER ===========
+
+interface NewSaleEmailData {
+  to: string;
+  name: string;
+  buyerName: string;
+  eventName: string;
+  photoCount: number;
+  totalAmount: string;
+  orderId: string;
+  unsubscribeUrl: string;
+}
+
+export async function sendNewSaleEmail(data: NewSaleEmailData) {
+  const salesUrl = `${APP_URL}/photographer/orders`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">Bonne nouvelle ! Vous avez réalisé une nouvelle vente sur Focus Racer.</p>
+
+    ${infoBox(`
+      ${infoRow("Acheteur", data.buyerName)}
+      ${infoRow("Événement", data.eventName)}
+      ${infoRow("Photos", `${data.photoCount} photo${data.photoCount > 1 ? "s" : ""}`)}
+      ${infoRow("Montant", data.totalAmount)}
+    `)}
+
+    ${ctaButton(salesUrl, "Voir mes ventes")}
+
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      Le paiement sera reversé sur votre compte Stripe Connect.
+    </p>`;
+
+  const html = emailLayout({
+    body,
+    preheader: `Nouvelle vente : ${data.photoCount} photo${data.photoCount > 1 ? "s" : ""} — ${data.totalAmount}`,
+    unsubscribeUrl: data.unsubscribeUrl,
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: `Nouvelle vente : ${data.photoCount} photo${data.photoCount > 1 ? "s" : ""} — ${data.eventName}`,
+    html,
+    headers: { "List-Unsubscribe": `<${data.unsubscribeUrl}>` },
+  });
+}
+
+// =========== NEW FOLLOWER → PHOTOGRAPHER ===========
+
+interface NewFollowerEmailData {
+  to: string;
+  name: string;
+  followerName: string;
+  eventName: string;
+  eventId: string;
+  totalFollowers: number;
+  unsubscribeUrl: string;
+}
+
+export async function sendNewFollowerEmail(data: NewFollowerEmailData) {
+  const eventUrl = `${APP_URL}/photographer/events/${data.eventId}`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">Un nouveau sportif suit votre événement <strong style="color: ${C.textPrimary};">${data.eventName}</strong> !</p>
+
+    ${infoBox(`
+      ${infoRow("Sportif", data.followerName)}
+      ${infoRow("Événement", data.eventName)}
+      ${infoRow("Total followers", `${data.totalFollowers} sportif${data.totalFollowers > 1 ? "s" : ""}`)}
+    `)}
+
+    ${ctaButton(eventUrl, "Voir l'événement")}
+
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      Plus vous avez de followers, plus vos photos seront vues !
+    </p>`;
+
+  const html = emailLayout({
+    body,
+    preheader: `${data.followerName} suit votre événement ${data.eventName}`,
+    unsubscribeUrl: data.unsubscribeUrl,
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: `Nouveau follower sur ${data.eventName}`,
+    html,
+    headers: { "List-Unsubscribe": `<${data.unsubscribeUrl}>` },
+  });
+}
+
+// =========== LOW CREDITS → PHOTOGRAPHER ===========
+
+interface LowCreditsEmailData {
+  to: string;
+  name: string;
+  creditsRemaining: number;
+  unsubscribeUrl: string;
+}
+
+export async function sendLowCreditsEmail(data: LowCreditsEmailData) {
+  const creditsUrl = `${APP_URL}/photographer/credits`;
+
+  const body = `
+    <p style="font-size: 16px; color: ${C.textPrimary}; margin: 0 0 6px;">Bonjour ${data.name},</p>
+    <p style="margin: 0 0 24px;">Votre solde de crédits est bas. Pensez à recharger pour continuer à importer vos photos.</p>
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 24px 0;">
+      <tr>
+        <td align="center" style="padding: 24px; background: #FEF3C7; border-radius: 12px;">
+          <p style="font-family: ${FONT}; font-size: 14px; color: #92400E; margin: 0 0 4px;">Crédits restants</p>
+          <p style="font-family: ${FONT}; font-size: 32px; font-weight: 700; color: #92400E; margin: 0;">${data.creditsRemaining.toLocaleString("fr-FR")}</p>
+        </td>
+      </tr>
+    </table>
+
+    ${ctaButton(creditsUrl, "Recharger mes crédits")}
+
+    <p style="font-size: 13px; color: ${C.textMuted}; margin: 0; text-align: center;">
+      Les packs de crédits commencent à 19 € pour 1 000 crédits.
+    </p>`;
+
+  const html = emailLayout({
+    body,
+    preheader: `Plus que ${data.creditsRemaining} crédits — rechargez votre compte`,
+    unsubscribeUrl: data.unsubscribeUrl,
+  });
+
+  return sendEmail({
+    to: data.to,
+    subject: `Crédits bas : plus que ${data.creditsRemaining} crédits`,
+    html,
+    headers: { "List-Unsubscribe": `<${data.unsubscribeUrl}>` },
+  });
+}
+
 // Re-export for test endpoint
 export { sendEmail as _sendEmail, emailLayout as _emailLayout };
 // Export helpers for use in other templates

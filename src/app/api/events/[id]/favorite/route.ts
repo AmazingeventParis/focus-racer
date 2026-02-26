@@ -40,6 +40,39 @@ export async function POST(
       console.error("Failed to grant XP for favorite:", e);
     }
 
+    // Notify photographer of new follower
+    try {
+      const event = await prisma.event.findUnique({
+        where: { id: eventId },
+        select: { userId: true, name: true },
+      });
+      if (event?.userId && event.userId !== session.user.id) {
+        const { canSendEmail, generateUnsubscribeUrl } = await import("@/lib/notification-preferences");
+        const ok = await canSendEmail(event.userId, "newFollower");
+        if (ok) {
+          const [photographer, follower, followerCount] = await Promise.all([
+            prisma.user.findUnique({ where: { id: event.userId }, select: { email: true, name: true } }),
+            prisma.user.findUnique({ where: { id: session.user.id }, select: { name: true } }),
+            prisma.eventFavorite.count({ where: { eventId } }),
+          ]);
+          if (photographer) {
+            const { sendNewFollowerEmail } = await import("@/lib/email");
+            await sendNewFollowerEmail({
+              to: photographer.email,
+              name: photographer.name || "photographe",
+              followerName: follower?.name || "Un sportif",
+              eventName: event.name,
+              eventId,
+              totalFollowers: followerCount,
+              unsubscribeUrl: generateUnsubscribeUrl(event.userId, "newFollower"),
+            });
+          }
+        }
+      }
+    } catch (followerEmailErr) {
+      console.error("[Email] New follower notification error:", followerEmailErr);
+    }
+
     return NextResponse.json({ favorited: true });
   }
 }

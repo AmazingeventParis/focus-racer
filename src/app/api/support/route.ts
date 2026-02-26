@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { notificationEmitter } from "@/lib/notification-emitter";
+import { sendNewSupportMessageEmail } from "@/lib/email";
+import { canSendEmail, generateUnsubscribeUrl } from "@/lib/notification-preferences";
 
 // GET - List user's support messages (sent + received)
 export async function GET(request: NextRequest) {
@@ -74,6 +76,33 @@ export async function POST(request: NextRequest) {
 
   // Notify admin in real-time that a new message arrived
   notificationEmitter.notifyAdmin();
+
+  // Email all active admins about new support message
+  try {
+    const sender = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { name: true, email: true },
+    });
+    const admins = await prisma.user.findMany({
+      where: { role: "ADMIN", isActive: true },
+      select: { id: true, email: true },
+    });
+    for (const admin of admins) {
+      const ok = await canSendEmail(admin.id, "newSupportMessage");
+      if (ok) {
+        sendNewSupportMessageEmail({
+          to: admin.email,
+          senderName: sender?.name || session.user.name || "Utilisateur",
+          senderEmail: sender?.email || session.user.email || "",
+          subject: subject,
+          category: category || "OTHER",
+          unsubscribeUrl: generateUnsubscribeUrl(admin.id, "newSupportMessage"),
+        }).catch((err) => console.error("[Email] Admin notify error:", err));
+      }
+    }
+  } catch (adminEmailErr) {
+    console.error("[Email] Admin notification error:", adminEmailErr);
+  }
 
   return NextResponse.json(supportMessage, { status: 201 });
 }

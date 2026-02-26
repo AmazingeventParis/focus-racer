@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { notificationEmitter } from "@/lib/notification-emitter";
+import { sendSupportReplyEmail } from "@/lib/email";
+import { canSendEmail, generateUnsubscribeUrl } from "@/lib/notification-preferences";
 
 export async function GET(
   request: NextRequest,
@@ -77,6 +79,35 @@ export async function PATCH(
   }
   // Also notify admin sidebar (badge count changes when status changes)
   notificationEmitter.notifyAdmin();
+
+  // Send email to user/guest when admin replies
+  if (adminReply) {
+    const recipientEmail = message.user?.email || message.guestEmail;
+    const recipientName = message.user?.name || message.guestName || "utilisateur";
+    const repliedByName = session.user.name || session.user.email || "L'équipe Focus Racer";
+
+    if (recipientEmail) {
+      // Check preference only for registered users
+      const shouldSend = message.userId
+        ? await canSendEmail(message.userId, "supportReply")
+        : true;
+
+      if (shouldSend) {
+        const unsubscribeUrl = message.userId
+          ? generateUnsubscribeUrl(message.userId, "supportReply")
+          : "";
+
+        sendSupportReplyEmail({
+          to: recipientEmail,
+          name: recipientName,
+          subject: message.subject,
+          replyContent: adminReply,
+          repliedBy: repliedByName,
+          unsubscribeUrl,
+        }).catch((err) => console.error("[Email] Support reply error:", err));
+      }
+    }
+  }
 
   return NextResponse.json(message);
 }

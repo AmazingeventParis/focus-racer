@@ -8,6 +8,7 @@ function UnsubscribeContent() {
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
   const eventName = searchParams.get("event");
+  const category = searchParams.get("category");
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
@@ -21,8 +22,15 @@ function UnsubscribeContent() {
             </div>
             <h1 className="text-xl font-bold text-gray-900 mb-2">Désinscription confirmée</h1>
             <p className="text-gray-500 mb-6">
-              Vous ne recevrez plus de notifications pour
-              {eventName ? <> l&apos;événement <strong>&quot;{eventName}&quot;</strong></> : " cet événement"}.
+              {category
+                ? <>Vous ne recevrez plus de notifications <strong>&quot;{category}&quot;</strong>.</>
+                : eventName
+                  ? <>Vous ne recevrez plus de notifications pour l&apos;événement <strong>&quot;{eventName}&quot;</strong>.</>
+                  : "Vous ne recevrez plus ces notifications."
+              }
+            </p>
+            <p className="text-gray-400 text-sm mb-6">
+              Vous pouvez réactiver ces notifications dans vos réglages à tout moment.
             </p>
           </>
         ) : status === "not_found" ? (

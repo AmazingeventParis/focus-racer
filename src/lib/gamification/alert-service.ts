@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { notificationEmitter } from "@/lib/notification-emitter";
 import { sendSmartAlertEmail } from "@/lib/email";
+import { canSendEmail, type PreferenceKey } from "@/lib/notification-preferences";
 
 /**
  * Create a smart alert and optionally notify via SSE and/or email.
@@ -42,24 +43,40 @@ export async function createSmartAlert(params: {
 
   // Send email if requested and user email provided
   if (params.sendEmail && params.userEmail) {
-    try {
-      const sent = await sendSmartAlertEmail({
-        to: params.userEmail,
-        name: params.userName || "sportif",
-        alertType: params.alertType,
-        title: params.title,
-        message: params.message,
-        ctaUrl: params.ctaUrl,
-        ctaLabel: params.ctaLabel,
-      });
-      if (sent) {
-        await prisma.smartAlert.update({
-          where: { id: alert.id },
-          data: { emailSent: true },
+    // Map alert types to preference keys
+    const alertPrefMap: Partial<Record<string, PreferenceKey>> = {
+      PURCHASE_REMINDER: "purchaseReminder",
+      SORTING_REMINDER: "sortingReminder",
+      STREAK_AT_RISK: "streakAtRisk",
+      PHOTOS_AVAILABLE: "photosAvailable",
+      BADGE_EARNED: "badgeEarned",
+    };
+    const prefKey = alertPrefMap[params.alertType];
+    // Si pas de mapping (WEEKLY_STATS, LEVEL_UP, REFERRAL_COMPLETED) → envoi par défaut
+    const shouldSend = prefKey
+      ? await canSendEmail(params.userId, prefKey)
+      : true;
+
+    if (shouldSend) {
+      try {
+        const sent = await sendSmartAlertEmail({
+          to: params.userEmail,
+          name: params.userName || "sportif",
+          alertType: params.alertType,
+          title: params.title,
+          message: params.message,
+          ctaUrl: params.ctaUrl,
+          ctaLabel: params.ctaLabel,
         });
+        if (sent) {
+          await prisma.smartAlert.update({
+            where: { id: alert.id },
+            data: { emailSent: true },
+          });
+        }
+      } catch {
+        // Email errors should not block
       }
-    } catch {
-      // Email errors should not block
     }
   }
 
@@ -130,12 +147,19 @@ export async function processScheduledAlerts() {
       },
     });
     if (!existing) {
+      const streakUser = await prisma.user.findUnique({
+        where: { id: streak.userId },
+        select: { email: true, name: true },
+      });
       await createSmartAlert({
         userId: streak.userId,
         alertType: "STREAK_AT_RISK",
         title: "Série en danger !",
         message: `Votre série de ${streak.currentStreak} semaines est en danger. Effectuez une action avant demain !`,
         metadata: { streakType: streak.streakType, currentStreak: streak.currentStreak },
+        sendEmail: true,
+        userEmail: streakUser?.email,
+        userName: streakUser?.name || undefined,
       });
       alertsCreated++;
     }
@@ -168,7 +192,7 @@ export async function processScheduledAlerts() {
   const users = allEmails.size > 0
     ? await prisma.user.findMany({
         where: { email: { in: [...allEmails] } },
-        select: { id: true, email: true },
+        select: { id: true, email: true, name: true },
       })
     : [];
   const userByEmail = new Map(users.map((u) => [u.email, u]));
@@ -202,6 +226,10 @@ export async function processScheduledAlerts() {
         message: `Vos photos de ${event.name} sont disponibles depuis 48h. Ne les manquez pas !`,
         metadata: { eventId: event.id, eventName: event.name },
         notifySSE: false,
+        sendEmail: true,
+        userEmail: user.email,
+        ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/events/${event.id}`,
+        ctaLabel: "Voir mes photos",
       });
       alertsCreated++;
     }
@@ -226,6 +254,10 @@ export async function processScheduledAlerts() {
     });
     if (alerted) continue;
 
+    const sortUser = await prisma.user.findUnique({
+      where: { id: event.userId },
+      select: { email: true, name: true },
+    });
     await createSmartAlert({
       userId: event.userId,
       alertType: "SORTING_REMINDER",
@@ -233,6 +265,11 @@ export async function processScheduledAlerts() {
       message: `L'événement "${event.name}" a été uploadé il y a plus de 72h mais n'est pas encore publié.`,
       metadata: { eventId: event.id, eventName: event.name },
       notifySSE: false,
+      sendEmail: true,
+      userEmail: sortUser?.email,
+      userName: sortUser?.name || undefined,
+      ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/photographer/events/${event.id}`,
+      ctaLabel: "Publier l'événement",
     });
     alertsCreated++;
   }

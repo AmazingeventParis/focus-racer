@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocale } from "@/components/providers/LocaleProvider";
 import PreferencesCard from "@/components/PreferencesCard";
 import ReferralCard from "@/components/gamification/ReferralCard";
+import NotificationPreferencesCard from "@/components/NotificationPreferencesCard";
 
 interface Profile {
   id: string;
@@ -225,6 +226,9 @@ export default function SportifReglagesPage() {
 
       {/* Preferences */}
       <PreferencesCard />
+
+      {/* Notifications email */}
+      <NotificationPreferencesCard />
 
       {/* Profile */}
       <Card className="glass-card rounded-2xl">

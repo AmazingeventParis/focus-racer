@@ -290,6 +290,31 @@ export async function POST(request: NextRequest) {
         );
       }
       creditsRemaining = creditResult.balanceAfter;
+
+      // Low credits alert (< 100 credits)
+      if (creditsRemaining < 100) {
+        try {
+          const { canSendEmail, generateUnsubscribeUrl } = await import("@/lib/notification-preferences");
+          const ok = await canSendEmail(session.user.id, "lowCredits");
+          if (ok) {
+            const lowCreditUser = await prisma.user.findUnique({
+              where: { id: session.user.id },
+              select: { email: true, name: true },
+            });
+            if (lowCreditUser) {
+              const { sendLowCreditsEmail } = await import("@/lib/email");
+              await sendLowCreditsEmail({
+                to: lowCreditUser.email,
+                name: lowCreditUser.name || "photographe",
+                creditsRemaining,
+                unsubscribeUrl: generateUnsubscribeUrl(session.user.id, "lowCredits"),
+              });
+            }
+          }
+        } catch (lowCreditErr) {
+          console.error("[Email] Low credits notification error:", lowCreditErr);
+        }
+      }
     }
 
     // Create upload session for progress tracking (use client-provided ID or generate new one)
@@ -524,7 +549,10 @@ export async function POST(request: NextRequest) {
               });
               const followers = await prisma.eventFavorite.findMany({
                 where: { eventId },
-                select: { userId: true },
+                select: {
+                  userId: true,
+                  user: { select: { email: true, name: true } },
+                },
               });
               if (followers.length > 0) {
                 await prisma.notification.createMany({
@@ -536,6 +564,29 @@ export async function POST(request: NextRequest) {
                     eventId,
                   })),
                 });
+
+                // Send email to followers (non-blocking)
+                const { canSendEmail, generateUnsubscribeUrl } = await import("@/lib/notification-preferences");
+                const { sendPhotosAvailableEmail } = await import("@/lib/email");
+                const photoTotal = await prisma.photo.count({ where: { eventId } });
+                const evtName = eventInfo?.name || "votre événement";
+
+                for (const f of followers) {
+                  try {
+                    if (await canSendEmail(f.userId, "photosAvailable")) {
+                      await sendPhotosAvailableEmail({
+                        to: f.user.email,
+                        name: f.user.name || "sportif",
+                        eventName: evtName,
+                        eventId,
+                        photoCount: photoTotal,
+                        unsubscribeUrl: generateUnsubscribeUrl(f.userId, "photosAvailable"),
+                      });
+                    }
+                  } catch (emailErr) {
+                    console.error(`[Email] Error notifying follower ${f.user.email}:`, emailErr);
+                  }
+                }
               }
             } catch (notifErr) {
               console.error("Error creating notifications:", notifErr);

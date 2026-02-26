@@ -145,6 +145,46 @@ export async function PUT(
       } catch (xpErr) {
         console.error("Error granting event published XP:", xpErr);
       }
+
+      // Notify followers by email
+      try {
+        const { canSendEmail, generateUnsubscribeUrl } = await import("@/lib/notification-preferences");
+        const { sendEventPublishedEmail } = await import("@/lib/email");
+
+        const followers = await prisma.eventFavorite.findMany({
+          where: { eventId: id },
+          select: {
+            userId: true,
+            user: { select: { email: true, name: true } },
+          },
+        });
+
+        const eventDateFormatted = updated.date.toLocaleDateString("fr-FR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+
+        for (const f of followers) {
+          try {
+            if (await canSendEmail(f.userId, "eventPublished")) {
+              await sendEventPublishedEmail({
+                to: f.user.email,
+                name: f.user.name || "sportif",
+                eventName: updated.name,
+                eventId: id,
+                eventDate: eventDateFormatted,
+                eventLocation: updated.location || undefined,
+                unsubscribeUrl: generateUnsubscribeUrl(f.userId, "eventPublished"),
+              });
+            }
+          } catch (emailErr) {
+            console.error(`[Email] Event published notify error for ${f.user.email}:`, emailErr);
+          }
+        }
+      } catch (notifErr) {
+        console.error("Error notifying followers about published event:", notifErr);
+      }
     }
 
     return NextResponse.json(updated);

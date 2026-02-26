@@ -4,10 +4,18 @@ import Stripe from "stripe";
 import prisma from "@/lib/prisma";
 import { stripe, getStripe, SERVICE_FEE_EUR } from "@/lib/stripe";
 import { randomBytes } from "crypto";
-import { sendPurchaseConfirmation } from "@/lib/email";
+import {
+  sendPurchaseConfirmation,
+  sendSubscriptionPaymentFailedEmail,
+  sendSubscriptionRenewalEmail,
+  sendSubscriptionCanceledEmail,
+  sendStripeOnboardedEmail,
+  sendNewSaleEmail,
+} from "@/lib/email";
 import { grantXp } from "@/lib/gamification/xp-service";
 import { recordStreakActivity } from "@/lib/gamification/streak-service";
 import { completeReferral } from "@/lib/gamification/referral-service";
+import { canSendEmail, generateUnsubscribeUrl } from "@/lib/notification-preferences";
 
 /**
  * Transfer pending payouts to a newly-connected Stripe account.
@@ -165,6 +173,35 @@ export async function POST(request: NextRequest) {
       }
     } catch (xpErr) {
       console.error("Failed to grant XP:", xpErr);
+    }
+
+    // Notify photographer of new sale
+    if (order.event.userId) {
+      try {
+        const photographer = await prisma.user.findUnique({
+          where: { id: order.event.userId },
+          select: { email: true, name: true },
+        });
+        if (photographer) {
+          const ok = await canSendEmail(order.event.userId, "newSale");
+          if (ok) {
+            const buyerName = order.user?.name || order.guestName || "Un sportif";
+            const totalStr = `${order.totalAmount.toFixed(2).replace(".", ",")} €`;
+            await sendNewSaleEmail({
+              to: photographer.email,
+              name: photographer.name || "photographe",
+              buyerName,
+              eventName: order.event.name,
+              photoCount: order.items.length,
+              totalAmount: totalStr,
+              orderId: order.id,
+              unsubscribeUrl: generateUnsubscribeUrl(order.event.userId, "newSale"),
+            });
+          }
+        }
+      } catch (saleEmailErr) {
+        console.error("[Email] New sale notification error:", saleEmailErr);
+      }
     }
   }
 
@@ -374,6 +411,12 @@ export async function POST(request: NextRequest) {
     case "account.updated": {
       const account = event.data.object as Stripe.Account;
       if (account.charges_enabled && account.payouts_enabled) {
+        // Find user before update to send email
+        const userBefore = await prisma.user.findFirst({
+          where: { stripeAccountId: account.id, stripeOnboarded: false },
+          select: { id: true, email: true, name: true },
+        });
+
         const updatedUsers = await prisma.user.updateMany({
           where: { stripeAccountId: account.id, stripeOnboarded: false },
           data: { stripeOnboarded: true },
@@ -381,6 +424,22 @@ export async function POST(request: NextRequest) {
 
         if (updatedUsers.count > 0) {
           await processDeferredPayouts(account.id);
+
+          // Send Stripe onboarded email
+          if (userBefore) {
+            try {
+              const ok = await canSendEmail(userBefore.id, "stripeOnboarded");
+              if (ok) {
+                await sendStripeOnboardedEmail({
+                  to: userBefore.email,
+                  name: userBefore.name || "photographe",
+                  unsubscribeUrl: generateUnsubscribeUrl(userBefore.id, "stripeOnboarded"),
+                });
+              }
+            } catch (emailErr) {
+              console.error("[Email] Stripe onboarded error:", emailErr);
+            }
+          }
         }
       }
       break;
@@ -430,6 +489,34 @@ export async function POST(request: NextRequest) {
             `Abonnement ${creditAmount.toLocaleString("fr-FR")} crédits/mois — ${label}`,
             invoice.id
           );
+
+          // Send renewal email (only for renewals, not first subscription)
+          if (!isFirstMonth) {
+            try {
+              const subUser = await prisma.user.findUnique({
+                where: { id: userId },
+                select: { email: true, name: true },
+              });
+              if (subUser) {
+                const planLabel = `${creditAmount.toLocaleString("fr-FR")} crédits/mois`;
+                const amountEur = invoice.amount_paid ? `${(invoice.amount_paid / 100).toFixed(2).replace(".", ",")} €` : "—";
+                // next_payment_attempt is null when payment succeeded — calculate next date manually
+                const nextRenewal = new Date();
+                nextRenewal.setMonth(nextRenewal.getMonth() + 1);
+                const nextDate = nextRenewal.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+                await sendSubscriptionRenewalEmail({
+                  to: subUser.email,
+                  name: subUser.name || "photographe",
+                  plan: planLabel,
+                  creditAmount,
+                  amount: amountEur,
+                  nextDate,
+                });
+              }
+            } catch (emailErr) {
+              console.error("[Email] Subscription renewal error:", emailErr);
+            }
+          }
         }
       }
       break;
@@ -444,6 +531,27 @@ export async function POST(request: NextRequest) {
           data: { subscriptionStatus: "past_due" },
         });
         console.log(`Subscription payment failed for user ${subMeta.userId}, status set to past_due`);
+
+        // Send payment failed email (transactional — always sent)
+        try {
+          const failedUser = await prisma.user.findUnique({
+            where: { id: subMeta.userId },
+            select: { email: true, name: true, subscriptionPlan: true },
+          });
+          if (failedUser) {
+            const creditAmount = subMeta.creditAmount || failedUser.subscriptionPlan || "—";
+            const planLabel = `${parseInt(creditAmount, 10).toLocaleString("fr-FR")} crédits/mois`;
+            const amountEur = invoice.amount_due ? `${(invoice.amount_due / 100).toFixed(2).replace(".", ",")} €` : "—";
+            await sendSubscriptionPaymentFailedEmail({
+              to: failedUser.email,
+              name: failedUser.name || "photographe",
+              plan: planLabel,
+              amount: amountEur,
+            });
+          }
+        } catch (emailErr) {
+          console.error("[Email] Payment failed notification error:", emailErr);
+        }
       }
       break;
     }
@@ -452,6 +560,11 @@ export async function POST(request: NextRequest) {
       const subscription = event.data.object as Stripe.Subscription;
       const userId = subscription.metadata?.userId;
       if (userId) {
+        const canceledUser = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { email: true, name: true, subscriptionPlan: true, subscriptionEndsAt: true },
+        });
+
         await prisma.user.update({
           where: { id: userId },
           data: {
@@ -460,6 +573,25 @@ export async function POST(request: NextRequest) {
           },
         });
         console.log(`Subscription ended for user ${userId}`);
+
+        // Send cancellation email (transactional — always sent)
+        if (canceledUser) {
+          try {
+            const creditAmount = canceledUser.subscriptionPlan || "—";
+            const planLabel = `${parseInt(creditAmount, 10).toLocaleString("fr-FR")} crédits/mois`;
+            const endsAt = canceledUser.subscriptionEndsAt
+              ? canceledUser.subscriptionEndsAt.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
+              : "immédiatement";
+            await sendSubscriptionCanceledEmail({
+              to: canceledUser.email,
+              name: canceledUser.name || "photographe",
+              plan: planLabel,
+              endsAt,
+            });
+          } catch (emailErr) {
+            console.error("[Email] Subscription canceled error:", emailErr);
+          }
+        }
       }
       break;
     }
