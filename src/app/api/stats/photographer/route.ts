@@ -117,15 +117,27 @@ export async function GET() {
         memberSince: user?.createdAt,
         stripeOnboarded: user?.stripeOnboarded || false,
       },
-      revenue: {
-        // total = what the photographer priced (excl. service fee)
-        total: (orderStats._sum.totalAmount || 0) - (connectFees._sum.serviceFee || 0),
-        serviceFees: connectFees._sum.serviceFee || 0,
-        stripeFees: connectFees._sum.stripeFee || 0,
-        photographerPayout: connectFees._sum.photographerPayout || 0,
-        paidOrders: orderStats._count,
-        avgBasket: orderStats._avg.totalAmount || 0,
-      },
+      revenue: (() => {
+        const total = (orderStats._sum.totalAmount || 0) - (connectFees._sum.serviceFee || 0);
+        const serviceFees = connectFees._sum.serviceFee || 0;
+        let stripeFees = connectFees._sum.stripeFee || 0;
+        let photographerPayout = connectFees._sum.photographerPayout || 0;
+
+        // Estimate Stripe fees if not recorded (orders before webhook setup)
+        if (stripeFees === 0 && orderStats._count > 0 && total > 0) {
+          stripeFees = Math.round((orderStats._count * 0.25 + (orderStats._sum.totalAmount || 0) * 0.015) * 100) / 100;
+          photographerPayout = Math.max(total - serviceFees - stripeFees, 0);
+        }
+
+        return {
+          total,
+          serviceFees,
+          stripeFees,
+          photographerPayout,
+          paidOrders: orderStats._count,
+          avgBasket: orderStats._avg.totalAmount || 0,
+        };
+      })(),
       credits: {
         balance: user?.credits || 0,
         totalTransactions: creditStats._count,
