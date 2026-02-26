@@ -33,9 +33,37 @@ export async function GET() {
   try {
     const stripe = getStripe();
     const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
-    if (subscription.current_period_end) {
-      nextInvoiceDate = new Date(subscription.current_period_end * 1000).toISOString();
+
+    // current_period_end removed in Stripe API 2025+
+    // Fallback: latest_invoice line item period.end
+    if ((subscription as Record<string, unknown>).current_period_end) {
+      nextInvoiceDate = new Date(((subscription as Record<string, unknown>).current_period_end as number) * 1000).toISOString();
+    } else if (subscription.latest_invoice) {
+      try {
+        const invId = typeof subscription.latest_invoice === "string"
+          ? subscription.latest_invoice
+          : subscription.latest_invoice.id;
+        const invoice = await stripe.invoices.retrieve(invId);
+        const periodEnd = invoice.lines?.data?.[0]?.period?.end;
+        if (periodEnd) {
+          nextInvoiceDate = new Date(periodEnd * 1000).toISOString();
+        }
+      } catch {
+        // fallback: billing_cycle_anchor + 1 month
+      }
     }
+
+    // Fallback: calculate from billing_cycle_anchor
+    if (!nextInvoiceDate && subscription.billing_cycle_anchor) {
+      const anchor = new Date(subscription.billing_cycle_anchor * 1000);
+      const now = new Date();
+      // Advance anchor month by month until it's in the future
+      while (anchor <= now) {
+        anchor.setMonth(anchor.getMonth() + 1);
+      }
+      nextInvoiceDate = anchor.toISOString();
+    }
+
     if (subscription.items.data[0]?.price?.unit_amount) {
       nextInvoiceAmount = subscription.items.data[0].price.unit_amount / 100;
     }
