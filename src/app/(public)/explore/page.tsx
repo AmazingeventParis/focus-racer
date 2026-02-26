@@ -302,9 +302,9 @@ export default function ExplorePage() {
 
       {/* ═══════════ FEATURED EVENTS ═══════════ */}
       {featuredEvents.length > 0 && !hasActiveFilters && (
-        <section id="featured" data-reveal className="pt-6 pb-10 bg-white border-b border-gray-100">
+        <section id="featured" data-reveal className="pt-4 pb-8 bg-white border-b border-gray-100">
           <div className="container mx-auto px-4">
-            <div className={`flex items-center justify-between mb-8 transition-all duration-700 ${reveal("featured") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <div className={`flex items-center justify-between mb-5 transition-all duration-700 ${reveal("featured") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-xs font-medium mb-2">
                   En vedette
@@ -370,7 +370,7 @@ export default function ExplorePage() {
       )}
 
       {/* ═══════════ FILTERS + GRID ═══════════ */}
-      <section id="tous" className="py-10">
+      <section id="tous" className="pt-6 pb-10">
         <div className="container mx-auto px-4">
           {/* Filters bar */}
           <div className="mb-8 space-y-4">
