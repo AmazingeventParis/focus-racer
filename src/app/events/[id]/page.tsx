@@ -482,8 +482,30 @@ export default function PublicEventPage({
                 </div>
               </div>
             </div>
+            {/* Tarifs — inside hero, above action buttons */}
+            {packs.length > 0 && (
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                {packs.map((pack) => (
+                  <div
+                    key={pack.id}
+                    className="bg-white/15 backdrop-blur-sm border border-white/20 rounded-xl px-3 py-1.5 text-center"
+                  >
+                    <span className="text-xs text-white/70 font-medium">{pack.name}</span>
+                    <span className="text-sm font-bold text-white ml-1.5">
+                      {pack.price.toFixed(2).replace(".", ",")}€
+                    </span>
+                    {pack.quantity && pack.quantity > 1 && (
+                      <span className="text-[10px] text-white/50 ml-1">
+                        ({(pack.price / pack.quantity).toFixed(2).replace(".", ",")}€/photo)
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
             {session?.user && (
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-3 flex flex-wrap gap-2">
                 <Button
                   variant="outline"
                   size="sm"
@@ -632,42 +654,6 @@ export default function PublicEventPage({
           </CardContent>
         </Card>
       </div>
-
-      {/* Tarifs — always visible, right below search */}
-      {packs.length > 0 && (
-        <div className="px-4 mt-6">
-          <div className="max-w-3xl mx-auto">
-            <h3 className="text-xl font-bold text-navy text-center mb-4">Tarifs</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {packs.map((pack) => {
-                const unitPrice = pack.quantity && pack.quantity > 1
-                  ? (pack.price / pack.quantity).toFixed(2).replace(".", ",")
-                  : null;
-                return (
-                  <div
-                    key={pack.id}
-                    className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow"
-                  >
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{pack.name}</p>
-                    <p className="text-2xl font-bold mt-1" style={{ color: primaryColor }}>
-                      {pack.price.toFixed(2).replace(".", ",")}€
-                    </p>
-                    {pack.quantity && pack.quantity > 1 ? (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {pack.quantity} photos — {unitPrice}€/photo
-                      </p>
-                    ) : pack.type === "ALL_INCLUSIVE" ? (
-                      <p className="text-xs text-muted-foreground mt-1">Toutes vos photos</p>
-                    ) : (
-                      <p className="text-xs text-muted-foreground mt-1">1 photo</p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Search results — only visible after search */}
       {searchResult && (
