@@ -337,33 +337,31 @@ export default function ExplorePage() {
 
             {/* Time + Sort row */}
             <div className="flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-medium text-gray-500">Date d&apos;événement :</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-medium text-gray-500 mr-1">Date d&apos;événement :</span>
                 <input
                   type="date"
                   value={selectedDate}
                   onChange={(e) => { setSelectedDate(e.target.value); if (e.target.value) setSelectedTime("all"); }}
-                  className={`text-xs rounded-lg px-2.5 py-1 border transition-all duration-200 cursor-pointer ${
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 cursor-pointer ${
                     selectedDate
-                      ? "bg-gray-900 text-white border-gray-900"
+                      ? "bg-emerald-500 text-white border-emerald-500 shadow-sm"
                       : "bg-gray-100 text-gray-600 border-transparent hover:bg-gray-200"
                   }`}
                 />
-                <div className="flex gap-1 flex-wrap">
-                  {TIME_FILTERS.map((tf) => (
-                    <button
-                      key={tf.value}
-                      onClick={() => { setSelectedTime(tf.value); setSelectedDate(""); }}
-                      className={`px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
-                        !selectedDate && selectedTime === tf.value
-                          ? "bg-gray-900 text-white"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                      }`}
-                    >
-                      {tf.label}
-                    </button>
-                  ))}
-                </div>
+                {TIME_FILTERS.map((tf) => (
+                  <button
+                    key={tf.value}
+                    onClick={() => { setSelectedTime(tf.value); setSelectedDate(""); }}
+                    className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                      !selectedDate && selectedTime === tf.value
+                        ? "bg-emerald-500 text-white shadow-sm"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    {tf.label}
+                  </button>
+                ))}
               </div>
 
               <div className="flex items-center gap-2 ml-auto">
