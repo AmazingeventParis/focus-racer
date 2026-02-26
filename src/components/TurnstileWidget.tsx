@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 
 declare global {
   interface Window {
@@ -71,14 +71,15 @@ export default function TurnstileWidget({
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
 
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  // Store callbacks in refs so the effect never re-runs due to callback changes
+  const onVerifyRef = useRef(onVerify);
+  const onExpireRef = useRef(onExpire);
+  const onErrorRef = useRef(onError);
+  onVerifyRef.current = onVerify;
+  onExpireRef.current = onExpire;
+  onErrorRef.current = onError;
 
-  const handleVerify = useCallback(
-    (token: string) => {
-      onVerify(token);
-    },
-    [onVerify]
-  );
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
   useEffect(() => {
     if (!siteKey || !containerRef.current) return;
@@ -89,27 +90,21 @@ export default function TurnstileWidget({
       .then(() => {
         if (!mounted || !containerRef.current || !window.turnstile) return;
 
-        // Clear any existing widget
-        if (widgetIdRef.current) {
-          try {
-            window.turnstile.remove(widgetIdRef.current);
-          } catch {
-            // Ignore
-          }
-        }
+        // Don't re-render if widget already exists
+        if (widgetIdRef.current) return;
 
         widgetIdRef.current = window.turnstile.render(containerRef.current, {
           sitekey: siteKey,
-          callback: handleVerify,
-          "error-callback": onError,
-          "expired-callback": onExpire,
+          callback: (token: string) => onVerifyRef.current(token),
+          "error-callback": () => onErrorRef.current?.(),
+          "expired-callback": () => onExpireRef.current?.(),
           theme,
           size,
         });
       })
       .catch((err) => {
         console.error("[Turnstile] Script load error:", err);
-        onError?.();
+        onErrorRef.current?.();
       });
 
     return () => {
@@ -123,7 +118,7 @@ export default function TurnstileWidget({
         widgetIdRef.current = null;
       }
     };
-  }, [siteKey, handleVerify, onExpire, onError, theme, size]);
+  }, [siteKey, theme, size]);
 
   // No site key → render nothing (dev fallback)
   if (!siteKey) return null;
