@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ProtectedImage from "@/components/protected-image";
@@ -20,6 +20,105 @@ const SPORT_LABELS: Record<string, string> = {
   OBSTACLE: "Course à obstacles",
   OTHER: "Autre",
 };
+
+// Hand-drawn style sport SVG icons per sport type (24x24 viewBox, stroke paths)
+const SPORT_ICON_PATHS: Record<string, string[][]> = {
+  RUNNING: [
+    ["M12 4a2 2 0 100-4 2 2 0 000 4z", "M8 22l2-8 4 2v6", "M16 10l-4 4-3-2-3 4"],
+    ["M4 17l2-4c1-2 3-3 5-3h3l2 2h3c1 0 1.5.7 1.5 1.5S20 15 19 15H4z"],
+    ["M12 14a6 6 0 110-.01", "M12 8v6l4-3", "M12 2v3", "M10 2h4"],
+    ["M5 3v18", "M5 4h9l-3 3.5L14 11H5"],
+    ["M12 17a4 4 0 110-.01", "M9 4h6l-1.5 8h-3z"],
+    ["M2 12h4l2-5 2 10 2-10 2 5h6"],
+  ],
+  TRAIL: [
+    ["M2 20l5-10 4 5 5-13 4 18"],
+    ["M12 4v8", "M12 12c-3 0-5 2.5-5 6", "M12 12c3 0 5 2.5 5 6", "M7 22h10"],
+    ["M12 12a7 7 0 110-.01", "M12 5v7", "M12 12l5 3"],
+    ["M3 18l2-3c1-2 3-3 5-3h4l2 1h3c.6 0 1 .5 1 1s-.4 1-1 1H3z"],
+    ["M12 3c0 3-4 5.5-4 9a4 4 0 108 0c0-3.5-4-6-4-9z"],
+    ["M2 20l3-5 3 2 4-8 3 4 3-9 2 16"],
+  ],
+  TRIATHLON: [
+    ["M4 14c2-4 4.5-5 6-5s3 1 4.5 3c1.5 2 3.5 2 5.5 2", "M4 17c2-3 4-4 6-4s4 1 5 3"],
+    ["M6 18a4 4 0 118 0 4 4 0 01-8 0z", "M14 18a4 4 0 118 0 4 4 0 01-8 0z", "M10 18l2-7 4 3", "M12 11l4-5"],
+    ["M12 4a2 2 0 100-4 2 2 0 000 4z", "M8 22l2-8 4 2v6", "M16 10l-4 4-3-2-3 4"],
+    ["M2 8c2-2 4-1 6 0s4 2 6 0 4-1 6 0", "M2 14c2-2 4-1 6 0s4 2 6 0 4-1 6 0"],
+    ["M8 12a4 4 0 118 0", "M6 12a2 2 0 114 0", "M14 12a2 2 0 114 0"],
+    ["M5 3v18", "M5 4h9l-3 3.5L14 11H5"],
+  ],
+  CYCLING: [
+    ["M5 18a4 4 0 118-.01", "M15 18a4 4 0 118-.01", "M9 18l3-7 4 3", "M12 11l5-5"],
+    ["M12 12a7 7 0 110-.01", "M12 5v14", "M5 12h14"],
+    ["M7 18c0-3 2.2-5.5 5-5.5S17 15 17 18", "M12 12.5V9", "M8 9h8c.5 0 1-.5 1-1.2 0-.6-.5-1.3-1-1.3H8c-.5 0-1 .7-1 1.3 0 .7.5 1.2 1 1.2z"],
+    ["M7 3h10v7c0 1-.9 2-2 2H9c-1 0-2-1-2-2V3z", "M5 3h14", "M10 3v4", "M14 3v4"],
+    ["M12 12a5 5 0 110-.01", "M12 12a2 2 0 110-.01", "M14.5 7l-5 10", "M9.5 7l5 10"],
+    ["M2 18h20", "M2 18c2-2 4-6 10-6s8 4 10 6"],
+  ],
+  SWIMMING: [
+    ["M4 14c2-3 4-5 6-5s3 2 4 4 3 2 6 1", "M4 10c2-3 4-4 6-4s3 1 4 3 3 2 6 1"],
+    ["M2 8c2-2 4-1 6 0s4 2 6 0 4-1 6 0", "M2 14c2-2 4-1 6 0s4 2 6 0 4-1 6 0", "M2 20c2-2 4-1 6 0s4 2 6 0 4-1 6 0"],
+    ["M4 11c1.5-1.5 3.5-2.5 4.5-2.5s2 1 3.5 2.5 3 2.5 4.5 2.5 2.5-1 4-2.5", "M5.5 11a2.5 2.5 0 115 0", "M13 11a2.5 2.5 0 115 0"],
+    ["M3 6h18v14H3V6z", "M3 10h18", "M3 14h18", "M3 18h18"],
+    ["M12 3v3", "M12 6c-2 0-3 2-3 5l3 5 3-5c0-3-1-5-3-5z"],
+    ["M12 3c0 3-4 5-4 8a4 4 0 008 0c0-3-4-5-4-8z"],
+  ],
+  OBSTACLE: [
+    ["M5 4v16", "M19 4v16", "M5 10h14", "M5 16h14", "M5 4h14"],
+    ["M12 2v20", "M8 6c2 2 6 2 8 0", "M8 11c2 2 6 2 8 0", "M8 16c2 2 6 2 8 0"],
+    ["M12 12a7 7 0 110-.01", "M12 5v14", "M5 12h14", "M7.5 6l9 12", "M16.5 6l-9 12"],
+    ["M2 12h2l1.5-2 2 4 2-4 2 4 2-4 2 4 2-4 1.5 2h2"],
+    ["M3 20c1-3 3-5 5-5s3 2 4.5 0S15 13 17 13s4 3 4.5 7"],
+    ["M4 20V8h4v12", "M10 20V4h4v16", "M16 20V8h4v12", "M4 8h16"],
+  ],
+  OTHER: [
+    ["M6.8 6.2c-.6.3-1.1.9-1.3 1.5l-1.2.2c-1 .2-1.8 1.1-1.8 2.1v8.3c0 1.2 1 2.2 2.2 2.2H18c1.2 0 2.2-1 2.2-2.2V10c0-1-1-2-2-2.2l-1.1-.2c-.7-.1-1.3-.5-1.6-1l-.8-1.3c-.4-.6-1-1-1.7-1h-2.5c-.8 0-1.5.4-1.9 1l-.8 1.3z", "M16 13a4 4 0 11-8 0 4 4 0 018 0z"],
+    ["M12 17a4 4 0 110-.01", "M9 4h6l-1.5 8h-3z"],
+    ["M8 21h8", "M10 21l-.5-3h5l-.5 3", "M7 18h10", "M8 18V9l4-6 4 6v9"],
+    ["M5 3v18", "M5 4h9l-3 3.5L14 11H5"],
+    ["M12 2l2.4 7.2H22l-6.2 4.5 2.4 7.2-6.2-4.5-6.2 4.5 2.4-7.2-6-4.4h7.5z"],
+    ["M13 2L3 14h8l-1 8 10-12h-8l1-8z"],
+  ],
+};
+
+function SportPatternOverlay({ sportType }: { sportType: string }) {
+  const elements = useMemo(() => {
+    const icons = SPORT_ICON_PATHS[sportType] || SPORT_ICON_PATHS.OTHER;
+    const items = [];
+    const cols = 12;
+    const rows = 8;
+    for (let i = 0; i < cols * rows; i++) {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const idx = i % icons.length;
+      const rot = ((row * 17 + col * 31) % 70) - 35;
+      const x = (col + 0.5) / cols * 100 + ((row * 7 + col * 3) % 6 - 3);
+      const y = (row + 0.5) / rows * 100 + ((col * 11 + row * 5) % 6 - 3);
+      items.push(
+        <svg
+          key={i}
+          viewBox="0 0 24 24"
+          className="absolute w-8 h-8 md:w-12 md:h-12"
+          style={{ left: `${x}%`, top: `${y}%`, transform: `translate(-50%,-50%) rotate(${rot}deg)` }}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          {icons[idx].map((d, j) => <path key={j} d={d} />)}
+        </svg>
+      );
+    }
+    return items;
+  }, [sportType]);
+
+  return (
+    <div className="absolute inset-0 text-white overflow-hidden pointer-events-none" style={{ opacity: 0.05 }}>
+      {elements}
+    </div>
+  );
+}
 
 interface PublicPhoto {
   id: string;
@@ -435,164 +534,162 @@ export default function PublicEventPage({
         </div>
       </header>
 
-      {/* Hero Event — full width banner */}
-      <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
-        {(event.coverImage || event.bannerImage) ? (
-          <>
-            <Image src={(event.coverImage || event.bannerImage)!} alt={event.name} fill className="object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/40 to-transparent" />
-          </>
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy/90 to-emerald" />
-        )}
+      {/* Hero Event — gradient bg with sport pictograms */}
+      <div className="relative overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy/95 to-emerald/70" />
+        {/* Sport pictograms pattern */}
+        <SportPatternOverlay sportType={event.sportType} />
 
-        {/* Event info positioned at bottom of hero */}
-        <div className="absolute bottom-0 left-0 right-0 pb-20 pt-8 px-4 md:px-8">
-          <div className="container mx-auto">
-            <div className="flex items-end gap-4">
-              {event.logoImage && (
-                <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 border-white/80 flex-shrink-0 shadow-lg">
-                  <Image src={event.logoImage} alt="Logo" fill className="object-contain bg-white" />
+        {/* Hero content */}
+        <div className="relative z-10 container mx-auto px-4 md:px-8 pt-8 md:pt-12 pb-24">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+            {/* Left: Event poster */}
+            {event.coverImage && (
+              <div className="flex-shrink-0">
+                <div className="relative w-40 sm:w-48 md:w-52 lg:w-60 aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 ring-4 ring-white/10">
+                  <Image src={event.coverImage} alt={`Affiche ${event.name}`} fill className="object-cover" />
+                </div>
+              </div>
+            )}
+
+            {/* Right: Event info */}
+            <div className="flex-1 min-w-0 text-center md:text-left">
+              {/* Logo + title */}
+              <div className="flex items-center gap-3 justify-center md:justify-start">
+                {event.logoImage && (
+                  <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden border border-white/40 flex-shrink-0 shadow-lg">
+                    <Image src={event.logoImage} alt="Logo" fill className="object-contain bg-white" />
+                  </div>
+                )}
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg truncate">{event.name}</h1>
+              </div>
+
+              {/* Date + location */}
+              <p className="text-white/75 mt-2 text-sm md:text-base">
+                {new Date(event.date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                {event.location && ` \u2014 ${event.location}`}
+              </p>
+              <p className="text-white/40 text-xs mt-1">Photos par {event.photographer}</p>
+
+              {/* Stats pills: sport, photos, sportifs, IA */}
+              <div className="flex flex-wrap items-center gap-2 mt-4 justify-center md:justify-start">
+                <span className="inline-flex items-center gap-1.5 bg-white/12 backdrop-blur-sm border border-white/15 rounded-full px-3 py-1.5 text-sm text-white font-medium">
+                  {SPORT_LABELS[event.sportType] || event.sportType}
+                </span>
+                <span className="inline-flex items-center gap-1.5 bg-white/12 backdrop-blur-sm border border-white/15 rounded-full px-3 py-1.5 text-sm text-white">
+                  <svg className="w-4 h-4 text-white/60" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                  </svg>
+                  <span className="font-bold">{event.photoCount}</span> photos
+                </span>
+                {event.runnerCount > 0 && (
+                  <span className="inline-flex items-center gap-1.5 bg-white/12 backdrop-blur-sm border border-white/15 rounded-full px-3 py-1.5 text-sm text-white">
+                    <svg className="w-4 h-4 text-white/60" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                    </svg>
+                    <span className="font-bold">{event.runnerCount}</span> sportifs
+                  </span>
+                )}
+                <span className="inline-flex items-center gap-1.5 bg-emerald/20 backdrop-blur-sm border border-emerald/30 rounded-full px-3 py-1.5 text-sm text-emerald-200 font-medium">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                  </svg>
+                  Recherche IA
+                </span>
+              </div>
+
+              {/* Description */}
+              {event.description && (
+                <p className="text-white/50 text-sm mt-3 max-w-lg mx-auto md:mx-0">{event.description}</p>
+              )}
+
+              {/* Tarifs row */}
+              {packs.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 mt-4 justify-center md:justify-start">
+                  <span className="text-[10px] text-white/40 uppercase tracking-widest font-semibold">Tarifs</span>
+                  {packs.map((pack) => (
+                    <div key={pack.id} className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-lg px-2.5 py-1">
+                      <span className="text-xs text-white/60">{pack.name}</span>
+                      <span className="text-sm font-bold text-white ml-1.5">{pack.price.toFixed(2).replace(".", ",")}€</span>
+                      {pack.quantity && pack.quantity > 1 && (
+                        <span className="text-[10px] text-white/35 ml-1">({(pack.price / pack.quantity).toFixed(2).replace(".", ",")}€/photo)</span>
+                      )}
+                    </div>
+                  ))}
                 </div>
               )}
-              <div className="flex-1 min-w-0">
-                <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-lg truncate">{event.name}</h1>
-                <p className="text-white/80 mt-1 text-base md:text-lg">
-                  {new Date(event.date).toLocaleDateString("fr-FR", {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                  {event.location && ` • ${event.location}`}
-                </p>
-                <div className="flex flex-wrap items-center gap-2 mt-3">
-                  <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                    {SPORT_LABELS[event.sportType] || event.sportType}
-                  </Badge>
-                  <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                    {event.photoCount} photos
-                  </Badge>
-                  {event.runnerCount > 0 && (
-                    <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                      {event.runnerCount} sportifs
-                    </Badge>
-                  )}
-                  <span className="text-white/60 text-sm">par {event.photographer}</span>
+
+              {/* Action buttons */}
+              {session?.user && (
+                <div className="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
+                  <Button variant="outline" size="sm" disabled={followLoading} onClick={toggleFollow}
+                    className={isFollowing ? "bg-emerald/20 border-emerald/50 text-white hover:bg-emerald/30 rounded-xl" : "bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-xl"}>
+                    {isFollowing ? "★ Événement suivi" : "☆ Suivre cet événement"}
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setShowAlertModal(true)}
+                    className="bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-xl">
+                    <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                    </svg>
+                    {alertCreated ? "Alerte créée !" : "Créer une alerte"}
+                  </Button>
                 </div>
-              </div>
+              )}
             </div>
-            {/* Tarifs — inside hero, above action buttons */}
-            {packs.length > 0 && (
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                {packs.map((pack) => (
-                  <div
-                    key={pack.id}
-                    className="bg-white/15 backdrop-blur-sm border border-white/20 rounded-xl px-3 py-1.5 text-center"
-                  >
-                    <span className="text-xs text-white/70 font-medium">{pack.name}</span>
-                    <span className="text-sm font-bold text-white ml-1.5">
-                      {pack.price.toFixed(2).replace(".", ",")}€
-                    </span>
-                    {pack.quantity && pack.quantity > 1 && (
-                      <span className="text-[10px] text-white/50 ml-1">
-                        ({(pack.price / pack.quantity).toFixed(2).replace(".", ",")}€/photo)
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {session?.user && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={followLoading}
-                  onClick={toggleFollow}
-                  className={isFollowing
-                    ? "bg-emerald/20 border-emerald/50 text-white hover:bg-emerald/30 rounded-xl"
-                    : "bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-xl"
-                  }
-                >
-                  {isFollowing ? "★ Événement suivi" : "☆ Suivre cet événement"}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowAlertModal(true)}
-                  className="bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-xl"
-                >
-                  <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                  </svg>
-                  {alertCreated ? "Alerte créée !" : "Créer une alerte"}
-                </Button>
-              </div>
-            )}
-
-            {/* Alert Modal */}
-            {showAlertModal && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowAlertModal(false)}>
-                <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6" onClick={(e) => e.stopPropagation()}>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">Créer une alerte photo</h3>
-                  <p className="text-sm text-gray-500 mb-4">
-                    Recevez une notification quand de nouvelles photos de votre dossard sont mises en ligne.
-                  </p>
-                  <Input
-                    placeholder="Numéro de dossard"
-                    value={alertBib}
-                    onChange={(e) => setAlertBib(e.target.value)}
-                    className="h-12 rounded-xl text-lg mb-4"
-                    autoFocus
-                    onKeyDown={(e) => { if (e.key === "Enter") createPhotoAlert(); }}
-                  />
-                  <div className="flex gap-3">
-                    <Button
-                      variant="outline"
-                      className="flex-1 rounded-xl"
-                      onClick={() => setShowAlertModal(false)}
-                    >
-                      Annuler
-                    </Button>
-                    <Button
-                      className="flex-1 rounded-xl bg-emerald hover:bg-emerald-dark text-white"
-                      onClick={createPhotoAlert}
-                      disabled={alertLoading || !alertBib.trim()}
-                    >
-                      {alertLoading ? "..." : "Activer l’alerte"}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
+
+        {/* Alert Modal */}
+        {showAlertModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowAlertModal(false)}>
+            <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6" onClick={(e) => e.stopPropagation()}>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">Créer une alerte photo</h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Recevez une notification quand de nouvelles photos de votre dossard sont mises en ligne.
+              </p>
+              <Input
+                placeholder="Numéro de dossard"
+                value={alertBib}
+                onChange={(e) => setAlertBib(e.target.value)}
+                className="h-12 rounded-xl text-lg mb-4"
+                autoFocus
+                onKeyDown={(e) => { if (e.key === "Enter") createPhotoAlert(); }}
+              />
+              <div className="flex gap-3">
+                <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setShowAlertModal(false)}>Annuler</Button>
+                <Button className="flex-1 rounded-xl bg-emerald hover:bg-emerald-dark text-white" onClick={createPhotoAlert} disabled={alertLoading || !alertBib.trim()}>
+                  {alertLoading ? "..." : "Activer l’alerte"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Search block — raised over hero */}
       <div className="-mt-14 relative z-10 px-4">
         <Card className="max-w-2xl mx-auto bg-white shadow-2xl rounded-3xl border-0">
-          <CardContent className="p-6 md:p-8">
-            <h2 className="text-xl md:text-2xl font-bold text-navy text-center">Retrouvez vos photos</h2>
-            <p className="text-muted-foreground text-center mt-1 text-sm md:text-base">
+          <CardContent className="p-5 md:p-8">
+            <h2 className="text-lg md:text-2xl font-bold text-navy text-center">Retrouvez vos photos</h2>
+            <p className="text-muted-foreground text-center mt-1 text-xs md:text-sm">
               Entrez votre numéro de dossard{event.runnerCount > 0 ? ", nom" : ""} ou prenez un selfie
             </p>
 
-            <form onSubmit={handleSearch} className="mt-6">
-              <div className="flex gap-3">
+            <form onSubmit={handleSearch} className="mt-4">
+              <div className="flex gap-2">
                 <Input
                   ref={searchInputRef}
                   placeholder={event.runnerCount > 0 ? "N° de dossard ou nom..." : "N° de dossard..."}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 text-lg h-14 rounded-xl border-gray-200 focus:border-emerald focus:ring-emerald"
+                  className="flex-1 text-lg h-12 md:h-14 rounded-xl border-gray-200 focus:border-emerald focus:ring-emerald"
                 />
                 <Button
                   type="submit"
                   disabled={isSearching || !searchQuery.trim()}
-                  className="h-14 px-6 md:px-8 bg-emerald hover:bg-emerald-dark text-white rounded-xl text-base md:text-lg shadow-emerald transition-all duration-200"
+                  className="h-12 md:h-14 px-5 md:px-8 bg-emerald hover:bg-emerald-dark text-white rounded-xl text-base md:text-lg shadow-emerald transition-all duration-200"
                   style={{ backgroundColor: primaryColor }}
                 >
                   {isSearching ? "..." : "Rechercher"}
@@ -600,57 +697,32 @@ export default function PublicEventPage({
               </div>
             </form>
 
-            <div className="flex flex-wrap justify-center gap-4 mt-4">
-              {/* Import selfie from gallery */}
+            <div className="flex flex-wrap justify-center gap-3 mt-3">
               <label className="cursor-pointer">
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    await handleSelfieSearch(file);
-                    e.target.value = "";
-                  }}
-                />
-                <span className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <input type="file" accept="image/*" className="hidden" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; await handleSelfieSearch(file); e.target.value = ""; }} />
+                <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                   </svg>
                   Importer un selfie
                 </span>
               </label>
-              {/* Take selfie with camera */}
-              <button
-                type="button"
-                onClick={openCamera}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <button type="button" onClick={openCamera} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
                 </svg>
                 Prendre un selfie
               </button>
-              {/* Search by name */}
               {event.runnerCount > 0 && (
-                <button
-                  type="button"
-                  onClick={() => searchInputRef.current?.focus()}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <button type="button" onClick={() => searchInputRef.current?.focus()} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                   </svg>
                   Recherche par nom
                 </button>
               )}
             </div>
-
-            {event.description && (
-              <p className="text-sm text-muted-foreground mt-4 text-center">{event.description}</p>
-            )}
           </CardContent>
         </Card>
       </div>
@@ -746,36 +818,10 @@ export default function PublicEventPage({
 
       {/* Empty state — no search yet */}
       {!searchResult && (
-        <div className="container mx-auto px-4 py-12">
-          {/* Stats cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-3xl mx-auto">
-            <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
-              <div className="w-12 h-12 rounded-full bg-emerald/10 flex items-center justify-center mx-auto mb-3">
-                <span className="text-2xl">&#128247;</span>
-              </div>
-              <p className="text-2xl font-bold text-navy">{event.photoCount}</p>
-              <p className="text-sm text-muted-foreground">photos disponibles</p>
-            </div>
-            <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
-              <div className="w-12 h-12 rounded-full bg-emerald/10 flex items-center justify-center mx-auto mb-3">
-                <span className="text-2xl">&#127939;</span>
-              </div>
-              <p className="text-2xl font-bold text-navy">{event.runnerCount}</p>
-              <p className="text-sm text-muted-foreground">sportifs identifiés</p>
-            </div>
-            <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
-              <div className="w-12 h-12 rounded-full bg-emerald/10 flex items-center justify-center mx-auto mb-3">
-                <span className="text-2xl">&#9889;</span>
-              </div>
-              <p className="text-2xl font-bold text-navy">Instantanée</p>
-              <p className="text-sm text-muted-foreground">recherche par IA</p>
-            </div>
-          </div>
-
-          {/* Call to action */}
-          <div className="text-center mt-10">
-            <p className="text-xl md:text-2xl font-semibold text-navy">Vos photos vous attendent !</p>
-            <p className="text-muted-foreground mt-2 max-w-md mx-auto">
+        <div className="container mx-auto px-4 py-10">
+          <div className="text-center max-w-md mx-auto">
+            <p className="text-lg md:text-xl font-semibold text-navy">Vos photos vous attendent !</p>
+            <p className="text-muted-foreground mt-2 text-sm">
               Tapez votre numéro de dossard ci-dessus pour retrouver toutes vos photos de course.
             </p>
           </div>
