@@ -29,6 +29,20 @@ interface ToggleItem {
   desc: string;
 }
 
+function ChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>
+  );
+}
+
 const SPORTIF_ITEMS: { group: string; items: ToggleItem[] }[] = [
   {
     group: "Photos & Événements",
@@ -124,6 +138,16 @@ export default function NotificationPreferencesCard() {
   const [prefs, setPrefs] = useState<Preferences | null>(null);
   const [loading, setLoading] = useState(true);
   const [updatingKeys, setUpdatingKeys] = useState<Set<string>>(new Set());
+  const [openGroups, setOpenGroups] = useState<Set<string>>(new Set());
+
+  const toggleGroup = (group: string) => {
+    setOpenGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(group)) next.delete(group);
+      else next.add(group);
+      return next;
+    });
+  };
 
   const fetchPrefs = useCallback(async () => {
     try {
@@ -206,40 +230,65 @@ export default function NotificationPreferencesCard() {
           Choisissez les emails que vous souhaitez recevoir. Les emails transactionnels (achat, abonnement) sont toujours envoyés.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        {groups.map((group) => (
-          <div key={group.group}>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">{group.group}</p>
-            <div className="space-y-2">
-              {group.items.map((item) => (
-                <div
-                  key={item.key}
-                  className="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"
-                >
-                  <div className="pr-4">
-                    <p className="font-medium text-gray-900 text-sm">{item.label}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
-                  </div>
-                  <button
-                    onClick={() => togglePref(item.key)}
-                    disabled={updatingKeys.has(item.key)}
-                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 ${
-                      prefs[item.key] ? "bg-emerald-500" : "bg-gray-200"
-                    } ${updatingKeys.has(item.key) ? "opacity-50" : ""}`}
-                    role="switch"
-                    aria-checked={prefs[item.key]}
-                  >
-                    <span
-                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ${
-                        prefs[item.key] ? "translate-x-5" : "translate-x-0.5"
-                      } mt-0.5`}
-                    />
-                  </button>
+      <CardContent className="space-y-2">
+        {groups.map((group) => {
+          const isOpen = openGroups.has(group.group);
+          const enabledCount = prefs ? group.items.filter((i) => prefs[i.key]).length : 0;
+          const totalCount = group.items.length;
+
+          return (
+            <div key={group.group} className="rounded-xl border border-gray-100 overflow-hidden">
+              <button
+                type="button"
+                onClick={() => toggleGroup(group.group)}
+                className="flex items-center justify-between w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{group.group}</span>
+                  <span className="text-[10px] font-medium text-gray-400 bg-gray-200 rounded-full px-2 py-0.5">
+                    {enabledCount}/{totalCount}
+                  </span>
                 </div>
-              ))}
+                <ChevronIcon open={isOpen} />
+              </button>
+
+              <div
+                className={`transition-all duration-200 ease-in-out overflow-hidden ${
+                  isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                <div className="p-2 space-y-1">
+                  {group.items.map((item) => (
+                    <div
+                      key={item.key}
+                      className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="pr-4">
+                        <p className="font-medium text-gray-900 text-sm">{item.label}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
+                      </div>
+                      <button
+                        onClick={() => togglePref(item.key)}
+                        disabled={updatingKeys.has(item.key)}
+                        className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 ${
+                          prefs[item.key] ? "bg-emerald-500" : "bg-gray-200"
+                        } ${updatingKeys.has(item.key) ? "opacity-50" : ""}`}
+                        role="switch"
+                        aria-checked={prefs[item.key]}
+                      >
+                        <span
+                          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ${
+                            prefs[item.key] ? "translate-x-5" : "translate-x-0.5"
+                          } mt-0.5`}
+                        />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </CardContent>
     </Card>
   );
