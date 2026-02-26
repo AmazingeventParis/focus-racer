@@ -14,13 +14,14 @@ function getClientIp(req: NextRequest): string {
 }
 
 // Wrap GET and POST to inject client IP into async context
-// so the authorize() callback can access it for brute force protection
-export async function GET(req: NextRequest) {
+// so the authorize() callback can access it for brute force protection.
+// IMPORTANT: must pass the route context (with params.nextauth) through to the handler.
+export function GET(req: NextRequest, context: { params: { nextauth: string[] } }) {
   const ip = getClientIp(req);
-  return runWithIp(ip, () => handler(req as any, undefined as any));
+  return runWithIp(ip, () => handler(req as any, context as any));
 }
 
-export async function POST(req: NextRequest) {
+export function POST(req: NextRequest, context: { params: { nextauth: string[] } }) {
   const ip = getClientIp(req);
-  return runWithIp(ip, () => handler(req as any, undefined as any));
+  return runWithIp(ip, () => handler(req as any, context as any));
 }
