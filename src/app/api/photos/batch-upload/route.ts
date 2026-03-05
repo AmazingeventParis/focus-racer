@@ -311,6 +311,9 @@ export async function POST(request: NextRequest) {
               });
             }
           }
+          // Push notification
+          const { notifyLowCredits } = await import("@/lib/notify");
+          await notifyLowCredits(session.user.id, creditsRemaining);
         } catch (lowCreditErr) {
           console.error("[Email] Low credits notification error:", lowCreditErr);
         }

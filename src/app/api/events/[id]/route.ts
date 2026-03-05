@@ -182,6 +182,14 @@ export async function PUT(
             console.error(`[Email] Event published notify error for ${f.user.email}:`, emailErr);
           }
         }
+
+        // Push notification to all followers
+        const { notifyEventPublished } = await import("@/lib/notify");
+        await notifyEventPublished(
+          followers.map((f) => f.userId),
+          updated.name,
+          id
+        );
       } catch (notifErr) {
         console.error("Error notifying followers about published event:", notifErr);
       }

@@ -126,6 +126,7 @@ model User {
   wrappedRecaps           WrappedRecap[]
 
   notificationPreference  NotificationPreference?
+  deviceTokens            DeviceToken[]
 
   @@index([role])
   @@index([isActive])
@@ -895,6 +896,20 @@ model GuestEventFollower {
 
   @@unique([email, eventId])
   @@index([eventId])
+}
+
+// =========== DEVICE TOKENS (Push Notifications) ===========
+
+model DeviceToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  platform  String   @default("android") // android, web
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 // =========== NOTIFICATION PREFERENCES ===========

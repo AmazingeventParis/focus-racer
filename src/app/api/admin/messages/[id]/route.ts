@@ -106,6 +106,13 @@ export async function PATCH(
           unsubscribeUrl,
         }).catch((err) => console.error("[Email] Support reply error:", err));
       }
+
+      // Push notification for registered users
+      if (message.userId) {
+        import("@/lib/notify").then(({ notifySupportReply }) =>
+          notifySupportReply(message.userId!, message.subject)
+        ).catch(() => {});
+      }
     }
   }
 

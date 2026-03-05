@@ -148,6 +148,10 @@ export async function GET() {
               });
             }
           }
+          // Push notification
+          const { notifyBadgeEarned } = await import("@/lib/notify");
+          const firstBadgePush = PHOTOGRAPHER_BADGE_MAP.get(trulyNew[0]);
+          await notifyBadgeEarned(userId, firstBadgePush?.labelFr || trulyNew[0]);
         } catch (emailErr) {
           console.error("[Email] First badge email error:", emailErr);
         }

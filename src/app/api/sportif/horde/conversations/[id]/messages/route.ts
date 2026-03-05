@@ -108,8 +108,18 @@ export async function POST(
     select: { userId: true },
   });
 
+  // Notify via SSE + push
+  const senderUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { name: true },
+  });
+  const senderName = senderUser?.name || "Quelqu'un";
+
   for (const p of participants) {
     notificationEmitter.notifyUserChat(p.userId, conversationId);
+    import("@/lib/notify").then(({ notifyHordeMessage }) =>
+      notifyHordeMessage(p.userId, senderName, conversationId)
+    ).catch(() => {});
   }
 
   return NextResponse.json(message, { status: 201 });

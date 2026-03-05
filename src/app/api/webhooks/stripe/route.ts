@@ -199,6 +199,13 @@ export async function POST(request: NextRequest) {
             });
           }
         }
+        // Push notification
+        const { notifyNewSale } = await import("@/lib/notify");
+        await notifyNewSale(
+          order.event.userId,
+          `${order.totalAmount.toFixed(2).replace(".", ",")} €`,
+          order.event.name
+        );
       } catch (saleEmailErr) {
         console.error("[Email] New sale notification error:", saleEmailErr);
       }
@@ -436,6 +443,9 @@ export async function POST(request: NextRequest) {
                   unsubscribeUrl: generateUnsubscribeUrl(userBefore.id, "stripeOnboarded"),
                 });
               }
+              // Push notification
+              const { notifyStripeOnboarded } = await import("@/lib/notify");
+              await notifyStripeOnboarded(userBefore.id);
             } catch (emailErr) {
               console.error("[Email] Stripe onboarded error:", emailErr);
             }

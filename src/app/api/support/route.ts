@@ -100,6 +100,10 @@ export async function POST(request: NextRequest) {
         }).catch((err) => console.error("[Email] Admin notify error:", err));
       }
     }
+    // Push notification for admins
+    import("@/lib/notify").then(({ notifyAdminNewMessage }) =>
+      notifyAdminNewMessage(subject)
+    ).catch(() => {});
   } catch (adminEmailErr) {
     console.error("[Email] Admin notification error:", adminEmailErr);
   }
