@@ -1,0 +1,26 @@
+{
+  "name": "focus-racer-mobile",
+  "version": "1.0.0",
+  "description": "Focus Racer - Application mobile Android",
+  "private": true,
+  "scripts": {
+    "build": "npm run copy && npm run build:android",
+    "copy": "npx cap copy android",
+    "sync": "npx cap sync android",
+    "build:android": "cd android && ./gradlew assembleDebug",
+    "build:release": "cd android && ./gradlew assembleRelease",
+    "open": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
+    "@capacitor/keyboard": "^6.0.0",
+    "@capacitor/browser": "^6.0.0",
+    "@capacitor/network": "^6.0.0",
+    "@capacitor/toast": "^6.0.0",
+    "@capacitor/cli": "^6.0.0"
+  }
+}

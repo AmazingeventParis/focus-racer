@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     title: "Focus Racer - Photos de courses sportives",
     description: "Retrouvez vos photos de course en quelques secondes grace a la reconnaissance automatique des numeros de dossard.",
   },
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover",
   robots: "index, follow",
   manifest: "/manifest.json",
   themeColor: "#10B981",
