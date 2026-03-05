@@ -1,42 +1,30 @@
-import admin from "firebase-admin";
 import prisma from "@/lib/prisma";
 import { canSendEmail, type PreferenceKey } from "@/lib/notification-preferences";
 
-// =========== FIREBASE ADMIN INIT ===========
+// =========== NTFY CONFIG ===========
 
-let firebaseApp: admin.app.App | null = null;
+const NTFY_URL =
+  process.env.NTFY_URL || "https://ntfy-zg0oggs8sskgc00oogs4gog8.swipego.app";
 
-function getFirebaseApp(): admin.app.App | null {
-  if (firebaseApp) return firebaseApp;
-
-  const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-  if (!serviceAccountJson) {
-    return null;
-  }
-
-  try {
-    const serviceAccount = JSON.parse(serviceAccountJson);
-    firebaseApp = admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-    console.log("[Push] Firebase Admin initialized");
-    return firebaseApp;
-  } catch (error) {
-    console.error("[Push] Firebase Admin init failed:", error);
-    return null;
-  }
+function getUserTopic(userId: string): string {
+  return `fr-${userId}`;
 }
 
 // =========== TOKEN MANAGEMENT ===========
 
+/**
+ * Register a device for push notifications.
+ * With ntfy, we just record that the user has an active subscription.
+ */
 export async function registerDeviceToken(
   userId: string,
   token: string,
   platform: string = "android"
 ): Promise<void> {
+  const topic = getUserTopic(userId);
   await prisma.deviceToken.upsert({
-    where: { token },
-    create: { userId, token, platform },
+    where: { token: topic },
+    create: { userId, token: topic, platform },
     update: { userId, platform, updatedAt: new Date() },
   });
 }
@@ -63,9 +51,47 @@ interface PushPayload {
 }
 
 /**
+ * Publish a notification to a user's ntfy topic.
+ * No SDK needed — just an HTTP POST.
+ */
+async function publishToNtfy(
+  topic: string,
+  payload: PushPayload
+): Promise<boolean> {
+  try {
+    const url = payload.data?.url;
+    const headers: Record<string, string> = {
+      Title: payload.title,
+      Priority: "default",
+      Tags: payload.data?.type || "bell",
+    };
+
+    if (url) {
+      headers["Click"] = url;
+      headers["Actions"] = `view, Ouvrir, ${url}, clear=true`;
+    }
+
+    const resp = await fetch(`${NTFY_URL}/${topic}`, {
+      method: "POST",
+      headers,
+      body: payload.body,
+    });
+
+    if (!resp.ok) {
+      console.error(`[Push] ntfy error ${resp.status}:`, await resp.text());
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("[Push] ntfy publish error:", error);
+    return false;
+  }
+}
+
+/**
  * Send a push notification to a single user.
  * Respects notification preferences (same as email).
- * Silently returns if Firebase is not configured.
  */
 export async function sendPushToUser(
   userId: string,
@@ -78,10 +104,17 @@ export async function sendPushToUser(
     if (!allowed) return 0;
   }
 
+  // Check if user has any registered devices
   const tokens = await getUserTokens(userId);
   if (tokens.length === 0) return 0;
 
-  return sendPushToTokens(tokens, payload);
+  // Publish to user's ntfy topic
+  const topic = getUserTopic(userId);
+  const sent = await publishToNtfy(topic, payload);
+  if (sent) {
+    console.log(`[Push] Sent to ${topic}`);
+  }
+  return sent ? 1 : 0;
 }
 
 /**
@@ -97,69 +130,4 @@ export async function sendPushToUsers(
     totalSent += await sendPushToUser(userId, payload, preferenceKey);
   }
   return totalSent;
-}
-
-/**
- * Send push to specific FCM tokens.
- * Handles stale token cleanup automatically.
- */
-async function sendPushToTokens(
-  tokens: string[],
-  payload: PushPayload
-): Promise<number> {
-  const app = getFirebaseApp();
-  if (!app) return 0;
-
-  const messaging = admin.messaging(app);
-
-  const message: admin.messaging.MulticastMessage = {
-    tokens,
-    notification: {
-      title: payload.title,
-      body: payload.body,
-    },
-    data: payload.data || {},
-    android: {
-      priority: "high",
-      notification: {
-        icon: "ic_launcher",
-        color: "#10B981",
-        channelId: "focus_racer_default",
-        sound: "default",
-      },
-    },
-  };
-
-  try {
-    const response = await messaging.sendEachForMulticast(message);
-
-    // Cleanup stale tokens
-    if (response.failureCount > 0) {
-      const staleTokens: string[] = [];
-      response.responses.forEach((resp, idx) => {
-        if (
-          !resp.success &&
-          resp.error &&
-          (resp.error.code === "messaging/registration-token-not-registered" ||
-            resp.error.code === "messaging/invalid-registration-token")
-        ) {
-          staleTokens.push(tokens[idx]);
-        }
-      });
-      if (staleTokens.length > 0) {
-        await prisma.deviceToken.deleteMany({
-          where: { token: { in: staleTokens } },
-        });
-        console.log(`[Push] Cleaned ${staleTokens.length} stale tokens`);
-      }
-    }
-
-    console.log(
-      `[Push] Sent: ${response.successCount}/${tokens.length} (fail: ${response.failureCount})`
-    );
-    return response.successCount;
-  } catch (error) {
-    console.error("[Push] Send error:", error);
-    return 0;
-  }
 }

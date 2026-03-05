@@ -1,5 +1,6 @@
 package app.swipego.focusracer;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
@@ -17,7 +18,6 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.getcapacitor.BridgeActivity;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends BridgeActivity {
     private static final String TAG = "FocusRacer";
@@ -39,18 +39,6 @@ public class MainActivity extends BridgeActivity {
 
         // Request notification permission on Android 13+
         requestNotificationPermission();
-
-        // Get FCM token
-        FirebaseMessaging.getInstance().getToken()
-            .addOnCompleteListener(task -> {
-                if (!task.isSuccessful()) {
-                    Log.w(TAG, "FCM token fetch failed", task.getException());
-                    return;
-                }
-                String token = task.getResult();
-                Log.d(TAG, "FCM token: " + token);
-                TokenStore.setToken(this, token);
-            });
     }
 
     @Override
@@ -68,32 +56,33 @@ public class MainActivity extends BridgeActivity {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
             settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
 
-            // Add JS bridge for FCM token registration
-            webView.addJavascriptInterface(new FcmBridge(), "FocusRacerNative");
+            // Add JS bridge for ntfy push registration
+            webView.addJavascriptInterface(new NtfyBridge(), "FocusRacerNative");
 
-            // Inject token registration script after page loads
-            injectTokenRegistration(webView);
+            // Inject push notification registration script
+            injectPushRegistration(webView);
         }
     }
 
-    private void injectTokenRegistration(WebView webView) {
-        String token = TokenStore.getToken(this);
-        if (token == null) return;
-
-        // Inject JS that registers the FCM token with the server
+    /**
+     * Injects JS that registers the device for push notifications.
+     * Calls the API to get the ntfy topic, then starts the background service.
+     */
+    private void injectPushRegistration(WebView webView) {
         String js = "javascript:(function() {" +
-            "if (window.__fcmTokenRegistered) return;" +
-            "var token = '" + token.replace("'", "\\'") + "';" +
+            "if (window.__pushRegistered) return;" +
             "fetch('/api/notifications/device-token', {" +
             "  method: 'POST'," +
             "  headers: {'Content-Type': 'application/json'}," +
-            "  body: JSON.stringify({token: token, platform: 'android'})" +
-            "}).then(function(r) {" +
-            "  if (r.ok) {" +
-            "    window.__fcmTokenRegistered = true;" +
-            "    console.log('[FCM] Token registered');" +
+            "  body: JSON.stringify({platform: 'android'})" +
+            "}).then(function(r) { return r.json(); })" +
+            ".then(function(data) {" +
+            "  if (data.success && data.ntfyUrl && data.topic) {" +
+            "    window.FocusRacerNative.startPushService(data.ntfyUrl, data.topic);" +
+            "    window.__pushRegistered = true;" +
+            "    console.log('[Push] Registered: ' + data.topic);" +
             "  }" +
-            "}).catch(function(e) { console.warn('[FCM] Registration failed:', e); });" +
+            "}).catch(function(e) { console.warn('[Push] Registration failed:', e); });" +
             "})();";
 
         webView.evaluateJavascript(js, null);
@@ -114,17 +103,32 @@ public class MainActivity extends BridgeActivity {
 
     /**
      * JS bridge exposed as window.FocusRacerNative in the WebView.
-     * Allows the web app to retrieve the FCM token.
      */
-    public class FcmBridge {
-        @JavascriptInterface
-        public String getFcmToken() {
-            return TokenStore.getToken(MainActivity.this);
-        }
-
+    public class NtfyBridge {
         @JavascriptInterface
         public boolean isNativeApp() {
             return true;
+        }
+
+        @JavascriptInterface
+        public void startPushService(String ntfyUrl, String topic) {
+            Log.d(TAG, "Starting push service for topic: " + topic);
+            Intent intent = new Intent(MainActivity.this, NtfyService.class);
+            intent.putExtra("ntfy_url", ntfyUrl);
+            intent.putExtra("topic", topic);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent);
+            } else {
+                startService(intent);
+            }
+        }
+
+        @JavascriptInterface
+        public void stopPushService() {
+            Log.d(TAG, "Stopping push service");
+            Intent intent = new Intent(MainActivity.this, NtfyService.class);
+            stopService(intent);
         }
     }
 }

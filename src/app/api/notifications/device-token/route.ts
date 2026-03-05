@@ -5,28 +5,28 @@ import { registerDeviceToken, unregisterDeviceToken } from "@/lib/push-notificat
 
 /**
  * POST /api/notifications/device-token
- * Register a device token for push notifications.
- * Body: { token: string, platform?: "android" | "web" }
+ * Register a device for push notifications (ntfy subscription).
+ * Body: { platform?: "android" | "web" }
  */
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
-    return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
   try {
-    const { token, platform } = await request.json();
-    if (!token || typeof token !== "string") {
-      return NextResponse.json({ error: "Token requis" }, { status: 400 });
-    }
+    const body = await request.json().catch(() => ({}));
+    const platform = body.platform || "android";
+    const userId = (session.user as { id: string }).id;
 
-    await registerDeviceToken(
-      (session.user as { id: string }).id,
-      token,
-      platform || "android"
-    );
+    await registerDeviceToken(userId, `fr-${userId}`, platform);
 
-    return NextResponse.json({ success: true });
+    // Return the ntfy topic and server URL so the client can subscribe
+    return NextResponse.json({
+      success: true,
+      ntfyUrl: process.env.NTFY_URL || "https://ntfy-zg0oggs8sskgc00oogs4gog8.swipego.app",
+      topic: `fr-${userId}`,
+    });
   } catch (error) {
     console.error("[Device Token] Register error:", error);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
@@ -35,22 +35,17 @@ export async function POST(request: NextRequest) {
 
 /**
  * DELETE /api/notifications/device-token
- * Unregister a device token.
- * Body: { token: string }
+ * Unregister device from push notifications.
  */
 export async function DELETE(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
-    return NextResponse.json({ error: "Non autorise" }, { status: 401 });
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
   try {
-    const { token } = await request.json();
-    if (!token || typeof token !== "string") {
-      return NextResponse.json({ error: "Token requis" }, { status: 400 });
-    }
-
-    await unregisterDeviceToken(token);
+    const userId = (session.user as { id: string }).id;
+    await unregisterDeviceToken(`fr-${userId}`);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("[Device Token] Unregister error:", error);
