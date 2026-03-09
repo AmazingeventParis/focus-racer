@@ -9,17 +9,16 @@ const footerLinks = {
       { href: "/solutions/photographes", label: "Pour les photographes" },
       { href: "/solutions/organisateurs", label: "Pour les organisateurs" },
       { href: "/pricing", label: "Tarifs" },
+      { href: "/explore", label: "Trouver mes photos" },
     ],
   },
   decouvrir: {
     title: "Découvrir",
     links: [
-      { href: "/explore", label: "Trouver mes photos" },
       { href: "/about", label: "À propos" },
       { href: "/blog", label: "Blog" },
       { href: "/technologie", label: "Technologie" },
       { href: "/partenaires", label: "Partenaires" },
-      { href: "/presse", label: "Presse" },
     ],
   },
   legal: {
