@@ -126,11 +126,11 @@ interface PaymentStats {
 /* ------------------------------------------------------------------ */
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  PENDING: { label: "En attente", color: "bg-yellow-100 text-yellow-800" },
-  PAID: { label: "Payé", color: "bg-emerald-100 text-emerald-700" },
-  DELIVERED: { label: "Livré", color: "bg-teal-100 text-teal-800" },
-  REFUNDED: { label: "Remboursé", color: "bg-red-100 text-red-700" },
-  EXPIRED: { label: "Expiré", color: "bg-gray-100 text-gray-600" },
+  PENDING: { label: "En attente", color: "bg-yellow-500/15 text-yellow-700" },
+  PAID: { label: "Payé", color: "bg-emerald-500/15 text-emerald-700" },
+  DELIVERED: { label: "Livré", color: "bg-teal-500/15 text-teal-700" },
+  REFUNDED: { label: "Remboursé", color: "bg-red-500/15 text-red-700" },
+  EXPIRED: { label: "Expiré", color: "bg-gray-500/15 text-gray-600" },
 };
 
 const PACK_LABELS: Record<string, string> = {
@@ -179,7 +179,7 @@ function PieChart({ slices, size = 160 }: { slices: PieSlice[]; size?: number })
   if (total === 0) {
     return (
       <div className="flex items-center justify-center" style={{ width: size, height: size }}>
-        <div className="w-full h-full rounded-full bg-gray-100 flex items-center justify-center">
+        <div className="w-full h-full rounded-full bg-gray-500/10 flex items-center justify-center">
           <span className="text-xs text-gray-400">N/A</span>
         </div>
       </div>
@@ -430,7 +430,7 @@ export default function AdminPaymentsPage() {
                       <button
                         key={qr.label}
                         onClick={() => applyQuickRange(qr.days)}
-                        className="block w-full text-left text-sm px-3 py-1.5 rounded-md hover:bg-emerald-50 hover:text-emerald-700 transition-colors whitespace-nowrap"
+                        className="block w-full text-left text-sm px-3 py-1.5 rounded-md hover:bg-emerald-500/10 hover:text-emerald-700 transition-colors whitespace-nowrap"
                       >
                         {qr.label}
                       </button>
@@ -485,8 +485,8 @@ export default function AdminPaymentsPage() {
           {Array.from({ length: 4 }).map((_, i) => (
             <Card key={i} className="glass-card rounded-2xl animate-pulse">
               <CardContent className="pt-6">
-                <div className="h-4 bg-gray-200 rounded w-2/3 mb-3" />
-                <div className="h-8 bg-gray-200 rounded w-1/2" />
+                <div className="h-4 bg-gray-500/30 rounded w-2/3 mb-3" />
+                <div className="h-8 bg-gray-500/30 rounded w-1/2" />
               </CardContent>
             </Card>
           ))}
@@ -661,31 +661,31 @@ export default function AdminPaymentsPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-                  <div className="text-center p-4 bg-gray-50 rounded-xl col-span-2 lg:col-span-1">
+                  <div className="text-center p-4 bg-gray-500/10 rounded-xl col-span-2 lg:col-span-1">
                     <p className="text-2xl font-bold text-navy">{stats.credits.inCirculation.toLocaleString("fr-FR")}</p>
                     <p className="text-xs text-muted-foreground mt-1">En circulation</p>
                   </div>
-                  <div className="text-center p-4 bg-blue-50 rounded-xl">
+                  <div className="text-center p-4 bg-blue-500/10 rounded-xl">
                     <p className="text-2xl font-bold text-blue-600">+{stats.credits.packPurchases.total.toLocaleString("fr-FR")}</p>
                     <p className="text-xs text-blue-500 font-medium">{euro(stats.credits.packPurchases.revenue)}</p>
                     <p className="text-xs text-muted-foreground mt-1">Packs ({stats.credits.packPurchases.count})</p>
                   </div>
-                  <div className="text-center p-4 bg-indigo-50 rounded-xl">
+                  <div className="text-center p-4 bg-indigo-500/10 rounded-xl">
                     <p className="text-2xl font-bold text-indigo-600">+{stats.credits.subPurchases.total.toLocaleString("fr-FR")}</p>
                     <p className="text-xs text-indigo-500 font-medium">{euro(stats.credits.subPurchases.revenue)}</p>
                     <p className="text-xs text-muted-foreground mt-1">Abonnements ({stats.credits.subPurchases.count})</p>
                   </div>
-                  <div className="text-center p-4 bg-red-50 rounded-xl">
+                  <div className="text-center p-4 bg-red-500/10 rounded-xl">
                     <p className="text-2xl font-bold text-red-600">{stats.credits.importDeductions.total.toLocaleString("fr-FR")}</p>
                     <p className="text-xs text-red-400 font-medium">{euro(Math.abs(stats.credits.importDeductions.total) * avgCreditPrice)}</p>
                     <p className="text-xs text-muted-foreground mt-1">Import ({stats.credits.importDeductions.count})</p>
                   </div>
-                  <div className="text-center p-4 bg-orange-50 rounded-xl">
+                  <div className="text-center p-4 bg-orange-500/10 rounded-xl">
                     <p className="text-2xl font-bold text-orange-600">{stats.credits.apiDeductions.total.toLocaleString("fr-FR")}</p>
                     <p className="text-xs text-orange-400 font-medium">{euro(Math.abs(stats.credits.apiDeductions.total) * avgCreditPrice)}</p>
                     <p className="text-xs text-muted-foreground mt-1">API ({stats.credits.apiDeductions.count})</p>
                   </div>
-                  <div className="text-center p-4 bg-emerald-50 rounded-xl">
+                  <div className="text-center p-4 bg-emerald-500/10 rounded-xl">
                     <p className="text-2xl font-bold text-emerald-600">+{stats.credits.adminGrants.total.toLocaleString("fr-FR")}</p>
                     <p className="text-xs text-emerald-400 font-medium">{euro(stats.credits.adminGrants.total * avgCreditPrice)}</p>
                     <p className="text-xs text-muted-foreground mt-1">Offerts ({stats.credits.adminGrants.count})</p>
@@ -739,7 +739,7 @@ export default function AdminPaymentsPage() {
                         <span className="text-xs font-semibold text-navy whitespace-nowrap">
                           {euro(m.revenue)}
                         </span>
-                        <div className="w-full bg-emerald-50 rounded-t-lg relative flex-1 flex items-end">
+                        <div className="w-full bg-emerald-500/10 rounded-t-lg relative flex-1 flex items-end">
                           <div
                             className="w-full gradient-emerald rounded-t-lg transition-all duration-700 ease-out"
                             style={{
@@ -809,7 +809,7 @@ export default function AdminPaymentsPage() {
                             <span className="text-xs">({packPct}%)</span>
                           </span>
                         </div>
-                        <div className="w-full bg-emerald-50 rounded-full h-2.5">
+                        <div className="w-full bg-emerald-500/10 rounded-full h-2.5">
                           <div
                             className="gradient-emerald h-2.5 rounded-full transition-all duration-500"
                             style={{
@@ -856,7 +856,7 @@ export default function AdminPaymentsPage() {
               {stats.topEvents.map((evt, idx) => (
                 <div
                   key={evt.id}
-                  className="relative p-4 rounded-xl bg-white/60 hover:bg-white/80 transition-colors border border-white/40"
+                  className="relative p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/40"
                 >
                   <div
                     className={`absolute -top-2 -left-2 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white ${
@@ -866,7 +866,7 @@ export default function AdminPaymentsPage() {
                           ? "bg-gray-400"
                           : idx === 2
                             ? "bg-amber-700"
-                            : "bg-gray-300"
+                            : "bg-gray-500/40"
                     }`}
                   >
                     {idx + 1}
@@ -905,7 +905,7 @@ export default function AdminPaymentsPage() {
           <CardContent>
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center">
                   <span className="text-lg font-bold text-emerald-700">{stats.connect.onboardedAccounts}</span>
                 </div>
                 <div>
@@ -915,7 +915,7 @@ export default function AdminPaymentsPage() {
               </div>
               <div className="text-2xl text-gray-300">/</div>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-gray-500/10 flex items-center justify-center">
                   <span className="text-lg font-bold text-gray-600">{stats.connect.totalAccounts}</span>
                 </div>
                 <div>
@@ -1045,7 +1045,7 @@ export default function AdminPaymentsPage() {
               <div className="rounded-xl overflow-hidden border border-white/40">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-white/30">
+                    <TableRow className="bg-white/5">
                       <TableHead className="font-semibold text-navy">
                         ID
                       </TableHead>
@@ -1102,7 +1102,7 @@ export default function AdminPaymentsPage() {
                       return (
                         <TableRow
                           key={order.id}
-                          className="hover:bg-white/50 transition-colors"
+                          className="hover:bg-white/10 transition-colors"
                         >
                           <TableCell className="font-mono text-xs text-muted-foreground">
                             #{order.id.slice(-8).toUpperCase()}
@@ -1132,7 +1132,7 @@ export default function AdminPaymentsPage() {
                           </TableCell>
 
                           <TableCell>
-                            <span className="text-xs font-medium text-navy/70 bg-white/60 px-2 py-0.5 rounded-full">
+                            <span className="text-xs font-medium text-navy/70 bg-white/10 px-2 py-0.5 rounded-full">
                               {packLabel}
                             </span>
                           </TableCell>
@@ -1195,7 +1195,7 @@ export default function AdminPaymentsPage() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="rounded-lg text-xs h-7 px-2 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                                  className="rounded-lg text-xs h-7 px-2 text-red-600 border-red-500/30 hover:bg-red-500/10 hover:text-red-700"
                                   disabled={refundingId === order.id}
                                   onClick={() => handleRefund(order.id)}
                                 >
@@ -1249,7 +1249,7 @@ export default function AdminPaymentsPage() {
                       </svg>
                       Précédent
                     </Button>
-                    <span className="text-sm text-muted-foreground px-3 py-1 bg-white/50 rounded-lg">
+                    <span className="text-sm text-muted-foreground px-3 py-1 bg-white/10 rounded-lg">
                       Page {pagination.page} / {pagination.totalPages}
                     </span>
                     <Button

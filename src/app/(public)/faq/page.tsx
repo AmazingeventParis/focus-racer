@@ -166,7 +166,7 @@ function AccordionItem({ item }: { item: FaqItem }) {
         onClick={() => setOpen(!open)}
         className="flex items-center justify-between w-full py-4 text-left group"
       >
-        <span className="text-sm font-medium text-navy group-hover:text-emerald transition-colors pr-4">
+        <span className="text-sm font-medium text-gray-900 group-hover:text-emerald transition-colors pr-4">
           {item.q}
         </span>
         <svg
@@ -215,7 +215,7 @@ export default function FaqPage() {
                     <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald flex-shrink-0">
                       {section.icon}
                     </div>
-                    <h2 className="text-xl font-bold text-navy">{section.title}</h2>
+                    <h2 className="text-xl font-bold text-gray-900">{section.title}</h2>
                   </div>
                   <div className="bg-white rounded-2xl shadow-sm border border-gray-100 px-6">
                     {section.items.map((item) => (
@@ -229,7 +229,7 @@ export default function FaqPage() {
             {/* CTA contact */}
             <div className="mt-16 text-center">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                <h3 className="text-xl font-bold text-navy mb-2">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
                   Vous n'avez pas trouvé votre réponse ?
                 </h3>
                 <p className="text-muted-foreground mb-6">

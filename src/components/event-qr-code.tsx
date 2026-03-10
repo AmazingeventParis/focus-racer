@@ -79,7 +79,7 @@ export function EventQRCode({ eventUrl, eventName }: EventQRCodeProps) {
     <>
       {/* Inline preview: URL + copy + QR button */}
       <div className="flex items-center gap-3 mt-3">
-        <div className="flex-1 flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
+        <div className="flex-1 flex items-center gap-2 bg-white/5 rounded-lg px-3 py-2 border border-[#2C3566]">
           <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
           </svg>
@@ -130,7 +130,7 @@ export function EventQRCode({ eventUrl, eventName }: EventQRCodeProps) {
           <div className="flex flex-col items-center gap-5 py-4">
             {/* QR Code SVG display — centered, fixed size */}
             <div
-              className="w-64 h-64 mx-auto bg-white p-3 rounded-xl border border-gray-200 shadow-sm [&>svg]:w-full [&>svg]:h-full [&>svg]:block"
+              className="w-64 h-64 mx-auto keep-white bg-white p-3 rounded-xl border border-gray-200 shadow-sm [&>svg]:w-full [&>svg]:h-full [&>svg]:block"
               dangerouslySetInnerHTML={{ __html: svgData }}
             />
             {/* URL */}

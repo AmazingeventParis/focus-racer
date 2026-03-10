@@ -16,9 +16,9 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const STATUS_LABELS: Record<string, { label: string; color: string; dot: string }> = {
-  DRAFT: { label: "Brouillon", color: "bg-amber-100 text-amber-700 border-amber-200", dot: "bg-amber-500" },
-  PUBLISHED: { label: "Publié", color: "bg-emerald-100 text-emerald-700 border-emerald-200", dot: "bg-emerald-500" },
-  ARCHIVED: { label: "Archivé", color: "bg-gray-100 text-gray-600 border-gray-200", dot: "bg-gray-400" },
+  DRAFT: { label: "Brouillon", color: "bg-amber-500/15 text-amber-700 border-amber-500/30", dot: "bg-amber-500" },
+  PUBLISHED: { label: "Publié", color: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30", dot: "bg-emerald-500" },
+  ARCHIVED: { label: "Archivé", color: "bg-gray-500/15 text-gray-600 border-gray-500/30", dot: "bg-gray-400" },
 };
 
 const SPORT_LABELS: Record<string, string> = {
@@ -525,12 +525,12 @@ export default function AdminEventsPage() {
                         <p className="text-lg font-bold text-navy">{event.photoCount}</p>
                         <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Photos</p>
                       </div>
-                      <div className="w-px h-8 bg-gray-200" />
+                      <div className="w-px h-8 bg-gray-500/30" />
                       <div className="text-center px-3">
                         <p className="text-lg font-bold text-navy">{event.paidOrders}</p>
                         <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Ventes</p>
                       </div>
-                      <div className="w-px h-8 bg-gray-200" />
+                      <div className="w-px h-8 bg-gray-500/30" />
                       <div className="text-center px-3">
                         <p className={`text-lg font-bold ${event.revenue > 0 ? "text-emerald-600" : "text-muted-foreground"}`}>
                           {event.revenue > 0 ? formatCurrency(event.revenue) : "-"}
@@ -540,7 +540,7 @@ export default function AdminEventsPage() {
 
                       {/* Expand icon */}
                       <button
-                        className="ml-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                        className="ml-2 p-1.5 rounded-lg hover:bg-gray-500/15 transition-colors"
                         onClick={(e) => {
                           e.stopPropagation();
                           setExpandedId(isExpanded ? null : event.id);
@@ -561,12 +561,12 @@ export default function AdminEventsPage() {
 
                 {/* Expanded detail */}
                 {isExpanded && (
-                  <div className="border-t bg-white/60">
+                  <div className="border-t bg-white/10">
                     <div className="p-5">
                       {/* Détails grid */}
                       <div className="grid md:grid-cols-3 gap-6 mb-5">
                         {/* Revenue detail */}
-                        <div className="bg-white/80 rounded-xl p-4 border border-gray-100">
+                        <div className="bg-white/10 rounded-xl p-4 border border-gray-500/20">
                           <h4 className="font-semibold text-sm text-navy mb-3 flex items-center gap-2">
                             <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -602,7 +602,7 @@ export default function AdminEventsPage() {
                         </div>
 
                         {/* Conversion */}
-                        <div className="bg-white/80 rounded-xl p-4 border border-gray-100">
+                        <div className="bg-white/10 rounded-xl p-4 border border-gray-500/20">
                           <h4 className="font-semibold text-sm text-navy mb-3 flex items-center gap-2">
                             <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -630,7 +630,7 @@ export default function AdminEventsPage() {
                                     {((event.paidOrders / event.runnerCount) * 100).toFixed(1)}%
                                   </span>
                                 </div>
-                                <div className="w-full bg-gray-100 rounded-full h-2 mt-1">
+                                <div className="w-full bg-gray-500/15 rounded-full h-2 mt-1">
                                   <div
                                     className="bg-emerald-500 h-2 rounded-full transition-all"
                                     style={{
@@ -650,7 +650,7 @@ export default function AdminEventsPage() {
                         </div>
 
                         {/* Top bibs */}
-                        <div className="bg-white/80 rounded-xl p-4 border border-gray-100">
+                        <div className="bg-white/10 rounded-xl p-4 border border-gray-500/20">
                           <h4 className="font-semibold text-sm text-navy mb-3 flex items-center gap-2">
                             <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
@@ -664,10 +664,10 @@ export default function AdminEventsPage() {
                                   <span
                                     className={`text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full ${
                                       i === 0
-                                        ? "bg-amber-100 text-amber-700"
+                                        ? "bg-amber-500/15 text-amber-700"
                                         : i === 1
-                                        ? "bg-gray-100 text-gray-600"
-                                        : "bg-orange-50 text-orange-600"
+                                        ? "bg-gray-500/15 text-gray-600"
+                                        : "bg-orange-500/10 text-orange-600"
                                     }`}
                                   >
                                     {i + 1}
@@ -762,7 +762,7 @@ export default function AdminEventsPage() {
                             Retraiter IA
                           </Button>
                         ) : (
-                          <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-1.5" onClick={(e) => e.stopPropagation()}>
                             <span className="text-sm text-amber-700">
                               Relancer le traitement IA sur {event.photoCount} photos ?
                             </span>
@@ -800,7 +800,7 @@ export default function AdminEventsPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-9 text-red-500 hover:text-red-700 hover:bg-red-50"
+                            className="h-9 text-red-500 hover:text-red-700 hover:bg-red-500/10"
                             disabled={isActionLoading || event.paidOrders > 0}
                             onClick={(e) => {
                               e.stopPropagation();
@@ -818,7 +818,7 @@ export default function AdminEventsPage() {
                             Supprimer
                           </Button>
                         ) : (
-                          <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-1.5" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-1.5" onClick={(e) => e.stopPropagation()}>
                             <span className="text-sm text-red-700 font-medium">
                               Supprimer définitivement cet événement et ses {event.photoCount} photos ?
                             </span>

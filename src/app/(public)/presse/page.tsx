@@ -522,7 +522,7 @@ export default function PressePage() {
                 </div>
               </div>
 
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-sm text-amber-300">
                 <div className="flex items-start gap-2">
                   <svg
                     className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5"
@@ -543,7 +543,7 @@ export default function PressePage() {
                     les couleurs. Pour télécharger les fichiers HD, contactez{" "}
                     <a
                       href="mailto:presse@focusracer.com"
-                      className="text-amber-700 underline"
+                      className="text-amber-400 underline"
                     >
                       presse@focusracer.com
                     </a>

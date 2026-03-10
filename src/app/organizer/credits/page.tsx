@@ -40,10 +40,10 @@ const SUBSCRIPTIONS = [
 ];
 
 const TYPE_LABELS: Record<string, { label: string; color: string }> = {
-  PURCHASE: { label: "Achat", color: "bg-teal-100 text-teal-700" },
-  DEDUCTION: { label: "Déduction", color: "bg-amber-100 text-amber-700" },
-  REFUND: { label: "Remboursement", color: "bg-green-100 text-green-700" },
-  ADMIN_GRANT: { label: "Admin", color: "bg-purple-100 text-purple-700" },
+  PURCHASE: { label: "Achat", color: "bg-teal-500/15 text-teal-700" },
+  DEDUCTION: { label: "Déduction", color: "bg-amber-500/15 text-amber-700" },
+  REFUND: { label: "Remboursement", color: "bg-green-500/15 text-green-700" },
+  ADMIN_GRANT: { label: "Admin", color: "bg-purple-500/15 text-purple-700" },
 };
 
 export default function CreditsPage() {
@@ -230,13 +230,13 @@ export default function CreditsPage() {
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg font-display text-gray-900">Abonnement actif</CardTitle>
                   {subscription.status === "past_due" && (
-                    <Badge className="bg-red-100 text-red-700 border-0">Paiement en échec</Badge>
+                    <Badge className="bg-red-500/15 text-red-700 border-0">Paiement en échec</Badge>
                   )}
                   {subscription.status === "active" && !subscription.cancelRequestedAt && (
-                    <Badge className="bg-emerald-100 text-emerald-700 border-0">Actif</Badge>
+                    <Badge className="bg-emerald-500/15 text-emerald-700 border-0">Actif</Badge>
                   )}
                   {subscription.cancelRequestedAt && (
-                    <Badge className="bg-amber-100 text-amber-700 border-0">Résiliation demandée</Badge>
+                    <Badge className="bg-amber-500/15 text-amber-700 border-0">Résiliation demandée</Badge>
                   )}
                 </div>
               </CardHeader>
@@ -275,13 +275,13 @@ export default function CreditsPage() {
                 </div>
 
                 {subscription.status === "past_due" && (
-                  <div className="p-3 rounded-lg bg-red-50 text-red-700 text-sm">
+                  <div className="p-3 rounded-lg bg-red-500/10 text-red-700 text-sm">
                     Le dernier paiement a échoué. Veuillez mettre à jour votre moyen de paiement pour éviter l'interruption du service.
                   </div>
                 )}
 
                 {subscription.cancelRequestedAt && (
-                  <div className="p-3 rounded-lg bg-amber-50 text-amber-700 text-sm">
+                  <div className="p-3 rounded-lg bg-amber-500/10 text-amber-700 text-sm">
                     Résiliation demandée le {new Date(subscription.cancelRequestedAt).toLocaleDateString("fr-FR")}.
                     Votre abonnement reste actif jusqu'au{" "}
                     <strong>{subscription.endsAt ? new Date(subscription.endsAt).toLocaleDateString("fr-FR") : "-"}</strong>.
@@ -292,7 +292,7 @@ export default function CreditsPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-red-600 border-red-200 hover:bg-red-50"
+                    className="text-red-600 border-red-500/30 hover:bg-red-500/10"
                     onClick={cancelSubscription}
                     disabled={cancelLoading}
                   >
@@ -317,7 +317,7 @@ export default function CreditsPage() {
                   <Button
                     key={pack.amount}
                     variant="outline"
-                    className="h-auto py-5 flex flex-col gap-1.5 border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 rounded-xl transition-all"
+                    className="h-auto py-5 flex flex-col gap-1.5 border-gray-200 hover:border-emerald-300 hover:bg-emerald-500/10 rounded-xl transition-all"
                     onClick={() => buyCredits(pack)}
                     disabled={loadingPack !== null}
                   >
@@ -330,7 +330,7 @@ export default function CreditsPage() {
                       <>
                         <span className="text-xl font-bold text-gray-900">+{pack.amount.toLocaleString("fr-FR")}</span>
                         <span className="text-sm font-semibold text-emerald-600">{pack.price}</span>
-                        <span className="text-xs font-medium text-gray-500 mt-1 px-2 py-0.5 bg-gray-100 rounded-full">{(pack.priceValue / pack.amount).toFixed(3).replace(".", ",")} €/photo</span>
+                        <span className="text-xs font-medium text-gray-500 mt-1 px-2 py-0.5 bg-gray-500/15 rounded-full">{(pack.priceValue / pack.amount).toFixed(3).replace(".", ",")} €/photo</span>
                       </>
                     )}
                   </Button>
@@ -353,16 +353,16 @@ export default function CreditsPage() {
                   {SUBSCRIPTIONS.map((sub) => (
                     <div
                       key={sub.id}
-                      className="relative border border-gray-200 rounded-xl p-5 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all cursor-pointer group"
+                      className="relative border border-gray-200 rounded-xl p-5 hover:border-emerald-300 hover:bg-emerald-500/10 transition-all cursor-pointer group"
                       onClick={() => buySubscription(sub)}
                     >
                       <div className="flex flex-col items-center text-center gap-2">
                         <span className="text-2xl font-bold text-gray-900">{sub.credits.toLocaleString("fr-FR")}</span>
                         <span className="text-xs text-gray-500">crédits / mois</span>
-                        <div className="mt-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-semibold">
+                        <div className="mt-2 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 text-sm font-semibold">
                           {sub.price}
                         </div>
-                        <span className="text-xs font-medium text-gray-500 mt-1 px-2 py-0.5 bg-gray-100 rounded-full">{(sub.priceValue / sub.credits).toFixed(3).replace(".", ",")} €/photo</span>
+                        <span className="text-xs font-medium text-gray-500 mt-1 px-2 py-0.5 bg-gray-500/15 rounded-full">{(sub.priceValue / sub.credits).toFixed(3).replace(".", ",")} €/photo</span>
                       </div>
                     </div>
                   ))}
@@ -383,7 +383,7 @@ export default function CreditsPage() {
             <CardContent>
               {transactions.length === 0 ? (
                 <div className="py-8 text-center">
-                  <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 rounded-full bg-gray-500/10 flex items-center justify-center mx-auto mb-3">
                     <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
                     </svg>
@@ -505,19 +505,19 @@ export default function CreditsPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-gray-600">
               <div className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">1</span>
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-xs font-bold">1</span>
                 <p>Rechargez votre compte en crédits</p>
               </div>
               <div className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">2</span>
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-xs font-bold">2</span>
                 <p>Importez vos photos (1 photo = 1 crédit)</p>
               </div>
               <div className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">3</span>
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-xs font-bold">3</span>
                 <p>L'IA analyse automatiquement vos photos</p>
               </div>
               <div className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">4</span>
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-xs font-bold">4</span>
                 <p>Vos sportifs trouvent et achètent leurs photos</p>
               </div>
             </CardContent>
@@ -531,7 +531,7 @@ export default function CreditsPage() {
             <CardContent className="space-y-2">
               <a
                 href="#"
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-500/10 transition-colors text-sm"
               >
                 <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
@@ -540,7 +540,7 @@ export default function CreditsPage() {
               </a>
               <a
                 href="/organizer/support"
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-500/10 transition-colors text-sm"
               >
                 <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />

@@ -210,8 +210,8 @@ export default function SportifReglagesPage() {
     return (
       <div className="p-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded" />
-          {[1, 2, 3].map((i) => <div key={i} className="h-40 bg-gray-200 dark:bg-gray-700 rounded-2xl" />)}
+          <div className="h-8 w-48 bg-gray-200 rounded" />
+          {[1, 2, 3].map((i) => <div key={i} className="h-40 bg-gray-200 rounded-2xl" />)}
         </div>
       </div>
     );
@@ -220,7 +220,7 @@ export default function SportifReglagesPage() {
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-navy dark:text-white">{t("settings.title")}</h1>
+        <h1 className="text-2xl font-bold text-navy">{t("settings.title")}</h1>
         <p className="text-muted-foreground mt-1">{t("settings.subtitle")}</p>
       </div>
 
@@ -238,11 +238,11 @@ export default function SportifReglagesPage() {
         <CardContent className="space-y-4">
           {/* Sportif ID */}
           {profile?.sportifId && (
-            <div className="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl mb-4">
-              <span className="text-sm text-gray-600 dark:text-gray-300">{t("settings.sportifId")} :</span>
+            <div className="flex items-center gap-3 p-3 bg-emerald-500/10 rounded-xl mb-4">
+              <span className="text-sm text-gray-600">{t("settings.sportifId")} :</span>
               <button
                 onClick={copySportifId}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 text-emerald-700 dark:text-emerald-400 font-mono text-base font-bold hover:bg-emerald-100 dark:hover:bg-gray-700 transition-colors border border-emerald-200 dark:border-emerald-800"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white text-emerald-700 font-mono text-base font-bold hover:bg-emerald-500/15 transition-colors border border-emerald-500/30"
               >
                 {profile.sportifId}
                 {copied ? (
@@ -276,16 +276,16 @@ export default function SportifReglagesPage() {
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-gray-700 dark:text-gray-300">{t("settings.fullName")}</Label>
-              <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg" />
+              <Label className="text-gray-700">{t("settings.fullName")}</Label>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="bg-gray-50 border-gray-200 rounded-lg" />
             </div>
             <div className="space-y-2">
-              <Label className="text-gray-700 dark:text-gray-300">{t("settings.email")}</Label>
-              <Input value={profile?.email || ""} disabled className="bg-gray-100 dark:bg-gray-900 border-gray-200 dark:border-gray-700 rounded-lg" />
+              <Label className="text-gray-700">{t("settings.email")}</Label>
+              <Input value={profile?.email || ""} disabled className="bg-gray-100 border-gray-200 rounded-lg" />
             </div>
             <div className="space-y-2">
-              <Label className="text-gray-700 dark:text-gray-300">{t("settings.phone")}</Label>
-              <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="06 12 34 56 78" className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg" />
+              <Label className="text-gray-700">{t("settings.phone")}</Label>
+              <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="06 12 34 56 78" className="bg-gray-50 border-gray-200 rounded-lg" />
             </div>
           </div>
           <Button onClick={saveProfile} disabled={savingProfile} size="sm" className="bg-emerald hover:bg-emerald-dark text-white">
@@ -305,7 +305,7 @@ export default function SportifReglagesPage() {
           </p>
           <div className="flex items-center gap-4">
             {profile?.faceImagePath && (
-              <div className="w-20 h-20 rounded-xl overflow-hidden relative bg-gray-100 dark:bg-gray-800">
+              <div className="w-20 h-20 rounded-xl overflow-hidden relative bg-gray-100">
                 <Image src={profile.faceImagePath} alt="Visage" fill className="object-cover" sizes="80px" />
               </div>
             )}
@@ -352,11 +352,11 @@ export default function SportifReglagesPage() {
           {/* Step 1: Event + Selfie */}
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-gray-700 dark:text-gray-300">{t("settings.eventId")}</Label>
-              <Input value={gdprEventId} onChange={(e) => setGdprEventId(e.target.value)} placeholder="ID événement" className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg" />
+              <Label className="text-gray-700">{t("settings.eventId")}</Label>
+              <Input value={gdprEventId} onChange={(e) => setGdprEventId(e.target.value)} placeholder="ID événement" className="bg-gray-50 border-gray-200 rounded-lg" />
             </div>
             <div className="space-y-2">
-              <Label className="text-gray-700 dark:text-gray-300">{t("settings.selfie")}</Label>
+              <Label className="text-gray-700">{t("settings.selfie")}</Label>
               <input type="file" accept="image/*" onChange={(e) => setGdprSelfie(e.target.files?.[0] || null)} className="text-sm" />
             </div>
           </div>
@@ -372,14 +372,14 @@ export default function SportifReglagesPage() {
 
           {/* Step 2: Results */}
           {verifyResult && (
-            <div className={`p-4 rounded-xl ${verifyResult.verified ? "bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800" : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"}`}>
-              <p className={`text-sm font-medium ${verifyResult.verified ? "text-emerald-700 dark:text-emerald-400" : "text-red-700 dark:text-red-400"}`}>
+            <div className={`p-4 rounded-xl ${verifyResult.verified ? "bg-emerald-500/10 border border-emerald-500/30" : "bg-red-500/10 border border-red-500/30"}`}>
+              <p className={`text-sm font-medium ${verifyResult.verified ? "text-emerald-700" : "text-red-700"}`}>
                 {verifyResult.message}
               </p>
               {verifyResult.photos.length > 0 && (
                 <div className="flex gap-2 mt-3 overflow-x-auto">
                   {verifyResult.photos.slice(0, 6).map((p) => (
-                    <div key={p.id} className="w-16 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-100 dark:bg-gray-800 relative">
+                    <div key={p.id} className="w-16 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-500/10 relative">
                       {p.thumbnail ? (
                         <Image src={p.thumbnail} alt={p.name} fill className="object-cover" sizes="64px" />
                       ) : (
@@ -388,7 +388,7 @@ export default function SportifReglagesPage() {
                     </div>
                   ))}
                   {verifyResult.photos.length > 6 && (
-                    <div className="w-16 h-16 flex-shrink-0 rounded bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs text-gray-500">
+                    <div className="w-16 h-16 flex-shrink-0 rounded bg-gray-100 flex items-center justify-center text-xs text-gray-500">
                       +{verifyResult.photos.length - 6}
                     </div>
                   )}
@@ -412,7 +412,7 @@ export default function SportifReglagesPage() {
           {/* History */}
           {gdprRequests.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("settings.history")}</h3>
+              <h3 className="text-sm font-medium text-gray-700 mb-2">{t("settings.history")}</h3>
               <div className="space-y-2">
                 {gdprRequests.map((req) => (
                   <div key={req.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl text-sm">

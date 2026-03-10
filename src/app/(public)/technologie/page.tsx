@@ -594,10 +594,10 @@ export default function TechnologiePage() {
                           <span className="font-semibold text-gray-900">{scenario.label}</span>
                           <span className={`ml-2 text-xs px-2 py-0.5 rounded-full font-medium ${
                             scenario.difficulty === "Facile"
-                              ? "bg-green-50 text-green-700"
+                              ? "bg-green-500/10 text-green-400"
                               : scenario.difficulty === "Difficile"
-                              ? "bg-amber-50 text-amber-700"
-                              : "bg-red-50 text-red-700"
+                              ? "bg-amber-500/10 text-amber-400"
+                              : "bg-red-500/100/10 text-red-400"
                           }`}>
                             {scenario.difficulty}
                           </span>
@@ -639,7 +639,7 @@ export default function TechnologiePage() {
       <section id="faces" data-reveal className="py-20 md:py-28">
         <div className="container mx-auto px-4">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 ${reveal("faces") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-50 text-violet-600 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 text-violet-400 text-sm font-medium mb-4">
               Reconnaissance faciale
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -661,7 +661,7 @@ export default function TechnologiePage() {
                 ),
                 title: "Indexation des visages",
                 desc: "Chaque visage détecté est converti en un vecteur mathématique unique (embedding) et stocké dans une collection sécurisée. Ce processus est automatisé lors du traitement de chaque photo.",
-                color: "bg-violet-50 text-violet-600",
+                color: "bg-violet-500/10 text-violet-400",
               },
               {
                 icon: (
@@ -671,7 +671,7 @@ export default function TechnologiePage() {
                 ),
                 title: "Matching cross-photo",
                 desc: "L'IA compare chaque nouveau visage avec l'ensemble de la collection. Si un même sportif apparaît sur plusieurs photos, elles sont automatiquement regroupées, même avec des angles ou éclairages différents.",
-                color: "bg-indigo-50 text-indigo-600",
+                color: "bg-indigo-500/10 text-indigo-400",
               },
               {
                 icon: (
@@ -681,7 +681,7 @@ export default function TechnologiePage() {
                 ),
                 title: "Liaison automatique",
                 desc: "Les photos orphelines (sans dossard détecté) sont automatiquement liées au bon sportif si un visage correspondant est trouvé dans la collection (confiance 99%). Source tracée : « face_recognition ».",
-                color: "bg-purple-50 text-purple-600",
+                color: "bg-purple-500/10 text-purple-400",
               },
             ].map((item, i) => (
               <div
@@ -702,10 +702,10 @@ export default function TechnologiePage() {
 
           {/* Privacy note */}
           <div className={`max-w-3xl mx-auto mt-12 transition-all duration-700 delay-300 ${reveal("faces") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-100">
+            <div className="bg-violet-500/5 rounded-2xl p-6 border border-violet-500/20">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-violet-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <div className="w-10 h-10 rounded-xl bg-violet-500/15 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-violet-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                   </svg>
                 </div>
@@ -789,7 +789,7 @@ export default function TechnologiePage() {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm text-gray-600">Solution cloud standard</span>
-                      <span className="text-sm font-bold text-amber-600">~15 min</span>
+                      <span className="text-sm font-bold text-amber-400">~15 min</span>
                     </div>
                     <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full" style={{ width: "60%" }} />
@@ -798,7 +798,7 @@ export default function TechnologiePage() {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm text-gray-600">Tri manuel</span>
-                      <span className="text-sm font-bold text-red-600">~4 heures</span>
+                      <span className="text-sm font-bold text-red-400">~4 heures</span>
                     </div>
                     <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-red-400 to-red-500 rounded-full" style={{ width: "100%" }} />
@@ -836,7 +836,7 @@ export default function TechnologiePage() {
       <section id="securite" data-reveal className="py-20 md:py-28">
         <div className="container mx-auto px-4">
           <div className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-700 ${reveal("securite") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 text-red-600 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 text-red-400 text-sm font-medium mb-4">
               Sécurité
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -885,7 +885,7 @@ export default function TechnologiePage() {
                   }`}
                   style={{ transitionDelay: `${200 + i * 80}ms` }}
                 >
-                  <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-red-500 flex-shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center text-red-500 flex-shrink-0">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                     </svg>

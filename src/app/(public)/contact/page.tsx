@@ -105,7 +105,7 @@ export default function ContactPage() {
               {/* Contact info */}
               <div className="space-y-8 animate-fade-in">
                 <div>
-                  <h2 className="text-2xl font-bold text-navy mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
                     Parlons de votre projet
                   </h2>
                   <p className="text-muted-foreground">
@@ -122,7 +122,7 @@ export default function ContactPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="font-medium text-navy">Email</p>
+                      <p className="font-medium text-gray-900">Email</p>
                       <a href="mailto:contact@focusracer.com" className="text-emerald hover:text-emerald-dark transition-colors">
                         contact@focusracer.com
                       </a>
@@ -136,7 +136,7 @@ export default function ContactPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="font-medium text-navy">Temps de réponse</p>
+                      <p className="font-medium text-gray-900">Temps de réponse</p>
                       <p className="text-muted-foreground">Sous 24-48h en jours ouvrés</p>
                     </div>
                   </div>
@@ -149,7 +149,7 @@ export default function ContactPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="font-medium text-navy">Localisation</p>
+                      <p className="font-medium text-gray-900">Localisation</p>
                       <p className="text-muted-foreground">France</p>
                     </div>
                   </div>
@@ -157,7 +157,7 @@ export default function ContactPage() {
 
                 {/* FAQ teaser */}
                 <div className="pt-4">
-                  <h3 className="text-lg font-semibold text-navy mb-3">Questions fréquentes</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Questions fréquentes</h3>
                   <ul className="space-y-2">
                     {faqTeaser.map((item) => (
                       <li key={item.q}>
@@ -195,7 +195,7 @@ export default function ContactPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                         </svg>
                       </div>
-                      <h3 className="text-xl font-bold text-navy mb-2">Message envoyé !</h3>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">Message envoyé !</h3>
                       <p className="text-muted-foreground">
                         Merci pour votre message. Nous vous répondrons dans les plus brefs délais.
                       </p>
@@ -204,7 +204,7 @@ export default function ContactPage() {
                 ) : (
                   <Card className="glass-card rounded-2xl">
                     <CardHeader>
-                      <CardTitle className="text-navy">Envoyez-nous un message</CardTitle>
+                      <CardTitle className="text-gray-900">Envoyez-nous un message</CardTitle>
                       <CardDescription>
                         Remplissez le formulaire ci-dessous et nous vous répondrons rapidement.
                       </CardDescription>
@@ -219,7 +219,7 @@ export default function ContactPage() {
                               value={name}
                               onChange={(e) => setName(e.target.value)}
                               required
-                              className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
+                              className="bg-gray-50/80 border-gray-200 focus:border-emerald focus:ring-emerald"
                             />
                           </div>
                           <div className="space-y-2">
@@ -230,7 +230,7 @@ export default function ContactPage() {
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
                               required
-                              className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
+                              className="bg-gray-50/80 border-gray-200 focus:border-emerald focus:ring-emerald"
                             />
                           </div>
                         </div>
@@ -240,7 +240,7 @@ export default function ContactPage() {
                             id="category"
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
-                            className="flex h-9 w-full rounded-xl border border-white/30 bg-white/50 px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
+                            className="flex h-9 w-full rounded-xl border border-gray-200 bg-gray-50/80 px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
                           >
                             {categories.map((cat) => (
                               <option key={cat.value} value={cat.value}>
@@ -256,7 +256,7 @@ export default function ContactPage() {
                             value={subject}
                             onChange={(e) => setSubject(e.target.value)}
                             required
-                            className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
+                            className="bg-gray-50/80 border-gray-200 focus:border-emerald focus:ring-emerald"
                           />
                         </div>
                         <div className="space-y-2">
@@ -267,7 +267,7 @@ export default function ContactPage() {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             required
-                            className="flex w-full rounded-xl border border-white/30 bg-white/50 px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
+                            className="flex w-full rounded-xl border border-gray-200 bg-gray-50/80 px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald"
                           />
                         </div>
                         {/* Honeypot — hidden from real users */}

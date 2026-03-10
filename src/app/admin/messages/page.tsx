@@ -95,13 +95,13 @@ const CATEGORY_LABELS: Record<MessageCategory, string> = {
 };
 
 const CATEGORY_COLORS: Record<MessageCategory, string> = {
-  BILLING: "bg-purple-100 text-purple-700 hover:bg-purple-100",
-  SORTING: "bg-sky-100 text-sky-700 hover:bg-sky-100",
-  GDPR: "bg-rose-100 text-rose-700 hover:bg-rose-100",
-  ACCOUNT: "bg-indigo-100 text-indigo-700 hover:bg-indigo-100",
-  TECHNICAL: "bg-orange-100 text-orange-700 hover:bg-orange-100",
-  EVENT: "bg-teal-100 text-teal-700 hover:bg-teal-100",
-  OTHER: "bg-gray-100 text-gray-700 hover:bg-gray-100",
+  BILLING: "bg-purple-500/15 text-purple-700 hover:bg-purple-500/15",
+  SORTING: "bg-sky-500/15 text-sky-700 hover:bg-sky-500/15",
+  GDPR: "bg-rose-500/15 text-rose-700 hover:bg-rose-500/15",
+  ACCOUNT: "bg-indigo-500/15 text-indigo-700 hover:bg-indigo-500/15",
+  TECHNICAL: "bg-orange-500/15 text-orange-700 hover:bg-orange-500/15",
+  EVENT: "bg-teal-500/15 text-teal-700 hover:bg-teal-500/15",
+  OTHER: "bg-gray-500/15 text-gray-700 hover:bg-gray-500/15",
 };
 
 const STATUS_LABELS: Record<MessageStatus, string> = {
@@ -112,10 +112,10 @@ const STATUS_LABELS: Record<MessageStatus, string> = {
 };
 
 const STATUS_COLORS: Record<MessageStatus, string> = {
-  OPEN: "bg-amber-100 text-amber-700 hover:bg-amber-100",
-  IN_PROGRESS: "bg-blue-100 text-blue-700 hover:bg-blue-100",
-  RESOLVED: "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
-  CLOSED: "bg-gray-100 text-gray-500 hover:bg-gray-100",
+  OPEN: "bg-amber-500/15 text-amber-700 hover:bg-amber-500/15",
+  IN_PROGRESS: "bg-blue-500/15 text-blue-700 hover:bg-blue-500/15",
+  RESOLVED: "bg-emerald-500/15 text-emerald-700 hover:bg-emerald-500/15",
+  CLOSED: "bg-gray-500/15 text-gray-500 hover:bg-gray-500/15",
 };
 
 const STATUS_BORDER_COLORS: Record<MessageStatus, string> = {
@@ -374,7 +374,7 @@ export default function AdminMessagesPage() {
         <div className="flex items-center gap-3">
           <h1 className="text-3xl font-bold text-navy">Messagerie</h1>
           {totalOpen > 0 && (
-            <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 text-sm px-3 py-1">
+            <Badge className="bg-amber-500/15 text-amber-700 hover:bg-amber-500/15 text-sm px-3 py-1">
               {totalOpen} ouvert{totalOpen > 1 ? "s" : ""}
             </Badge>
           )}
@@ -512,7 +512,7 @@ export default function AdminMessagesPage() {
               >
                 {/* Message summary - clickable */}
                 <div
-                  className="cursor-pointer hover:bg-white/30 transition-colors rounded-t-2xl"
+                  className="cursor-pointer hover:bg-white/10 transition-colors rounded-t-2xl"
                   onClick={() => toggleExpand(msg.id)}
                 >
                   <CardHeader className="pb-2">
@@ -598,9 +598,9 @@ export default function AdminMessagesPage() {
                       </p>
 
                       {/* Initial user message */}
-                      <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                      <div className="bg-blue-500/10 rounded-xl p-4 border border-blue-500/20">
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 rounded-full bg-blue-200 flex items-center justify-center">
+                          <div className="w-6 h-6 rounded-full bg-blue-500/30 flex items-center justify-center">
                             <svg className="w-3.5 h-3.5 text-blue-700" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                             </svg>
@@ -613,9 +613,9 @@ export default function AdminMessagesPage() {
 
                       {/* Legacy admin reply (if no replies array entries) */}
                       {msg.adminReply && replies.length === 0 && msg.repliedAt && (
-                        <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+                        <div className="bg-emerald-500/10 rounded-xl p-4 border border-emerald-500/20">
                           <div className="flex items-center gap-2 mb-2">
-                            <div className="w-6 h-6 rounded-full bg-emerald-200 flex items-center justify-center">
+                            <div className="w-6 h-6 rounded-full bg-emerald-500/30 flex items-center justify-center">
                               <svg className="w-3.5 h-3.5 text-emerald-700" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
@@ -633,13 +633,13 @@ export default function AdminMessagesPage() {
                           key={i}
                           className={`rounded-xl p-4 border ${
                             reply.role === "admin"
-                              ? "bg-emerald-50 border-emerald-100"
-                              : "bg-blue-50 border-blue-100"
+                              ? "bg-emerald-500/10 border-emerald-500/20"
+                              : "bg-blue-500/10 border-blue-500/20"
                           }`}
                         >
                           <div className="flex items-center gap-2 mb-2">
                             <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                              reply.role === "admin" ? "bg-emerald-200" : "bg-blue-200"
+                              reply.role === "admin" ? "bg-emerald-500/30" : "bg-blue-500/30"
                             }`}>
                               <svg className={`w-3.5 h-3.5 ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                                 {reply.role === "admin" ? (
@@ -669,7 +669,7 @@ export default function AdminMessagesPage() {
 
                     {/* Reply form */}
                     {msg.status !== "CLOSED" ? (
-                      <div className="bg-white/40 rounded-xl p-4 border border-gray-100">
+                      <div className="bg-white/10 rounded-xl p-4 border border-gray-100">
                         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
                           Répondre
                         </p>
@@ -697,7 +697,7 @@ export default function AdminMessagesPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="border-gray-300 text-gray-600 hover:bg-gray-100"
+                            className="border-gray-300 text-gray-600 hover:bg-gray-500/15"
                             onClick={() => handleClose(msg.id)}
                             disabled={closingId === msg.id || isSubmitting}
                           >
@@ -714,7 +714,7 @@ export default function AdminMessagesPage() {
                         </div>
                       </div>
                     ) : (
-                      <div className="bg-gray-50 rounded-xl p-3 text-center border border-gray-200">
+                      <div className="bg-gray-500/10 rounded-xl p-3 text-center border border-gray-500/30">
                         <p className="text-sm text-gray-500">Conversation clôturée</p>
                       </div>
                     )}

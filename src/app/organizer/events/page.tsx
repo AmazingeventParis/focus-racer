@@ -97,7 +97,7 @@ export default function EventsListPage() {
             placeholder="Rechercher un événement..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-white border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald transition-all"
+            className="bg-[#0C1029] border-[#2C3566] text-[#F3F6FF] rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald transition-all"
           />
         </div>
         <div className="flex gap-2">
@@ -115,7 +115,7 @@ export default function EventsListPage() {
               className={
                 statusFilter === f.value
                   ? "bg-emerald hover:bg-emerald-hover text-white rounded-lg"
-                  : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 rounded-lg"
+                  : "bg-[#0C1029] text-gray-400 border-[#2C3566] hover:bg-[#151C44] rounded-lg"
               }
             >
               {f.label}
@@ -137,7 +137,7 @@ export default function EventsListPage() {
       ) : filteredEvents.length === 0 ? (
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardContent className="py-12 text-center">
-            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full bg-gray-500/10 flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
               </svg>
@@ -187,8 +187,8 @@ export default function EventsListPage() {
                           event.status === "PUBLISHED"
                             ? "bg-success-light text-success-dark"
                             : event.status === "DRAFT"
-                            ? "bg-gray-100 text-gray-600"
-                            : "bg-teal-50 text-teal"
+                            ? "bg-gray-500/10 text-gray-400"
+                            : "bg-teal-500/10 text-teal"
                         }`}>
                           {event.status === "PUBLISHED" ? "Publié" : event.status === "DRAFT" ? "Brouillon" : "Archivé"}
                         </span>
@@ -209,18 +209,18 @@ export default function EventsListPage() {
                         </svg>
                         {event._count.photos} photos
                       </span>
-                      <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-medium bg-gray-500/10 text-gray-400 px-2 py-0.5 rounded-md">
                         {SPORT_LABELS[event.sportType || "RUNNING"]}
                       </span>
                       {event.status === "PUBLISHED" && (() => {
                         const daysLeft = Math.ceil((new Date(event.date).getTime() + 30 * 86400000 - Date.now()) / 86400000);
                         const badgeClass = daysLeft <= 0
-                          ? "bg-red-100 text-red-700"
+                          ? "bg-red-500/10 text-red-400"
                           : daysLeft <= 7
-                          ? "bg-red-50 text-red-600"
+                          ? "bg-red-500/10 text-red-400"
                           : daysLeft <= 14
-                          ? "bg-orange-50 text-orange-600"
-                          : "bg-gray-100 text-gray-500";
+                          ? "bg-orange-500/10 text-orange-400"
+                          : "bg-gray-500/10 text-gray-400";
                         return (
                           <span className={`text-xs font-medium px-2 py-0.5 rounded-md ${badgeClass}`}>
                             {daysLeft <= 0 ? "Expiré" : `⏱ ${daysLeft} j restants`}

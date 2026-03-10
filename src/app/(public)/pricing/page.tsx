@@ -125,7 +125,7 @@ export default function PricingPage() {
               <Badge className="bg-emerald/10 text-emerald border-emerald/20 mb-4 text-sm px-4 py-1">
                 Compte Sportif
               </Badge>
-              <h2 className="text-2xl md:text-3xl font-bold text-navy mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
                 100% gratuit pour les sportifs
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
@@ -137,7 +137,7 @@ export default function PricingPage() {
             <Card className="glass-card rounded-2xl max-w-2xl mx-auto overflow-hidden border-emerald/20">
               <CardHeader className="text-center pb-2">
                 <div className="flex items-center justify-center gap-3 mb-2">
-                  <span className="text-5xl font-bold text-navy">0€</span>
+                  <span className="text-5xl font-bold text-gray-900">0€</span>
                   <span className="text-muted-foreground text-sm text-left leading-tight">
                     Inscription<br />gratuite
                   </span>
@@ -151,7 +151,7 @@ export default function PricingPage() {
                   {sportifFeatures.map((f) => (
                     <div key={f} className="flex items-start gap-2 text-sm">
                       <CheckIcon />
-                      <span className="text-navy/80">{f}</span>
+                      <span className="text-gray-900/80">{f}</span>
                     </div>
                   ))}
                 </div>
@@ -162,7 +162,7 @@ export default function PricingPage() {
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button variant="outline" className="w-full sm:w-auto border-emerald/30 text-emerald hover:bg-emerald-50 px-8">
+                    <Button variant="outline" className="w-full sm:w-auto border-emerald/30 text-emerald hover:bg-emerald-400/10 px-8">
                       Créer un compte
                     </Button>
                   </Link>
@@ -176,16 +176,16 @@ export default function PricingPage() {
         <section className="py-16 md:py-20 bg-white">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="text-center mb-10">
-              <Badge className="bg-navy/10 text-navy border-navy/20 mb-4 text-sm px-4 py-1">
+              <Badge className="bg-gray-100 text-gray-900 border-gray-200 mb-4 text-sm px-4 py-1">
                 Compte Pro
               </Badge>
-              <h2 className="text-2xl md:text-3xl font-bold text-navy mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
                 Photographes, organisateurs, agences
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
                 Créez votre compte gratuitement. Achetez des crédits pour traiter vos photos avec notre IA.
                 <br />
-                <strong className="text-navy">1 crédit = 1 photo traitée</strong> (détection dossard + reconnaissance faciale + watermark).
+                <strong className="text-gray-900">1 crédit = 1 photo traitée</strong> (détection dossard + reconnaissance faciale + watermark).
               </p>
               <div className="mt-4 inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-full px-5 py-2">
                 <svg className="w-5 h-5 text-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -196,16 +196,16 @@ export default function PricingPage() {
             </div>
 
             {/* Pro features */}
-            <Card className="glass-card rounded-2xl max-w-3xl mx-auto overflow-hidden mb-12 border-navy/10">
+            <Card className="glass-card rounded-2xl max-w-3xl mx-auto overflow-hidden mb-12 border-gray-200">
               <CardContent className="pt-6">
-                <h3 className="font-semibold text-navy text-center mb-4">Inclus dans tous les comptes Pro</h3>
+                <h3 className="font-semibold text-gray-900 text-center mb-4">Inclus dans tous les comptes Pro</h3>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {proFeatures.map((f) => (
                     <div key={f.label} className="flex items-start gap-2.5 text-sm">
-                      <svg className="w-5 h-5 text-navy/60 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                      <svg className="w-5 h-5 text-gray-900/60 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                         {f.icon}
                       </svg>
-                      <span className="text-navy/80">{f.label}</span>
+                      <span className="text-gray-900/80">{f.label}</span>
                     </div>
                   ))}
                 </div>
@@ -213,7 +213,7 @@ export default function PricingPage() {
             </Card>
 
             {/* Packs crédits */}
-            <h3 className="text-xl font-bold text-navy text-center mb-6">
+            <h3 className="text-xl font-bold text-gray-900 text-center mb-6">
               Packs de crédits <span className="text-muted-foreground font-normal text-base">— achat ponctuel</span>
             </h3>
             <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-14">
@@ -232,12 +232,12 @@ export default function PricingPage() {
                     </div>
                   )}
                   <CardHeader className="pb-2 text-center">
-                    <CardTitle className="text-lg text-navy">{pack.name}</CardTitle>
+                    <CardTitle className="text-lg text-gray-900">{pack.name}</CardTitle>
                     <p className="text-sm text-muted-foreground">{pack.credits} crédits</p>
                   </CardHeader>
                   <CardContent className="text-center space-y-4">
                     <div>
-                      <p className="text-4xl font-bold text-navy">{pack.price}€</p>
+                      <p className="text-4xl font-bold text-gray-900">{pack.price}€</p>
                       <p className="text-xs text-muted-foreground mt-1">{pack.pricePerCredit}€ / crédit</p>
                     </div>
                     <Link href="/register">
@@ -245,7 +245,7 @@ export default function PricingPage() {
                         className={`w-full ${
                           pack.popular
                             ? "bg-emerald hover:bg-emerald-dark text-white shadow-emerald"
-                            : "bg-white border border-emerald/30 text-emerald hover:bg-emerald-50"
+                            : "bg-white border border-emerald/30 text-emerald hover:bg-emerald-400/10"
                         } transition-all duration-200`}
                       >
                         Acheter
@@ -257,26 +257,26 @@ export default function PricingPage() {
             </div>
 
             {/* Abonnements */}
-            <h3 className="text-xl font-bold text-navy text-center mb-6">
+            <h3 className="text-xl font-bold text-gray-900 text-center mb-6">
               Abonnements <span className="text-muted-foreground font-normal text-base">— crédits mensuels renouvelés</span>
             </h3>
             <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
               {subscriptions.map((sub) => (
                 <Card
                   key={sub.name}
-                  className="glass-card rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-glass-lg border-navy/10"
+                  className="glass-card rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-glass-lg border-gray-200"
                 >
                   <CardHeader className="pb-2 text-center">
-                    <CardTitle className="text-lg text-navy">{sub.name}</CardTitle>
+                    <CardTitle className="text-lg text-gray-900">{sub.name}</CardTitle>
                     <p className="text-sm text-muted-foreground">{sub.credits} crédits / mois</p>
                   </CardHeader>
                   <CardContent className="text-center space-y-4">
                     <div>
-                      <p className="text-4xl font-bold text-navy">{sub.price}€<span className="text-base font-normal text-muted-foreground">/mois</span></p>
+                      <p className="text-4xl font-bold text-gray-900">{sub.price}€<span className="text-base font-normal text-muted-foreground">/mois</span></p>
                       <p className="text-xs text-muted-foreground mt-1">{sub.pricePerCredit}€ / crédit</p>
                     </div>
                     <Link href="/register">
-                      <Button className="w-full bg-navy hover:bg-navy-light text-white transition-all duration-200">
+                      <Button className="w-full bg-emerald hover:bg-emerald-dark text-white transition-all duration-200">
                         S'abonner
                       </Button>
                     </Link>
@@ -296,7 +296,7 @@ export default function PricingPage() {
         {/* FAQ preview */}
         <section className="py-16 md:py-20 gradient-bg-subtle">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-navy mb-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
               Des questions ?
             </h2>
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
@@ -304,7 +304,7 @@ export default function PricingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/faq">
-                <Button variant="outline" className="border-emerald/30 text-emerald hover:bg-emerald-50 px-8">
+                <Button variant="outline" className="border-emerald/30 text-emerald hover:bg-emerald-400/10 px-8">
                   Consulter la FAQ
                 </Button>
               </Link>

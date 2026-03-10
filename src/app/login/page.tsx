@@ -113,7 +113,7 @@ export default function LoginPage() {
 
         <Card className="glass-card rounded-2xl border-white/20">
           <CardHeader>
-            <CardTitle className="text-navy">Connexion</CardTitle>
+            <CardTitle className="text-gray-900">Connexion</CardTitle>
             <CardDescription>
               Entrez vos identifiants pour accéder à votre espace
             </CardDescription>
@@ -128,7 +128,7 @@ export default function LoginPage() {
                   type="email"
                   placeholder="vous@example.com"
                   required
-                  className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
+                  className="bg-neon-card border-neon-border text-gray-900 placeholder:text-gray-400 focus:border-emerald focus:ring-emerald"
                 />
               </div>
               <div className="space-y-2">
@@ -138,7 +138,7 @@ export default function LoginPage() {
                   name="password"
                   type="password"
                   required
-                  className="bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald"
+                  className="bg-neon-card border-neon-border text-gray-900 placeholder:text-gray-400 focus:border-emerald focus:ring-emerald"
                 />
               </div>
               {/* Honeypot — hidden from real users */}

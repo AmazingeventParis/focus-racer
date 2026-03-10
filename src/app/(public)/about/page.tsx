@@ -571,7 +571,7 @@ export default function AboutPage() {
                 style={{ transitionDelay: `${i * 100}ms` }}
               >
                 <div className="flex items-start justify-between mb-5">
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center text-3xl border border-emerald-100 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 flex items-center justify-center text-3xl border border-emerald-100 group-hover:scale-110 transition-transform duration-300">
                     {value.icon}
                   </div>
                   <div className="text-right">
@@ -784,7 +784,7 @@ export default function AboutPage() {
                 }`}
                 style={{ transitionDelay: `${i * 100}ms` }}
               >
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center text-3xl mx-auto mb-4 border border-emerald-100 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 flex items-center justify-center text-3xl mx-auto mb-4 border border-emerald-100 group-hover:scale-110 transition-transform duration-300">
                   {eng.icon}
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">{eng.title}</h3>

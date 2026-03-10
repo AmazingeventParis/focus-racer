@@ -227,7 +227,7 @@ function RegisterPage() {
     }
   };
 
-  const inputClass = "bg-white/50 border-white/30 focus:border-emerald focus:ring-emerald";
+  const inputClass = "bg-neon-card border-neon-border text-gray-900 placeholder:text-gray-400 focus:border-emerald focus:ring-emerald";
 
   return (
     <main className="min-h-screen gradient-bg flex items-center justify-center p-4 relative overflow-hidden">
@@ -249,7 +249,7 @@ function RegisterPage() {
 
         {step === 1 && (
           <div>
-            <h2 className="text-xl font-semibold text-center mb-6 text-white">
+            <h2 className="text-xl font-semibold text-center mb-6 text-gray-900">
               Quel type de compte souhaitez-vous créer ?
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -271,7 +271,7 @@ function RegisterPage() {
                     }`}>
                       {type.icon}
                     </div>
-                    <h3 className="font-semibold text-navy text-sm">{type.title}</h3>
+                    <h3 className="font-semibold text-gray-900 text-sm">{type.title}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5 leading-tight">{type.description}</p>
                   </div>
                 </div>
@@ -282,7 +282,7 @@ function RegisterPage() {
                 size="lg"
                 disabled={!selectedRole}
                 onClick={() => setStep(2)}
-                className="bg-white text-navy hover:bg-white/90 shadow-glass-lg px-8 transition-all duration-200"
+                className="bg-emerald text-white hover:bg-emerald-dark shadow-emerald px-8 transition-all duration-200"
               >
                 Continuer
               </Button>
@@ -301,7 +301,7 @@ function RegisterPage() {
                   ← Retour
                 </button>
               </div>
-              <CardTitle className="text-navy">Créer un compte</CardTitle>
+              <CardTitle className="text-gray-900">Créer un compte</CardTitle>
               <CardDescription>
                 Remplissez le formulaire pour créer votre compte {ACCOUNT_TYPES.find(t => t.role === selectedRole)?.title}
               </CardDescription>

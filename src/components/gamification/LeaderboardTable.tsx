@@ -52,7 +52,7 @@ export default function LeaderboardTable({ role }: Props) {
     <div>
       {/* Filters */}
       <div className="flex flex-wrap gap-2 mb-4">
-        <div className="flex rounded-lg bg-gray-100 p-0.5">
+        <div className="flex rounded-lg bg-white/5 p-0.5">
           {PERIOD_OPTIONS.map((opt) => (
             <button
               key={opt.value}
@@ -60,8 +60,8 @@ export default function LeaderboardTable({ role }: Props) {
               className={cn(
                 "px-3 py-1.5 text-xs font-medium rounded-md transition-colors",
                 period === opt.value
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "bg-[#151C44] text-gray-900 shadow-sm"
+                  : "text-gray-500 hover:text-gray-400"
               )}
             >
               {opt.label}
@@ -69,7 +69,7 @@ export default function LeaderboardTable({ role }: Props) {
           ))}
         </div>
         {data?.categories && data.categories.length > 1 && (
-          <div className="flex rounded-lg bg-gray-100 p-0.5">
+          <div className="flex rounded-lg bg-white/5 p-0.5">
             {data.categories.map((cat) => (
               <button
                 key={cat.key}
@@ -92,7 +92,7 @@ export default function LeaderboardTable({ role }: Props) {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-12 bg-gray-100 rounded-lg animate-pulse" />
+            <div key={i} className="h-12 bg-white/5 rounded-lg animate-pulse" />
           ))}
         </div>
       ) : !data || data.entries.length === 0 ? (
@@ -107,8 +107,8 @@ export default function LeaderboardTable({ role }: Props) {
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors",
                 entry.isCurrentUser
-                  ? "bg-emerald-50 border border-emerald-200"
-                  : "bg-gray-50 hover:bg-gray-100"
+                  ? "bg-emerald-500/10 border border-emerald-500/30"
+                  : "bg-white/5 hover:bg-white/10"
               )}
             >
               {/* Rank */}
@@ -123,14 +123,14 @@ export default function LeaderboardTable({ role }: Props) {
               </div>
 
               {/* Avatar initials */}
-              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold text-gray-500">
                 {entry.userName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
               </div>
 
               {/* Name + Level */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className={cn("text-sm font-medium truncate", entry.isCurrentUser ? "text-emerald-700" : "text-gray-900")}>
+                  <span className={cn("text-sm font-medium truncate", entry.isCurrentUser ? "text-emerald-400" : "text-gray-900")}>
                     {entry.userName}
                   </span>
                   <LevelBadge level={entry.level} levelName={entry.levelName} size="sm" />
@@ -148,17 +148,17 @@ export default function LeaderboardTable({ role }: Props) {
           {data.userRank && !data.entries.find((e) => e.isCurrentUser) && (
             <>
               <div className="text-center text-gray-400 text-xs py-1">...</div>
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200">
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
                 <div className="w-8 text-center">
-                  <span className="text-sm font-bold text-emerald-600">#{data.userRank.rank}</span>
+                  <span className="text-sm font-bold text-emerald-400">#{data.userRank.rank}</span>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-xs font-bold text-emerald-700">
+                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-xs font-bold text-emerald-400">
                   {data.userRank.userName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-sm font-medium text-emerald-700">{data.userRank.userName} (vous)</span>
+                  <span className="text-sm font-medium text-emerald-400">{data.userRank.userName} (vous)</span>
                 </div>
-                <span className="text-sm font-bold text-emerald-700">{data.userRank.score.toLocaleString()}</span>
+                <span className="text-sm font-bold text-emerald-400">{data.userRank.score.toLocaleString()}</span>
               </div>
             </>
           )}

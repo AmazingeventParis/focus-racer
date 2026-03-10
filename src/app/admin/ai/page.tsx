@@ -38,7 +38,7 @@ interface ReprocessResult {
 
 function StatusBadge({ enabled }: { enabled: boolean }) {
   return (
-    <Badge className={enabled ? "bg-emerald-100 text-emerald-700" : "bg-white/50 text-muted-foreground"}>
+    <Badge className={enabled ? "bg-emerald-500/15 text-emerald-700" : "bg-gray-500/10 text-muted-foreground"}>
       {enabled ? "Actif" : "Inactif"}
     </Badge>
   );
@@ -127,7 +127,7 @@ export default function AdminAIPage() {
       </div>
 
       {reprocessResult && (
-        <Card className={`mb-6 ${reprocessResult.success ? "border-emerald bg-emerald-50" : "border-red-500 bg-red-50"}`}>
+        <Card className={`mb-6 ${reprocessResult.success ? "border-emerald bg-emerald-500/10" : "border-red-500 bg-red-500/10"}`}>
           <CardContent className="pt-6">
             <div className="flex items-start gap-3">
               {reprocessResult.success ? (
@@ -261,9 +261,9 @@ export default function AdminAIPage() {
         <CardContent>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">OCR - Confiance minimum</p>
+              <p className="text-sm font-medium text-gray-300 mb-2">OCR - Confiance minimum</p>
               <div className="flex items-center gap-3">
-                <div className="flex-1 bg-gray-200 rounded-full h-3">
+                <div className="flex-1 bg-gray-500/30 rounded-full h-3">
                   <div
                     className="bg-emerald h-3 rounded-full"
                     style={{ width: `${config.ocrConfidenceThreshold}%` }}
@@ -276,9 +276,9 @@ export default function AdminAIPage() {
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Qualité - Score minimum</p>
+              <p className="text-sm font-medium text-gray-300 mb-2">Qualité - Score minimum</p>
               <div className="flex items-center gap-3">
-                <div className="flex-1 bg-gray-200 rounded-full h-3">
+                <div className="flex-1 bg-gray-500/30 rounded-full h-3">
                   <div
                     className="bg-emerald h-3 rounded-full"
                     style={{ width: `${config.qualityThreshold}%` }}
@@ -332,7 +332,7 @@ export default function AdminAIPage() {
 
           {Object.keys(stats.ocrProviders).length > 0 && (
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Moteur OCR utilisé</p>
+              <p className="text-sm font-medium text-gray-300 mb-2">Moteur OCR utilisé</p>
               <div className="flex gap-4">
                 {Object.entries(stats.ocrProviders).map(([provider, count]) => (
                   <div key={provider} className="flex items-center gap-2">

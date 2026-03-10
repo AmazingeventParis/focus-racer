@@ -30,7 +30,7 @@ export default function NewEventPage() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#070B1F] flex items-center justify-center">
         <p className="text-muted-foreground">Chargement...</p>
       </div>
     );
@@ -157,14 +157,14 @@ export default function NewEventPage() {
                 <textarea
                   id="description"
                   name="description"
-                  className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex min-h-[100px] w-full rounded-md border border-[#2C3566] bg-[#0C1029] px-3 py-2 text-sm text-[#F3F6FF] shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   placeholder="Décrivez votre événement (parcours, catégories, ambiance...)"
                 />
               </div>
 
               <div className="flex gap-4">
                 <Link href="/organizer/events" className="flex-1">
-                  <Button type="button" variant="outline" className="w-full text-gray-600 border-gray-200 hover:bg-gray-50 rounded-lg transition-all duration-200">
+                  <Button type="button" variant="outline" className="w-full text-gray-400 border-[#2C3566] hover:bg-[#0C1029] rounded-lg transition-all duration-200">
                     Annuler
                   </Button>
                 </Link>

@@ -622,10 +622,10 @@ export default function SolutionsOrganisateursPage() {
       </section>
 
       {/* ═══════════ EXPÉRIENCE PARTICIPANT ═══════════ */}
-      <section id="experience" data-reveal className="py-20 md:py-28 bg-gradient-to-br from-amber-50 via-orange-50 to-white">
+      <section id="experience" data-reveal className="py-20 md:py-28 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className={`max-w-3xl mx-auto text-center mb-16 transition-all duration-700 ${reveal("experience") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-400 text-sm font-medium mb-4">
               Expérience participant
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -688,7 +688,7 @@ export default function SolutionsOrganisateursPage() {
       <section id="engagement" data-reveal className="py-20 md:py-28 bg-white">
         <div className="container mx-auto px-4">
           <div className={`max-w-3xl mx-auto text-center mb-16 transition-all duration-700 ${reveal("engagement") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 text-purple-600 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-400 text-sm font-medium mb-4">
               Engagement & visibilité
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -705,7 +705,7 @@ export default function SolutionsOrganisateursPage() {
             {engagementFeatures.map((feat, i) => (
               <div
                 key={i}
-                className={`flex gap-5 p-6 rounded-2xl bg-gradient-to-br from-purple-50/50 to-white border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all duration-500 ${
+                className={`flex gap-5 p-6 rounded-2xl bg-white border border-gray-100 hover:border-purple-500/30 hover:shadow-lg transition-all duration-500 ${
                   reveal("engagement") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
                 style={{ transitionDelay: `${i * 100}ms` }}
@@ -913,7 +913,7 @@ export default function SolutionsOrganisateursPage() {
       <section id="infrastructure" data-reveal className="py-20 md:py-28 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className={`max-w-3xl mx-auto text-center mb-16 transition-all duration-700 ${reveal("infrastructure") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 text-sm font-medium mb-4">
               Infrastructure & sécurité
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -930,7 +930,7 @@ export default function SolutionsOrganisateursPage() {
             {infraFeatures.map((feat, i) => (
               <div
                 key={i}
-                className={`flex gap-5 p-6 rounded-2xl bg-white border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-500 ${
+                className={`flex gap-5 p-6 rounded-2xl bg-white border border-gray-100 hover:border-blue-500/30 hover:shadow-lg transition-all duration-500 ${
                   reveal("infrastructure") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
                 style={{ transitionDelay: `${i * 100}ms` }}
@@ -1025,7 +1025,7 @@ export default function SolutionsOrganisateursPage() {
                                 </svg>
                               </span>
                             ) : (
-                              <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-red-50">
+                              <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-red-500/10">
                                 <svg className="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -1044,7 +1044,7 @@ export default function SolutionsOrganisateursPage() {
                                 </svg>
                               </span>
                             ) : (
-                              <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-red-50">
+                              <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-red-500/10">
                                 <svg className="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>

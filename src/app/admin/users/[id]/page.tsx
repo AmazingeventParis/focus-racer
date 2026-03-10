@@ -342,15 +342,15 @@ export default function AdminUserDetailPage({
   const getTransactionBadgeClass = (type: string) => {
     switch (type) {
       case "PURCHASE":
-        return "bg-blue-100 text-blue-700";
+        return "bg-blue-500/15 text-blue-700";
       case "DEDUCTION":
-        return "bg-orange-100 text-orange-700";
+        return "bg-orange-500/15 text-orange-700";
       case "REFUND":
-        return "bg-amber-100 text-amber-700";
+        return "bg-amber-500/15 text-amber-700";
       case "ADMIN_GRANT":
-        return "bg-purple-100 text-purple-700";
+        return "bg-purple-500/15 text-purple-700";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-gray-500/15 text-gray-700";
     }
   };
 
@@ -583,8 +583,8 @@ export default function AdminUserDetailPage({
                     <Badge
                       className={
                         user.stripeOnboarded
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-amber-100 text-amber-700"
+                          ? "bg-emerald-500/15 text-emerald-700"
+                          : "bg-amber-500/15 text-amber-700"
                       }
                     >
                       {user.stripeOnboarded ? "Onboarded" : "En attente"}
@@ -667,12 +667,12 @@ export default function AdminUserDetailPage({
               <Button
                 variant="outline"
                 onClick={resetPassword}
-                className="w-full border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200"
+                className="w-full border-emerald text-emerald hover:bg-emerald-500/10 transition-all duration-200"
               >
                 Réinitialiser le mot de passe
               </Button>
               {tempPassword && (
-                <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+                <div className="mt-2 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl">
                   <p className="text-sm text-amber-800">
                     Mot de passe temporaire :{" "}
                     <code className="font-mono font-bold">{tempPassword}</code>
@@ -695,7 +695,7 @@ export default function AdminUserDetailPage({
               >
                 <Button
                   variant="outline"
-                  className="w-full border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200"
+                  className="w-full border-emerald text-emerald hover:bg-emerald-500/10 transition-all duration-200"
                 >
                   Envoyer un message
                 </Button>
@@ -728,7 +728,7 @@ export default function AdminUserDetailPage({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-center p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+            <div className="flex items-center justify-center p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
               <div className="text-center">
                 <p className="text-4xl font-bold text-emerald">
                   {user.credits}
@@ -801,7 +801,7 @@ export default function AdminUserDetailPage({
                 {creditTransactions.slice(0, 10).map((tx) => (
                   <div
                     key={tx.id}
-                    className="flex items-center justify-between p-3 bg-white/50 rounded-xl border border-white/20"
+                    className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/10"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
@@ -854,7 +854,7 @@ export default function AdminUserDetailPage({
               {user.events.map((event) => (
                 <div
                   key={event.id}
-                  className="flex justify-between items-center p-3 bg-white/50 rounded-xl border border-white/20"
+                  className="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/10"
                 >
                   <div>
                     <p className="font-medium text-navy">{event.name}</p>
@@ -864,7 +864,7 @@ export default function AdminUserDetailPage({
                   </div>
                   <Badge
                     variant="secondary"
-                    className="bg-emerald-50 text-emerald"
+                    className="bg-emerald-500/10 text-emerald"
                   >
                     {event._count.photos} photo
                     {event._count.photos !== 1 ? "s" : ""}

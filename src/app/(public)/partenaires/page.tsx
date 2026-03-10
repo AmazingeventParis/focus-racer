@@ -33,9 +33,9 @@ const partnerTypes = [
       "Co-branding sur les galeries",
     ],
     color: "from-blue-500 to-cyan-500",
-    bgLight: "bg-blue-50",
-    textColor: "text-blue-600",
-    borderColor: "border-blue-200",
+    bgLight: "bg-blue-500/10",
+    textColor: "text-blue-400",
+    borderColor: "border-blue-500/20",
   },
   {
     id: "federations",
@@ -55,9 +55,9 @@ const partnerTypes = [
       "Accès prioritaire aux nouvelles fonctionnalités",
     ],
     color: "from-amber-500 to-orange-500",
-    bgLight: "bg-amber-50",
-    textColor: "text-amber-600",
-    borderColor: "border-amber-200",
+    bgLight: "bg-amber-500/10",
+    textColor: "text-amber-400",
+    borderColor: "border-amber-500/20",
   },
   {
     id: "agences",
@@ -78,9 +78,9 @@ const partnerTypes = [
       "Dashboard analytics par équipe",
     ],
     color: "from-violet-500 to-purple-500",
-    bgLight: "bg-violet-50",
-    textColor: "text-violet-600",
-    borderColor: "border-violet-200",
+    bgLight: "bg-violet-500/10",
+    textColor: "text-violet-400",
+    borderColor: "border-violet-500/20",
   },
   {
     id: "clubs",
@@ -122,9 +122,9 @@ const partnerTypes = [
       "Support dédié collectivités",
     ],
     color: "from-rose-500 to-pink-500",
-    bgLight: "bg-rose-50",
-    textColor: "text-rose-600",
-    borderColor: "border-rose-200",
+    bgLight: "bg-rose-500/10",
+    textColor: "text-rose-400",
+    borderColor: "border-rose-500/20",
   },
 ];
 
@@ -871,7 +871,7 @@ export default function PartenairesPage() {
                 }`}
                 style={{ transitionDelay: `${i * 80}ms` }}
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center text-emerald-600 mb-4 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 flex items-center justify-center text-emerald-600 mb-4 group-hover:scale-110 transition-transform duration-300">
                   {benefit.icon}
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">{benefit.title}</h3>

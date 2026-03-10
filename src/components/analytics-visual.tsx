@@ -38,11 +38,11 @@ export function AnalyticsVisual({
   const bibsPerPhoto = photosWithBibs > 0 ? totalAssociations / photosWithBibs : 0;
 
   return (
-    <Card className="bg-white shadow-sm border-slate-200/60 overflow-hidden">
-      <CardHeader className="border-b border-slate-100 bg-gradient-to-r from-slate-50/50 to-transparent pb-4">
+    <Card className="bg-[#151C44] shadow-sm border-[#2C3566] overflow-hidden">
+      <CardHeader className="border-b border-[#2C3566] bg-gradient-to-r from-white/5 to-transparent pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2.5">
-            <div className="p-1.5 rounded-lg bg-blue-50">
+          <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2.5">
+            <div className="p-1.5 rounded-lg bg-blue-500/10">
               <TrendingUp className="h-4 w-4 text-blue-600" />
             </div>
             Vue d'ensemble
@@ -59,19 +59,19 @@ export function AnalyticsVisual({
           {/* Total Photos */}
           <div className="group">
             <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-md bg-slate-100 group-hover:bg-slate-200 transition-colors">
-                <ImageIcon className="h-3.5 w-3.5 text-slate-600" />
+              <div className="p-1.5 rounded-md bg-white/10 group-hover:bg-white/20 transition-colors">
+                <ImageIcon className="h-3.5 w-3.5 text-gray-500" />
               </div>
               <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Photos</span>
             </div>
-            <p className="text-3xl font-bold text-slate-900 mb-1">{totalPhotos}</p>
+            <p className="text-3xl font-bold text-gray-900 mb-1">{totalPhotos}</p>
             <p className="text-xs text-slate-500">fichiers uploadés</p>
           </div>
 
           {/* Photos Sorted - CLICKABLE */}
           <Link href={`/photographer/events/${eventId}/photos`} className="group cursor-pointer hover:scale-[1.02] transition-transform">
             <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-md bg-emerald-50 group-hover:bg-emerald-100 transition-colors">
+              <div className="p-1.5 rounded-md bg-emerald-500/10 group-hover:bg-emerald-500/20 transition-colors">
                 <svg className="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
@@ -86,7 +86,7 @@ export function AnalyticsVisual({
           {orphanPhotos > 0 && (
             <Link href={`/photographer/events/${eventId}/photos?orphan=true`} className="group cursor-pointer hover:scale-[1.02] transition-transform">
               <div className="flex items-center gap-2 mb-3">
-                <div className="p-1.5 rounded-md bg-amber-50 group-hover:bg-amber-100 transition-colors">
+                <div className="p-1.5 rounded-md bg-amber-500/10 group-hover:bg-amber-500/20 transition-colors">
                   <AlertCircle className="h-3.5 w-3.5 text-amber-600" />
                 </div>
                 <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Orphelines</span>
@@ -99,7 +99,7 @@ export function AnalyticsVisual({
           {/* Associations */}
           <div className="group">
             <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-md bg-purple-50 group-hover:bg-purple-100 transition-colors">
+              <div className="p-1.5 rounded-md bg-purple-500/10 group-hover:bg-purple-500/20 transition-colors">
                 <Zap className="h-3.5 w-3.5 text-purple-600" />
               </div>
               <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Associations</span>
@@ -111,7 +111,7 @@ export function AnalyticsVisual({
           {/* Unique Bibs */}
           <div className="group">
             <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-md bg-blue-50 group-hover:bg-blue-100 transition-colors">
+              <div className="p-1.5 rounded-md bg-blue-500/10 group-hover:bg-blue-500/20 transition-colors">
                 <Hash className="h-3.5 w-3.5 text-blue-600" />
               </div>
               <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Dossards</span>
@@ -123,7 +123,7 @@ export function AnalyticsVisual({
           {/* Processing Time */}
           <div className="group">
             <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-md bg-indigo-50 group-hover:bg-indigo-100 transition-colors">
+              <div className="p-1.5 rounded-md bg-indigo-500/10 group-hover:bg-indigo-500/20 transition-colors">
                 <Clock className="h-3.5 w-3.5 text-indigo-600" />
               </div>
               <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Traitement</span>
@@ -140,11 +140,11 @@ export function AnalyticsVisual({
           {/* Photos distribution */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-semibold text-slate-700">Répartition des photos</h4>
+              <h4 className="text-sm font-semibold text-gray-500">Répartition des photos</h4>
               <span className="text-xs text-slate-500">{totalPhotos} total</span>
             </div>
             <div className="relative">
-              <div className="flex h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="flex h-2 bg-white/10 rounded-full overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-700 ease-out"
                   style={{ width: `${sortedPercentage}%` }}
@@ -159,13 +159,13 @@ export function AnalyticsVisual({
               <div className="flex justify-between mt-2 text-xs">
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                  <span className="text-slate-600">
+                  <span className="text-gray-500">
                     {photosWithBibs} triées <span className="text-slate-400">({sortedPercentage.toFixed(1)}%)</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-amber-400" />
-                  <span className="text-slate-600">
+                  <span className="text-gray-500">
                     {orphanPhotos} orphelines <span className="text-slate-400">({(100 - sortedPercentage).toFixed(1)}%)</span>
                   </span>
                 </div>

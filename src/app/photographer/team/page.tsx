@@ -34,15 +34,15 @@ function SkeletonCard() {
   return (
     <div className="bg-white rounded-xl shadow-card p-6 animate-pulse">
       <div className="flex items-center gap-4 mb-4">
-        <div className="w-12 h-12 rounded-full bg-gray-200" />
+        <div className="w-12 h-12 rounded-full bg-gray-500/30" />
         <div className="flex-1">
-          <div className="h-5 w-32 bg-gray-200 rounded mb-2" />
-          <div className="h-4 w-48 bg-gray-200 rounded" />
+          <div className="h-5 w-32 bg-gray-500/30 rounded mb-2" />
+          <div className="h-4 w-48 bg-gray-500/30 rounded" />
         </div>
       </div>
       <div className="space-y-2">
-        <div className="h-4 w-24 bg-gray-100 rounded" />
-        <div className="h-4 w-36 bg-gray-100 rounded" />
+        <div className="h-4 w-24 bg-gray-500/10 rounded" />
+        <div className="h-4 w-36 bg-gray-500/10 rounded" />
       </div>
     </div>
   );
@@ -203,7 +203,7 @@ export default function TeamPage() {
         </div>
         <Card className="glass-card rounded-2xl border-0 shadow-card">
           <CardContent className="py-16 text-center">
-            <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full bg-amber-500/15 flex items-center justify-center mx-auto mb-4">
               <svg
                 className="w-8 h-8 text-amber-500"
                 fill="none"
@@ -250,7 +250,7 @@ export default function TeamPage() {
           }}
           className={
             showInviteForm
-              ? "bg-gray-200 text-gray-700 hover:bg-gray-300 rounded-lg"
+              ? "bg-gray-500/20 text-gray-300 hover:bg-gray-500/30 rounded-lg"
               : "bg-emerald hover:bg-emerald-hover text-white rounded-lg shadow-emerald transition-all duration-200"
           }
         >
@@ -297,7 +297,7 @@ export default function TeamPage() {
         <Card className="glass-card rounded-2xl border-0 shadow-card">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center">
                 <svg
                   className="w-5 h-5 text-emerald-600"
                   fill="none"
@@ -323,7 +323,7 @@ export default function TeamPage() {
         <Card className="glass-card rounded-2xl border-0 shadow-card">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/15 flex items-center justify-center">
                 <svg
                   className="w-5 h-5 text-blue-600"
                   fill="none"
@@ -351,7 +351,7 @@ export default function TeamPage() {
         <Card className="glass-card rounded-2xl border-0 shadow-card">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/15 flex items-center justify-center">
                 <svg
                   className="w-5 h-5 text-purple-600"
                   fill="none"
@@ -396,7 +396,7 @@ export default function TeamPage() {
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
                     placeholder="photographe@example.com"
-                    className="flex-1 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
+                    className="flex-1 bg-gray-50 border-gray-500/30 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
                     required
                   />
                   <Button
@@ -435,7 +435,7 @@ export default function TeamPage() {
               </div>
 
               {inviteResult && inviteResult.success && (
-                <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4">
+                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-1">
                     <svg
                       className="w-5 h-5 text-emerald-600"
@@ -505,7 +505,7 @@ export default function TeamPage() {
       ) : filteredTeam.length === 0 ? (
         <Card className="glass-card rounded-2xl border-0 shadow-card">
           <CardContent className="py-16 text-center">
-            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full bg-gray-500/10 flex items-center justify-center mx-auto mb-4">
               <svg
                 className="w-8 h-8 text-gray-400"
                 fill="none"
@@ -728,8 +728,8 @@ export default function TeamPage() {
                       size="sm"
                       className={`rounded-lg text-xs ${
                         removingId === member.id
-                          ? "border-red-300 text-red-600 hover:bg-red-50"
-                          : "text-gray-500 hover:text-red-600 hover:border-red-200"
+                          ? "border-red-500/30 text-red-600 hover:bg-red-500/10"
+                          : "text-gray-500 hover:text-red-600 hover:border-red-500/30"
                       }`}
                       onClick={(e) => {
                         e.stopPropagation();

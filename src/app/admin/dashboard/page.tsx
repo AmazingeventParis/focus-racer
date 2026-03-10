@@ -79,7 +79,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="animate-fade-in">
-      <h1 className="text-3xl font-bold text-navy mb-8">Tableau de bord</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">Tableau de bord</h1>
 
       {/* Revenue KPIs */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -94,32 +94,32 @@ export default function AdminDashboardPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="glass-card border-l-4 border-l-teal-500 overflow-hidden">
+        <Card className="glass-card border-l-4 border-l-emerald-dark overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Commandes payées</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-teal-600">{stats.revenue.totalOrders}</p>
+            <p className="text-3xl font-bold text-emerald-dark">{stats.revenue.totalOrders}</p>
             <p className="text-xs text-muted-foreground mt-1">
               Panier moyen : {stats.revenue.avgOrderValue.toFixed(2)}€
             </p>
           </CardContent>
         </Card>
-        <Card className="glass-card border-l-4 border-l-amber-500 overflow-hidden">
+        <Card className="glass-card border-l-4 border-l-amber-400 overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">En attente</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-amber-600">{stats.revenue.pendingOrders}</p>
+            <p className="text-3xl font-bold text-amber-400">{stats.revenue.pendingOrders}</p>
             <p className="text-xs text-muted-foreground mt-1">commandes non finalisées</p>
           </CardContent>
         </Card>
-        <Card className="glass-card border-l-4 border-l-navy overflow-hidden">
+        <Card className="glass-card border-l-4 border-l-neon-purple overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Événements publiés</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-navy">{stats.publishedEvents}</p>
+            <p className="text-3xl font-bold text-neon-purple">{stats.publishedEvents}</p>
             <p className="text-xs text-muted-foreground mt-1">sur {stats.totalEvents} au total</p>
           </CardContent>
         </Card>
@@ -138,7 +138,7 @@ export default function AdminDashboardPage() {
               <CardTitle className="text-sm text-muted-foreground">{stat.label}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-navy">{stat.value}</p>
+              <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
             </CardContent>
           </Card>
         ))}
@@ -148,7 +148,7 @@ export default function AdminDashboardPage() {
       {stats.monthlyRevenue.length > 0 && (
         <Card className="glass-card mb-8">
           <CardHeader>
-            <CardTitle className="text-navy">Revenus mensuels</CardTitle>
+            <CardTitle className="text-gray-900">Revenus mensuels</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -188,7 +188,7 @@ export default function AdminDashboardPage() {
         {/* Recent orders */}
         <Card className="glass-card">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-navy">Dernières commandes</CardTitle>
+            <CardTitle className="text-gray-900">Dernières commandes</CardTitle>
             <Link href="/focus-mgr-7k9x/payments" className="text-sm text-emerald hover:text-emerald-dark transition-colors">
               Voir tout
             </Link>
@@ -199,9 +199,9 @@ export default function AdminDashboardPage() {
             ) : (
               <div className="space-y-3">
                 {stats.recentOrders.map((order) => (
-                  <div key={order.id} className="flex justify-between items-center p-3 rounded-xl bg-white/50 hover:bg-white/80 transition-colors">
+                  <div key={order.id} className="flex justify-between items-center p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
                     <div>
-                      <p className="font-medium text-sm text-navy">
+                      <p className="font-medium text-sm text-gray-900">
                         {order.user?.name || order.guestEmail || "Invité"}
                       </p>
                       <p className="text-xs text-muted-foreground">
@@ -209,11 +209,11 @@ export default function AdminDashboardPage() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-sm text-navy">{order.totalAmount.toFixed(2)}€</p>
+                      <p className="font-semibold text-sm text-gray-900">{order.totalAmount.toFixed(2)}€</p>
                       <Badge
                         className={
                           order.status === "PAID"
-                            ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
+                            ? "bg-emerald-50 text-emerald hover:bg-emerald-50"
                             : "bg-muted text-muted-foreground"
                         }
                       >
@@ -230,7 +230,7 @@ export default function AdminDashboardPage() {
         {/* Users by role */}
         <Card className="glass-card">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-navy">Utilisateurs par rôle</CardTitle>
+            <CardTitle className="text-gray-900">Utilisateurs par rôle</CardTitle>
             <Link href="/focus-mgr-7k9x/users" className="text-sm text-emerald hover:text-emerald-dark transition-colors">
               Gérer
             </Link>
@@ -238,8 +238,8 @@ export default function AdminDashboardPage() {
           <CardContent>
             <div className="space-y-3">
               {Object.entries(stats.roleStats).map(([role, count]) => (
-                <div key={role} className="flex justify-between items-center p-3 rounded-xl bg-white/50">
-                  <span className="text-navy">{getRoleLabel(role)}</span>
+                <div key={role} className="flex justify-between items-center p-3 rounded-xl bg-gray-50">
+                  <span className="text-gray-900">{getRoleLabel(role)}</span>
                   <Badge className="bg-emerald/10 text-emerald hover:bg-emerald/10">{count}</Badge>
                 </div>
               ))}
@@ -258,14 +258,14 @@ export default function AdminDashboardPage() {
       {/* Recent users */}
       <Card className="glass-card">
         <CardHeader>
-          <CardTitle className="text-navy">Inscriptions récentes</CardTitle>
+          <CardTitle className="text-gray-900">Inscriptions récentes</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {stats.recentUsers.map((user) => (
-              <div key={user.id} className="flex justify-between items-center p-3 rounded-xl bg-white/50 hover:bg-white/80 transition-colors">
+              <div key={user.id} className="flex justify-between items-center p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
                 <div>
-                  <p className="font-medium text-sm text-navy">{user.name}</p>
+                  <p className="font-medium text-sm text-gray-900">{user.name}</p>
                   <p className="text-xs text-muted-foreground">{user.email}</p>
                 </div>
                 <div className="flex items-center gap-2">

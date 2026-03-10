@@ -266,17 +266,17 @@ const TX_TYPE_LABELS: Record<string, string> = {
 // ─── Color classes (static for Tailwind purge) ──────────────────────────
 
 const SECTION_COLORS: Record<string, { bg: string; text: string; border: string; bar: string; borderL: string }> = {
-  users:       { bg: "bg-emerald-50", text: "text-emerald-600", border: "border-emerald-200", bar: "bg-emerald-500", borderL: "border-l-emerald-500" },
-  events:      { bg: "bg-teal-50",    text: "text-teal-600",    border: "border-teal-200",    bar: "bg-teal-500",    borderL: "border-l-teal-500" },
-  photos:      { bg: "bg-blue-50",    text: "text-blue-600",    border: "border-blue-200",    bar: "bg-blue-500",    borderL: "border-l-blue-500" },
-  bibs:        { bg: "bg-purple-50",  text: "text-purple-600",  border: "border-purple-200",  bar: "bg-purple-500",  borderL: "border-l-purple-500" },
-  sales:       { bg: "bg-emerald-50", text: "text-emerald-600", border: "border-emerald-200", bar: "bg-emerald-500", borderL: "border-l-emerald-500" },
-  credits:     { bg: "bg-amber-50",   text: "text-amber-600",   border: "border-amber-200",   bar: "bg-amber-500",   borderL: "border-l-amber-500" },
-  marketplace: { bg: "bg-indigo-50",  text: "text-indigo-600",  border: "border-indigo-200",  bar: "bg-indigo-500",  borderL: "border-l-indigo-500" },
-  gdpr:        { bg: "bg-red-50",     text: "text-red-600",     border: "border-red-200",     bar: "bg-red-500",     borderL: "border-l-red-400" },
-  storage:     { bg: "bg-slate-50",   text: "text-slate-600",   border: "border-slate-200",   bar: "bg-slate-500",   borderL: "border-l-slate-500" },
-  downloads:   { bg: "bg-cyan-50",    text: "text-cyan-600",    border: "border-cyan-200",    bar: "bg-cyan-500",    borderL: "border-l-cyan-500" },
-  api:         { bg: "bg-orange-50",  text: "text-orange-600",  border: "border-orange-200",  bar: "bg-orange-500",  borderL: "border-l-orange-500" },
+  users:       { bg: "bg-emerald-500/10", text: "text-emerald-600", border: "border-emerald-500/30", bar: "bg-emerald-500", borderL: "border-l-emerald-500" },
+  events:      { bg: "bg-teal-500/10",    text: "text-teal-600",    border: "border-teal-500/30",    bar: "bg-teal-500",    borderL: "border-l-teal-500" },
+  photos:      { bg: "bg-blue-500/10",    text: "text-blue-600",    border: "border-blue-500/30",    bar: "bg-blue-500",    borderL: "border-l-blue-500" },
+  bibs:        { bg: "bg-purple-500/10",  text: "text-purple-600",  border: "border-purple-500/30",  bar: "bg-purple-500",  borderL: "border-l-purple-500" },
+  sales:       { bg: "bg-emerald-500/10", text: "text-emerald-600", border: "border-emerald-500/30", bar: "bg-emerald-500", borderL: "border-l-emerald-500" },
+  credits:     { bg: "bg-amber-500/10",   text: "text-amber-600",   border: "border-amber-500/30",   bar: "bg-amber-500",   borderL: "border-l-amber-500" },
+  marketplace: { bg: "bg-indigo-500/10",  text: "text-indigo-600",  border: "border-indigo-500/30",  bar: "bg-indigo-500",  borderL: "border-l-indigo-500" },
+  gdpr:        { bg: "bg-red-500/10",     text: "text-red-600",     border: "border-red-500/30",     bar: "bg-red-500",     borderL: "border-l-red-400" },
+  storage:     { bg: "bg-slate-500/10",   text: "text-slate-600",   border: "border-slate-500/30",   bar: "bg-slate-500",   borderL: "border-l-slate-500" },
+  downloads:   { bg: "bg-cyan-500/10",    text: "text-cyan-600",    border: "border-cyan-500/30",    bar: "bg-cyan-500",    borderL: "border-l-cyan-500" },
+  api:         { bg: "bg-orange-500/10",  text: "text-orange-600",  border: "border-orange-500/30",  bar: "bg-orange-500",  borderL: "border-l-orange-500" },
 };
 
 // ─── Sub-components ─────────────────────────────────────────────────────
@@ -568,7 +568,7 @@ export default function AdminDataPage() {
                       <button
                         key={qr.label}
                         onClick={() => applyQuickRange(qr.days)}
-                        className="block w-full text-left text-sm px-3 py-1.5 rounded-md hover:bg-emerald-50 hover:text-emerald-700 transition-colors whitespace-nowrap"
+                        className="block w-full text-left text-sm px-3 py-1.5 rounded-md hover:bg-emerald-500/10 hover:text-emerald-700 transition-colors whitespace-nowrap"
                       >
                         {qr.label}
                       </button>
@@ -612,7 +612,7 @@ export default function AdminDataPage() {
       </div>
 
       {/* ─── Sticky Nav ─── */}
-      <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-sm border-b border-slate-200 -mx-8 px-8 mb-8">
+      <div className="sticky top-0 z-10 bg-white/10 backdrop-blur-sm border-b border-slate-200 -mx-8 px-8 mb-8">
         <div className="flex gap-1 overflow-x-auto py-2">
           {SECTIONS.map((s) => (
             <button
@@ -1040,7 +1040,7 @@ export default function AdminDataPage() {
                 <CardTitle className="text-sm font-medium">Par type de sport</CardTitle>
               </CardHeader>
               <CardContent>
-                <RecordBars data={data.marketplace.listingsBySportType} labelMap={SPORT_LABELS} barClass="bg-indigo-300" />
+                <RecordBars data={data.marketplace.listingsBySportType} labelMap={SPORT_LABELS} barClass="bg-indigo-500/40" />
               </CardContent>
             </Card>
           </div>
@@ -1072,7 +1072,7 @@ export default function AdminDataPage() {
                 <CardTitle className="text-sm font-medium">Par statut</CardTitle>
               </CardHeader>
               <CardContent>
-                <RecordBars data={data.gdpr.byStatus} labelMap={GDPR_STATUS_LABELS} barClass="bg-red-300" />
+                <RecordBars data={data.gdpr.byStatus} labelMap={GDPR_STATUS_LABELS} barClass="bg-red-500/40" />
               </CardContent>
             </Card>
           </div>

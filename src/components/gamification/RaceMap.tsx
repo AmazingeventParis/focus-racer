@@ -90,7 +90,7 @@ export default function RaceMap({ apiUrl }: Props) {
         <select
           value={sportFilter}
           onChange={(e) => setSportFilter(e.target.value)}
-          className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white"
+          className="text-sm border border-[#2C3566] rounded-lg px-3 py-1.5 bg-[#151C44] text-gray-900"
         >
           <option value="">Tous les sports</option>
           {Object.entries(SPORT_LABELS).map(([key, label]) => (
@@ -100,7 +100,7 @@ export default function RaceMap({ apiUrl }: Props) {
         <select
           value={yearFilter}
           onChange={(e) => setYearFilter(e.target.value)}
-          className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white"
+          className="text-sm border border-[#2C3566] rounded-lg px-3 py-1.5 bg-[#151C44] text-gray-900"
         >
           <option value="">Toutes les années</option>
           {Array.from({ length: 3 }, (_, i) => new Date().getFullYear() - i).map((y) => (
@@ -110,10 +110,10 @@ export default function RaceMap({ apiUrl }: Props) {
       </div>
 
       {/* Map */}
-      <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm" style={{ height: "500px" }}>
+      <div className="rounded-2xl overflow-hidden border border-[#2C3566] shadow-sm" style={{ height: "500px" }}>
         {loading ? (
-          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-            <div className="animate-pulse text-gray-400">Chargement de la carte...</div>
+          <div className="w-full h-full bg-[#151C44] flex items-center justify-center">
+            <div className="animate-pulse text-gray-500">Chargement de la carte...</div>
           </div>
         ) : (
           <MapContainer

@@ -587,10 +587,10 @@ export default function SolutionsSportifsPage() {
       </section>
 
       {/* ═══════════ IA QUI VOUS TROUVE ═══════════ */}
-      <section id="ia" data-reveal className="py-20 md:py-28 bg-gradient-to-br from-blue-50 via-indigo-50 to-white">
+      <section id="ia" data-reveal className="py-20 md:py-28 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className={`max-w-3xl mx-auto text-center mb-16 transition-all duration-700 ${reveal("ia") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 text-sm font-medium mb-4">
               Intelligence artificielle
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -607,7 +607,7 @@ export default function SolutionsSportifsPage() {
             {iaFeatures.map((feat, i) => (
               <div
                 key={i}
-                className={`group bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 hover:border-blue-200 hover:-translate-y-1 ${
+                className={`group bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 hover:border-blue-500/30 hover:-translate-y-1 ${
                   reveal("ia") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
                 style={{ transitionDelay: `${i * 80}ms` }}
@@ -615,7 +615,7 @@ export default function SolutionsSportifsPage() {
                 <div className="flex items-start justify-between mb-5">
                   <span className="text-4xl">{feat.icon}</span>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-blue-600">{feat.stat}</div>
+                    <div className="text-2xl font-bold text-blue-400">{feat.stat}</div>
                     <div className="text-xs text-gray-500">{feat.statLabel}</div>
                   </div>
                 </div>
@@ -688,10 +688,10 @@ export default function SolutionsSportifsPage() {
       </section>
 
       {/* ═══════════ MA HORDE : COMMUNAUTÉ ═══════════ */}
-      <section id="communaute" data-reveal className="py-20 md:py-28 bg-gradient-to-br from-purple-50 via-pink-50 to-white">
+      <section id="communaute" data-reveal className="py-20 md:py-28 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className={`max-w-3xl mx-auto text-center mb-16 transition-all duration-700 ${reveal("communaute") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-100 text-purple-700 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-400 text-sm font-medium mb-4">
               Communauté sportive
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -708,7 +708,7 @@ export default function SolutionsSportifsPage() {
             {communauteFeatures.map((feat, i) => (
               <div
                 key={i}
-                className={`flex gap-5 p-6 rounded-2xl bg-white border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all duration-500 ${
+                className={`flex gap-5 p-6 rounded-2xl bg-white border border-gray-100 hover:border-purple-500/30 hover:shadow-lg transition-all duration-500 ${
                   reveal("communaute") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
                 style={{ transitionDelay: `${i * 100}ms` }}
@@ -728,7 +728,7 @@ export default function SolutionsSportifsPage() {
       <section id="securite" data-reveal className="py-20 md:py-28 bg-white">
         <div className="container mx-auto px-4">
           <div className={`max-w-3xl mx-auto text-center mb-16 transition-all duration-700 ${reveal("securite") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 text-sm font-medium mb-4">
               Sécurité & vie privée
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -745,7 +745,7 @@ export default function SolutionsSportifsPage() {
             {securiteFeatures.map((feat, i) => (
               <div
                 key={i}
-                className={`bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-500 ${
+                className={`bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:border-blue-500/30 hover:shadow-lg transition-all duration-500 ${
                   reveal("securite") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
                 style={{ transitionDelay: `${i * 80}ms` }}

@@ -136,7 +136,7 @@ export default function AdminGdprPage() {
 
   if (status === "loading" || isLoading) {
     return (
-      <div className="min-h-screen bg-white/50 flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <p className="text-muted-foreground">Chargement...</p>
       </div>
     );
@@ -145,8 +145,8 @@ export default function AdminGdprPage() {
   const pendingCount = requests.filter((r) => r.status === "PENDING").length;
 
   return (
-    <div className="min-h-screen bg-white/50 animate-fade-in">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen animate-fade-in">
+      <header className="bg-white/5 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <Link href="/" className="text-xl font-bold text-navy">Focus Racer</Link>
         </div>

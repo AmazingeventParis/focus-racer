@@ -148,14 +148,14 @@ export default function SportifDashboard() {
     <div className="p-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-navy">
+        <h1 className="text-2xl font-bold text-gray-900">
           Bonjour, {session?.user?.name?.split(" ")[0]} !
         </h1>
         <div className="flex items-center gap-2 mt-1">
           <span className="text-sm text-muted-foreground">ID sportif :</span>
           <button
             onClick={copySportifId}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-sm font-mono font-medium hover:bg-emerald-100 transition-colors"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald text-sm font-mono font-medium hover:bg-emerald-100 transition-colors"
           >
             {data?.sportifId}
             {copied ? (
@@ -183,10 +183,10 @@ export default function SportifDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Courses suivies</p>
-                <p className="text-3xl font-bold text-navy mt-1">{data?.kpis.courses || 0}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">{data?.kpis.courses || 0}</p>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-                <svg className="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
+                <svg className="w-6 h-6 text-emerald" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                 </svg>
               </div>
@@ -199,10 +199,10 @@ export default function SportifDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Photos achetées</p>
-                <p className="text-3xl font-bold text-navy mt-1">{data?.kpis.photosAchetees || 0}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">{data?.kpis.photosAchetees || 0}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
-                <svg className="w-6 h-6 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <svg className="w-6 h-6 text-emerald" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
                 </svg>
               </div>
@@ -215,10 +215,10 @@ export default function SportifDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Commandes</p>
-                <p className="text-3xl font-bold text-navy mt-1">{data?.kpis.nbCommandes || 0}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">{data?.kpis.nbCommandes || 0}</p>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center">
-                <svg className="w-6 h-6 text-purple-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <div className="w-12 h-12 rounded-xl bg-neon-interact/20 flex items-center justify-center">
+                <svg className="w-6 h-6 text-neon-purple" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                 </svg>
               </div>
@@ -251,7 +251,7 @@ export default function SportifDashboard() {
         {/* Recent events */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-navy">Événements suivis</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Événements suivis</h2>
             <Link href="/sportif/courses" className="text-sm text-emerald hover:text-emerald-dark transition-colors">
               Voir tout
             </Link>
@@ -322,14 +322,14 @@ export default function SportifDashboard() {
                     {data.horde.members.map((m) => (
                       <div
                         key={m.id}
-                        className="w-8 h-8 rounded-full bg-emerald-100 border-2 border-white flex items-center justify-center text-emerald-700 text-xs font-bold"
+                        className="w-8 h-8 rounded-full bg-emerald-50 border-2 border-gray-200 flex items-center justify-center text-emerald text-xs font-bold"
                         title={m.name}
                       >
                         {m.name.charAt(0).toUpperCase()}
                       </div>
                     ))}
                     {data.horde.membersCount > 3 && (
-                      <div className="w-8 h-8 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-gray-500 text-xs font-bold">
+                      <div className="w-8 h-8 rounded-full bg-gray-100 border-2 border-gray-200 flex items-center justify-center text-gray-500 text-xs font-bold">
                         +{data.horde.membersCount - 3}
                       </div>
                     )}

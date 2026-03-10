@@ -8,6 +8,124 @@
   }
 }
 
+/* ===== DARK NEON GLOBAL OVERRIDES ===== */
+/* Remap light-theme utility classes to dark neon palette */
+
+/* bg-white → neon card background */
+.bg-white:where(:not(.keep-white)) {
+  background-color: #151C44 !important;
+}
+
+/* Hover variant */
+.hover\:bg-white:hover {
+  background-color: #1a2252 !important;
+}
+
+/* text-black → light text */
+.text-black {
+  color: #F3F6FF !important;
+}
+
+/* border-white (without opacity) for small elements */
+.divide-white > :not([hidden]) ~ :not([hidden]) {
+  border-color: #2C3566;
+}
+
+/* ring-white */
+.ring-white {
+  --tw-ring-color: #2C3566 !important;
+}
+
+/* focus ring for inputs on dark bg */
+.focus\:ring-emerald-500:focus,
+.focus\:ring-teal-500:focus {
+  --tw-ring-color: rgba(110, 231, 249, 0.3) !important;
+}
+
+/* Placeholder text on dark inputs */
+::placeholder {
+  color: #6B7AAD !important;
+}
+
+/* Select, input native styling */
+select, input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="search"], input[type="tel"], input[type="url"], input[type="date"], textarea {
+  color: #F3F6FF;
+  background-color: #151C44;
+  border-color: #2C3566;
+}
+
+select option {
+  background-color: #151C44;
+  color: #F3F6FF;
+}
+
+/* Table styling */
+table {
+  color: #F3F6FF;
+}
+
+thead {
+  border-color: #2C3566;
+}
+
+th {
+  color: #A7B0D6;
+}
+
+/* Fix divide colors */
+.divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+.divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #2C3566;
+}
+
+/* Accordion / Details elements */
+details summary {
+  color: #F3F6FF;
+}
+
+/* ===== Remap light Tailwind color backgrounds to dark neon ===== */
+/* These standard Tailwind colors are NOT remapped in the config */
+/* Convert light backgrounds (50/100) to dark transparent variants */
+.bg-green-50 { background-color: rgba(34, 197, 94, 0.1) !important; }
+.bg-green-100 { background-color: rgba(34, 197, 94, 0.15) !important; }
+.bg-blue-50 { background-color: rgba(59, 130, 246, 0.1) !important; }
+.bg-blue-100 { background-color: rgba(59, 130, 246, 0.15) !important; }
+.bg-red-50 { background-color: rgba(239, 68, 68, 0.1) !important; }
+.bg-red-100 { background-color: rgba(239, 68, 68, 0.15) !important; }
+.bg-yellow-50 { background-color: rgba(234, 179, 8, 0.1) !important; }
+.bg-yellow-100 { background-color: rgba(234, 179, 8, 0.15) !important; }
+.bg-orange-50 { background-color: rgba(249, 115, 22, 0.1) !important; }
+.bg-orange-100 { background-color: rgba(249, 115, 22, 0.15) !important; }
+.bg-purple-50 { background-color: rgba(168, 85, 247, 0.1) !important; }
+.bg-purple-100 { background-color: rgba(168, 85, 247, 0.15) !important; }
+.bg-indigo-50 { background-color: rgba(99, 102, 241, 0.1) !important; }
+.bg-indigo-100 { background-color: rgba(99, 102, 241, 0.15) !important; }
+.bg-pink-50 { background-color: rgba(236, 72, 153, 0.1) !important; }
+.bg-pink-100 { background-color: rgba(236, 72, 153, 0.15) !important; }
+.bg-amber-50 { background-color: rgba(245, 158, 11, 0.1) !important; }
+.bg-amber-100 { background-color: rgba(245, 158, 11, 0.15) !important; }
+.bg-cyan-50 { background-color: rgba(6, 182, 212, 0.1) !important; }
+.bg-cyan-100 { background-color: rgba(6, 182, 212, 0.15) !important; }
+.bg-violet-50 { background-color: rgba(139, 92, 246, 0.1) !important; }
+.bg-violet-100 { background-color: rgba(139, 92, 246, 0.15) !important; }
+.bg-rose-50 { background-color: rgba(244, 63, 94, 0.1) !important; }
+.bg-rose-100 { background-color: rgba(244, 63, 94, 0.15) !important; }
+.bg-lime-50 { background-color: rgba(132, 204, 22, 0.1) !important; }
+.bg-lime-100 { background-color: rgba(132, 204, 22, 0.15) !important; }
+.bg-sky-50 { background-color: rgba(14, 165, 233, 0.1) !important; }
+.bg-sky-100 { background-color: rgba(14, 165, 233, 0.15) !important; }
+.bg-fuchsia-50 { background-color: rgba(217, 70, 239, 0.1) !important; }
+.bg-fuchsia-100 { background-color: rgba(217, 70, 239, 0.15) !important; }
+
+/* Remap light borders to dark neon */
+.border-green-100, .border-green-200 { border-color: rgba(34, 197, 94, 0.2) !important; }
+.border-blue-100, .border-blue-200 { border-color: rgba(59, 130, 246, 0.2) !important; }
+.border-red-100, .border-red-200 { border-color: rgba(239, 68, 68, 0.2) !important; }
+.border-yellow-100, .border-yellow-200 { border-color: rgba(234, 179, 8, 0.2) !important; }
+.border-orange-100, .border-orange-200 { border-color: rgba(249, 115, 22, 0.2) !important; }
+.border-purple-100, .border-purple-200 { border-color: rgba(168, 85, 247, 0.2) !important; }
+.border-indigo-100, .border-indigo-200 { border-color: rgba(99, 102, 241, 0.2) !important; }
+
 @layer base {
   :root {
     /* Palette "Dark Neon" */

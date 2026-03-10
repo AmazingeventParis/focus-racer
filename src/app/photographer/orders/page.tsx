@@ -60,11 +60,11 @@ function euro(amount: number): string {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
-  PAID: { label: "Payé", className: "bg-emerald-100 text-emerald-800" },
-  DELIVERED: { label: "Livré", className: "bg-blue-100 text-blue-800" },
-  REFUNDED: { label: "Remboursé", className: "bg-red-100 text-red-700" },
-  PENDING: { label: "En attente", className: "bg-amber-100 text-amber-800" },
-  EXPIRED: { label: "Expiré", className: "bg-gray-100 text-gray-600" },
+  PAID: { label: "Payé", className: "bg-emerald-500/100/10 text-emerald-400" },
+  DELIVERED: { label: "Livré", className: "bg-blue-500/100/10 text-blue-400" },
+  REFUNDED: { label: "Remboursé", className: "bg-red-500/10 text-red-400" },
+  PENDING: { label: "En attente", className: "bg-amber-500/100/10 text-amber-400" },
+  EXPIRED: { label: "Expiré", className: "bg-gray-500/10 text-gray-400" },
 };
 
 export default function OrdersPage() {
@@ -311,7 +311,7 @@ export default function OrdersPage() {
         <Button
           onClick={handleExportCSV}
           variant="outline"
-          className="border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg"
+          className="border-[#2C3566] text-gray-400 hover:bg-[#0C1029] rounded-lg"
           disabled={sortedOrders.length === 0}
         >
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -335,11 +335,11 @@ export default function OrdersPage() {
                 <div className="flex items-center gap-2">
                   <p className="font-semibold text-gray-900">Stripe Connect</p>
                   {connectStatus?.isOnboarded ? (
-                    <Badge className="bg-emerald-100 text-emerald-700 border-0 text-xs">Actif</Badge>
+                    <Badge className="bg-emerald-500/100/10 text-emerald-400 border-0 text-xs">Actif</Badge>
                   ) : connectStatus?.hasAccount ? (
-                    <Badge className="bg-amber-100 text-amber-700 border-0 text-xs">En cours</Badge>
+                    <Badge className="bg-amber-500/100/10 text-amber-400 border-0 text-xs">En cours</Badge>
                   ) : (
-                    <Badge className="bg-gray-100 text-gray-500 border-0 text-xs">Non configuré</Badge>
+                    <Badge className="bg-gray-500/10 text-gray-400 border-0 text-xs">Non configuré</Badge>
                   )}
                 </div>
                 <p className="text-sm text-gray-500 mt-0.5">
@@ -373,20 +373,20 @@ export default function OrdersPage() {
 
       {/* Pending Payout Banner */}
       {connectStatus && !connectStatus.isOnboarded && (connectStatus.pendingPayoutTotal > 0 || kpis.pendingPayout > 0) && (
-        <Card className="bg-amber-50 border border-amber-200 shadow-card rounded-2xl mb-6">
+        <Card className="bg-amber-500/100/10 border border-amber-500/20 shadow-card rounded-2xl mb-6">
           <CardContent className="p-5">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <div className="w-11 h-11 rounded-xl bg-amber-500/100/20 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div>
-                  <p className="font-semibold text-amber-900">
+                  <p className="font-semibold text-amber-300">
                     {euro(connectStatus.pendingPayoutTotal || kpis.pendingPayout)} en attente de versement
                   </p>
-                  <p className="text-sm text-amber-700 mt-0.5">
+                  <p className="text-sm text-amber-400/80 mt-0.5">
                     {connectStatus.pendingPayoutCount || 0} commande{(connectStatus.pendingPayoutCount || 0) > 1 ? "s" : ""} en attente — Connectez votre compte Stripe pour recevoir vos revenus
                   </p>
                 </div>
@@ -408,7 +408,7 @@ export default function OrdersPage() {
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-emerald" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -424,14 +424,14 @@ export default function OrdersPage() {
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
                 </svg>
               </div>
               <div>
                 <p className="text-xs text-gray-500 uppercase tracking-wide">Revenus nets</p>
-                <p className="text-xl font-bold text-green-600">{euro(kpis.netRevenue)}</p>
+                <p className="text-xl font-bold text-green-400">{euro(kpis.netRevenue)}</p>
               </div>
             </div>
           </CardContent>
@@ -440,8 +440,8 @@ export default function OrdersPage() {
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                 </svg>
               </div>
@@ -450,7 +450,7 @@ export default function OrdersPage() {
                 <p className="text-xl font-bold text-gray-900">
                   {kpis.paidCount}
                   {kpis.refundedCount > 0 && (
-                    <span className="text-sm font-normal text-red-500 ml-1">({kpis.refundedCount} remb.)</span>
+                    <span className="text-sm font-normal text-red-400 ml-1">({kpis.refundedCount} remb.)</span>
                   )}
                 </p>
               </div>
@@ -461,8 +461,8 @@ export default function OrdersPage() {
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
                 </svg>
               </div>
@@ -479,8 +479,8 @@ export default function OrdersPage() {
       <div className={`grid gap-4 mb-6 ${kpis.pendingPayout > 0 ? "grid-cols-2 md:grid-cols-4" : "grid-cols-3"}`}>
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-              <svg className="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
               </svg>
             </div>
@@ -493,8 +493,8 @@ export default function OrdersPage() {
 
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0">
-              <svg className="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
               </svg>
             </div>
@@ -507,8 +507,8 @@ export default function OrdersPage() {
 
         <Card className="bg-white border-0 shadow-card rounded-xl">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center flex-shrink-0">
-              <svg className="w-4 h-4 text-rose-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-rose-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" />
               </svg>
             </div>
@@ -524,14 +524,14 @@ export default function OrdersPage() {
         {kpis.pendingPayout > 0 && (
           <Card className="bg-white border-0 shadow-card rounded-xl">
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
                 <p className="text-xs text-gray-500">En attente</p>
-                <p className="text-lg font-bold text-amber-600">{euro(kpis.pendingPayout)}</p>
+                <p className="text-lg font-bold text-amber-400">{euro(kpis.pendingPayout)}</p>
               </div>
             </CardContent>
           </Card>
@@ -546,9 +546,9 @@ export default function OrdersPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="h-5 bg-gray-100 rounded-full overflow-hidden flex">
+              <div className="h-5 bg-[#0C1029] rounded-full overflow-hidden flex">
                 <div
-                  className="h-full bg-emerald-500 transition-all duration-700"
+                  className="h-full bg-emerald-500/100 transition-all duration-700"
                   style={{ width: `${Math.max((revenueData.photographerPayout / revenueData.total) * 100, 2)}%` }}
                   title={`Vous recevez: ${euro(revenueData.photographerPayout)}`}
                 />
@@ -565,7 +565,7 @@ export default function OrdersPage() {
               </div>
               <div className="flex flex-wrap gap-4 text-sm">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                  <div className="w-3 h-3 rounded-full bg-emerald-500/100" />
                   <span className="text-gray-600">Vous recevez</span>
                   <span className="font-semibold text-gray-900">{euro(revenueData.photographerPayout)}</span>
                 </div>
@@ -602,7 +602,7 @@ export default function OrdersPage() {
                       style={{ height: `${Math.max((d.revenue / maxDailyRevenue) * 100, d.revenue > 0 ? 4 : 0)}%`, minHeight: d.revenue > 0 ? "3px" : "0" }}
                     />
                     <div className="absolute bottom-full mb-2 hidden group-hover:block z-10">
-                      <div className="bg-gray-900 text-white text-xs rounded-lg px-2.5 py-1.5 whitespace-nowrap shadow-lg">
+                      <div className="bg-[#0C1029] text-[#F3F6FF] text-xs rounded-lg px-2.5 py-1.5 whitespace-nowrap shadow-lg border border-[#2C3566]">
                         <p className="font-medium">{d.label}</p>
                         <p>{euro(d.revenue)} — {d.count} cmd</p>
                       </div>
@@ -633,7 +633,7 @@ export default function OrdersPage() {
                         <span className="text-gray-700 truncate max-w-[60%]">{ev.name}</span>
                         <span className="font-semibold text-gray-900">{euro(ev.revenue)} <span className="font-normal text-gray-400 text-xs">({ev.count})</span></span>
                       </div>
-                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-2 bg-[#0C1029] rounded-full overflow-hidden">
                         <div
                           className="h-full bg-gradient-to-r from-emerald to-emerald-dark rounded-full transition-all duration-500"
                           style={{ width: `${(ev.revenue / maxEventRevenue) * 100}%` }}
@@ -662,14 +662,14 @@ export default function OrdersPage() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Client, email, événement..."
-                  className="pl-9 bg-gray-50 border-gray-200 rounded-lg"
+                  className="pl-9 bg-[#0C1029] border-[#2C3566] text-[#F3F6FF] rounded-lg"
                 />
               </div>
             </div>
             <div className="w-full md:w-48">
               <label className="text-xs text-gray-500 mb-1 block">Événement</label>
               <Select value={eventFilter} onValueChange={setEventFilter}>
-                <SelectTrigger className="bg-gray-50 border-gray-200 rounded-lg">
+                <SelectTrigger className="bg-[#0C1029] border-[#2C3566] text-[#F3F6FF] rounded-lg">
                   <SelectValue placeholder="Tous" />
                 </SelectTrigger>
                 <SelectContent>
@@ -683,7 +683,7 @@ export default function OrdersPage() {
             <div className="w-full md:w-36">
               <label className="text-xs text-gray-500 mb-1 block">Statut</label>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="bg-gray-50 border-gray-200 rounded-lg">
+                <SelectTrigger className="bg-[#0C1029] border-[#2C3566] text-[#F3F6FF] rounded-lg">
                   <SelectValue placeholder="Tous" />
                 </SelectTrigger>
                 <SelectContent>
@@ -700,7 +700,7 @@ export default function OrdersPage() {
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="flex h-10 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
+                className="flex h-10 w-full rounded-lg border border-[#2C3566] bg-[#0C1029] px-3 py-2 text-sm text-[#F3F6FF] focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
               />
             </div>
             <div className="w-full md:w-40">
@@ -709,7 +709,7 @@ export default function OrdersPage() {
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="flex h-10 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
+                className="flex h-10 w-full rounded-lg border border-[#2C3566] bg-[#0C1029] px-3 py-2 text-sm text-[#F3F6FF] focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
               />
             </div>
             {hasActiveFilters && (
@@ -760,7 +760,7 @@ export default function OrdersPage() {
             </div>
           ) : sortedOrders.length === 0 ? (
             <div className="py-12 text-center">
-              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-gray-500/10 flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
                 </svg>
@@ -778,7 +778,7 @@ export default function OrdersPage() {
             </div>
           ) : (
             <>
-              <div className="hidden md:grid grid-cols-12 gap-3 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100 mb-2">
+              <div className="hidden md:grid grid-cols-12 gap-3 px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-[#2C3566] mb-2">
                 <button className="col-span-2 flex items-center text-left hover:text-gray-700" onClick={() => toggleSort("date")}>
                   Date <SortIcon field="date" />
                 </button>
@@ -805,7 +805,7 @@ export default function OrdersPage() {
                   return (
                     <div
                       key={order.id}
-                      className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all duration-200 items-center"
+                      className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 p-4 rounded-xl bg-[#0C1029] hover:bg-[#151C44] transition-all duration-200 items-center"
                     >
                       <div className="md:col-span-2">
                         <span className="text-sm text-gray-700">
@@ -843,13 +843,13 @@ export default function OrdersPage() {
                         )}
                       </div>
                       <div className="md:col-span-1">
-                        <p className="font-semibold text-green-600 text-sm">{euro(net)}</p>
+                        <p className="font-semibold text-green-400 text-sm">{euro(net)}</p>
                       </div>
                       <div className="md:col-span-1">
                         {order.payoutStatus === "TRANSFERRED" ? (
-                          <Badge className="bg-emerald-100 text-emerald-700 border-0 text-[10px]">Versé</Badge>
+                          <Badge className="bg-emerald-500/100/10 text-emerald-400 border-0 text-[10px]">Versé</Badge>
                         ) : order.payoutStatus === "PENDING" ? (
-                          <Badge className="bg-amber-100 text-amber-700 border-0 text-[10px]">En attente</Badge>
+                          <Badge className="bg-amber-500/10 text-amber-400 border-0 text-[10px]">En attente</Badge>
                         ) : (
                           <span className="text-xs text-gray-400">—</span>
                         )}

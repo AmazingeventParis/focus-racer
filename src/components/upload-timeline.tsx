@@ -16,7 +16,7 @@ export function UploadTimeline({ steps }: UploadTimelineProps) {
     <div className="w-full max-w-3xl mx-auto mb-8">
       <div className="relative">
         {/* Progress bar background */}
-        <div className="absolute top-5 left-0 right-0 h-1 bg-slate-200 rounded-full" />
+        <div className="absolute top-5 left-0 right-0 h-1 bg-white/10 rounded-full" />
 
         {/* Progress bar fill */}
         <div
@@ -37,8 +37,8 @@ export function UploadTimeline({ steps }: UploadTimelineProps) {
                     step.status === "completed"
                       ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/50"
                       : step.status === "active"
-                      ? "bg-white border-4 border-emerald-500 text-emerald-500 shadow-lg"
-                      : "bg-white border-2 border-slate-200 text-slate-400"
+                      ? "bg-[#151C44] border-4 border-emerald-500 text-emerald-500 shadow-lg"
+                      : "bg-[#151C44] border-2 border-[#2C3566] text-slate-400"
                   }`}
                 >
                   {step.status === "completed" ? (
@@ -65,7 +65,7 @@ export function UploadTimeline({ steps }: UploadTimelineProps) {
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
-                      className="text-emerald-200"
+                      className="text-emerald-500/20"
                       strokeDasharray="113"
                       strokeDashoffset="0"
                     />

@@ -127,8 +127,8 @@ function DisputesContent() {
         <div
           className={`mb-6 p-4 rounded-lg ${
             message.type === "success"
-              ? "bg-green-50 text-green-800 border border-green-200"
-              : "bg-red-50 text-red-800 border border-red-200"
+              ? "bg-green-500/10 text-green-700 border border-green-500/30"
+              : "bg-red-500/10 text-red-700 border border-red-500/30"
           }`}
         >
           {message.text}
@@ -176,7 +176,7 @@ function DisputesContent() {
 
                       return (
                         <>
-                          <TableRow key={order.id} className="hover:bg-white/50">
+                          <TableRow key={order.id} className="hover:bg-white/10">
                             <TableCell className="font-mono text-xs">
                               #{order.id.slice(-8).toUpperCase()}
                             </TableCell>
@@ -235,7 +235,7 @@ function DisputesContent() {
                           </TableRow>
                           {isConfirming && (
                             <TableRow key={`${order.id}-reason`}>
-                              <TableCell colSpan={8} className="bg-red-50">
+                              <TableCell colSpan={8} className="bg-red-500/10">
                                 <div className="p-3 flex gap-3 items-center">
                                   <span className="text-sm text-red-800 font-medium">
                                     Motif du remboursement :

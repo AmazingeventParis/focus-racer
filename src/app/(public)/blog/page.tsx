@@ -140,7 +140,7 @@ export default function BlogIndexPage() {
         </section>
 
         {/* ═══════════ CATEGORY FILTER ═══════════ */}
-        <section className="py-8 bg-white border-b border-gray-100 sticky top-16 z-30 backdrop-blur-md bg-white/95">
+        <section className="py-8 bg-gray-50 border-b border-gray-200 sticky top-16 z-30 backdrop-blur-md">
           <div className="container mx-auto px-4">
             <div className="flex flex-wrap justify-center gap-2">
               {CATEGORIES.map((cat) => (
@@ -150,7 +150,7 @@ export default function BlogIndexPage() {
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                     activeCategory === cat
                       ? "bg-emerald text-white shadow-emerald"
-                      : "bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald"
+                      : "bg-gray-100 text-gray-600 hover:bg-emerald-400/10 hover:text-emerald"
                   }`}
                 >
                   {cat}
@@ -213,7 +213,7 @@ export default function BlogIndexPage() {
                           </span>
                         </div>
 
-                        <h2 className="text-lg font-bold text-navy mb-2 group-hover:text-emerald transition-colors line-clamp-2">
+                        <h2 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-emerald transition-colors line-clamp-2">
                           <span dangerouslySetInnerHTML={{ __html: article.title }} />
                         </h2>
 
@@ -240,14 +240,14 @@ export default function BlogIndexPage() {
         <section className="py-16 md:py-24 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto">
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 md:p-12 border border-emerald-100 text-center">
+              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-8 md:p-12 border border-emerald-100 text-center">
                 <div className="w-14 h-14 rounded-2xl bg-emerald/10 flex items-center justify-center mx-auto mb-6">
                   <svg className="w-7 h-7 text-emerald" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                   </svg>
                 </div>
 
-                <h2 className="text-2xl md:text-3xl font-bold text-navy mb-3">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
                   Restez informé
                 </h2>
                 <p className="text-gray-600 mb-8 max-w-md mx-auto">

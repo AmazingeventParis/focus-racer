@@ -75,10 +75,10 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
-  OPEN: { label: "Ouvert", className: "bg-amber-100 text-amber-800 border-amber-200" },
-  IN_PROGRESS: { label: "En cours", className: "bg-blue-100 text-blue-800 border-blue-200" },
-  RESOLVED: { label: "Résolu", className: "bg-emerald-100 text-emerald-800 border-emerald-200" },
-  CLOSED: { label: "Fermé", className: "bg-gray-100 text-gray-600 border-gray-200" },
+  OPEN: { label: "Ouvert", className: "bg-amber-500/15 text-amber-700 border-amber-500/30" },
+  IN_PROGRESS: { label: "En cours", className: "bg-blue-500/15 text-blue-700 border-blue-500/30" },
+  RESOLVED: { label: "Résolu", className: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30" },
+  CLOSED: { label: "Fermé", className: "bg-gray-500/15 text-gray-500 border-gray-500/30" },
 };
 
 export default function SportifMessageriePage() {
@@ -449,7 +449,7 @@ export default function SportifMessageriePage() {
       ) : messages.length === 0 ? (
         <Card className="glass-card rounded-2xl">
           <CardContent className="py-16 text-center">
-            <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
               </svg>
@@ -474,7 +474,7 @@ export default function SportifMessageriePage() {
               return (
                 <Card
                   key={msg.id}
-                  className={`glass-card rounded-2xl hover:shadow-glass-lg transition-all duration-200 cursor-pointer ${isClosed ? "opacity-70" : ""} ${isUnread ? "ring-2 ring-emerald-400 border-emerald-300 bg-emerald-50/30" : ""}`}
+                  className={`glass-card rounded-2xl hover:shadow-glass-lg transition-all duration-200 cursor-pointer ${isClosed ? "opacity-70" : ""} ${isUnread ? "ring-2 ring-emerald-400 border-emerald-300 bg-emerald-500/5" : ""}`}
                   onClick={() => toggleExpanded(msg.id)}
                 >
                   <CardContent className="p-6">
@@ -485,11 +485,11 @@ export default function SportifMessageriePage() {
                         )}
                         <h3 className={`font-medium ${isUnread ? "text-emerald-900 font-semibold" : "text-gray-900"}`}>{msg.subject}</h3>
                         {msg.recipientId ? (
-                          <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                          <Badge variant="outline" className="text-xs bg-purple-500/10 text-purple-700 border-purple-500/30">
                             Photographe{msg.recipient?.name ? ` — ${msg.recipient.name}` : ""}
                           </Badge>
                         ) : (
-                          <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">Support</Badge>
+                          <Badge variant="outline" className="text-xs bg-blue-500/10 text-blue-700 border-blue-500/30">Support</Badge>
                         )}
                         {hasConversation && (
                           <span className="flex items-center gap-1 text-xs text-blue-600">
@@ -522,7 +522,7 @@ export default function SportifMessageriePage() {
                         {/* Initial message */}
                         <div className="bg-gray-50 rounded-lg p-4">
                           <div className="flex items-center gap-2 mb-2">
-                            <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
+                            <div className="w-6 h-6 rounded-full bg-gray-500/30 flex items-center justify-center">
                               <svg className="w-3.5 h-3.5 text-gray-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                               </svg>
@@ -537,9 +537,9 @@ export default function SportifMessageriePage() {
 
                         {/* Legacy admin reply (if no replies array entries) */}
                         {msg.adminReply && replies.length === 0 && (
-                          <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4">
+                          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4">
                             <div className="flex items-center gap-2 mb-2">
-                              <div className="w-6 h-6 rounded-full bg-emerald-200 flex items-center justify-center">
+                              <div className="w-6 h-6 rounded-full bg-emerald-500/30 flex items-center justify-center">
                                 <svg className="w-3.5 h-3.5 text-emerald-700" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -559,13 +559,13 @@ export default function SportifMessageriePage() {
                             key={i}
                             className={`rounded-lg p-4 ${
                               reply.role === "admin"
-                                ? "bg-emerald-50 border border-emerald-100"
-                                : "bg-blue-50 border border-blue-100"
+                                ? "bg-emerald-500/10 border border-emerald-500/20"
+                                : "bg-blue-500/10 border border-blue-500/20"
                             }`}
                           >
                             <div className="flex items-center gap-2 mb-2">
                               <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                                reply.role === "admin" ? "bg-emerald-200" : "bg-blue-200"
+                                reply.role === "admin" ? "bg-emerald-500/30" : "bg-blue-500/30"
                               }`}>
                                 <svg className={`w-3.5 h-3.5 ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                                   {reply.role === "admin" ? (

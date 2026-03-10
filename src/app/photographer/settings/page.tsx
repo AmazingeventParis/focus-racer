@@ -47,8 +47,8 @@ export default function SettingsPage() {
   return (
     <div className="p-8 animate-fade-in">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold font-display text-gray-900 dark:text-white">{t("nav.params")}</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">{t("common.manageAccount")}</p>
+        <h1 className="text-2xl font-bold font-display text-gray-900">{t("nav.params")}</h1>
+        <p className="text-gray-500 mt-1">{t("common.manageAccount")}</p>
       </div>
 
       <div className="max-w-2xl space-y-6">
@@ -74,7 +74,7 @@ export default function SettingsPage() {
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">{session?.user?.name}</p>
-                  <span className="inline-block mt-1 text-xs font-medium bg-emerald-50 text-emerald px-2.5 py-1 rounded-md">
+                  <span className="inline-block mt-1 text-xs font-medium bg-emerald-500/10 text-emerald px-2.5 py-1 rounded-md">
                     {getRoleLabel(session?.user?.role || "")}
                   </span>
                 </div>
@@ -171,7 +171,7 @@ export default function SettingsPage() {
               <div className="flex justify-end pt-2">
                 <Button
                   variant="outline"
-                  className="text-emerald border-emerald/30 hover:bg-emerald-50 rounded-lg"
+                  className="text-emerald border-emerald/30 hover:bg-emerald-500/10 rounded-lg"
                 >
                   Modifier le mot de passe
                 </Button>
@@ -202,12 +202,12 @@ export default function SettingsPage() {
             <CardDescription className="text-gray-500">Actions irréversibles</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between p-4 rounded-xl bg-red-50">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-red-500/10">
               <div>
                 <p className="font-medium text-gray-900 text-sm">Supprimer mon compte</p>
                 <p className="text-xs text-gray-500 mt-0.5">Cette action est irréversible et supprimera toutes vos données.</p>
               </div>
-              <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-100 rounded-lg">
+              <Button variant="outline" className="text-red-600 border-red-500/30 hover:bg-red-500/15 rounded-lg">
                 Supprimer
               </Button>
             </div>

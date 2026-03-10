@@ -20,22 +20,22 @@ function Calendar({ className, classNames, ...props }: CalendarProps) {
         caption_label: "text-sm font-medium",
         nav: "space-x-1 flex items-center",
         button_previous:
-          "absolute left-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 inline-flex items-center justify-center rounded-md border border-slate-200 hover:bg-slate-100",
+          "absolute left-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 inline-flex items-center justify-center rounded-md border border-neon-border hover:bg-neon-card",
         button_next:
-          "absolute right-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 inline-flex items-center justify-center rounded-md border border-slate-200 hover:bg-slate-100",
+          "absolute right-1 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 inline-flex items-center justify-center rounded-md border border-neon-border hover:bg-neon-card",
         month_grid: "w-full border-collapse space-y-1",
         weekdays: "flex",
         weekday: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
         week: "flex w-full mt-2",
         day: "h-9 w-9 text-center text-sm p-0 relative rounded-md focus-within:relative focus-within:z-20",
         day_button:
-          "h-9 w-9 p-0 font-normal inline-flex items-center justify-center rounded-md hover:bg-emerald-50 hover:text-emerald-600 transition-colors",
+          "h-9 w-9 p-0 font-normal inline-flex items-center justify-center rounded-md hover:bg-[#6EE7F9]/10 hover:text-[#6EE7F9] transition-colors",
         selected:
           "bg-emerald-500 text-white hover:bg-emerald-600 focus:bg-emerald-600 rounded-md",
-        today: "bg-slate-100 text-navy font-bold",
+        today: "bg-neon-card text-[#6EE7F9] font-bold",
         outside: "text-muted-foreground opacity-50",
         disabled: "text-muted-foreground opacity-50",
-        range_middle: "bg-emerald-50 text-emerald-700 rounded-none",
+        range_middle: "bg-[#6EE7F9]/10 text-[#6EE7F9] rounded-none",
         range_start: "bg-emerald-500 text-white rounded-l-md rounded-r-none",
         range_end: "bg-emerald-500 text-white rounded-r-md rounded-l-none",
         hidden: "invisible",
