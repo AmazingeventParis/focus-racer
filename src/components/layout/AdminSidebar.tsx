@@ -114,7 +114,7 @@ export default function AdminSidebar() {
   }, [fetchUnread]);
 
   return (
-    <aside className="hidden md:flex w-64 gradient-navy text-white min-h-screen flex-col">
+    <aside className="hidden md:flex w-64 bg-[#0D1330] border-r border-[#2C3566]/30 text-white min-h-screen flex-col">
       <div className="p-6">
         <Link href="/focus-mgr-7k9x/dashboard" className="flex items-center">
           <Image
@@ -139,11 +139,11 @@ export default function AdminSidebar() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-white/10 text-emerald shadow-sm"
-                      : "text-navy-100 hover:bg-white/5 hover:text-white"
+                      ? "bg-[#6EE7F9]/10 text-[#6EE7F9] shadow-sm"
+                      : "text-[#A7B0D6] hover:bg-white/5 hover:text-white"
                   )}
                 >
-                  <span className={cn(isActive ? "text-emerald" : "text-navy-200")}>
+                  <span className={cn(isActive ? "text-[#6EE7F9]" : "text-[#6B7AAD]")}>
                     {item.icon}
                   </span>
                   {item.label}

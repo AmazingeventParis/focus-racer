@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -47,8 +46,6 @@ const solutionsMenu = [
   },
 ];
 
-
-
 export default function Header() {
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -70,7 +67,6 @@ export default function Header() {
     setMobileSolutionsOpen(false);
   }, [pathname]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -84,7 +80,6 @@ export default function Header() {
   const role = session?.user?.role;
   const isAdmin = role === "ADMIN";
   const isPro = ["PHOTOGRAPHER", "ORGANIZER", "AGENCY", "CLUB", "FEDERATION"].includes(role || "");
-  const isRunner = role === "RUNNER";
 
   const dashboardHref = isAdmin
     ? "/focus-mgr-7k9x/dashboard"
@@ -99,15 +94,15 @@ export default function Header() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-white/95 backdrop-blur-lg border-b border-gray-200/50 shadow-sm"
-          : "bg-white/80 backdrop-blur-sm"
+          ? "bg-[#070B1F]/92 backdrop-blur-xl border-b border-[#2C3566]/30 shadow-lg shadow-black/20"
+          : "bg-transparent"
       )}
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
-            src="/logo-focus-racer.png"
+            src="/logo-focus-racer-white.png"
             alt="Focus Racer"
             width={160}
             height={90}
@@ -125,8 +120,8 @@ export default function Header() {
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                 pathname === link.href
-                  ? "text-emerald bg-emerald-50"
-                  : "text-navy-600 hover:text-emerald hover:bg-emerald-50/50"
+                  ? "text-[#6EE7F9] bg-[#6EE7F9]/10"
+                  : "text-[#A7B0D6] hover:text-[#6EE7F9] hover:bg-[#6EE7F9]/5"
               )}
             >
               {link.label}
@@ -141,8 +136,8 @@ export default function Header() {
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1",
                 isSolutionsActive
-                  ? "text-emerald bg-emerald-50"
-                  : "text-navy-600 hover:text-emerald hover:bg-emerald-50/50"
+                  ? "text-[#6EE7F9] bg-[#6EE7F9]/10"
+                  : "text-[#A7B0D6] hover:text-[#6EE7F9] hover:bg-[#6EE7F9]/5"
               )}
             >
               Solutions
@@ -151,10 +146,9 @@ export default function Header() {
               </svg>
             </button>
 
-            {/* Dropdown Menu */}
             {solutionsOpen && (
               <div
-                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[280px] bg-white rounded-2xl shadow-xl border border-gray-100 p-4 animate-fade-in"
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[280px] bg-[#151C44]/95 backdrop-blur-2xl rounded-2xl shadow-xl border border-[#2C3566] p-4 animate-fade-in"
                 onMouseLeave={() => setSolutionsOpen(false)}
               >
                 <div className="space-y-1">
@@ -162,21 +156,21 @@ export default function Header() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex items-start gap-3 p-3 rounded-xl hover:bg-emerald-50/50 transition-colors group"
+                      className="flex items-start gap-3 p-3 rounded-xl hover:bg-[#6EE7F9]/5 transition-colors group"
                     >
-                      <span className="text-emerald mt-0.5 group-hover:scale-110 transition-transform">{item.icon}</span>
+                      <span className="text-[#6EE7F9] mt-0.5 group-hover:scale-110 transition-transform">{item.icon}</span>
                       <div>
-                        <p className="font-medium text-gray-900 text-sm">{item.title}</p>
-                        <p className="text-xs text-gray-500">{item.desc}</p>
+                        <p className="font-medium text-[#F3F6FF] text-sm">{item.title}</p>
+                        <p className="text-xs text-[#A7B0D6]">{item.desc}</p>
                       </div>
                     </Link>
                   ))}
                 </div>
-                <div className="mt-3 p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100">
-                  <p className="text-sm font-medium text-gray-900 mb-1">Essai gratuit</p>
-                  <p className="text-xs text-gray-600 mb-3">Créez votre compte et uploadez vos premières photos.</p>
+                <div className="mt-3 p-4 rounded-xl bg-gradient-to-br from-[#6EE7F9]/10 to-[#C084FC]/10 border border-[#6EE7F9]/15">
+                  <p className="text-sm font-medium text-[#F3F6FF] mb-1">Essai gratuit</p>
+                  <p className="text-xs text-[#A7B0D6] mb-3">Créez votre compte et uploadez vos premières photos.</p>
                   <Link href="/register">
-                    <button className="w-full py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
+                    <button className="w-full py-2 px-4 bg-gradient-to-r from-[#6EE7F9] to-[#C084FC] text-[#070B1F] text-sm font-semibold rounded-lg transition-opacity hover:opacity-90">
                       Commencer
                     </button>
                   </Link>
@@ -192,28 +186,28 @@ export default function Header() {
             <div className="flex items-center gap-2">
               {isAdmin && (
                 <Link href="/photographer/dashboard">
-                  <Button variant="ghost" className="text-navy hover:text-emerald hover:bg-emerald-50/50">
+                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-[#A7B0D6] hover:text-[#6EE7F9] hover:bg-[#6EE7F9]/5 transition-all">
                     Espace Pro
-                  </Button>
+                  </button>
                 </Link>
               )}
               <Link href={dashboardHref}>
-                <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
+                <button className="px-5 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#6EE7F9] to-[#C084FC] text-[#070B1F] shadow-neon-glow transition-all hover:opacity-90 hover:-translate-y-0.5">
                   {isAdmin ? "Admin" : "Mon espace"}
-                </Button>
+                </button>
               </Link>
             </div>
           ) : (
             <>
               <Link href="/register">
-                <Button variant="ghost" className="text-navy hover:text-emerald hover:bg-emerald-50/50">
+                <button className="px-4 py-2 rounded-lg text-sm font-medium text-[#A7B0D6] border border-transparent hover:text-[#6EE7F9] hover:border-[#6EE7F9]/20 hover:bg-[#6EE7F9]/5 transition-all">
                   Créer un compte
-                </Button>
+                </button>
               </Link>
               <Link href="/login">
-                <Button className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
+                <button className="px-5 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#6EE7F9] to-[#C084FC] text-[#070B1F] shadow-neon-glow transition-all hover:opacity-90 hover:-translate-y-0.5">
                   Mon espace
-                </Button>
+                </button>
               </Link>
             </>
           )}
@@ -226,15 +220,15 @@ export default function Header() {
           aria-label="Menu"
         >
           <span className={cn(
-            "block w-6 h-0.5 bg-navy transition-all duration-200",
+            "block w-6 h-0.5 bg-[#A7B0D6] transition-all duration-200",
             mobileOpen && "rotate-45 translate-y-2"
           )} />
           <span className={cn(
-            "block w-6 h-0.5 bg-navy transition-all duration-200",
+            "block w-6 h-0.5 bg-[#A7B0D6] transition-all duration-200",
             mobileOpen && "opacity-0"
           )} />
           <span className={cn(
-            "block w-6 h-0.5 bg-navy transition-all duration-200",
+            "block w-6 h-0.5 bg-[#A7B0D6] transition-all duration-200",
             mobileOpen && "-rotate-45 -translate-y-2"
           )} />
         </button>
@@ -242,7 +236,7 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-lg border-b border-white/20 shadow-lg animate-fade-in">
+        <div className="md:hidden bg-[#070B1F]/97 backdrop-blur-xl border-b border-[#2C3566]/30 shadow-lg animate-fade-in">
           <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
             {navLinks.map((link, i) => (
               <Link
@@ -251,18 +245,17 @@ export default function Header() {
                 className={cn(
                   "px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200",
                   pathname === link.href
-                    ? "text-emerald bg-emerald-50"
-                    : "text-navy-600 hover:text-emerald hover:bg-emerald-50/50"
+                    ? "text-[#6EE7F9] bg-[#6EE7F9]/10"
+                    : "text-[#A7B0D6] hover:text-[#6EE7F9] hover:bg-[#6EE7F9]/5"
                 )}
               >
                 {link.label}
               </Link>
             ))}
 
-            {/* Mobile Solutions Accordion */}
             <button
               onClick={() => setMobileSolutionsOpen(!mobileSolutionsOpen)}
-              className="px-4 py-3 rounded-lg text-sm font-medium text-navy-600 hover:text-emerald hover:bg-emerald-50/50 transition-all duration-200 flex items-center justify-between w-full"
+              className="px-4 py-3 rounded-lg text-sm font-medium text-[#A7B0D6] hover:text-[#6EE7F9] hover:bg-[#6EE7F9]/5 transition-all duration-200 flex items-center justify-between w-full"
             >
               Solutions
               <svg className={cn("w-4 h-4 transition-transform duration-200", mobileSolutionsOpen && "rotate-180")} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -275,42 +268,33 @@ export default function Header() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-navy-600 hover:text-emerald hover:bg-emerald-50/50 transition-all"
+                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-[#A7B0D6] hover:text-[#6EE7F9] hover:bg-[#6EE7F9]/5 transition-all"
                   >
-                    <span className="text-emerald">{item.icon}</span>
+                    <span className="text-[#6EE7F9]">{item.icon}</span>
                     {item.title}
                   </Link>
                 ))}
               </div>
             )}
 
-            <div className="border-t border-gray-100 mt-2 pt-4 flex flex-col gap-2">
+            <div className="border-t border-[#2C3566]/30 mt-2 pt-4 flex flex-col gap-2">
               {session ? (
-                <div className="flex flex-col gap-2">
-                  {isAdmin && (
-                    <Link href="/photographer/dashboard">
-                      <Button variant="outline" className="w-full border-emerald text-emerald hover:bg-emerald-50">
-                        Espace Pro
-                      </Button>
-                    </Link>
-                  )}
-                  <Link href={dashboardHref}>
-                    <Button className="w-full bg-emerald hover:bg-emerald-dark text-white">
-                      {isAdmin ? "Admin" : "Mon espace"}
-                    </Button>
-                  </Link>
-                </div>
+                <Link href={dashboardHref}>
+                  <button className="w-full py-2.5 px-4 bg-gradient-to-r from-[#6EE7F9] to-[#C084FC] text-[#070B1F] text-sm font-semibold rounded-lg">
+                    {isAdmin ? "Admin" : "Mon espace"}
+                  </button>
+                </Link>
               ) : (
                 <>
                   <Link href="/register">
-                    <Button variant="outline" className="w-full border-emerald text-emerald hover:bg-emerald-50">
+                    <button className="w-full py-2.5 px-4 border border-[#2C3566] text-[#A7B0D6] text-sm font-medium rounded-lg hover:border-[#6EE7F9]/30">
                       Créer un compte
-                    </Button>
+                    </button>
                   </Link>
                   <Link href="/login">
-                    <Button className="w-full bg-emerald hover:bg-emerald-dark text-white">
+                    <button className="w-full py-2.5 px-4 bg-gradient-to-r from-[#6EE7F9] to-[#C084FC] text-[#070B1F] text-sm font-semibold rounded-lg">
                       Mon espace
-                    </Button>
+                    </button>
                   </Link>
                 </>
               )}

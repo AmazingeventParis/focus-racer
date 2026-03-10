@@ -10,72 +10,45 @@
 
 @layer base {
   :root {
-    /* Palette "Teal + Emerald" */
-    --teal-primary: #0F766E;
-    --teal-primary-hover: #0D9488;
-    --emerald-action: #10B981;
-    --emerald-action-hover: #059669;
-    --bg-interface: #F8FAFC;
-    --white: #FFFFFF;
-    --text-primary: #042F2E;
-    --text-secondary: #64748B;
-    --success: #10B981;
-    --success-light: #D1FAE5;
-    --success-dark: #059669;
+    /* Palette "Dark Neon" */
+    --teal-primary: #6EE7F9;
+    --teal-primary-hover: #5AD8EA;
+    --emerald-action: #6EE7F9;
+    --emerald-action-hover: #38BDF8;
+    --bg-interface: #070B1F;
+    --white: #F3F6FF;
+    --text-primary: #F3F6FF;
+    --text-secondary: #A7B0D6;
+    --success: #6EE7F9;
+    --success-light: #111A3A;
+    --success-dark: #38BDF8;
 
-    /* Semantic colors for shadcn */
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 174 78% 26%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    /* Semantic colors for shadcn — dark neon base */
+    --background: 230 55% 7%;
+    --foreground: 228 60% 97%;
+    --card: 230 52% 17%;
+    --card-foreground: 228 60% 97%;
+    --popover: 230 52% 17%;
+    --popover-foreground: 228 60% 97%;
+    --primary: 186 90% 71%;
+    --primary-foreground: 230 55% 7%;
+    --secondary: 230 40% 20%;
+    --secondary-foreground: 228 60% 97%;
+    --muted: 230 40% 17%;
+    --muted-foreground: 228 30% 68%;
+    --accent: 230 40% 20%;
+    --accent-foreground: 228 60% 97%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 174 78% 26%;
-    --chart-1: 174 78% 26%;
-    --chart-2: 160 84% 39%;
+    --border: 230 30% 28%;
+    --input: 230 30% 28%;
+    --ring: 186 90% 71%;
+    --chart-1: 186 90% 71%;
+    --chart-2: 270 70% 75%;
     --chart-3: 16 100% 64%;
     --chart-4: 43 96% 56%;
-    --chart-5: 280 65% 60%;
+    --chart-5: 260 65% 60%;
     --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 222 47% 7%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 10%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 10%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 174 78% 26%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 222 30% 18%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 222 30% 15%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 222 30% 18%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 222 30% 18%;
-    --input: 222 30% 18%;
-    --ring: 174 78% 26%;
-    --chart-1: 174 78% 26%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 16 100% 64%;
-    --chart-4: 43 96% 56%;
-    --chart-5: 280 65% 60%;
   }
 }
 
@@ -89,12 +62,7 @@
   }
 
   body {
-    @apply bg-interface text-primary antialiased;
-  }
-
-  .dark body,
-  html.dark body {
-    @apply bg-gray-900 text-gray-100;
+    @apply bg-neon-bg text-primary antialiased;
   }
 
   h1, h2, h3, .font-display {
@@ -106,116 +74,90 @@
 @layer components {
   /* ===== GRADIENTS & BACKGROUNDS ===== */
   .gradient-bg {
-    @apply bg-gradient-to-br from-[#0F766E] via-[#115E59] to-[#042F2E];
+    @apply bg-gradient-to-br from-[#111A3A] via-[#0D1330] to-[#070B1F];
   }
 
   .gradient-bg-subtle {
-    @apply bg-gradient-to-b from-[#F8FAFC] to-[#ECFDF5];
-  }
-
-  .dark .gradient-bg-subtle {
-    background: linear-gradient(to bottom, hsl(222, 47%, 7%), hsl(222, 47%, 9%));
+    @apply bg-gradient-to-b from-[#070B1F] to-[#0C1029];
   }
 
   .gradient-emerald {
-    @apply bg-gradient-to-r from-[#10B981] to-[#059669];
+    background: linear-gradient(135deg, #6EE7F9, #C084FC);
   }
 
   .gradient-navy {
-    @apply bg-gradient-to-b from-[#042F2E] to-[#134E4A];
+    @apply bg-gradient-to-b from-[#0D1330] to-[#070B1F];
   }
 
   /* ===== GLASSMORPHISM CARDS ===== */
   .glass-card {
-    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-card;
-  }
-
-  .dark .glass-card {
-    @apply bg-gray-800/80 border-gray-700/20;
+    @apply bg-neon-card/80 backdrop-blur-sm border border-neon-border/30 shadow-card;
   }
 
   .shadow-glass-lg {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   .shadow-emerald-lg {
-    box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 24px rgba(110, 231, 249, 0.2);
   }
 
   /* ===== BOUTONS ===== */
   .btn-primary {
-    @apply bg-emerald text-white font-medium px-4 py-2 rounded-lg
+    @apply font-medium px-4 py-2 rounded-lg
            transition-all duration-200 ease-out
-           hover:bg-emerald-hover hover:shadow-md
+           hover:opacity-90 hover:shadow-neon-glow
            active:scale-[0.98];
+    background: linear-gradient(135deg, #6EE7F9, #C084FC);
+    color: #070B1F;
   }
 
   .btn-secondary {
-    @apply bg-white text-emerald border border-emerald/30 font-medium px-4 py-2 rounded-lg
+    @apply bg-neon-card text-emerald border border-neon-border font-medium px-4 py-2 rounded-lg
            transition-all duration-200 ease-out
-           hover:bg-emerald-50
+           hover:border-emerald/50 hover:bg-neon-card/80
            active:scale-[0.98];
-  }
-
-  .dark .btn-secondary {
-    @apply bg-gray-800 border-emerald/20 hover:bg-gray-700;
   }
 
   .btn-ghost {
     @apply bg-transparent text-secondary font-medium px-4 py-2 rounded-lg
            transition-all duration-200 ease-out
-           hover:bg-gray-100 hover:text-primary
+           hover:bg-neon-card hover:text-primary
            active:scale-[0.98];
-  }
-
-  .dark .btn-ghost {
-    @apply hover:bg-gray-800 hover:text-gray-100;
   }
 
   /* ===== CARTES ===== */
   .card-base {
-    @apply bg-white rounded-xl shadow-card border-0;
-  }
-
-  .dark .card-base {
-    @apply bg-gray-800 shadow-none border border-gray-700/30;
+    @apply bg-neon-card rounded-xl shadow-card border border-neon-border/30;
   }
 
   .card-interactive {
-    @apply bg-white rounded-xl shadow-card border-0
+    @apply bg-neon-card rounded-xl shadow-card border border-neon-border/30
            transition-all duration-200 ease-out cursor-pointer
-           hover:shadow-card-hover hover:-translate-y-0.5;
-  }
-
-  .dark .card-interactive {
-    @apply bg-gray-800 shadow-none border border-gray-700/30;
+           hover:shadow-card-hover hover:-translate-y-0.5 hover:border-emerald/20;
   }
 
   .card-event {
-    @apply bg-white rounded-xl shadow-card border-0
+    @apply bg-neon-card rounded-xl shadow-card border border-neon-border/30
            transition-all duration-200 ease-out
-           hover:shadow-card-hover hover:-translate-y-0.5;
-  }
-
-  .dark .card-event {
-    @apply bg-gray-800 shadow-none border border-gray-700/30;
+           hover:shadow-card-hover hover:-translate-y-0.5 hover:border-emerald/20;
   }
 
   /* ===== BADGES / STATUTS ===== */
   .badge-draft {
-    @apply bg-[#F1F5F9] text-[#475569] text-xs font-medium px-2.5 py-1 rounded-md;
+    @apply bg-neon-card text-secondary text-xs font-medium px-2.5 py-1 rounded-md border border-neon-border/30;
   }
 
   .badge-published {
-    @apply bg-[#D1FAE5] text-[#059669] text-xs font-medium px-2.5 py-1 rounded-md;
+    @apply bg-emerald/10 text-emerald text-xs font-medium px-2.5 py-1 rounded-md;
   }
 
   .badge-archived {
-    @apply bg-[#CCFBF1] text-[#0F766E] text-xs font-medium px-2.5 py-1 rounded-md;
+    @apply bg-neon-card text-neon-purple text-xs font-medium px-2.5 py-1 rounded-md border border-neon-border/30;
   }
 
   .badge-success {
-    @apply bg-success-light text-success-dark text-xs font-medium px-2.5 py-1 rounded-md;
+    @apply bg-emerald/10 text-emerald text-xs font-medium px-2.5 py-1 rounded-md;
   }
 
   /* ===== SIDEBAR ===== */
@@ -230,54 +172,42 @@
   }
 
   .sidebar-item-active {
-    @apply sidebar-item bg-white text-teal shadow-sm;
-  }
-
-  .dark .sidebar-item-active {
-    @apply bg-gray-800 text-emerald;
+    @apply sidebar-item bg-emerald/10 text-emerald shadow-sm;
   }
 
   /* ===== INPUTS ===== */
   .input-base {
-    @apply w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5
+    @apply w-full bg-neon-card border border-neon-border rounded-lg px-4 py-2.5
            text-primary placeholder:text-secondary
            transition-all duration-200
            focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald;
   }
 
-  .dark .input-base {
-    @apply bg-gray-800 border-gray-700 text-gray-100 placeholder:text-gray-500;
-  }
-
   /* ===== SKELETON LOADING ===== */
   .skeleton {
-    @apply bg-gray-200 animate-pulse rounded-lg;
+    @apply bg-neon-border/50 animate-pulse rounded-lg;
   }
 
   .skeleton-card {
-    @apply bg-white rounded-xl shadow-card p-4 space-y-3;
+    @apply bg-neon-card rounded-xl shadow-card p-4 space-y-3;
   }
 
   .skeleton-line {
-    @apply h-4 bg-gray-200 animate-pulse rounded;
+    @apply h-4 bg-neon-border/50 animate-pulse rounded;
   }
 
   .skeleton-circle {
-    @apply bg-gray-200 animate-pulse rounded-full;
+    @apply bg-neon-border/50 animate-pulse rounded-full;
   }
 
   /* ===== NAVIGATION GLASS (pour header public) ===== */
   .glass-nav {
-    @apply bg-white/80 backdrop-blur-lg border-b border-gray-200/50 shadow-sm;
-  }
-
-  .dark .glass-nav {
-    @apply bg-gray-900/80 border-gray-700/50;
+    @apply bg-neon-bg/92 backdrop-blur-lg border-b border-neon-border/30;
   }
 
   /* ===== FOND SOMBRE POUR GALERIE COUREUR ===== */
   .runner-gallery-bg {
-    @apply bg-[#042F2E];
+    @apply bg-[#070B1F];
   }
 
   /* ===== PROTECTION IMAGES (anti-vol) ===== */
@@ -411,7 +341,7 @@
   /* ===== SCROLLBAR CUSTOM ===== */
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: #CBD5E1 transparent;
+    scrollbar-color: #2C3566 transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -423,7 +353,7 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: #CBD5E1;
+    background-color: #2C3566;
     border-radius: 3px;
   }
 }

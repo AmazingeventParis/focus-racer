@@ -200,7 +200,7 @@ export default function OrganizerSidebar() {
   }, [userRole]);
 
   return (
-    <aside className="hidden md:flex w-64 gradient-navy text-white min-h-screen flex-col">
+    <aside className="hidden md:flex w-64 bg-[#0D1330] border-r border-[#2C3566]/30 text-white min-h-screen flex-col">
       {/* Logo */}
       <div className="p-6">
         <Link href="/" className="flex items-center">
@@ -241,11 +241,11 @@ export default function OrganizerSidebar() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-white/10 text-emerald shadow-sm"
-                      : "text-navy-100 hover:bg-white/5 hover:text-white"
+                      ? "bg-[#6EE7F9]/10 text-[#6EE7F9] shadow-sm"
+                      : "text-[#A7B0D6] hover:bg-white/5 hover:text-white"
                   )}
                 >
-                  <span className={cn(isActive ? "text-emerald" : "text-navy-200")}>
+                  <span className={cn(isActive ? "text-[#6EE7F9]" : "text-[#6B7AAD]")}>
                     {item.icon}
                   </span>
                   {item.labelKey ? t(item.labelKey) : item.label}
@@ -269,7 +269,7 @@ export default function OrganizerSidebar() {
       {/* User profile */}
       <div className="p-4 border-t border-white/5">
         <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white/5 mb-3">
-          <div className="w-8 h-8 rounded-lg gradient-emerald flex items-center justify-center text-white font-bold text-xs">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6EE7F9] to-[#C084FC] flex items-center justify-center text-[#070B1F] font-bold text-xs">
             {userInitials}
           </div>
           <div className="flex-1 min-w-0">
@@ -279,7 +279,7 @@ export default function OrganizerSidebar() {
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-navy-200 hover:text-white hover:bg-white/5 transition-all duration-200"
+          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-[#6B7AAD] hover:text-white hover:bg-white/5 transition-all duration-200"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
