@@ -205,6 +205,7 @@ export default function HomePage() {
 
       {/* ═══════════ HERO ═══════════ */}
       <section className="hero">
+        <div className="hero-bg-image"></div>
         <div className="hero-grain"></div>
         <div className="hero-grid-pattern"></div>
         <div className="hero-orb hero-orb-1"></div>

@@ -111,6 +111,7 @@ export default function HomeV2() {
     <div className="hv2">
       {/* ═══════════ HERO ═══════════ */}
       <section className="hero">
+        <div className="hero-bg-image"></div>
         <div className="hero-grid"></div>
         <div className="hero-orb hero-orb-1"></div>
         <div className="hero-orb hero-orb-2"></div>

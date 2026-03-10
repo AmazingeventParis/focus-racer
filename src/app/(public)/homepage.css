@@ -338,6 +338,14 @@
     padding: 110px 24px 60px;
 }
 
+.hero-bg-image {
+    position: absolute;
+    inset: 0;
+    background: url('/hero-bg.png') center/cover no-repeat;
+    opacity: 0.18;
+    pointer-events: none;
+}
+
 .hero::before {
     content: '';
     position: absolute;

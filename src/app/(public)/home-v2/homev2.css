@@ -121,6 +121,14 @@
   padding: 100px 24px 60px;
 }
 
+.hv2 .hero-bg-image {
+  position: absolute;
+  inset: 0;
+  background: url('/hero-bg.png') center/cover no-repeat;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
 .hv2 .hero::before {
   content: '';
   position: absolute;
