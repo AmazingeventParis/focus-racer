@@ -113,12 +113,12 @@
 /* ── HERO ── */
 .hv2 .hero {
   position: relative;
-  min-height: 92vh;
+  min-height: 70vh;
   display: flex;
   align-items: center;
   background: var(--v2-bg);
   overflow: hidden;
-  padding: 100px 24px 60px;
+  padding: 80px 24px 40px;
 }
 
 .hv2 .hero-bg-image {
@@ -195,7 +195,7 @@
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--v2-accent);
-  margin-bottom: 28px;
+  margin-bottom: 22px;
 }
 
 .hv2 .hero-badge-dot {
@@ -218,11 +218,11 @@
 }
 
 .hv2 .hero h1 {
-  font-size: clamp(2.8rem, 5vw, 4.2rem);
+  font-size: clamp(2.4rem, 4.5vw, 3.6rem);
   font-weight: 800;
   color: var(--v2-text);
   letter-spacing: -0.03em;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .hv2 .hero .line-accent {
@@ -237,10 +237,10 @@
 }
 
 .hv2 .hero-description {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   color: var(--v2-text-secondary);
-  line-height: 1.7;
-  margin: 24px 0 36px;
+  line-height: 1.65;
+  margin: 18px 0 28px;
   max-width: 520px;
 }
 
@@ -254,7 +254,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 32px;
+  padding: 14px 28px;
   font-size: 1rem;
   font-weight: 700;
   border-radius: var(--v2-radius-sm);
