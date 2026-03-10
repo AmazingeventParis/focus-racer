@@ -204,7 +204,7 @@ export default function EventPhotosPage({
 
   if (status === "loading" || isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <p className="text-muted-foreground">Chargement...</p>
       </div>
     );
@@ -212,7 +212,7 @@ export default function EventPhotosPage({
 
   if (!event) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <p className="text-muted-foreground">Événement non trouvé</p>
       </div>
     );
@@ -233,7 +233,7 @@ export default function EventPhotosPage({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
@@ -245,10 +245,10 @@ export default function EventPhotosPage({
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">
+              <h1 className="text-3xl font-bold text-gray-900">
                 {showOrphanOnly ? "Photos Orphelines" : "Photos"} - {event.name}
               </h1>
-              <p className="text-slate-600 mt-1">
+              <p className="text-gray-500 mt-1">
                 {filteredPhotos.length} photo{filteredPhotos.length > 1 ? "s" : ""}
                 {showOrphanOnly ? " orpheline" : ""}{filteredPhotos.length > 1 && showOrphanOnly ? "s" : ""}
                 {!showOrphanOnly && ` sur ${event.photos.length} au total`}
@@ -294,7 +294,7 @@ export default function EventPhotosPage({
             {filteredPhotos.slice(0, visibleCount).map((photo) => (
               <div
                 key={photo.id}
-                className="group relative aspect-square bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-slate-200 cursor-pointer"
+                className="group relative aspect-square bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-[#2C3566] cursor-pointer"
                 onClick={() => handleOpenLightbox(photo)}
               >
                 {/* Photo */}

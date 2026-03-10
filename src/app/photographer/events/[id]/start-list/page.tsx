@@ -263,7 +263,7 @@ export default function StartListPage({
 
   if (status === "loading" || isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <p className="text-muted-foreground">Chargement...</p>
       </div>
     );
@@ -287,10 +287,10 @@ export default function StartListPage({
         ← Retour à {eventName || "l'événement"}
       </Link>
 
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">Start-List</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Start-List</h1>
 
         {/* Import section */}
-        <Card className="mb-8 bg-white border-0 shadow-sm rounded-2xl">
+        <Card className="mb-8 border-0 shadow-sm rounded-2xl">
           <CardHeader>
             <CardTitle>Importer une start-list</CardTitle>
             <CardDescription>
@@ -332,7 +332,7 @@ export default function StartListPage({
                   </div>
                 </div>
 
-                <div className="border rounded-xl overflow-hidden max-h-64 overflow-auto">
+                <div className="border border-[#2C3566] rounded-xl overflow-hidden max-h-64 overflow-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -368,7 +368,7 @@ export default function StartListPage({
 
         {/* Connectors */}
         {connectors.length > 0 && (
-          <Card className="mb-8 bg-white border-0 shadow-sm rounded-2xl">
+          <Card className="mb-8 border-0 shadow-sm rounded-2xl">
             <CardHeader>
               <CardTitle>Importer depuis une plateforme</CardTitle>
               <CardDescription>
@@ -388,7 +388,7 @@ export default function StartListPage({
                     }}
                     className={`text-left p-4 rounded-lg border-2 transition-colors ${
                       selectedConnector === connector.id
-                        ? "border-emerald bg-emerald-50"
+                        ? "border-emerald bg-emerald-50/10"
                         : "border-emerald/20 hover:border-emerald/40"
                     }`}
                   >
@@ -448,7 +448,7 @@ export default function StartListPage({
         )}
 
         {/* Current start list */}
-        <Card className="bg-white border-0 shadow-sm rounded-2xl">
+        <Card className="border-0 shadow-sm rounded-2xl">
           <CardHeader>
             <div className="flex justify-between items-center">
               <div>
@@ -461,7 +461,7 @@ export default function StartListPage({
                 </CardDescription>
               </div>
               {entries.length > 0 && (
-                <Button variant="outline" size="sm" className="text-red-600" onClick={handleDeleteAll}>
+                <Button variant="outline" size="sm" className="text-red-400" onClick={handleDeleteAll}>
                   Tout supprimer
                 </Button>
               )}
@@ -480,7 +480,7 @@ export default function StartListPage({
                   onChange={(e) => setSearchFilter(e.target.value)}
                   className="max-w-sm"
                 />
-                <div className="border rounded-xl overflow-hidden max-h-96 overflow-auto">
+                <div className="border border-[#2C3566] rounded-xl overflow-hidden max-h-96 overflow-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>

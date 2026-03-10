@@ -136,10 +136,10 @@ export default function SportifHordePage() {
     return (
       <div className="p-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 w-48 bg-gray-200 rounded" />
-          <div className="h-40 bg-gray-200 rounded-2xl" />
-          <div className="h-32 bg-gray-200 rounded-2xl" />
-          <div className="h-48 bg-gray-200 rounded-2xl" />
+          <div className="h-8 w-48 bg-gray-50 rounded" />
+          <div className="h-40 bg-gray-50 rounded-2xl" />
+          <div className="h-32 bg-gray-50 rounded-2xl" />
+          <div className="h-48 bg-gray-50 rounded-2xl" />
         </div>
       </div>
     );
@@ -160,7 +160,7 @@ export default function SportifHordePage() {
     <div className="p-8 max-w-5xl mx-auto space-y-6 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-navy">Mes Amis</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Mes Amis</h1>
         <p className="text-muted-foreground mt-1">
           {acceptedMembers.length} membre{acceptedMembers.length > 1 ? "s" : ""}
           {pendingMembers.length > 0 && ` · ${pendingMembers.length} en attente`}
@@ -211,7 +211,7 @@ export default function SportifHordePage() {
                   value={inviteId}
                   onChange={(e) => setInviteId(e.target.value)}
                   placeholder="FR-XXXXXX"
-                  className="bg-gray-50 border-gray-200 rounded-lg font-mono max-w-xs"
+                  className="bg-gray-50 border-gray-500/20 rounded-lg font-mono max-w-xs"
                   onKeyDown={(e) => { if (e.key === "Enter") inviteMember(); }}
                 />
                 <Button onClick={inviteMember} disabled={inviting || !inviteId.trim()} className="bg-emerald hover:bg-emerald-dark text-white">
@@ -244,14 +244,14 @@ export default function SportifHordePage() {
               {acceptedMembers.length > 0 ? (
                 <div className="space-y-2">
                   {acceptedMembers.map((m) => (
-                    <div key={m.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                    <div key={m.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-50 transition-colors">
                       <div className="flex items-center gap-3">
                         {m.user.faceImagePath ? (
                           <div className="w-10 h-10 rounded-full overflow-hidden relative flex-shrink-0">
                             <Image src={m.user.faceImagePath} alt={m.user.name} fill className="object-cover" sizes="40px" />
                           </div>
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold flex-shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-400 font-bold flex-shrink-0">
                             {m.user.name.charAt(0).toUpperCase()}
                           </div>
                         )}
@@ -274,7 +274,7 @@ export default function SportifHordePage() {
                         variant="ghost"
                         onClick={() => removeMember(m.id)}
                         disabled={removingId === m.id}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50 text-xs"
+                        className="text-red-500 hover:text-red-400 hover:bg-red-50 text-xs"
                       >
                         {removingId === m.id ? "..." : "Retirer"}
                       </Button>
@@ -283,7 +283,7 @@ export default function SportifHordePage() {
                 </div>
               ) : (
                 <div className="py-8 text-center">
-                  <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
+                  <div className="w-14 h-14 rounded-full bg-gray-50 flex items-center justify-center mx-auto mb-3">
                     <svg className="w-7 h-7 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                     </svg>
@@ -310,9 +310,9 @@ export default function SportifHordePage() {
                 <div className="space-y-3">
                   {hordeFeed.map((item) => (
                     <Link key={item.event.id} href={`/events/${item.event.id}`} className="block group">
-                      <div className="p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <div className="p-3 rounded-xl bg-gray-50 hover:bg-gray-50 transition-colors">
                         <div className="flex items-start gap-3">
-                          <div className="w-12 h-12 rounded-lg bg-gray-200 flex-shrink-0 relative overflow-hidden">
+                          <div className="w-12 h-12 rounded-lg bg-gray-50 flex-shrink-0 relative overflow-hidden">
                             {item.event.coverImage ? (
                               <Image src={item.event.coverImage} alt={item.event.name} fill className="object-cover" sizes="48px" />
                             ) : (
@@ -335,7 +335,7 @@ export default function SportifHordePage() {
                               <svg className="w-3 h-3 text-purple-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                               </svg>
-                              <span className="text-xs text-purple-600">
+                              <span className="text-xs text-purple-400">
                                 {item.members.map((m) => m.name).join(", ")}
                               </span>
                             </div>
@@ -364,25 +364,25 @@ export default function SportifHordePage() {
             <CardContent className="space-y-3">
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-xs font-bold text-emerald-700">1</span>
+                  <span className="text-xs font-bold text-emerald-400">1</span>
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-500">
                   Invitez vos amis en saisissant leur ID sportif (format FR-XXXXXX)
                 </p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-xs font-bold text-emerald-700">2</span>
+                  <span className="text-xs font-bold text-emerald-400">2</span>
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-500">
                   Ils acceptent votre invitation depuis leur espace sportif
                 </p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-xs font-bold text-emerald-700">3</span>
+                  <span className="text-xs font-bold text-emerald-400">3</span>
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-500">
                   Suivez les événements de vos amis et retrouvez-vous sur les courses !
                 </p>
               </div>
@@ -407,12 +407,12 @@ export default function SportifHordePage() {
           <Card className="glass-card rounded-2xl">
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
-                <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                 </svg>
                 Invitations reçues
                 {invitations.length > 0 && (
-                  <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
+                  <Badge variant="outline" className="text-xs bg-amber-50 text-amber-400 border-amber-500/20">
                     {invitations.length}
                   </Badge>
                 )}
@@ -422,7 +422,7 @@ export default function SportifHordePage() {
               {invitations.length > 0 ? (
                 <div className="space-y-2">
                   {invitations.map((inv) => (
-                    <div key={inv.id} className="flex items-center justify-between p-4 bg-amber-50/50 rounded-xl border border-amber-100">
+                    <div key={inv.id} className="flex items-center justify-between p-4 bg-amber-50/50 rounded-xl border border-amber-500/20">
                       <div>
                         <p className="font-medium text-gray-900">
                           {inv.horde.owner.name} vous invite dans « {inv.horde.name} »
@@ -459,7 +459,7 @@ export default function SportifHordePage() {
                 </svg>
                 Invitations envoyées
                 {pendingMembers.length > 0 && (
-                  <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                  <Badge variant="outline" className="text-xs bg-blue-50 text-blue-400 border-blue-500/20">
                     {pendingMembers.length}
                   </Badge>
                 )}
@@ -469,9 +469,9 @@ export default function SportifHordePage() {
               {pendingMembers.length > 0 ? (
                 <div className="space-y-2">
                   {pendingMembers.map((m) => (
-                    <div key={m.id} className="flex items-center justify-between p-3 bg-blue-50/50 rounded-xl border border-blue-100">
+                    <div key={m.id} className="flex items-center justify-between p-3 bg-blue-50/50 rounded-xl border border-blue-500/20">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold flex-shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-400 font-bold flex-shrink-0">
                           {m.user.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -480,7 +480,7 @@ export default function SportifHordePage() {
                             {m.user.sportifId && (
                               <span className="text-xs text-muted-foreground font-mono">{m.user.sportifId}</span>
                             )}
-                            <span className="text-xs text-blue-600">
+                            <span className="text-xs text-blue-400">
                               Invité le {new Date(m.invitedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                             </span>
                           </div>
@@ -509,7 +509,7 @@ export default function SportifHordePage() {
           {/* Empty state when both are empty */}
           {invitations.length === 0 && pendingMembers.length === 0 && (
             <div className="py-8 text-center">
-              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
+              <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center mx-auto mb-3">
                 <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                 </svg>

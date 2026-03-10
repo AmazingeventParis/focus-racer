@@ -103,10 +103,10 @@ export default function SportifWrappedPage() {
       title: `${year} — Focus Racer Wrapped`,
       content: (
         <div className="text-center space-y-4">
-          <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-3xl font-bold">
+          <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white text-3xl font-bold">
             {data.levelReached || 1}
           </div>
-          <p className="text-lg font-semibold text-gray-700">
+          <p className="text-lg font-semibold text-white/80">
             {data.photosBought || 0} photos · {data.eventsFollowed || 0} événements · {data.totalXp || 0} XP
           </p>
           <p className="text-sm text-gray-400">Merci d'avoir été avec nous en {year} !</p>

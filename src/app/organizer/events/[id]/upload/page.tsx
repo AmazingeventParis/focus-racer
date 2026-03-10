@@ -428,7 +428,7 @@ export default function UploadPage({
 
   if (status === "loading" || isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#070B1F] flex items-center justify-center">
         <p className="text-muted-foreground">Chargement...</p>
       </div>
     );
@@ -539,7 +539,7 @@ export default function UploadPage({
       <div className="p-8 max-w-2xl mx-auto animate-fade-in">
         <button
           onClick={goBackToSelect}
-          className="text-emerald-500 hover:text-emerald-600 transition-colors mb-4 inline-block text-sm"
+          className="text-emerald-500 hover:text-emerald-400 transition-colors mb-4 inline-block text-sm"
         >
           ← Retour à la sélection
         </button>
@@ -584,12 +584,12 @@ export default function UploadPage({
 
             {/* Insufficient credits warning */}
             {!hasEnoughCredits && (
-              <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-sm text-red-700">
+              <div className="p-4 rounded-xl bg-red-50 border border-red-500/20 text-sm text-red-400">
                 <p className="font-medium mb-1">Crédits insuffisants</p>
                 <p>Il vous manque {totalCreditsNeeded - credits} crédits.</p>
                 <Link
                   href="/organizer/credits"
-                  className="inline-block mt-2 text-red-800 underline font-medium"
+                  className="inline-block mt-2 text-red-400 underline font-medium"
                 >
                   Recharger vos crédits
                 </Link>
@@ -597,7 +597,7 @@ export default function UploadPage({
             )}
 
             {/* Plan summary */}
-            <div className="p-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200">
+            <div className="p-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-500/20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center shrink-0">
                   <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -608,25 +608,25 @@ export default function UploadPage({
                   <p className="text-sm font-bold text-gray-900">Traitement IA complet</p>
                   <p className="text-xs text-gray-500">OCR dossards + reconnaissance faciale + watermark + analyse qualité</p>
                 </div>
-                <Badge className="bg-amber-100 text-amber-700 border-0 text-xs ml-auto shrink-0">1 crédit/photo</Badge>
+                <Badge className="bg-amber-100 text-amber-400 border-0 text-xs ml-auto shrink-0">1 crédit/photo</Badge>
               </div>
             </div>
 
             {/* Processing options (free) */}
             <div>
-              <p className="text-sm font-medium text-gray-900 mb-3">Options de traitement <Badge className="bg-green-100 text-green-700 border-0 text-[10px] ml-1">Gratuit</Badge></p>
+              <p className="text-sm font-medium text-gray-900 mb-3">Options de traitement <Badge className="bg-green-100 text-green-400 border-0 text-[10px] ml-1">Gratuit</Badge></p>
               <div className="space-y-3">
                 {/* Duplicate Removal — PROMINENT, checked by default */}
                 <label className={`flex items-start gap-3 p-3 rounded-xl border-2 transition-colors cursor-pointer ${
                   removeDuplicates
                     ? "border-emerald-500 bg-emerald-50/50"
-                    : "border-gray-200 hover:border-emerald-300"
+                    : "border-gray-500/20 hover:border-emerald-300"
                 }`}>
                   <input
                     type="checkbox"
                     checked={removeDuplicates}
                     onChange={(e) => setRemoveDuplicates(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
+                    className="mt-0.5 h-4 w-4 rounded border-gray-500/20 text-emerald-500 focus:ring-emerald-500"
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -634,7 +634,7 @@ export default function UploadPage({
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
                       </svg>
                       <span className="text-sm font-medium text-gray-900">Suppression des doublons</span>
-                      <Badge className="bg-emerald-100 text-emerald-700 border-0 text-[9px]">Recommandé</Badge>
+                      <Badge className="bg-emerald-100 text-emerald-400 border-0 text-[9px]">Recommandé</Badge>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
                       Détecte et supprime automatiquement les photos en double (rafales identiques). Votre galerie est plus propre, vos sportifs trouvent leurs photos plus vite.
@@ -646,13 +646,13 @@ export default function UploadPage({
                 <label className={`flex items-start gap-3 p-3 rounded-xl border-2 transition-colors cursor-pointer ${
                   removeBlurry
                     ? "border-emerald-500 bg-emerald-50/50"
-                    : "border-gray-200 hover:border-emerald-300"
+                    : "border-gray-500/20 hover:border-emerald-300"
                 }`}>
                   <input
                     type="checkbox"
                     checked={removeBlurry}
                     onChange={(e) => setRemoveBlurry(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
+                    className="mt-0.5 h-4 w-4 rounded border-gray-500/20 text-emerald-500 focus:ring-emerald-500"
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -661,7 +661,7 @@ export default function UploadPage({
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                       <span className="text-sm font-medium text-gray-900">Filtre photos floues</span>
-                      <Badge className="bg-emerald-100 text-emerald-700 border-0 text-[9px]">Recommandé</Badge>
+                      <Badge className="bg-emerald-100 text-emerald-400 border-0 text-[9px]">Recommandé</Badge>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
                       Élimine automatiquement les photos trop floues ou mal exposées avant traitement. Galerie de meilleure qualité pour vos clients.
@@ -670,12 +670,12 @@ export default function UploadPage({
                 </label>
 
                 {/* Auto Retouch */}
-                <label className="flex items-start gap-3 p-3 rounded-xl border border-gray-200 hover:border-emerald-300 transition-colors cursor-pointer">
+                <label className="flex items-start gap-3 p-3 rounded-xl border border-gray-500/20 hover:border-emerald-300 transition-colors cursor-pointer">
                   <input
                     type="checkbox"
                     checked={autoRetouch}
                     onChange={(e) => setAutoRetouch(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
+                    className="mt-0.5 h-4 w-4 rounded border-gray-500/20 text-emerald-500 focus:ring-emerald-500"
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -691,12 +691,12 @@ export default function UploadPage({
                 </label>
 
                 {/* Smart Crop */}
-                <label className="flex items-start gap-3 p-3 rounded-xl border border-gray-200 hover:border-amber-300 transition-colors cursor-pointer">
+                <label className="flex items-start gap-3 p-3 rounded-xl border border-gray-500/20 hover:border-amber-500/20 transition-colors cursor-pointer">
                   <input
                     type="checkbox"
                     checked={smartCrop}
                     onChange={(e) => setSmartCrop(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500"
+                    className="mt-0.5 h-4 w-4 rounded border-gray-500/20 text-amber-500 focus:ring-amber-500"
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -723,7 +723,7 @@ export default function UploadPage({
     <div className="p-8 max-w-4xl animate-fade-in">
       <Link
         href={`/organizer/events/${id}`}
-        className="text-emerald-500 hover:text-emerald-600 transition-colors mb-4 inline-block"
+        className="text-emerald-500 hover:text-emerald-400 transition-colors mb-4 inline-block"
       >
         ← Retour à l'événement
       </Link>
@@ -745,7 +745,7 @@ export default function UploadPage({
             className={`border-2 border-dashed rounded-2xl p-12 text-center transition-colors ${
               isDragging
                 ? "border-emerald-500 bg-emerald-50"
-                : "border-emerald-200 hover:border-emerald-300"
+                : "border-emerald-500/20 hover:border-emerald-300"
             }`}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
@@ -780,7 +780,7 @@ export default function UploadPage({
                 Glissez-déposez vos photos ici
               </p>
               <p className="text-muted-foreground mb-4">ou cliquez pour sélectionner</p>
-              <Button type="button" variant="outline" className="border-emerald-200 text-emerald-500 hover:bg-emerald-50">
+              <Button type="button" variant="outline" className="border-emerald-500/20 text-emerald-500 hover:bg-emerald-50">
                 Sélectionner des fichiers
               </Button>
             </label>
@@ -801,7 +801,7 @@ export default function UploadPage({
                   variant="outline"
                   size="sm"
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-emerald-200 text-emerald-500 hover:bg-emerald-50 rounded-lg"
+                  className="border-emerald-500/20 text-emerald-500 hover:bg-emerald-50 rounded-lg"
                 >
                   + Ajouter
                 </Button>
@@ -812,7 +812,7 @@ export default function UploadPage({
                     selectedFiles.forEach((sf) => URL.revokeObjectURL(sf.previewUrl));
                     setSelectedFiles([]);
                   }}
-                  className="border-red-200 text-red-500 hover:bg-red-50 rounded-lg"
+                  className="border-red-500/20 text-red-500 hover:bg-red-50 rounded-lg"
                 >
                   Tout retirer
                 </Button>
@@ -822,7 +822,7 @@ export default function UploadPage({
           <CardContent>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-6">
               {selectedFiles.map((sf, index) => (
-                <div key={index} className="relative group aspect-square rounded-xl overflow-hidden bg-gray-100">
+                <div key={index} className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50">
                   <Image
                     src={sf.previewUrl}
                     alt={sf.file.name}
@@ -843,7 +843,7 @@ export default function UploadPage({
               ))}
             </div>
 
-            <div className="flex justify-between items-center pt-4 border-t border-gray-100">
+            <div className="flex justify-between items-center pt-4 border-t border-gray-500/20">
               <p className="text-sm text-gray-500">
                 {selectedFiles.length} photo{selectedFiles.length > 1 ? "s" : ""} = {selectedFiles.length} crédit{selectedFiles.length > 1 ? "s" : ""}
               </p>
@@ -860,30 +860,30 @@ export default function UploadPage({
 
       {/* Excluded files warning */}
       {excludedFiles.length > 0 && (
-        <Card className="bg-amber-50 border-amber-200 rounded-2xl">
+        <Card className="bg-amber-50 border-amber-500/20 rounded-2xl">
           <CardHeader>
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
               </svg>
-              <CardTitle className="text-amber-900">
+              <CardTitle className="text-amber-400">
                 {excludedFiles.length} fichier{excludedFiles.length > 1 ? "s" : ""} exclu{excludedFiles.length > 1 ? "s" : ""}
               </CardTitle>
             </div>
-            <CardDescription className="text-amber-700">
+            <CardDescription className="text-amber-400">
               Ces fichiers ne peuvent pas être traités
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 max-h-60 overflow-y-auto">
               {excludedFiles.map((file, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 bg-white rounded-lg border border-amber-200">
-                  <svg className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <div key={index} className="flex items-start gap-3 p-3 bg-white rounded-lg border border-amber-500/20">
+                  <svg className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                    <p className="text-xs text-amber-700">{file.reason}</p>
+                    <p className="text-xs text-amber-400">{file.reason}</p>
                   </div>
                 </div>
               ))}
@@ -892,7 +892,7 @@ export default function UploadPage({
               variant="outline"
               size="sm"
               onClick={() => setExcludedFiles([])}
-              className="mt-3 border-amber-300 text-amber-700 hover:bg-amber-100"
+              className="mt-3 border-amber-500/20 text-amber-400 hover:bg-amber-100"
             >
               Effacer la liste
             </Button>

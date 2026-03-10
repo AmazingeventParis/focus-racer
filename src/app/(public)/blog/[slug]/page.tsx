@@ -46,83 +46,83 @@ function CTA({ href, children }: { href: string; children: React.ReactNode }) {
 
 const article1Content = (
   <>
-    <p className="text-lg text-gray-600 leading-relaxed mb-6">
+    <p className="text-lg text-gray-500 leading-relaxed mb-6">
       Vous venez de franchir la ligne d'arrivée, l'adrénaline retombe, et une question vous brûle les lèvres : <strong>« Où sont mes photos ? »</strong> Chaque année, des millions de photos sont prises lors d'événements sportifs. Pourtant, les retrouver reste souvent un parcours du combattant. Ce guide complet vous présente les trois méthodes disponibles sur Focus Racer pour retrouver vos clichés en une fraction de seconde.
     </p>
 
-    <h2 id="methode-dossard" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="methode-dossard" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       1. La recherche par numéro de dossard
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       C'est la méthode la plus directe et la plus utilisée. Notre intelligence artificielle analyse chaque photo téléchargée par le photographe et <strong>détecte automatiquement les numéros de dossard</strong> grâce à la reconnaissance optique de caractères (OCR). Le taux de précision atteint 99 % même dans des conditions de prise de vue difficiles.
     </p>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       <strong>Comment procéder :</strong>
     </p>
-    <ol className="list-decimal list-inside space-y-2 text-gray-600 mb-6 pl-4">
+    <ol className="list-decimal list-inside space-y-2 text-gray-500 mb-6 pl-4">
       <li>Rendez-vous sur la page de l'événement depuis la section <Link href="/explore" className="text-emerald hover:underline">Explorer</Link>.</li>
       <li>Saisissez votre numéro de dossard dans la barre de recherche.</li>
       <li>Les résultats s'affichent instantanément : toutes les photos où votre dossard a été détecté.</li>
       <li>Parcourez, sélectionnez vos préférées, et achetez en un clic.</li>
     </ol>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       <strong>Astuce :</strong> pour maximiser la détection, assurez-vous que votre dossard est bien visible au départ. Évitez de le plier, de le couvrir avec une ceinture porte-bidon ou de le porter dans le dos si le photographe est placé de face.
     </p>
 
-    <h2 id="methode-selfie" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="methode-selfie" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       2. La recherche par selfie (reconnaissance faciale)
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Votre dossard était caché par un bras, replié par le vent, ou recouvert de boue ? Pas de panique. Focus Racer intègre un système de <strong>reconnaissance faciale avancée</strong> qui compare votre visage avec ceux détectés sur les milliers de photos de l'événement.
     </p>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       <strong>Comment ça marche :</strong>
     </p>
-    <ul className="list-disc list-inside space-y-2 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-2 text-gray-500 mb-6 pl-4">
       <li>Cliquez sur « Recherche par selfie » sur la page de l'événement.</li>
       <li>Prenez un selfie ou importez une photo récente de votre visage.</li>
       <li>L'IA compare votre visage avec les photos indexées en moins d'une seconde.</li>
       <li>Vous obtenez les résultats classés par degré de confiance.</li>
     </ul>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       La précision de la reconnaissance faciale atteint <strong>99 %</strong>. Pour de meilleurs résultats, utilisez une photo de face, bien éclairée, sans lunettes de soleil. Les données biométriques sont traitées conformément au RGPD et ne sont jamais partagées avec des tiers.
     </p>
 
-    <h2 id="methode-nom" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="methode-nom" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       3. La recherche par nom
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Si le photographe ou l'organisateur a importé la <strong>start-list</strong> (liste des participants), vous pouvez simplement taper votre nom dans la barre de recherche. Le système croise automatiquement votre nom avec votre numéro de dossard, puis affiche toutes les photos correspondantes.
     </p>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Cette méthode est particulièrement pratique lorsque vous ne vous souvenez plus de votre numéro de dossard — ce qui arrive plus souvent qu'on ne le croit après une course éprouvante !
     </p>
 
-    <h2 id="ia-vs-manuel" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="ia-vs-manuel" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Pourquoi l'IA surpasse la recherche manuelle
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Avant l'intelligence artificielle, retrouver ses photos impliquait de faire défiler des centaines, parfois des milliers de clichés. Un événement de 500 participants avec 3 photographes génère facilement <strong>5 000 à 10 000 photos</strong>. Faire défiler manuellement ces images prend 30 minutes à 1 heure.
     </p>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Avec Focus Racer, le tri est <strong>100 % automatisé</strong>. L'IA traite 10 000 photos en environ 5 minutes (30ms par photo). Chaque photo est analysée, indexée et liée au bon sportif. La recherche prend ensuite <strong>moins d'une seconde</strong>.
     </p>
-    <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 my-6">
+    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6 my-6">
       <div className="flex items-start gap-3">
         <span className="text-2xl">💡</span>
         <div>
-          <p className="font-medium text-navy mb-1">Le saviez-vous ?</p>
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="font-medium text-gray-900 mb-1">Le saviez-vous ?</p>
+          <p className="text-gray-500 text-sm leading-relaxed">
             Sur Focus Racer, 99 % des photos sont automatiquement liées au bon sportif grâce à la combinaison OCR + reconnaissance faciale. Le 1 % restant correspondent généralement à des photos de dos, de paysage ou de groupe sans dossard visible.
           </p>
         </div>
       </div>
     </div>
 
-    <h2 id="astuces" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="astuces" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Nos astuces pour être sûr de retrouver vos photos
     </h2>
-    <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Portez votre dossard bien visible</strong> sur la poitrine, sans le plier ni le couvrir. Si possible, épinglez-le à plat avec 4 épingles.</li>
       <li><strong>Regardez les photographes</strong> quand vous les croisez. Un bref regard face caméra facilite la détection faciale.</li>
       <li><strong>Vérifiez la start-list</strong> : si votre nom y figure, vous pourrez chercher par nom en plus du dossard.</li>
@@ -130,10 +130,10 @@ const article1Content = (
       <li><strong>Consultez rapidement</strong> : les photos sont généralement disponibles dans les heures suivant l'événement.</li>
     </ul>
 
-    <h2 id="conclusion" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="conclusion" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       En résumé
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-6">
+    <p className="text-gray-500 leading-relaxed mb-6">
       Fini le temps où retrouver ses photos de course ressemblait à chercher une aiguille dans une botte de foin. Avec Focus Racer, trois méthodes complémentaires — dossard, selfie et nom — vous garantissent de retrouver chacun de vos clichés. L'IA fait le travail en coulisses pour que vous puissiez vous concentrer sur l'essentiel : revivre l'émotion de votre course.
     </p>
     <CTA href="/explore">Retrouver mes photos maintenant</CTA>
@@ -146,17 +146,17 @@ const article1Content = (
 
 const article2Content = (
   <>
-    <p className="text-lg text-gray-600 leading-relaxed mb-6">
+    <p className="text-lg text-gray-500 leading-relaxed mb-6">
       Dans le monde de la photographie sportive, il existe une fenêtre d'opportunité que les professionnels appellent le <strong>« Golden Time »</strong> : les 24 premières heures suivant un événement. C'est dans ce laps de temps que se concentrent la grande majorité des achats. Comprendre ce phénomène et l'exploiter, c'est la différence entre un événement rentable et un événement décevant.
     </p>
 
-    <h2 id="psychologie" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="psychologie" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       La psychologie de l'achat post-course
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Quand un sportif franchit la ligne d'arrivée, il est dans un état émotionnel intense. Fierté, soulagement, euphorie — c'est à ce moment précis que l'envie de <strong>capturer et partager ce souvenir</strong> est à son maximum. Le sportif consulte ses résultats, en parle à ses proches, publie sur les réseaux sociaux.
     </p>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Ce pic émotionnel se dissipe rapidement. Après 48 heures, le sportif est déjà tourné vers son prochain objectif. Après une semaine, l'urgence d'achat a quasiment disparu. Les données du secteur sont sans appel :
     </p>
     <div className="grid sm:grid-cols-3 gap-4 my-6">
@@ -165,75 +165,75 @@ const article2Content = (
         { stat: "20 %", label: "entre 24 h et 72 h" },
         { stat: "10 %", label: "après 72 h" },
       ].map((s, i) => (
-        <div key={i} className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 text-center">
+        <div key={i} className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-center">
           <div className="text-2xl font-bold text-emerald" dangerouslySetInnerHTML={{ __html: s.stat }} />
-          <div className="text-sm text-gray-600 mt-1" dangerouslySetInnerHTML={{ __html: s.label }} />
+          <div className="text-sm text-gray-500 mt-1" dangerouslySetInnerHTML={{ __html: s.label }} />
         </div>
       ))}
     </div>
 
-    <h2 id="capitaliser" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="capitaliser" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Comment capitaliser sur le Golden Time
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       La clé, c'est la <strong>vitesse de mise en ligne</strong>. Chaque heure entre la fin de la course et la disponibilité des photos coûte des ventes. Voici les facteurs déterminants :
     </p>
-    <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Uploadez pendant la course</strong> : avec le mode Live de Focus Racer, vous pouvez envoyer vos photos en temps réel depuis le terrain. Les sportifs voient leurs photos avant même d'avoir quitté le site.</li>
       <li><strong>Laissez l'IA trier</strong> : le tri manuel prend des heures. Notre pipeline automatique indexe 10 000 photos en 5 minutes. Aucun temps perdu entre l'upload et la mise en vente.</li>
       <li><strong>Envoyez des notifications</strong> : Focus Racer peut envoyer un e-mail aux sportifs dès que leurs photos sont disponibles, les ramenant directement vers la galerie.</li>
       <li><strong>Activez le partage social</strong> : quand un sportif partage sa photo watermarkée sur Instagram ou Facebook, il génère des visites supplémentaires — et donc des ventes potentielles.</li>
     </ul>
 
-    <h2 id="traditionnel-vs-ia" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="traditionnel-vs-ia" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Workflow traditionnel vs. workflow automatisé
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Comparons les deux approches sur un événement type de 800 participants et 6 000 photos :
     </p>
     <div className="overflow-x-auto my-6">
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="bg-gray-50">
-            <th className="text-left p-3 font-semibold text-navy border-b border-gray-200">Étape</th>
-            <th className="text-center p-3 font-semibold text-navy border-b border-gray-200">Traditionnel</th>
-            <th className="text-center p-3 font-semibold text-navy border-b border-gray-200">Focus Racer</th>
+            <th className="text-left p-3 font-semibold text-gray-900 border-b border-white/10">Étape</th>
+            <th className="text-center p-3 font-semibold text-gray-900 border-b border-white/10">Traditionnel</th>
+            <th className="text-center p-3 font-semibold text-gray-900 border-b border-white/10">Focus Racer</th>
           </tr>
         </thead>
-        <tbody className="text-gray-600">
-          <tr><td className="p-3 border-b border-gray-100">Transfert des photos</td><td className="p-3 text-center border-b border-gray-100">2-4 h (carte SD → PC)</td><td className="p-3 text-center border-b border-gray-100">Temps réel (mode Live)</td></tr>
-          <tr><td className="p-3 border-b border-gray-100">Tri / indexation</td><td className="p-3 text-center border-b border-gray-100">4-8 h (manuel)</td><td className="p-3 text-center border-b border-gray-100">12 min (IA, 6 000 photos)</td></tr>
-          <tr><td className="p-3 border-b border-gray-100">Retouche</td><td className="p-3 text-center border-b border-gray-100">2-4 h (Lightroom)</td><td className="p-3 text-center border-b border-gray-100">Automatique (inclus)</td></tr>
-          <tr><td className="p-3 border-b border-gray-100">Watermark + mise en ligne</td><td className="p-3 text-center border-b border-gray-100">1-2 h</td><td className="p-3 text-center border-b border-gray-100">Automatique (inclus)</td></tr>
-          <tr className="font-semibold"><td className="p-3 border-b border-gray-200">Total</td><td className="p-3 text-center border-b border-gray-200 text-red-500">9-18 h</td><td className="p-3 text-center border-b border-gray-200 text-emerald">{"< 30 min"}</td></tr>
+        <tbody className="text-gray-500">
+          <tr><td className="p-3 border-b border-white/5">Transfert des photos</td><td className="p-3 text-center border-b border-white/5">2-4 h (carte SD → PC)</td><td className="p-3 text-center border-b border-white/5">Temps réel (mode Live)</td></tr>
+          <tr><td className="p-3 border-b border-white/5">Tri / indexation</td><td className="p-3 text-center border-b border-white/5">4-8 h (manuel)</td><td className="p-3 text-center border-b border-white/5">12 min (IA, 6 000 photos)</td></tr>
+          <tr><td className="p-3 border-b border-white/5">Retouche</td><td className="p-3 text-center border-b border-white/5">2-4 h (Lightroom)</td><td className="p-3 text-center border-b border-white/5">Automatique (inclus)</td></tr>
+          <tr><td className="p-3 border-b border-white/5">Watermark + mise en ligne</td><td className="p-3 text-center border-b border-white/5">1-2 h</td><td className="p-3 text-center border-b border-white/5">Automatique (inclus)</td></tr>
+          <tr className="font-semibold"><td className="p-3 border-b border-white/10">Total</td><td className="p-3 text-center border-b border-white/10 text-red-500">9-18 h</td><td className="p-3 text-center border-b border-white/10 text-emerald">{"< 30 min"}</td></tr>
         </tbody>
       </table>
     </div>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Avec un workflow traditionnel, les photos sont souvent disponibles <strong>le lendemain voire 2 jours après</strong>. Le Golden Time est déjà largement entamé. Avec Focus Racer, les photos sont en ligne pendant que les sportifs sont encore sur le site de la course.
     </p>
 
-    <h2 id="maximiser-ventes" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="maximiser-ventes" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Stratégies pour maximiser vos ventes
     </h2>
-    <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Proposez des packs dégressifs</strong> : un sportif qui achète 1 photo peut en acheter 5 si le pack est attractif. Créez des packs à 3, 5 et « toutes mes photos ».</li>
       <li><strong>Annoncez la disponibilité</strong> : coordonnez-vous avec l'organisateur pour annoncer au micro que les photos sont déjà en ligne pendant la remise des prix.</li>
       <li><strong>Utilisez un QR code</strong> : affichez un QR code géant sur le village d'arrivée qui renvoie vers la galerie de l'événement.</li>
       <li><strong>Partagez sur les réseaux</strong> : publiez 5-10 photos « teaser » sur les réseaux sociaux de l'événement avec le lien vers la galerie complète.</li>
     </ul>
 
-    <h2 id="stripe-connect" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="stripe-connect" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Recevez vos paiements directement
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Grâce à Stripe Connect, les paiements des sportifs arrivent directement sur votre compte bancaire, sans intermédiaire. Focus Racer ne prend <strong>aucune commission sur vos ventes</strong> — seuls les frais Stripe standard s'appliquent (~1,4 % + 0,25 €). Un frais de service fixe de 1 € par commande est ajouté au prix payé par le sportif pour couvrir les coûts de la plateforme.
     </p>
 
-    <h2 id="conclusion-gt" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="conclusion-gt" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       En résumé
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-6">
+    <p className="text-gray-500 leading-relaxed mb-6">
       Le Golden Time n'est pas un mythe marketing — c'est une réalité chiffrée. 70 % de votre chiffre d'affaires se joue dans les 24 premières heures. La vitesse de publication n'est plus un luxe, c'est une nécessité économique. Focus Racer vous donne les outils pour être en ligne en moins de 30 minutes après la course — et capter chaque vente.
     </p>
     <CTA href="/solutions/photographes">Découvrir les outils photographe</CTA>
@@ -246,74 +246,74 @@ const article2Content = (
 
 const article3Content = (
   <>
-    <p className="text-lg text-gray-600 leading-relaxed mb-6">
+    <p className="text-lg text-gray-500 leading-relaxed mb-6">
       En 2026, l'intelligence artificielle n'est plus un gadget futuriste — c'est le moteur qui propulse la photo sportive dans une nouvelle ère. Chez Focus Racer, notre pipeline IA traite, trie et indexe <strong>10 000 photos en 5 minutes</strong> (30ms par image), là où un tri manuel prendrait une journée entière. Décortiquons les technologies qui rendent cela possible.
     </p>
 
-    <h2 id="ocr-dossards" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="ocr-dossards" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       L'OCR : lire les dossards automatiquement
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       La première brique de notre pipeline est la <strong>reconnaissance optique de caractères</strong> (OCR, pour <em>Optical Character Recognition</em>). Concrètement, l'IA analyse chaque image à la recherche de texte — en particulier les numéros imprimés sur les dossards des sportifs.
     </p>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Notre système utilise un <strong>moteur de vision par ordinateur</strong> de pointe qui identifie les zones de texte dans une image, extrait les caractères et les retourne avec un indice de confiance. Nous filtrons ensuite les résultats pour ne garder que les chaînes numériques (les dossards) avec un seuil de confiance supérieur à 70 %.
     </p>
-    <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 my-6 font-mono text-sm text-gray-700">
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 my-6 font-mono text-sm text-gray-500">
       <p className="text-gray-400 mb-2">// Exemple simplifié du pipeline OCR</p>
       <p>Photo → Version web (1600px, JPEG) → Moteur OCR IA</p>
       <p>{"→ Filtre numérique (confidence > 70 %) → BibNumber lié"}</p>
     </div>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       La précision atteint <strong>99 %</strong>, quels que soient la taille du dossard, l'angle, l'éclairage et la lisibilité. Un dossard de face, bien éclairé, de taille raisonnable, sera détecté dans 99 % des cas. Pour les dossards de profil, partiellement masqués ou couverts de boue, la reconnaissance faciale prend automatiquement le relais.
     </p>
 
-    <h2 id="reconnaissance-faciale" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="reconnaissance-faciale" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       La reconnaissance faciale : le filet de sécurité
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Pour les photos où le dossard n'est pas visible (dos, plan large, dossard caché), notre système fait appel à la <strong>reconnaissance faciale</strong>. Le pipeline fonctionne en deux temps :
     </p>
-    <ol className="list-decimal list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ol className="list-decimal list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Indexation</strong> : chaque visage détecté sur une photo est extrait, encodé en vecteur biométrique et stocké dans une collection sécurisée dédiée à l'événement.</li>
       <li><strong>Correspondance</strong> : pour une photo « orpheline » (sans dossard), le système recherche si un visage déjà associé à un dossard correspond. Si oui, la photo est automatiquement liée au bon sportif (seuil de confiance : 99 %).</li>
     </ol>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Cette approche en <strong>double filet</strong> (OCR + visage) permet d'atteindre un taux de liaison automatique supérieur à 99 %. Le sportif n'a plus qu'à taper son dossard et toutes ses photos apparaissent, y compris celles prises de dos ou en plein effort.
     </p>
-    <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 my-6">
+    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6 my-6">
       <div className="flex items-start gap-3">
         <span className="text-2xl">🔒</span>
         <div>
-          <p className="font-medium text-navy mb-1">Respect du RGPD</p>
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="font-medium text-gray-900 mb-1">Respect du RGPD</p>
+          <p className="text-gray-500 text-sm leading-relaxed">
             Les données biométriques (vecteurs faciaux) sont stockées exclusivement dans une collection AWS isolée par événement. Elles ne sont jamais partagées, revendues ou utilisées à d'autres fins. Chaque sportif peut demander la suppression de ses données via notre formulaire RGPD.
           </p>
         </div>
       </div>
     </div>
 
-    <h2 id="filtrage-qualite" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="filtrage-qualite" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Le filtrage qualité : ne garder que le meilleur
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Avant même de lancer les analyses coûteuses (OCR, reconnaissance faciale), notre pipeline exécute deux pré-filtres qui économisent des crédits IA et améliorent la qualité globale de la galerie :
     </p>
-    <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Filtre de netteté (Laplacian)</strong> : chaque photo est réduite à 256 px et analysée via la variance du Laplacien. Si le score est inférieur au seuil (30/100), la photo est considérée floue et écartée. Ce filtre est activé par défaut mais désactivable par le photographe.</li>
       <li><strong>Dédoublonnage (pHash)</strong> : une empreinte perceptuelle (pHash) de 8x8 pixels en niveaux de gris est calculée pour chaque photo. Si la distance de Hamming entre deux empreintes est inférieure à 5, les photos sont considérées identiques et le doublon est supprimé.</li>
     </ul>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Ces filtres s'exécutent <strong>avant</strong> les appels AWS, ce qui préserve les crédits du photographe. Sur un événement type, on observe entre 5 % et 15 % de photos écartées par ces filtres.
     </p>
 
-    <h2 id="pipeline-complet" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="pipeline-complet" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Le pipeline complet : du fichier brut à la galerie
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Voici le cheminement complet d'une photo dans le système Focus Racer :
     </p>
-    <ol className="list-decimal list-inside space-y-2 text-gray-600 mb-6 pl-4">
+    <ol className="list-decimal list-inside space-y-2 text-gray-500 mb-6 pl-4">
       <li>Le photographe uploade ses photos (compression côté client, envoi par lots de 25).</li>
       <li>Le serveur génère une version web optimisée (1600 px, WebP, ~200-400 Ko).</li>
       <li>Pré-filtrage : dédoublonnage pHash + filtre netteté Laplacian.</li>
@@ -324,45 +324,45 @@ const article3Content = (
       <li>Auto-clustering : regroupement par dossard après le dernier traitement (debounce 30 s).</li>
     </ol>
 
-    <h2 id="manuel-vs-ia" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="manuel-vs-ia" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Tri manuel vs. tri IA : les chiffres
     </h2>
     <div className="overflow-x-auto my-6">
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="bg-gray-50">
-            <th className="text-left p-3 font-semibold text-navy border-b border-gray-200">Critère</th>
-            <th className="text-center p-3 font-semibold text-navy border-b border-gray-200">Tri manuel</th>
-            <th className="text-center p-3 font-semibold text-navy border-b border-gray-200">IA Focus Racer</th>
+            <th className="text-left p-3 font-semibold text-gray-900 border-b border-white/10">Critère</th>
+            <th className="text-center p-3 font-semibold text-gray-900 border-b border-white/10">Tri manuel</th>
+            <th className="text-center p-3 font-semibold text-gray-900 border-b border-white/10">IA Focus Racer</th>
           </tr>
         </thead>
-        <tbody className="text-gray-600">
-          <tr><td className="p-3 border-b border-gray-100">10 000 photos</td><td className="p-3 text-center border-b border-gray-100">1-2 jours</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">~5 min</td></tr>
-          <tr><td className="p-3 border-b border-gray-100">Précision dossard</td><td className="p-3 text-center border-b border-gray-100">99 % (humain)</td><td className="p-3 text-center border-b border-gray-100">99 %</td></tr>
-          <tr><td className="p-3 border-b border-gray-100">Photos orphelines récupérées</td><td className="p-3 text-center border-b border-gray-100">0 % (ignorées)</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">~15 % (via visage)</td></tr>
-          <tr><td className="p-3 border-b border-gray-100">Filtre flou + doublons</td><td className="p-3 text-center border-b border-gray-100">Non (trop long)</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">Automatique</td></tr>
-          <tr><td className="p-3 border-b border-gray-100">Coût humain</td><td className="p-3 text-center border-b border-gray-100">Élevé</td><td className="p-3 text-center border-b border-gray-100 text-emerald font-semibold">0,019 €/photo</td></tr>
+        <tbody className="text-gray-500">
+          <tr><td className="p-3 border-b border-white/5">10 000 photos</td><td className="p-3 text-center border-b border-white/5">1-2 jours</td><td className="p-3 text-center border-b border-white/5 text-emerald font-semibold">~5 min</td></tr>
+          <tr><td className="p-3 border-b border-white/5">Précision dossard</td><td className="p-3 text-center border-b border-white/5">99 % (humain)</td><td className="p-3 text-center border-b border-white/5">99 %</td></tr>
+          <tr><td className="p-3 border-b border-white/5">Photos orphelines récupérées</td><td className="p-3 text-center border-b border-white/5">0 % (ignorées)</td><td className="p-3 text-center border-b border-white/5 text-emerald font-semibold">~15 % (via visage)</td></tr>
+          <tr><td className="p-3 border-b border-white/5">Filtre flou + doublons</td><td className="p-3 text-center border-b border-white/5">Non (trop long)</td><td className="p-3 text-center border-b border-white/5 text-emerald font-semibold">Automatique</td></tr>
+          <tr><td className="p-3 border-b border-white/5">Coût humain</td><td className="p-3 text-center border-b border-white/5">Élevé</td><td className="p-3 text-center border-b border-white/5 text-emerald font-semibold">0,019 €/photo</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h2 id="tendances" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="tendances" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Les tendances IA pour 2026 et au-delà
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       La photo sportive automatisée n'en est qu'à ses débuts. Voici les évolutions que nous anticipons :
     </p>
-    <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Détection d'émotions</strong> : identifier automatiquement les expressions de joie, d'effort ou de victoire pour mettre en avant les photos les plus émouvantes.</li>
       <li><strong>Synchronisation chrono</strong> : croiser les données GPS/chrono avec les métadonnées EXIF des photos pour ajouter temps, allure et classement directement sur l'image.</li>
       <li><strong>Génération de teasers vidéo</strong> : assembler automatiquement les meilleures photos d'un sportif en un diaporama vidéo partagé sur les réseaux sociaux.</li>
       <li><strong>Amélioration continue</strong> : les modèles de vision par ordinateur s'améliorent constamment. Chaque année, la précision augmente et les coûts diminuent.</li>
     </ul>
 
-    <h2 id="conclusion-ia" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="conclusion-ia" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       En résumé
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-6">
+    <p className="text-gray-500 leading-relaxed mb-6">
       L'IA a transformé la photographie sportive d'un métier à forte intensité manuelle en un processus fluide et automatisé. OCR, reconnaissance faciale, filtrage qualité et dédoublonnage travaillent de concert pour que chaque photo trouve son propriétaire en 30 millisecondes. Focus Racer place cette technologie entre les mains de tous les photographes, sans compétence technique requise.
     </p>
     <CTA href="/solutions/photographes">Tester le pipeline IA</CTA>
@@ -375,54 +375,54 @@ const article3Content = (
 
 const article4Content = (
   <>
-    <p className="text-lg text-gray-600 leading-relaxed mb-6">
+    <p className="text-lg text-gray-500 leading-relaxed mb-6">
       La couverture photo d'un événement sportif ne s'improvise pas. Nombre de photographes, positionnement sur le parcours, workflow de livraison, monétisation : chaque décision a un impact direct sur la satisfaction des participants et la rentabilité de l'opération. Ce guide vous accompagne pas à pas.
     </p>
 
-    <h2 id="planification" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="planification" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Planification : combien de photographes ?
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       La règle de base : <strong>1 photographe pour 200 à 300 participants</strong>. Mais plusieurs facteurs modifient cette estimation :
     </p>
-    <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Type de parcours</strong> : une boucle unique permet à un photographe de couvrir plusieurs points (départ, passage clé, arrivée). Un parcours linéaire de 42 km nécessite davantage de photographes répartis.</li>
       <li><strong>Densité de passage</strong> : un 10 km avec départ groupé concentre les sportifs ; un trail en montagne les étire sur des kilomètres.</li>
       <li><strong>Objectif de couverture</strong> : voulez-vous 3-5 photos par sportif (standard) ou 10+ (premium) ?</li>
       <li><strong>Points stratégiques</strong> : départ, ravitaillement, difficultés (côte, passage technique), arrivée, podium.</li>
     </ul>
-    <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 my-6">
+    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6 my-6">
       <div className="flex items-start gap-3">
         <span className="text-2xl">📋</span>
         <div>
-          <p className="font-medium text-navy mb-1">Exemple : semi-marathon de 2 000 sportifs</p>
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="font-medium text-gray-900 mb-1">Exemple : semi-marathon de 2 000 sportifs</p>
+          <p className="text-gray-500 text-sm leading-relaxed">
             Prévoir 6 à 8 photographes : 1 au départ, 2 sur le parcours (km 7 et km 14), 1 à un point de vue panoramique, 2 à l'arrivée (ligne + après ligne), 1-2 sur le village (podium, ambiance). Résultat estimé : ~12 000 photos, soit ~6 par sportif.
           </p>
         </div>
       </div>
     </div>
 
-    <h2 id="positionnement" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="positionnement" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Positionnement sur le parcours
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Le choix des emplacements est crucial pour obtenir des photos qui <strong>se vendent</strong>. Les sportifs achètent des photos où ils sont identifiables, en action, et dans un cadre esthétique. Voici les principes :
     </p>
-    <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Dossards visibles</strong> : privilégiez les angles de face ou de trois quarts. Les photos de dos, même belles, se vendent rarement car le sportif ne s'y reconnaît pas au premier coup d'&oelig;il.</li>
       <li><strong>Fond dégagé</strong> : évitez les arrière-plans encombrés (parkings, poubelles). Cherchez les points de vue avec de la nature, des bâtiments emblématiques, ou la foule en arrière-plan.</li>
       <li><strong>Lumière</strong> : le soleil dans le dos du photographe (face au sportif) donne les meilleurs résultats. Évitez le contre-jour sauf pour des effets artistiques délibérés.</li>
       <li><strong>Espacement</strong> : répartissez les photographes pour couvrir différents moments de la course (début, milieu, fin) et varier les cadrages.</li>
     </ul>
 
-    <h2 id="equipement" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="equipement" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Conseils équipement
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Le matériel idéal dépend du type d'événement, mais voici les fondamentaux :
     </p>
-    <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Boitier rapide</strong> : un autofocus performant et une cadence élevée (10+ images/seconde) sont essentiels pour la photo d'action.</li>
       <li><strong>Objectif polyvalent</strong> : un 70-200 mm f/2.8 couvre la majorité des situations. Complétez avec un 24-70 mm pour les plans larges et l'ambiance.</li>
       <li><strong>Cartes mémoire rapides</strong> : prévoyez 128 Go minimum par demi-journée. Investissez dans des cartes UHS-II pour ne pas être limité par l'écriture.</li>
@@ -430,13 +430,13 @@ const article4Content = (
       <li><strong>Protection météo</strong> : housse de pluie pour le boitier, sac étanche pour les cartes. Un événement ne s'annule pas pour un peu de pluie.</li>
     </ul>
 
-    <h2 id="workflow-livraison" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="workflow-livraison" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Workflow de livraison avec Focus Racer
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Une fois les photos prises, la rapidité de livraison est déterminante (voir notre article sur le <Link href="/blog/golden-time-vente-photo-sportive" className="text-emerald hover:underline">Golden Time</Link>). Avec Focus Racer, le workflow est simplifié :
     </p>
-    <ol className="list-decimal list-inside space-y-2 text-gray-600 mb-6 pl-4">
+    <ol className="list-decimal list-inside space-y-2 text-gray-500 mb-6 pl-4">
       <li><strong>Pendant la course</strong> : utilisez le mode Live pour envoyer vos photos en temps réel depuis votre smartphone (via Wi-Fi ou 4G).</li>
       <li><strong>Après la course</strong> : uploadez le reste des photos en masse (drag & drop, jusqu'à 25 photos par lot).</li>
       <li><strong>L'IA travaille</strong> : tri, indexation, watermark et retouche automatiques en 5 minutes pour 10 000 photos.</li>
@@ -444,26 +444,26 @@ const article4Content = (
       <li><strong>Vendez</strong> : les sportifs trouvent, achètent et téléchargent directement.</li>
     </ol>
 
-    <h2 id="monetisation" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="monetisation" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Stratégie de monétisation
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Plusieurs modèles coexistent. Le plus performant dépend de la taille de l'événement et du profil des participants :
     </p>
-    <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Vente individuelle</strong> : chaque sportif achète ses photos (3-8 €/photo). Modèle le plus courant, rentable dès 200 participants.</li>
       <li><strong>Packs dégressifs</strong> : 1 photo à 5 €, 3 photos à 12 €, toutes les photos à 25 €. Augmente le panier moyen de 40 à 60 %.</li>
       <li><strong>Modèle sponsor</strong> : un sponsor finance la couverture photo. Les photos sont gratuites pour les sportifs avec le logo du sponsor en watermark. Modèle gagnant-gagnant pour les gros événements.</li>
       <li><strong>Inclusion inscription</strong> : le coût de la photo est inclus dans le prix d'inscription (+3-5 €). Garantit 100 % de couverture financée.</li>
     </ul>
 
-    <h2 id="focus-racer-solution" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="focus-racer-solution" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Focus Racer : la solution clé en main
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       En tant qu'organisateur, Focus Racer vous offre une plateforme complète pour gérer la couverture photo de votre événement sans aucune compétence technique :
     </p>
-    <ul className="list-disc list-inside space-y-2 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-2 text-gray-500 mb-6 pl-4">
       <li>Marketplace pour trouver des photographes accrédités</li>
       <li>Import start-list automatique (CSV, Njuko, KMS)</li>
       <li>Galerie publique personnalisée avec votre branding</li>
@@ -480,107 +480,107 @@ const article4Content = (
 
 const article5Content = (
   <>
-    <p className="text-lg text-gray-600 leading-relaxed mb-6">
+    <p className="text-lg text-gray-500 leading-relaxed mb-6">
       Le marché de la photographie sportive connaît une transformation profonde. Les plateformes traditionnelles prélèvent des commissions élevées, tandis que de nouvelles solutions comme Focus Racer réinventent le modèle économique au bénéfice des photographes. Voici comment maximiser vos revenus en 2026.
     </p>
 
-    <h2 id="etat-marche" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="etat-marche" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       État du marché en 2026
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       La course à pied explose en France : plus de <strong>10 millions de pratiquants réguliers</strong>, 8 000 événements organisés chaque année, des trails aux marathons en passant par les courses à obstacles. Et ce n'est qu'un segment : triathlon, cyclisme, natation, ski, sports équestres — la demande de photo sportive est immense.
     </p>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Pourtant, la majorité des événements restent peu ou pas couverts. La raison ? Le ratio effort/rentabilité est défavorable avec les outils traditionnels. Photographier un événement de 500 sportifs signifie prendre 3 000 à 5 000 photos, puis passer 6 à 10 heures à les trier et les mettre en ligne. Avec des taux de conversion de 5 à 10 % et des commissions de 15 à 40 %, le jeu n'en vaut souvent pas la chandelle.
     </p>
 
-    <h2 id="commissions" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="commissions" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       La guerre des commissions : comparatif 2026
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Le modèle de commission est le premier facteur qui détermine votre rentabilité. Voici un comparatif réaliste :
     </p>
     <div className="overflow-x-auto my-6">
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="bg-gray-50">
-            <th className="text-left p-3 font-semibold text-navy border-b border-gray-200">Plateforme</th>
-            <th className="text-center p-3 font-semibold text-navy border-b border-gray-200">Commission</th>
-            <th className="text-center p-3 font-semibold text-navy border-b border-gray-200">Sur 100 € de ventes</th>
+            <th className="text-left p-3 font-semibold text-gray-900 border-b border-white/10">Plateforme</th>
+            <th className="text-center p-3 font-semibold text-gray-900 border-b border-white/10">Commission</th>
+            <th className="text-center p-3 font-semibold text-gray-900 border-b border-white/10">Sur 100 € de ventes</th>
           </tr>
         </thead>
-        <tbody className="text-gray-600">
-          <tr><td className="p-3 border-b border-gray-100">Plateformes historiques</td><td className="p-3 text-center border-b border-gray-100">30-40 %</td><td className="p-3 text-center border-b border-gray-100">Vous recevez 60-70 €</td></tr>
-          <tr><td className="p-3 border-b border-gray-100">Plateformes intermédiaires</td><td className="p-3 text-center border-b border-gray-100">15-25 %</td><td className="p-3 text-center border-b border-gray-100">Vous recevez 75-85 €</td></tr>
-          <tr className="bg-emerald-50 font-semibold"><td className="p-3 border-b border-gray-200">Focus Racer</td><td className="p-3 text-center border-b border-gray-200 text-emerald">0 %</td><td className="p-3 text-center border-b border-gray-200 text-emerald">Vous recevez ~97 €*</td></tr>
+        <tbody className="text-gray-500">
+          <tr><td className="p-3 border-b border-white/5">Plateformes historiques</td><td className="p-3 text-center border-b border-white/5">30-40 %</td><td className="p-3 text-center border-b border-white/5">Vous recevez 60-70 €</td></tr>
+          <tr><td className="p-3 border-b border-white/5">Plateformes intermédiaires</td><td className="p-3 text-center border-b border-white/5">15-25 %</td><td className="p-3 text-center border-b border-white/5">Vous recevez 75-85 €</td></tr>
+          <tr className="bg-emerald-500/10 font-semibold"><td className="p-3 border-b border-white/10">Focus Racer</td><td className="p-3 text-center border-b border-white/10 text-emerald">0 %</td><td className="p-3 text-center border-b border-white/10 text-emerald">Vous recevez ~97 €*</td></tr>
         </tbody>
       </table>
     </div>
     <p className="text-xs text-gray-400 mb-6">
       *Après frais Stripe (~1,4 % + 0,25 € par transaction). Le sportif paie 1 € de frais de service en plus du prix des photos, encaissé par la plateforme.
     </p>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Sur une saison de 20 événements générant chacun 500 € de ventes (soit 10 000 € bruts), la différence est saisissante :
     </p>
-    <ul className="list-disc list-inside space-y-2 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-2 text-gray-500 mb-6 pl-4">
       <li>Avec 30 % de commission : <strong>7 000 € nets</strong></li>
       <li>Avec Focus Racer (0 %) : <strong>~9 700 € nets</strong></li>
       <li>Différence : <strong>+2 700 €/an</strong> dans votre poche</li>
     </ul>
 
-    <h2 id="golden-time-strategie" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="golden-time-strategie" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       La stratégie du Golden Time
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Comme nous l'expliquons dans notre article dédié au <Link href="/blog/golden-time-vente-photo-sportive" className="text-emerald hover:underline">Golden Time</Link>, 70 % des ventes se concentrent dans les 24 premières heures. Le mode Live de Focus Racer vous permet de publier vos photos en temps réel, pendant que les sportifs sont encore sur le site.
     </p>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       <strong>Scénario concret :</strong> vous photographiez un trail de 600 participants. À midi, les premiers sportifs franchissent l'arrivée. À 12 h 30, vos photos du départ et du parcours sont déjà en ligne et achetables. Les sportifs, smartphone en main, trouvent leurs photos, les achètent et les partagent sur les réseaux sociaux — générant du trafic supplémentaire vers votre galerie.
     </p>
 
-    <h2 id="upselling-packs" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="upselling-packs" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       L'art de l'upselling : les packs
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       La vente à l'unité est un piège. Un sportif qui achète 1 photo à 5 € représente un panier de 5 €. Mais ce même sportif, face à un <strong>pack attractif</strong>, achètera souvent 5 photos pour 15 € ou toutes ses photos pour 25 €.
     </p>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       <strong>Les stratégies qui fonctionnent :</strong>
     </p>
-    <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Le pack « Toutes mes photos »</strong> : prix fixe (20-30 €) pour l'ensemble des photos d'un sportif. Génère le meilleur chiffre d'affaires par client.</li>
       <li><strong>L'ancrage psychologique</strong> : affichez d'abord le prix unitaire (5 €), puis le pack (3 pour 12 €). Le pack paraît immédiatement attractif par comparaison.</li>
       <li><strong>Le pack « Finisher »</strong> : un pack premium incluant les photos HD + un montage numérique avec le temps officiel du sportif, le classement et le logo de l'événement.</li>
     </ul>
 
-    <h2 id="partage-social" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="partage-social" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Le partage social : votre meilleur vendeur
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Chaque photo watermarkée partagée sur les réseaux sociaux est une <strong>publicité gratuite</strong>. Quand un sportif publie sa photo de course sur Instagram avec le lien vers la galerie, ses amis sportifs voient le post et vont chercher leurs propres photos. C'est un effet viral puissant :
     </p>
-    <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 my-6">
+    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6 my-6">
       <div className="flex items-start gap-3">
         <span className="text-2xl">📊</span>
         <div>
-          <p className="font-medium text-navy mb-1">L'effet réseau en chiffres</p>
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="font-medium text-gray-900 mb-1">L'effet réseau en chiffres</p>
+          <p className="text-gray-500 text-sm leading-relaxed">
             En moyenne, un sportif qui partage sa photo sur les réseaux sociaux génère <strong>2,3 visites supplémentaires</strong> sur la galerie. Sur un événement de 500 participants, si 20 % partagent, cela représente 230 visites organiques supplémentaires — soit potentiellement 15 à 30 ventes de plus.
           </p>
         </div>
       </div>
     </div>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Focus Racer facilite ce partage avec des <strong>boutons de partage intégrés</strong> (Instagram, Facebook, Twitter, lien direct) et des images optimisées pour chaque réseau (format, ratio, watermark discret mais visible).
     </p>
 
-    <h2 id="avantage-focus-racer" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="avantage-focus-racer" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       L'avantage Focus Racer
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-4">
+    <p className="text-gray-500 leading-relaxed mb-4">
       Au-delà du 0 % de commission, Focus Racer vous donne des outils que les plateformes traditionnelles ne proposent pas :
     </p>
-    <ul className="list-disc list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ul className="list-disc list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Tri IA automatique</strong> : ne perdez plus 6 heures à trier manuellement. L'IA traite 10 000 photos en 5 minutes.</li>
       <li><strong>Mode Live</strong> : publiez en temps réel, pendant la course. Captez le Golden Time dès la ligne d'arrivée.</li>
       <li><strong>Stripe Connect direct</strong> : les paiements arrivent directement sur votre compte bancaire, sans délai ni intermédiaire.</li>
@@ -589,10 +589,10 @@ const article5Content = (
       <li><strong>Watermark personnalisé</strong> : votre logo, votre identité visuelle sur chaque photo en galerie.</li>
     </ul>
 
-    <h2 id="plan-action" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="plan-action" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       Votre plan d'action en 5 étapes
     </h2>
-    <ol className="list-decimal list-inside space-y-3 text-gray-600 mb-6 pl-4">
+    <ol className="list-decimal list-inside space-y-3 text-gray-500 mb-6 pl-4">
       <li><strong>Créez votre compte</strong> Focus Racer et connectez Stripe (3 minutes).</li>
       <li><strong>Achetez des crédits IA</strong> : commencez avec le pack 1 000 crédits (19 €) pour tester.</li>
       <li><strong>Photographiez</strong> votre prochain événement avec le mode Live activé.</li>
@@ -600,10 +600,10 @@ const article5Content = (
       <li><strong>Analysez</strong> vos ventes dans le dashboard et optimisez vos packs pour l'événement suivant.</li>
     </ol>
 
-    <h2 id="conclusion-revenus" className="text-2xl font-bold text-navy mt-10 mb-4 scroll-mt-24">
+    <h2 id="conclusion-revenus" className="text-2xl font-bold text-gray-900 mt-10 mb-4 scroll-mt-24">
       En résumé
     </h2>
-    <p className="text-gray-600 leading-relaxed mb-6">
+    <p className="text-gray-500 leading-relaxed mb-6">
       2026 est l'année où les photographes sportifs reprennent le contrôle de leurs revenus. En combinant 0 % de commission, un pipeline IA ultra-rapide et des outils de vente modernes, Focus Racer vous permet de vous concentrer sur ce que vous faites de mieux — photographier — tout en maximisant votre chiffre d'affaires. Chaque euro de vente vous revient (moins les frais bancaires). C'est aussi simple que cela.
     </p>
     <CTA href="/register">Créer mon compte photographe</CTA>
@@ -783,7 +783,7 @@ export default function BlogArticlePage() {
         <main className="flex-1 pt-16 flex items-center justify-center">
           <div className="text-center px-4">
             <div className="text-6xl mb-6">📰</div>
-            <h1 className="text-2xl font-bold text-navy mb-3">Article introuvable</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-3">Article introuvable</h1>
             <p className="text-gray-500 mb-6">
               Cet article n'existe pas ou a été déplacé.
             </p>
@@ -860,13 +860,13 @@ export default function BlogArticlePage() {
                 </div>
 
                 {/* Share buttons */}
-                <div className="mt-12 pt-8 border-t border-gray-100">
-                  <p className="text-sm font-semibold text-navy mb-4">Partager cet article</p>
+                <div className="mt-12 pt-8 border-t border-white/5">
+                  <p className="text-sm font-semibold text-gray-900 mb-4">Partager cet article</p>
                   <div className="flex items-center gap-3">
                     {/* Copy link */}
                     <button
                       onClick={handleCopyLink}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium transition-all duration-200"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-gray-500 text-sm font-medium transition-all duration-200"
                     >
                       {copied ? (
                         <>
@@ -889,7 +889,7 @@ export default function BlogArticlePage() {
                       href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${typeof window !== "undefined" ? encodeURIComponent(window.location.href) : ""}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-[#1DA1F2]/10 hover:text-[#1DA1F2] text-gray-700 text-sm font-medium transition-all duration-200"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-[#1DA1F2]/10 hover:text-[#1DA1F2] text-gray-500 text-sm font-medium transition-all duration-200"
                     >
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -901,7 +901,7 @@ export default function BlogArticlePage() {
                       href={`https://www.facebook.com/sharer/sharer.php?u=${typeof window !== "undefined" ? encodeURIComponent(window.location.href) : ""}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-[#1877F2]/10 hover:text-[#1877F2] text-gray-700 text-sm font-medium transition-all duration-200"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-[#1877F2]/10 hover:text-[#1877F2] text-gray-500 text-sm font-medium transition-all duration-200"
                     >
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -925,8 +925,8 @@ export default function BlogArticlePage() {
                         href={`#${item.id}`}
                         className={`block py-1.5 px-3 text-sm rounded-lg transition-all duration-200 ${
                           activeTocId === item.id
-                            ? "bg-emerald-50 text-emerald font-medium border-l-2 border-emerald"
-                            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                            ? "bg-emerald-500/10 text-emerald font-medium border-l-2 border-emerald"
+                            : "text-gray-500 hover:text-gray-900 hover:bg-white/5"
                         }`}
                       >
                         {item.label}
@@ -936,7 +936,7 @@ export default function BlogArticlePage() {
 
                   {/* Mini CTA in sidebar */}
                   <div className="mt-8 p-4 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-100">
-                    <p className="text-sm font-semibold text-navy mb-2">
+                    <p className="text-sm font-semibold text-gray-900 mb-2">
                       Essayez Focus Racer
                     </p>
                     <p className="text-xs text-gray-500 mb-3">
@@ -959,7 +959,7 @@ export default function BlogArticlePage() {
         <section id="related" data-reveal className="py-16 md:py-24 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <h2 className={`text-2xl font-bold text-navy mb-8 transition-all duration-700 ${visibleSections.has("related") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+              <h2 className={`text-2xl font-bold text-gray-900 mb-8 transition-all duration-700 ${visibleSections.has("related") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
                 Articles similaires
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
@@ -967,7 +967,7 @@ export default function BlogArticlePage() {
                   <Link
                     key={rel.slug}
                     href={`/blog/${rel.slug}`}
-                    className={`group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:border-emerald-200 hover:-translate-y-1 transition-all duration-500 flex flex-col ${
+                    className={`group bg-white rounded-2xl shadow-sm border border-white/5 overflow-hidden hover:shadow-xl hover:border-emerald-500/20 hover:-translate-y-1 transition-all duration-500 flex flex-col ${
                       visibleSections.has("related") ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                     }`}
                     style={{ transitionDelay: `${i * 150}ms` }}
@@ -991,7 +991,7 @@ export default function BlogArticlePage() {
                         <span>·</span>
                         <span>{rel.readTime}</span>
                       </div>
-                      <h3 className="text-sm font-bold text-navy mb-2 group-hover:text-emerald transition-colors line-clamp-2">
+                      <h3 className="text-sm font-bold text-gray-900 mb-2 group-hover:text-emerald transition-colors line-clamp-2">
                         {rel.title}
                       </h3>
                       <div className="mt-auto flex items-center gap-1 text-emerald font-semibold text-xs group-hover:gap-2 transition-all">

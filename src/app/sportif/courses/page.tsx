@@ -102,9 +102,9 @@ export default function SportifCoursesPage() {
     return (
       <div className="p-8">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 w-48 bg-gray-200 rounded" />
+          <div className="h-8 w-48 bg-gray-50 rounded" />
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 bg-gray-200 rounded-2xl" />
+            <div key={i} className="h-24 bg-gray-50 rounded-2xl" />
           ))}
         </div>
       </div>
@@ -114,14 +114,14 @@ export default function SportifCoursesPage() {
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-navy">Mes courses</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Mes courses</h1>
         <p className="text-muted-foreground mt-1">Événements que vous suivez</p>
       </div>
 
       {/* Photo alerts */}
       {alerts.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-navy mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
             </svg>
@@ -147,7 +147,7 @@ export default function SportifCoursesPage() {
                         Dossard #{alert.bibNumber} — {new Date(alert.event.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-sm font-medium text-emerald-600">{alert.photoCount} photo{alert.photoCount !== 1 ? "s" : ""}</span>
+                        <span className="text-sm font-medium text-emerald-400">{alert.photoCount} photo{alert.photoCount !== 1 ? "s" : ""}</span>
                         {alert.hasNewPhotos && (
                           <Badge className="bg-emerald-500 text-white text-xs">Nouvelles photos</Badge>
                         )}
@@ -187,7 +187,7 @@ export default function SportifCoursesPage() {
             <Card key={event.id} className="glass-card rounded-2xl hover:shadow-glass-lg transition-all duration-200">
               <CardContent className="p-4 flex items-center gap-4">
                 <Link href={`/events/${event.id}`} className="flex items-center gap-4 flex-1 min-w-0">
-                  <div className="w-16 h-16 rounded-xl bg-gray-100 flex-shrink-0 relative overflow-hidden">
+                  <div className="w-16 h-16 rounded-xl bg-gray-50 flex-shrink-0 relative overflow-hidden">
                     {event.coverImage ? (
                       <Image src={event.coverImage} alt={event.name} fill className="object-cover" sizes="64px" />
                     ) : (
@@ -215,7 +215,7 @@ export default function SportifCoursesPage() {
                   size="sm"
                   onClick={() => removeFavorite(event.id)}
                   disabled={removingId === event.id}
-                  className="text-red-500 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
+                  className="text-red-500 hover:text-red-400 hover:bg-red-50 flex-shrink-0"
                 >
                   {removingId === event.id ? (
                     <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -246,7 +246,7 @@ export default function SportifCoursesPage() {
       {/* Horde feed */}
       {hordeFeed.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold text-navy mb-4">Activité de mes amis</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Activité de mes amis</h2>
           <div className="space-y-3">
             {hordeFeed.map((item) => (
               <Link key={item.event.id} href={`/events/${item.event.id}`}>

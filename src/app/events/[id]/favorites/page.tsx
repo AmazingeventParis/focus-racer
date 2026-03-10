@@ -211,7 +211,7 @@ export default function FavoritesPage({
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 animate-fade-in">
           <div>
-            <h1 className="text-2xl font-bold text-navy">
+            <h1 className="text-2xl font-bold text-gray-900">
               <span className="text-emerald mr-2">&hearts;</span>
               Mes favoris
             </h1>
@@ -221,7 +221,7 @@ export default function FavoritesPage({
           </div>
           {favoritePhotos.length > 0 && (
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={clearAll} className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">
+              <Button variant="outline" size="sm" onClick={clearAll} className="border-emerald text-emerald hover:bg-emerald-500/10 transition-all duration-200">
                 Tout retirer
               </Button>
               <Link href={`/events/${id}/checkout`}>
@@ -240,11 +240,11 @@ export default function FavoritesPage({
             <CardContent className="pt-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <p className="text-lg font-semibold text-navy">
+                  <p className="text-lg font-semibold text-gray-900">
                     Total estime : {pricing.totalPrice.toFixed(2)}EUR
                   </p>
                   {pricing.savings > 0 && (
-                    <p className="text-sm text-emerald-600">
+                    <p className="text-sm text-emerald-400">
                       Vous economisez {pricing.savings.toFixed(2)}EUR grace aux packs
                     </p>
                   )}
@@ -264,7 +264,7 @@ export default function FavoritesPage({
 
               {/* Upsell suggestions */}
               {upsell.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="mt-4 pt-4 border-t border-[#2C3566]">
                   {upsell.map((s, i) => (
                     <div
                       key={i}
@@ -273,7 +273,7 @@ export default function FavoritesPage({
                       <span className="text-amber-500">&#9733;</span>
                       <span className="text-muted-foreground">{s.message}</span>
                       {s.savingsIfUpgrade > 0 && (
-                        <Badge variant="secondary" className="text-xs text-emerald-700 bg-emerald-100">
+                        <Badge variant="secondary" className="text-xs text-emerald-400 bg-emerald-500/10">
                           -{s.savingsIfUpgrade.toFixed(2)}EUR
                         </Badge>
                       )}
@@ -290,7 +290,7 @@ export default function FavoritesPage({
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground mb-4">Vous n'avez pas encore de favoris</p>
               <Link href={`/events/${id}`}>
-                <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-50 transition-all duration-200">Parcourir la galerie</Button>
+                <Button variant="outline" className="border-emerald text-emerald hover:bg-emerald-500/10 transition-all duration-200">Parcourir la galerie</Button>
               </Link>
             </CardContent>
           </Card>
@@ -308,16 +308,16 @@ export default function FavoritesPage({
                   />
                   <button
                     onClick={() => removeFavorite(photo.id)}
-                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-all duration-200 shadow-sm"
+                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-[#151C44]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#151C44] transition-all duration-200 shadow-sm"
                     title="Retirer des favoris"
                   >
                     <span className="text-emerald">×</span>
                   </button>
                 </div>
                 {photo.bibNumbers.length > 0 && (
-                  <div className="p-2 flex flex-wrap gap-1 bg-white/50">
+                  <div className="p-2 flex flex-wrap gap-1 bg-[#0C1029]/50">
                     {photo.bibNumbers.map((bib) => (
-                      <Badge key={bib.id} variant="secondary" className="text-xs bg-emerald-50 text-emerald">
+                      <Badge key={bib.id} variant="secondary" className="text-xs bg-emerald-500/10 text-emerald">
                         #{bib.number}
                       </Badge>
                     ))}

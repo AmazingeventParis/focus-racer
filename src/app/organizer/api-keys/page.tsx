@@ -100,7 +100,7 @@ export default function ApiKeysPage() {
     <div className="p-6 md:p-8 max-w-4xl animate-fade-in">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-navy">Cles API</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Cles API</h1>
           <p className="text-muted-foreground mt-1">
             Integrez Focus Racer dans vos outils via l'API REST
           </p>
@@ -118,16 +118,16 @@ export default function ApiKeysPage() {
 
       {/* New key created — show raw key */}
       {newRawKey && (
-        <Card className="mb-6 border-amber-300 bg-amber-50">
+        <Card className="mb-6 border-amber-500/30 bg-amber-500/10">
           <CardHeader className="pb-2">
-            <CardTitle className="text-amber-800 text-lg">Votre nouvelle cle API</CardTitle>
-            <CardDescription className="text-amber-700">
+            <CardTitle className="text-amber-400 text-lg">Votre nouvelle cle API</CardTitle>
+            <CardDescription className="text-amber-300">
               Copiez cette cle maintenant. Elle ne sera plus jamais affichee.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <code className="flex-1 bg-white border border-amber-200 rounded-lg px-4 py-3 text-sm font-mono break-all select-all">
+              <code className="flex-1 bg-white/5 border border-amber-500/20 rounded-lg px-4 py-3 text-sm font-mono break-all select-all text-gray-900">
                 {newRawKey}
               </code>
               <Button
@@ -142,7 +142,7 @@ export default function ApiKeysPage() {
             <Button
               variant="ghost"
               size="sm"
-              className="mt-3 text-amber-700"
+              className="mt-3 text-amber-400"
               onClick={() => setNewRawKey(null)}
             >
               J'ai copie la cle, fermer
@@ -206,7 +206,7 @@ export default function ApiKeysPage() {
                   <div className="flex items-center gap-4">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-navy">{key.name}</span>
+                        <span className="font-semibold text-gray-900">{key.name}</span>
                         <Badge
                           variant={key.isActive ? "default" : "secondary"}
                           className={key.isActive ? "bg-emerald/10 text-emerald hover:bg-emerald/10" : ""}
@@ -228,7 +228,7 @@ export default function ApiKeysPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className={revokingId === key.id ? "text-red-600 hover:text-red-700" : "text-muted-foreground"}
+                        className={revokingId === key.id ? "text-red-400 hover:text-red-300" : "text-muted-foreground"}
                         onClick={() => handleRevoke(key.id)}
                       >
                         {revokingId === key.id ? "Confirmer" : "Revoquer"}
@@ -249,16 +249,16 @@ export default function ApiKeysPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <h4 className="font-medium text-navy mb-2">Analyser une image</h4>
-            <pre className="bg-slate-900 text-slate-100 rounded-lg p-4 text-sm overflow-x-auto">
+            <h4 className="font-medium text-gray-900 mb-2">Analyser une image</h4>
+            <pre className="bg-[#070B1F] text-gray-500 rounded-lg p-4 text-sm overflow-x-auto">
 {`curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://focusracer.swipego.app"}/api/v1/analyze \\
   -H "Authorization: Bearer VOTRE_CLE_API" \\
   -F "image=@photo.jpg"`}
             </pre>
           </div>
           <div>
-            <h4 className="font-medium text-navy mb-2">Consulter votre consommation</h4>
-            <pre className="bg-slate-900 text-slate-100 rounded-lg p-4 text-sm overflow-x-auto">
+            <h4 className="font-medium text-gray-900 mb-2">Consulter votre consommation</h4>
+            <pre className="bg-[#070B1F] text-gray-500 rounded-lg p-4 text-sm overflow-x-auto">
 {`curl ${typeof window !== "undefined" ? window.location.origin : "https://focusracer.swipego.app"}/api/v1/usage \\
   -H "Authorization: Bearer VOTRE_CLE_API"`}
             </pre>

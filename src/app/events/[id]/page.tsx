@@ -492,7 +492,7 @@ export default function PublicEventPage({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#070B1F] flex items-center justify-center">
         <div className="text-center">
           <div className="w-10 h-10 border-4 border-emerald/30 border-t-emerald rounded-full animate-spin mx-auto mb-4" />
           <p className="text-muted-foreground">Chargement...</p>
@@ -503,7 +503,7 @@ export default function PublicEventPage({
 
   if (!event) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#070B1F] flex items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground mb-4">Événement non trouvé ou non publié</p>
           <Link href="/explore">
@@ -518,11 +518,11 @@ export default function PublicEventPage({
   const favCount = favorites.size;
 
   return (
-    <div className="min-h-screen bg-gray-50 gallery-protected">
+    <div className="min-h-screen bg-[#070B1F] gallery-protected">
       {/* Header sticky */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+      <header className="sticky top-0 z-40 bg-[#151C44]/95 backdrop-blur-sm border-b border-[#2C3566]">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold text-navy">
+          <Link href="/" className="text-xl font-bold text-gray-900">
             Focus Racer
           </Link>
           <div className="flex items-center gap-3">
@@ -571,7 +571,7 @@ export default function PublicEventPage({
               <div className="flex items-center gap-3 justify-center md:justify-start">
                 {event.logoImage && (
                   <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden border border-white/40 flex-shrink-0 shadow-lg">
-                    <Image src={event.logoImage} alt="Logo" fill className="object-contain bg-white" />
+                    <Image src={event.logoImage} alt="Logo" fill className="object-contain bg-[#151C44]" />
                   </div>
                 )}
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg truncate">{event.name}</h1>
@@ -677,7 +677,7 @@ export default function PublicEventPage({
         {/* Alert Modal */}
         {showAlertModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowAlertModal(false)}>
-            <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-[#151C44] rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-[#2C3566]" onClick={(e) => e.stopPropagation()}>
               <h3 className="text-lg font-bold text-gray-900 mb-1">Créer une alerte photo</h3>
               <p className="text-sm text-gray-500 mb-4">
                 Recevez une notification quand de nouvelles photos de votre dossard sont mises en ligne.
@@ -703,9 +703,9 @@ export default function PublicEventPage({
 
       {/* Search block — raised over hero */}
       <div className="-mt-14 relative z-10 px-4">
-        <Card className="max-w-2xl mx-auto bg-white shadow-2xl rounded-3xl border-0">
+        <Card className="max-w-2xl mx-auto bg-[#151C44] shadow-2xl rounded-3xl border border-[#2C3566]">
           <CardContent className="p-5 md:p-8">
-            <h2 className="text-lg md:text-2xl font-bold text-navy text-center">Retrouvez vos photos</h2>
+            <h2 className="text-lg md:text-2xl font-bold text-gray-900 text-center">Retrouvez vos photos</h2>
             <p className="text-muted-foreground text-center mt-1 text-xs md:text-sm">
               Entrez votre numéro de dossard{event.runnerCount > 0 ? ", nom" : ""} ou prenez un selfie
             </p>
@@ -717,7 +717,7 @@ export default function PublicEventPage({
                   placeholder={event.runnerCount > 0 ? "N° de dossard ou nom..." : "N° de dossard..."}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 text-lg h-12 md:h-14 rounded-xl border-gray-200 focus:border-emerald focus:ring-emerald"
+                  className="flex-1 text-lg h-12 md:h-14 rounded-xl border-[#2C3566] bg-[#0C1029] text-gray-900 placeholder:text-gray-500 focus:border-emerald focus:ring-emerald"
                 />
                 <Button
                   type="submit"
@@ -733,14 +733,14 @@ export default function PublicEventPage({
             <div className="flex flex-wrap justify-center gap-3 mt-3">
               <label className="cursor-pointer">
                 <input type="file" accept="image/*" className="hidden" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; await handleSelfieSearch(file); e.target.value = ""; }} />
-                <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5">
+                <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#2C3566] text-xs text-gray-500 hover:border-emerald hover:text-emerald transition-colors bg-[#0C1029] hover:bg-emerald/5">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                   </svg>
                   Importer un selfie
                 </span>
               </label>
-              <button type="button" onClick={openCamera} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5">
+              <button type="button" onClick={openCamera} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#2C3566] text-xs text-gray-500 hover:border-emerald hover:text-emerald transition-colors bg-[#0C1029] hover:bg-emerald/5">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
@@ -748,7 +748,7 @@ export default function PublicEventPage({
                 Prendre un selfie
               </button>
               {event.runnerCount > 0 && (
-                <button type="button" onClick={() => searchInputRef.current?.focus()} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-600 hover:border-emerald hover:text-emerald transition-colors bg-gray-50 hover:bg-emerald/5">
+                <button type="button" onClick={() => searchInputRef.current?.focus()} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#2C3566] text-xs text-gray-500 hover:border-emerald hover:text-emerald transition-colors bg-[#0C1029] hover:bg-emerald/5">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                   </svg>
@@ -767,8 +767,8 @@ export default function PublicEventPage({
           <div className="flex items-start justify-between mb-6 gap-4">
             <div className="flex-1">
               {searchResult.runner && (
-                <div className="bg-white rounded-xl p-4 mb-3 border-l-4 shadow-sm" style={{ borderLeftColor: primaryColor }}>
-                  <p className="font-semibold text-navy">
+                <div className="bg-[#151C44] rounded-xl p-4 mb-3 border-l-4 shadow-sm border border-[#2C3566]" style={{ borderLeftColor: primaryColor }}>
+                  <p className="font-semibold text-gray-900">
                     {searchResult.runner.firstName} {searchResult.runner.lastName}
                     <Badge variant="secondary" className="ml-2 bg-emerald/10 text-emerald">#{searchResult.runner.bibNumber}</Badge>
                   </p>
@@ -779,7 +779,7 @@ export default function PublicEventPage({
                   {searchResult.matchedRunners.length} sportifs correspondent
                 </p>
               )}
-              <p className="text-navy font-medium">
+              <p className="text-gray-900 font-medium">
                 {searchResult.count > 0
                   ? `${searchResult.count} photo${searchResult.count > 1 ? "s" : ""} trouvée${searchResult.count > 1 ? "s" : ""}`
                   : "Aucune photo trouvée pour cette recherche"}
@@ -796,7 +796,7 @@ export default function PublicEventPage({
               {displayPhotos.map((photo, index) => (
                 <div
                   key={photo.id}
-                  className="group relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 cursor-pointer"
+                  className="group relative bg-[#151C44] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 cursor-pointer border border-[#2C3566]"
                   onClick={() => openViewer(photo, index)}
                   onMouseEnter={() => prefetchImage(index)}
                 >
@@ -814,7 +814,7 @@ export default function PublicEventPage({
                       className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-colors z-10 ${
                         favorites.has(photo.id)
                           ? "bg-emerald text-white"
-                          : "bg-white/80 text-muted-foreground hover:bg-white"
+                          : "bg-[#151C44]/80 text-muted-foreground hover:bg-[#151C44]"
                       }`}
                     >
                       <svg className="w-4 h-4" fill={favorites.has(photo.id) ? "currentColor" : "none"} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -853,7 +853,7 @@ export default function PublicEventPage({
       {!searchResult && (
         <div className="container mx-auto px-4 py-10">
           <div className="text-center max-w-md mx-auto">
-            <p className="text-lg md:text-xl font-semibold text-navy">Vos photos vous attendent !</p>
+            <p className="text-lg md:text-xl font-semibold text-gray-900">Vos photos vous attendent !</p>
             <p className="text-muted-foreground mt-2 text-sm">
               Tapez votre numéro de dossard ci-dessus pour retrouver toutes vos photos de course.
             </p>

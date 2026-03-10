@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 const StripePayment = dynamic(() => import("@/components/stripe-payment"), {
   ssr: false,
   loading: () => (
-    <div className="animate-pulse bg-emerald-50 rounded-lg h-48" />
+    <div className="animate-pulse bg-emerald-500/10 rounded-lg h-48" />
   ),
 });
 
@@ -212,9 +212,9 @@ export default function CheckoutPage({
   if (photos.length === 0) {
     return (
       <div className="min-h-screen gradient-bg-subtle">
-        <header className="bg-white shadow-sm">
+        <header className="bg-[#151C44] shadow-sm border-b border-[#2C3566]">
           <div className="container mx-auto px-4 py-4">
-            <Link href="/" className="text-xl font-bold text-navy">Focus Racer</Link>
+            <Link href="/" className="text-xl font-bold text-gray-900">Focus Racer</Link>
           </div>
         </header>
         <main className="container mx-auto px-4 py-12 text-center">
@@ -229,9 +229,9 @@ export default function CheckoutPage({
 
   return (
     <div className="min-h-screen gradient-bg-subtle">
-      <header className="bg-white shadow-sm">
+      <header className="bg-[#151C44] shadow-sm border-b border-[#2C3566]">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold text-navy">Focus Racer</Link>
+          <Link href="/" className="text-xl font-bold text-gray-900">Focus Racer</Link>
           <Link href={`/events/${id}/favorites`}>
             <Button variant="outline" size="sm">← Retour aux favoris</Button>
           </Link>
@@ -239,7 +239,7 @@ export default function CheckoutPage({
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <h1 className="text-2xl font-bold text-navy mb-2">Finaliser l'achat</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Finaliser l'achat</h1>
         <p className="text-muted-foreground mb-8">{eventInfo?.name}</p>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -279,7 +279,7 @@ export default function CheckoutPage({
                     <button
                       onClick={() => setSelectedPackId(null)}
                       className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${
-                        !selectedPackId ? "border-emerald bg-emerald-50" : "border-emerald-50 hover:border-emerald/30"
+                        !selectedPackId ? "border-emerald bg-emerald-500/10" : "border-[#2C3566] hover:border-emerald/30"
                       }`}
                     >
                       <div className="flex justify-between items-center">
@@ -304,10 +304,10 @@ export default function CheckoutPage({
                           disabled={!isApplicable}
                           className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${
                             selectedPackId === pack.id
-                              ? "border-emerald bg-emerald-50"
+                              ? "border-emerald bg-emerald-500/10"
                               : isApplicable
-                              ? "border-emerald-50 hover:border-emerald/30"
-                              : "border-white/50 opacity-50 cursor-not-allowed"
+                              ? "border-[#2C3566] hover:border-emerald/30"
+                              : "border-[#2C3566] opacity-50 cursor-not-allowed"
                           }`}
                         >
                           <div className="flex justify-between items-center">
@@ -339,7 +339,7 @@ export default function CheckoutPage({
                 </CardHeader>
                 <CardContent>
                   {session?.user ? (
-                    <div className="bg-emerald-50 rounded-lg p-4">
+                    <div className="bg-emerald-500/10 rounded-lg p-4">
                       <p className="text-sm text-muted-foreground">Connecté en tant que</p>
                       <p className="font-medium">{session.user.name}</p>
                       <p className="text-sm text-muted-foreground">{session.user.email}</p>
@@ -423,7 +423,7 @@ export default function CheckoutPage({
                 </div>
 
                 {savings > 0 && (
-                  <div className="flex justify-between text-sm text-green-600">
+                  <div className="flex justify-between text-sm text-green-400">
                     <span>Économie</span>
                     <span>-{savings.toFixed(2)}€</span>
                   </div>
@@ -444,7 +444,7 @@ export default function CheckoutPage({
                 </div>
 
                 {error && (
-                  <p className="text-red-600 text-sm">{error}</p>
+                  <p className="text-red-400 text-sm">{error}</p>
                 )}
 
                 {!clientSecret && (

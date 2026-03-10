@@ -35,11 +35,11 @@ interface OrderData {
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  PENDING: { label: "En attente", color: "bg-yellow-100 text-yellow-800" },
-  PAID: { label: "Payé", color: "bg-emerald-100 text-emerald-700" },
-  DELIVERED: { label: "Livré", color: "bg-teal-100 text-teal-800" },
-  REFUNDED: { label: "Remboursé", color: "bg-white/50 text-muted-foreground" },
-  EXPIRED: { label: "Expiré", color: "bg-red-100 text-red-800" },
+  PENDING: { label: "En attente", color: "bg-yellow-500/20 text-yellow-400" },
+  PAID: { label: "Payé", color: "bg-emerald-500/20 text-emerald-400" },
+  DELIVERED: { label: "Livré", color: "bg-cyan-500/20 text-cyan-400" },
+  REFUNDED: { label: "Remboursé", color: "bg-white/5 text-muted-foreground" },
+  EXPIRED: { label: "Expiré", color: "bg-red-500/20 text-red-400" },
 };
 
 export default function PurchasesPage() {
@@ -107,7 +107,7 @@ export default function PurchasesPage() {
     <div className="min-h-screen flex flex-col">
       <main className="flex-1 pt-16 animate-fade-in">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <h1 className="text-2xl font-bold text-navy mb-2">Mes achats</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Mes achats</h1>
           <p className="text-muted-foreground mb-8">
             Retrouvez vos commandes et téléchargez vos photos
           </p>

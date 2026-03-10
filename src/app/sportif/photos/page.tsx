@@ -264,10 +264,10 @@ export default function SportifPhotosPage() {
     return (
       <div className="p-8">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 w-48 bg-gray-200 rounded" />
+          <div className="h-8 w-48 bg-gray-50 rounded" />
           <div className="grid grid-cols-4 gap-3">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="aspect-square bg-gray-200 rounded-xl" />
+              <div key={i} className="aspect-square bg-gray-50 rounded-xl" />
             ))}
           </div>
         </div>
@@ -278,7 +278,7 @@ export default function SportifPhotosPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-navy">Mes photos</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Mes photos</h1>
         <p className="text-muted-foreground mt-1">
           {totalPhotos} photo(s) — {purchasedCount} achetée(s)
         </p>
@@ -334,7 +334,7 @@ export default function SportifPhotosPage() {
                     onClick={() => toggleCollapse(group.event.id)}
                     className="flex-1 flex items-center gap-3 group min-w-0"
                   >
-                    <h2 className="text-lg font-semibold text-navy truncate">{group.event.name}</h2>
+                    <h2 className="text-lg font-semibold text-gray-900 truncate">{group.event.name}</h2>
                     <span className="text-sm text-muted-foreground flex-shrink-0">
                       {new Date(group.event.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
                     </span>
@@ -353,7 +353,7 @@ export default function SportifPhotosPage() {
                       size="sm"
                       onClick={() => downloadEvent(group.event.id)}
                       disabled={downloadingAll === group.event.id}
-                      className="flex-shrink-0 gap-1.5 text-emerald-600 border-emerald-200 hover:bg-emerald-50"
+                      className="flex-shrink-0 gap-1.5 text-emerald-400 border-emerald-500/20 hover:bg-emerald-50"
                     >
                       {downloadingAll === group.event.id ? (
                         <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -367,7 +367,7 @@ export default function SportifPhotosPage() {
                       )}
                       <span className="hidden sm:inline">Tout télécharger</span>
                       <span className="sm:hidden">Tout</span>
-                      <Badge className="bg-emerald-100 text-emerald-700 text-[10px] ml-1">{purchasedInGroup}</Badge>
+                      <Badge className="bg-emerald-100 text-emerald-400 text-[10px] ml-1">{purchasedInGroup}</Badge>
                     </Button>
                   )}
                 </div>
@@ -378,7 +378,7 @@ export default function SportifPhotosPage() {
                     {group.photos.map((photo, idx) => (
                       <div
                         key={photo.id}
-                        className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 group cursor-pointer"
+                        className="relative aspect-square rounded-xl overflow-hidden bg-gray-50 group cursor-pointer"
                         onClick={() => openLightbox(group.event.id, idx)}
                       >
                         {photo.thumbnail ? (

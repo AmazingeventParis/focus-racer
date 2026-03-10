@@ -272,7 +272,7 @@ export default function EventDetailPage({
 
   if (status === "loading" || isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#070B1F] flex items-center justify-center">
         <p className="text-muted-foreground">Chargement...</p>
       </div>
     );
@@ -299,7 +299,7 @@ export default function EventDetailPage({
               <div className="flex-shrink-0 w-40">
                 <label className="block cursor-pointer group relative">
                   {event.coverImage ? (
-                    <div className="relative w-40 h-24 rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                    <div className="relative w-40 h-24 rounded-xl overflow-hidden border border-gray-500/20 shadow-sm">
                       <Image
                         src={event.coverImage}
                         alt="Affiche"
@@ -312,7 +312,7 @@ export default function EventDetailPage({
                       </div>
                     </div>
                   ) : (
-                    <div className="w-40 h-24 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center gap-1 group-hover:border-emerald group-hover:bg-emerald-50/50 transition-all">
+                    <div className="w-40 h-24 rounded-xl border-2 border-dashed border-gray-500/20 flex flex-col items-center justify-center gap-1 group-hover:border-emerald group-hover:bg-emerald-50/50 transition-all">
                       <svg className="w-6 h-6 text-gray-400 group-hover:text-emerald transition-colors" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
                       </svg>
@@ -338,7 +338,7 @@ export default function EventDetailPage({
               <div className="flex-1 flex justify-between items-start">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <CardTitle className="text-2xl text-navy">{event.name}</CardTitle>
+                  <CardTitle className="text-2xl text-gray-900">{event.name}</CardTitle>
                   <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
                 </div>
                 <CardDescription className="flex items-center gap-2 text-sm">
@@ -378,18 +378,18 @@ export default function EventDetailPage({
               </Link>
               <Separator orientation="vertical" className="h-6 mx-1" />
               <Link href={`/photographer/events/${id}/start-list`}>
-                <Button variant="outline" size="sm" className="border-gray-200 text-navy hover:bg-gray-50 transition-all duration-200">Start-List</Button>
+                <Button variant="outline" size="sm" className="border-gray-500/20 text-gray-900 hover:bg-gray-50/50 transition-all duration-200">Start-List</Button>
               </Link>
               <Link href={`/photographer/events/${id}/packs`}>
-                <Button variant="outline" size="sm" className="border-gray-200 text-navy hover:bg-gray-50 transition-all duration-200">Tarifs</Button>
+                <Button variant="outline" size="sm" className="border-gray-500/20 text-gray-900 hover:bg-gray-50/50 transition-all duration-200">Tarifs</Button>
               </Link>
               <Dialog open={editOpen} onOpenChange={setEditOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="border-gray-200 text-navy hover:bg-gray-50 transition-all duration-200">Modifier</Button>
+                  <Button variant="outline" size="sm" className="border-gray-500/20 text-gray-900 hover:bg-gray-50/50 transition-all duration-200">Modifier</Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-lg">
                   <DialogHeader>
-                    <DialogTitle className="text-navy">Modifier l'événement</DialogTitle>
+                    <DialogTitle className="text-gray-900">Modifier l'événement</DialogTitle>
                     <DialogDescription>Modifiez les informations de votre événement</DialogDescription>
                   </DialogHeader>
                   <form onSubmit={handleEdit} className="space-y-4">
@@ -465,7 +465,7 @@ export default function EventDetailPage({
 
                     {/* Branding images */}
                     <Separator />
-                    <p className="text-sm font-medium text-navy">Branding visuel</p>
+                    <p className="text-sm font-medium text-gray-900">Branding visuel</p>
                     <div className="grid grid-cols-3 gap-3">
                       {[
                         { key: "coverImage", label: "Couverture" },
@@ -518,12 +518,12 @@ export default function EventDetailPage({
                 </Button>
               )}
               {event.status === "PUBLISHED" && (
-                <Button variant="outline" size="sm" className="border-gray-200 text-navy hover:bg-gray-50 transition-all duration-200" onClick={() => handleStatusChange("ARCHIVED")}>
+                <Button variant="outline" size="sm" className="border-gray-500/20 text-gray-900 hover:bg-gray-50/50 transition-all duration-200" onClick={() => handleStatusChange("ARCHIVED")}>
                   Archiver
                 </Button>
               )}
               {event.status === "ARCHIVED" && (
-                <Button variant="outline" size="sm" className="border-gray-200 text-navy hover:bg-gray-50 transition-all duration-200" onClick={() => handleStatusChange("DRAFT")}>
+                <Button variant="outline" size="sm" className="border-gray-500/20 text-gray-900 hover:bg-gray-50/50 transition-all duration-200" onClick={() => handleStatusChange("DRAFT")}>
                   Remettre en brouillon
                 </Button>
               )}
@@ -545,7 +545,7 @@ export default function EventDetailPage({
                   {notifyStatus.notified} notifié{notifyStatus.notified > 1 ? "s" : ""}
                 </Badge>
               )}
-              <Button variant="outline" size="sm" className="border-red-200 text-red-600 hover:bg-red-50 transition-all duration-200" onClick={handleDelete}>
+              <Button variant="outline" size="sm" className="border-red-500/20 text-red-400 hover:bg-red-50 transition-all duration-200" onClick={handleDelete}>
                 Supprimer
               </Button>
             </div>

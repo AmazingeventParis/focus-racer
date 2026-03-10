@@ -73,7 +73,7 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
 
   if (status === "loading" || isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <p className="text-muted-foreground">Chargement...</p>
       </div>
     );
@@ -81,14 +81,14 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <p className="text-muted-foreground">Aucune donnée disponible</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
@@ -100,8 +100,8 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">Debug OCR</h1>
-              <p className="text-slate-600 mt-1">{data.event.name}</p>
+              <h1 className="text-3xl font-bold text-gray-900">Debug OCR</h1>
+              <p className="text-gray-500 mt-1">{data.event.name}</p>
             </div>
             <Button onClick={fetchData} variant="outline">
               <RefreshCw className="h-4 w-4 mr-2" />
@@ -114,7 +114,7 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-medium text-slate-600">
+              <CardTitle className="text-sm font-medium text-gray-500">
                 Total Photos
               </CardTitle>
             </CardHeader>
@@ -124,15 +124,15 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-medium text-slate-600">
+              <CardTitle className="text-sm font-medium text-gray-500">
                 Avec Dossards
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-green-600">
+              <p className="text-3xl font-bold text-green-400">
                 {data.photosWithBibs}
               </p>
-              <p className="text-sm text-slate-500 mt-1">
+              <p className="text-sm text-gray-500 mt-1">
                 {data.totalPhotos > 0
                   ? `${Math.round((data.photosWithBibs / data.totalPhotos) * 100)}%`
                   : "0%"}
@@ -141,15 +141,15 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-medium text-slate-600">
+              <CardTitle className="text-sm font-medium text-gray-500">
                 Sans Dossards
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-red-600">
+              <p className="text-3xl font-bold text-red-400">
                 {data.photosWithoutBibs}
               </p>
-              <p className="text-sm text-slate-500 mt-1">
+              <p className="text-sm text-gray-500 mt-1">
                 {data.totalPhotos > 0
                   ? `${Math.round((data.photosWithoutBibs / data.totalPhotos) * 100)}%`
                   : "0%"}
@@ -171,14 +171,14 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
               {data.photos.map((photo) => (
                 <div
                   key={photo.id}
-                  className="border rounded-lg p-4 bg-white hover:shadow-md transition-shadow"
+                  className="border border-[#2C3566] rounded-lg p-4 bg-white/5 hover:bg-white/10 transition-colors"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
-                      <h3 className="font-medium text-slate-900 truncate">
+                      <h3 className="font-medium text-gray-900 truncate">
                         {photo.filename}
                       </h3>
-                      <p className="text-sm text-slate-500">
+                      <p className="text-sm text-gray-500">
                         {photo.processedAt
                           ? `Traité le ${new Date(photo.processedAt).toLocaleString("fr-FR")}`
                           : "Non traité"}
@@ -196,7 +196,7 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
                   {/* OCR Details */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3 text-sm">
                     <div>
-                      <span className="text-slate-600">OCR:</span>
+                      <span className="text-gray-500">OCR:</span>
                       <Badge variant="outline" className="ml-2">
                         {photo.ocrProvider === "ocr_aws"
                           ? "AWS"
@@ -207,20 +207,20 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
                     </div>
                     {photo.qualityScore !== null && (
                       <div>
-                        <span className="text-slate-600">Qualité:</span>
+                        <span className="text-gray-500">Qualité:</span>
                         <span className="ml-2 font-medium">
                           {photo.qualityScore.toFixed(1)}
                         </span>
                       </div>
                     )}
                     <div>
-                      <span className="text-slate-600">Floue:</span>
+                      <span className="text-gray-500">Floue:</span>
                       <span className="ml-2 font-medium">
                         {photo.isBlurry === null ? "N/A" : photo.isBlurry ? "Oui" : "Non"}
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-600">Web/Thumb:</span>
+                      <span className="text-gray-500">Web/Thumb:</span>
                       <span className="ml-2 font-medium">
                         {photo.hasWebVersion ? "✓" : "✗"} / {photo.hasThumbnail ? "✓" : "✗"}
                       </span>
@@ -230,19 +230,19 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
                   {/* Bibs Detected */}
                   {photo.bibs.length > 0 && (
                     <div className="mt-3 pt-3 border-t">
-                      <span className="text-sm font-medium text-slate-700">
+                      <span className="text-sm font-medium text-gray-500">
                         Dossards détectés:
                       </span>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {photo.bibs.map((bib, idx) => (
                           <div
                             key={idx}
-                            className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 border border-blue-200"
+                            className="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20"
                           >
-                            <span className="font-mono font-bold text-blue-900">
+                            <span className="font-mono font-bold text-blue-400">
                               {bib.number}
                             </span>
-                            <span className="ml-2 text-xs text-blue-600">
+                            <span className="ml-2 text-xs text-blue-400">
                               {bib.confidence.toFixed(0)}%
                             </span>
                             <Badge variant="outline" className="ml-2 text-xs">
@@ -257,7 +257,7 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
               ))}
 
               {data.photos.length === 0 && (
-                <div className="text-center py-8 text-slate-500">
+                <div className="text-center py-8 text-gray-500">
                   Aucune photo uploadée pour cet événement
                 </div>
               )}

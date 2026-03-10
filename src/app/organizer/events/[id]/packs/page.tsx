@@ -160,7 +160,7 @@ export default function PacksPage({
 
   if (status === "loading" || isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <p className="text-muted-foreground">Chargement...</p>
       </div>
     );
@@ -175,12 +175,12 @@ export default function PacksPage({
         ← Retour a {eventName || "l'evenement"}
       </Link>
 
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">Packs de vente</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Packs de vente</h1>
 
         {/* Create pack form */}
-        <Card className="mb-8 bg-white border-0 shadow-sm rounded-2xl">
+        <Card className="mb-8 border-0 shadow-sm rounded-2xl">
           <CardHeader>
-            <CardTitle className="text-navy">Créer un pack</CardTitle>
+            <CardTitle className="text-gray-900">Créer un pack</CardTitle>
             <CardDescription>Définissez vos offres commerciales pour cet événement</CardDescription>
           </CardHeader>
           <CardContent>
@@ -245,9 +245,9 @@ export default function PacksPage({
         </Card>
 
         {/* Packs list */}
-        <Card className="bg-white border-0 shadow-sm rounded-2xl">
+        <Card className="border-0 shadow-sm rounded-2xl">
           <CardHeader>
-            <CardTitle className="text-navy">
+            <CardTitle className="text-gray-900">
               Packs existants
               <Badge variant="secondary" className="ml-2">{packs.length}</Badge>
             </CardTitle>
@@ -258,7 +258,7 @@ export default function PacksPage({
                 Aucun pack créé. Utilisez le formulaire ci-dessus.
               </p>
             ) : (
-              <div className="border rounded-xl overflow-hidden">
+              <div className="border border-[#2C3566] rounded-xl overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -298,7 +298,7 @@ export default function PacksPage({
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-red-600"
+                              className="text-red-400"
                               onClick={() => handleDelete(pack.id)}
                             >
                               Supprimer

@@ -39,7 +39,7 @@ export default async function SharePage({ params }: { params: { token: string } 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-100 py-4 px-6">
+      <header className="bg-white border-b border-white/10 py-4 px-6">
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo-focus-racer.png" alt="Focus Racer" width={120} height={40} className="h-8 w-auto" />
         </Link>

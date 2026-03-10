@@ -30,14 +30,14 @@ interface SearchResult {
 
 function SkeletonRow() {
   return (
-    <div className="p-5 animate-pulse border-b border-gray-50 last:border-0">
+    <div className="p-5 animate-pulse border-b border-white/5 last:border-0">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-full bg-gray-200" />
+        <div className="w-10 h-10 rounded-full bg-white/10" />
         <div className="flex-1">
-          <div className="h-4 w-40 bg-gray-200 rounded mb-2" />
-          <div className="h-3 w-56 bg-gray-100 rounded" />
+          <div className="h-4 w-40 bg-white/10 rounded mb-2" />
+          <div className="h-3 w-56 bg-white/10 rounded" />
         </div>
-        <div className="h-5 w-16 bg-gray-200 rounded" />
+        <div className="h-5 w-16 bg-white/10 rounded" />
       </div>
     </div>
   );
@@ -168,7 +168,7 @@ export default function ClubsPage() {
         </div>
         <Card className="glass-card rounded-2xl border-0 shadow-card">
           <CardContent className="py-16 text-center">
-            <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
               <svg
                 className="w-8 h-8 text-amber-500"
                 fill="none"
@@ -183,7 +183,7 @@ export default function ClubsPage() {
                 />
               </svg>
             </div>
-            <p className="text-gray-700 font-medium mb-2">
+            <p className="text-gray-900 font-medium mb-2">
               Accès réservé aux fédérations
             </p>
             <p className="text-sm text-gray-500">
@@ -215,7 +215,7 @@ export default function ClubsPage() {
           }}
           className={
             showSearchForm
-              ? "bg-gray-200 text-gray-700 hover:bg-gray-300 rounded-lg"
+              ? "bg-white/10 text-gray-900 hover:bg-white/10 rounded-lg"
               : "bg-emerald hover:bg-emerald-hover text-white rounded-lg shadow-emerald transition-all duration-200"
           }
         >
@@ -262,9 +262,9 @@ export default function ClubsPage() {
         <Card className="glass-card rounded-2xl border-0 shadow-card">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-emerald-600"
+                  className="w-5 h-5 text-emerald-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={2}
@@ -288,9 +288,9 @@ export default function ClubsPage() {
         <Card className="glass-card rounded-2xl border-0 shadow-card">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-green-600"
+                  className="w-5 h-5 text-green-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={2}
@@ -314,9 +314,9 @@ export default function ClubsPage() {
         <Card className="glass-card rounded-2xl border-0 shadow-card">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/200/20 flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-blue-600"
+                  className="w-5 h-5 text-blue-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={2}
@@ -349,7 +349,7 @@ export default function ClubsPage() {
           <CardContent>
             <form onSubmit={handleSearch} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="search-email" className="text-gray-700">
+                <Label htmlFor="search-email" className="text-gray-900">
                   Email du club
                 </Label>
                 <div className="flex gap-3">
@@ -359,7 +359,7 @@ export default function ClubsPage() {
                     value={searchEmail}
                     onChange={(e) => setSearchEmail(e.target.value)}
                     placeholder="club@example.com"
-                    className="flex-1 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
+                    className="flex-1 bg-white/5 border-white/10 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
                     required
                   />
                   <Button
@@ -398,10 +398,10 @@ export default function ClubsPage() {
               </div>
 
               {searchResult && searchResult.success && (
-                <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4">
+                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-1">
                     <svg
-                      className="w-5 h-5 text-emerald-600"
+                      className="w-5 h-5 text-emerald-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       strokeWidth={2}
@@ -413,11 +413,11 @@ export default function ClubsPage() {
                         d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span className="font-medium text-emerald-800">
+                    <span className="font-medium text-emerald-400">
                       {searchResult.user?.name}
                     </span>
                   </div>
-                  <p className="text-sm text-emerald-700">
+                  <p className="text-sm text-emerald-400">
                     {searchResult.message}
                   </p>
                 </div>
@@ -439,7 +439,7 @@ export default function ClubsPage() {
             placeholder="Rechercher un club par nom, email, ville..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-white max-w-md border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
+            className="bg-white/5 max-w-md border-white/10 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
           />
         </div>
       )}
@@ -458,7 +458,7 @@ export default function ClubsPage() {
       ) : filteredClubs.length === 0 ? (
         <Card className="glass-card rounded-2xl border-0 shadow-card">
           <CardContent className="py-16 text-center">
-            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4">
               <svg
                 className="w-8 h-8 text-gray-400"
                 fill="none"
@@ -473,7 +473,7 @@ export default function ClubsPage() {
                 />
               </svg>
             </div>
-            <p className="text-gray-700 font-medium mb-2">
+            <p className="text-gray-900 font-medium mb-2">
               {clubs.length === 0
                 ? "Aucun club enregistré"
                 : "Aucun résultat"}
@@ -489,7 +489,7 @@ export default function ClubsPage() {
         <Card className="bg-white border-0 shadow-card rounded-xl overflow-hidden">
           <CardContent className="p-0">
             {/* Table header */}
-            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50 border-b border-gray-100 text-xs font-medium text-gray-500 uppercase tracking-wide">
+            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50 border-b border-white/5 text-xs font-medium text-gray-500 uppercase tracking-wide">
               <div className="col-span-4">Club</div>
               <div className="col-span-2">Contact</div>
               <div className="col-span-2">Localisation</div>
@@ -512,9 +512,9 @@ export default function ClubsPage() {
               return (
                 <div key={club.id}>
                   <div
-                    className={`grid grid-cols-12 gap-4 px-6 py-4 items-center cursor-pointer hover:bg-gray-50 transition-colors ${
+                    className={`grid grid-cols-12 gap-4 px-6 py-4 items-center cursor-pointer hover:bg-white/5 transition-colors ${
                       isExpanded ? "bg-gray-50" : ""
-                    } border-b border-gray-50 last:border-0`}
+                    } border-b border-white/5 last:border-0`}
                     onClick={() => toggleExpanded(club.id)}
                   >
                     {/* Club name + avatar */}
@@ -536,7 +536,7 @@ export default function ClubsPage() {
 
                     {/* Contact */}
                     <div className="col-span-2 min-w-0">
-                      <p className="text-sm text-gray-700 truncate">
+                      <p className="text-sm text-gray-900 truncate">
                         {club.email}
                       </p>
                       {club.phone && (
@@ -546,14 +546,14 @@ export default function ClubsPage() {
 
                     {/* Location */}
                     <div className="col-span-2 min-w-0">
-                      <p className="text-sm text-gray-700 truncate">
+                      <p className="text-sm text-gray-900 truncate">
                         {club.city || club.location || "-"}
                       </p>
                     </div>
 
                     {/* Events count */}
                     <div className="col-span-1 text-center">
-                      <span className="inline-flex items-center justify-center px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-sm font-medium">
+                      <span className="inline-flex items-center justify-center px-2 py-1 rounded-md bg-blue-500/20 text-blue-400 text-sm font-medium">
                         {club._count?.events || 0}
                       </span>
                     </div>
@@ -563,8 +563,8 @@ export default function ClubsPage() {
                       <Badge
                         className={`text-xs ${
                           club.isActive
-                            ? "bg-emerald-100 text-emerald-800 border-emerald-200"
-                            : "bg-gray-100 text-gray-600 border-gray-200"
+                            ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/20"
+                            : "bg-white/10 text-gray-500 border-white/10"
                         }`}
                       >
                         {club.isActive ? "Actif" : "Inactif"}
@@ -600,7 +600,7 @@ export default function ClubsPage() {
 
                   {/* Expanded details */}
                   {isExpanded && (
-                    <div className="px-6 py-4 bg-gray-50 border-b border-gray-100">
+                    <div className="px-6 py-4 bg-gray-50 border-b border-white/5">
                       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div className="space-y-1">
                           <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
@@ -614,7 +614,7 @@ export default function ClubsPage() {
                           </p>
                           <a
                             href={`mailto:${club.email}`}
-                            className="text-sm text-emerald-600 hover:underline"
+                            className="text-sm text-emerald-400 hover:underline"
                             onClick={(e) => e.stopPropagation()}
                           >
                             {club.email}
@@ -649,7 +649,7 @@ export default function ClubsPage() {
                         </div>
                       )}
 
-                      <div className="mt-4 pt-4 border-t border-gray-200 flex items-center gap-3">
+                      <div className="mt-4 pt-4 border-t border-white/10 flex items-center gap-3">
                         <Button
                           variant="outline"
                           size="sm"

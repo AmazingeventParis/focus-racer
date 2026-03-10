@@ -27,11 +27,11 @@ interface OrderData {
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  PENDING: { label: "En attente", color: "bg-yellow-100 text-yellow-800" },
-  PAID: { label: "Payé", color: "bg-emerald-100 text-emerald-700" },
-  DELIVERED: { label: "Livré", color: "bg-teal-100 text-teal-800" },
+  PENDING: { label: "En attente", color: "bg-yellow-100 text-yellow-400" },
+  PAID: { label: "Payé", color: "bg-emerald-100 text-emerald-400" },
+  DELIVERED: { label: "Livré", color: "bg-teal-100 text-teal-400" },
   REFUNDED: { label: "Remboursé", color: "bg-white/50 text-muted-foreground" },
-  EXPIRED: { label: "Expiré", color: "bg-red-100 text-red-800" },
+  EXPIRED: { label: "Expiré", color: "bg-red-100 text-red-400" },
 };
 
 export default function SportifPaiementsPage() {
@@ -52,11 +52,11 @@ export default function SportifPaiementsPage() {
     return (
       <div className="p-8">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 w-48 bg-gray-200 rounded" />
+          <div className="h-8 w-48 bg-gray-50 rounded" />
           <div className="grid grid-cols-2 gap-4">
-            {[1, 2].map((i) => <div key={i} className="h-24 bg-gray-200 rounded-2xl" />)}
+            {[1, 2].map((i) => <div key={i} className="h-24 bg-gray-50 rounded-2xl" />)}
           </div>
-          {[1, 2].map((i) => <div key={i} className="h-32 bg-gray-200 rounded-2xl" />)}
+          {[1, 2].map((i) => <div key={i} className="h-32 bg-gray-50 rounded-2xl" />)}
         </div>
       </div>
     );
@@ -65,7 +65,7 @@ export default function SportifPaiementsPage() {
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-navy">Paiements</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Paiements</h1>
         <p className="text-muted-foreground mt-1">Retrouvez l'historique de vos commandes</p>
       </div>
 
@@ -74,13 +74,13 @@ export default function SportifPaiementsPage() {
         <Card className="glass-card rounded-2xl">
           <CardContent className="p-5">
             <p className="text-sm text-muted-foreground">Commandes</p>
-            <p className="text-2xl font-bold text-navy mt-1">{paidOrders.length}</p>
+            <p className="text-2xl font-bold text-gray-900 mt-1">{paidOrders.length}</p>
           </CardContent>
         </Card>
         <Card className="glass-card rounded-2xl">
           <CardContent className="p-5">
             <p className="text-sm text-muted-foreground">Photos achetées</p>
-            <p className="text-2xl font-bold text-navy mt-1">{paidOrders.reduce((sum, o) => sum + o.items.length, 0)}</p>
+            <p className="text-2xl font-bold text-gray-900 mt-1">{paidOrders.reduce((sum, o) => sum + o.items.length, 0)}</p>
           </CardContent>
         </Card>
       </div>
