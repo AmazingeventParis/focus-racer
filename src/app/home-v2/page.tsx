@@ -1,12 +1,109 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import "./homev2.css";
 
+const solutionsMenu = [
+  {
+    title: "Sportifs",
+    desc: "Retrouvez vos photos en un clic",
+    href: "/solutions/sportifs",
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+      </svg>
+    ),
+  },
+  {
+    title: "Photographes",
+    desc: "Automatisez le tri et la vente",
+    href: "/solutions/photographes",
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+      </svg>
+    ),
+  },
+  {
+    title: "Organisateurs",
+    desc: "Couverture photo clé en main",
+    href: "/solutions/organisateurs",
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M18.75 4.236c.982.143 1.954.317 2.916.52A6.003 6.003 0 0016.27 9.728M18.75 4.236V4.5c0 2.108-.966 3.99-2.48 5.228m0 0a6.003 6.003 0 01-5.54 0" />
+      </svg>
+    ),
+  },
+];
+
+const footerLinks = {
+  solutions: {
+    title: "Solutions",
+    links: [
+      { href: "/solutions/sportifs", label: "Pour les sportifs" },
+      { href: "/solutions/photographes", label: "Pour les photographes" },
+      { href: "/solutions/organisateurs", label: "Pour les organisateurs" },
+      { href: "/pricing", label: "Tarifs" },
+      { href: "/explore", label: "Trouver mes photos" },
+    ],
+  },
+  decouvrir: {
+    title: "Découvrir",
+    links: [
+      { href: "/about", label: "À propos" },
+      { href: "/blog", label: "Blog" },
+      { href: "/technologie", label: "Technologie" },
+      { href: "/partenaires", label: "Partenaires" },
+    ],
+  },
+  legal: {
+    title: "Légal",
+    links: [
+      { href: "/legal", label: "Mentions légales" },
+      { href: "/legal/cgu", label: "CGU" },
+      { href: "/legal/confidentialite", label: "Politique de confidentialité" },
+    ],
+  },
+  support: {
+    title: "Support",
+    links: [
+      { href: "/faq", label: "FAQ" },
+      { href: "/contact", label: "Contact" },
+      { href: "/gdpr", label: "RGPD" },
+    ],
+  },
+};
+
+const SocialIcons = () => (
+  <>
+    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+      <svg fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+      <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+    </a>
+    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+      <svg fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    </a>
+  </>
+);
+
 export default function HomeV2() {
+  const { data: session } = useSession();
+  const pathname = usePathname();
   const [activeAudienceTab, setActiveAudienceTab] = useState<"runners" | "photographers" | "organizers">("runners");
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [solutionsOpen, setSolutionsOpen] = useState(false);
+  const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const slotWords = ["marathon", "trail", "triathlon", "cyclisme", "natation", "ski", "running", "duathlon", "canicross", "obstacle", "swimrun", "motocross", "aviron", "rallye", "ironman", "équitation", "kayak", "escalade", "rugby", "football", "handball", "voile", "CrossFit", "paddle", "biathlon", "enduro", "karting", "surf", "boxe", "judo", "athlétisme"];
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -15,6 +112,24 @@ export default function HomeV2() {
       setCurrentWordIndex((prev) => (prev + 1) % slotWords.length);
     }, 500);
     return () => clearInterval(interval);
+  }, []);
+
+  // Scroll detection for header
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setSolutionsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -78,6 +193,15 @@ export default function HomeV2() {
     setOpenFaqIndex((prev) => (prev === index ? null : index));
   }, []);
 
+  const role = session?.user?.role;
+  const isAdmin = role === "ADMIN";
+  const isPro = ["PHOTOGRAPHER", "ORGANIZER", "AGENCY", "CLUB", "FEDERATION"].includes(role || "");
+  const dashboardHref = isAdmin
+    ? "/focus-mgr-7k9x/dashboard"
+    : isPro
+    ? "/photographer/dashboard"
+    : "/sportif/dashboard";
+
   const faqItems = [
     {
       question: "Comment retrouver mes photos de course ?",
@@ -109,6 +233,130 @@ export default function HomeV2() {
 
   return (
     <div className="hv2">
+      {/* ═══════════ DARK HEADER ═══════════ */}
+      <header className={`hv2-header${scrolled ? " scrolled" : ""}`}>
+        <div className="hv2-header-inner">
+          <Link href="/">
+            <Image
+              src="/logo-focus-racer-white.png"
+              alt="Focus Racer"
+              width={160}
+              height={90}
+              className="hv2-header-logo"
+              priority
+            />
+          </Link>
+
+          <nav className="hv2-header-nav">
+            <Link href="/explore" className="hv2-header-link">Trouver mes photos</Link>
+            <Link href="/pricing" className="hv2-header-link">Tarifs</Link>
+
+            <div ref={dropdownRef} className="hv2-solutions-wrap">
+              <button
+                onMouseEnter={() => setSolutionsOpen(true)}
+                onClick={() => setSolutionsOpen(!solutionsOpen)}
+                className={`hv2-solutions-btn${solutionsOpen ? " open" : ""}`}
+              >
+                Solutions
+                <svg fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+
+              {solutionsOpen && (
+                <div className="hv2-solutions-dropdown" onMouseLeave={() => setSolutionsOpen(false)}>
+                  <div>
+                    {solutionsMenu.map((item) => (
+                      <Link key={item.href} href={item.href} className="hv2-solutions-item">
+                        <span className="hv2-solutions-item-icon">{item.icon}</span>
+                        <div>
+                          <div className="hv2-solutions-item-title">{item.title}</div>
+                          <div className="hv2-solutions-item-desc">{item.desc}</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="hv2-solutions-cta">
+                    <div className="hv2-solutions-cta-title">Essai gratuit</div>
+                    <div className="hv2-solutions-cta-desc">Créez votre compte et uploadez vos premières photos.</div>
+                    <Link href="/register">
+                      <button className="hv2-solutions-cta-btn">Commencer</button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          </nav>
+
+          <div className="hv2-header-actions">
+            {session ? (
+              <>
+                {isAdmin && (
+                  <Link href="/photographer/dashboard" className="hv2-btn-ghost">Espace Pro</Link>
+                )}
+                <Link href={dashboardHref} className="hv2-btn-accent">
+                  {isAdmin ? "Admin" : "Mon espace"}
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/register" className="hv2-btn-ghost">Créer un compte</Link>
+                <Link href="/login" className="hv2-btn-accent">Mon espace</Link>
+              </>
+            )}
+          </div>
+
+          <button
+            className={`hv2-mobile-toggle${mobileOpen ? " open" : ""}`}
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+        {/* Mobile menu */}
+        <div className={`hv2-mobile-menu${mobileOpen ? " open" : ""}`}>
+          <Link href="/explore" className="hv2-mobile-link" onClick={() => setMobileOpen(false)}>Trouver mes photos</Link>
+          <Link href="/pricing" className="hv2-mobile-link" onClick={() => setMobileOpen(false)}>Tarifs</Link>
+          <button
+            className="hv2-mobile-link"
+            onClick={() => setMobileSolutionsOpen(!mobileSolutionsOpen)}
+            style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", border: "none", background: "none", cursor: "pointer", fontFamily: "inherit" }}
+          >
+            Solutions
+            <svg style={{ width: 14, height: 14, transition: "transform 0.2s", transform: mobileSolutionsOpen ? "rotate(180deg)" : "none" }} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </button>
+          {mobileSolutionsOpen && (
+            <div className="hv2-mobile-solutions">
+              {solutionsMenu.map((item) => (
+                <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
+                  <span className="hv2-solutions-item-icon">{item.icon}</span>
+                  {item.title}
+                </Link>
+              ))}
+            </div>
+          )}
+          <hr className="hv2-mobile-divider" />
+          <div className="hv2-mobile-actions">
+            {session ? (
+              <Link href={dashboardHref} className="hv2-btn-accent" onClick={() => setMobileOpen(false)}>
+                {isAdmin ? "Admin" : "Mon espace"}
+              </Link>
+            ) : (
+              <>
+                <Link href="/register" className="hv2-btn-ghost" onClick={() => setMobileOpen(false)}>Créer un compte</Link>
+                <Link href="/login" className="hv2-btn-accent" onClick={() => setMobileOpen(false)}>Mon espace</Link>
+              </>
+            )}
+          </div>
+        </div>
+      </header>
+
       {/* ═══════════ HERO ═══════════ */}
       <section className="hero">
         <div className="hero-bg-image"></div>
@@ -119,7 +367,7 @@ export default function HomeV2() {
           <div className="hero-text">
             <div className="hero-badge">
               <span className="hero-badge-dot">⚡</span>
-              Propulsé par l'Intelligence Artificielle
+              Propulsé par l&apos;Intelligence Artificielle
             </div>
             <h1>
               Retrouvez vos photos de
@@ -130,14 +378,14 @@ export default function HomeV2() {
             </h1>
             <p className="hero-description">
               Notre IA détecte automatiquement votre dossard et votre visage pour retrouver toutes vos photos
-              d'événement instantanément. Gratuit pour les sportifs.
+              d&apos;événement instantanément. Gratuit pour les sportifs.
             </p>
             <div className="hero-ctas">
               <Link href="/explore">
-                <button className="btn-primary">🔍 Trouver mes photos</button>
+                <button className="btn-primary">Trouver mes photos</button>
               </Link>
               <Link href="/register">
-                <button className="btn-secondary">📸 Espace photographe</button>
+                <button className="btn-secondary">Espace photographe</button>
               </Link>
             </div>
           </div>
@@ -252,7 +500,7 @@ export default function HomeV2() {
           </div>
           <h2 className="section-title">Trois étapes, zéro effort</h2>
           <p className="section-subtitle">
-            De l'upload à la livraison, notre intelligence artificielle s'occupe de tout.
+            De l&apos;upload à la livraison, notre intelligence artificielle s&apos;occupe de tout.
           </p>
         </div>
         <div className="steps-grid">
@@ -260,7 +508,7 @@ export default function HomeV2() {
             <div className="step-number">1</div>
             <div className="step-icon">📤</div>
             <h3>Upload des photos</h3>
-            <p>Le photographe téléverse ses photos sur la plateforme. Upload en masse ou en temps réel pendant l'événement grâce au mode Live.</p>
+            <p>Le photographe téléverse ses photos sur la plateforme. Upload en masse ou en temps réel pendant l&apos;événement grâce au mode Live.</p>
           </div>
           <div className="step-card reveal stagger-2">
             <div className="step-number">2</div>
@@ -287,7 +535,7 @@ export default function HomeV2() {
           </div>
           <h2 className="section-title">Tout ce dont vous avez besoin</h2>
           <p className="section-subtitle">
-            Une plateforme complète pour les sportifs, photographes et organisateurs d'événements sportifs.
+            Une plateforme complète pour les sportifs, photographes et organisateurs d&apos;événements sportifs.
           </p>
         </div>
         <div className="features-grid">
@@ -304,12 +552,12 @@ export default function HomeV2() {
           <div className="feature-card reveal stagger-3">
             <div className="feature-icon-wrap fi-green">⚡</div>
             <h3>Mode Live</h3>
-            <p>Upload en temps réel pendant la course avec détection instantanée. Les sportifs retrouvent leurs photos avant même la ligne d'arrivée.</p>
+            <p>Upload en temps réel pendant la course avec détection instantanée. Les sportifs retrouvent leurs photos avant même la ligne d&apos;arrivée.</p>
           </div>
           <div className="feature-card reveal stagger-4">
             <div className="feature-icon-wrap fi-amber">🎨</div>
             <h3>Galeries personnalisées</h3>
-            <p>Chaque événement dispose de sa galerie avec le branding de l'organisateur. Un espace dédié pour chaque course.</p>
+            <p>Chaque événement dispose de sa galerie avec le branding de l&apos;organisateur. Un espace dédié pour chaque course.</p>
           </div>
           <div className="feature-card reveal stagger-5">
             <div className="feature-icon-wrap fi-rose">💳</div>
@@ -334,7 +582,7 @@ export default function HomeV2() {
           </div>
           <h2 className="section-title">Une plateforme, trois publics</h2>
           <p className="section-subtitle">
-            Que vous soyez sportif, photographe ou organisateur, Focus Racer s'adapte à vos besoins.
+            Que vous soyez sportif, photographe ou organisateur, Focus Racer s&apos;adapte à vos besoins.
           </p>
         </div>
 
@@ -352,7 +600,7 @@ export default function HomeV2() {
               <p>Fini les heures passées à chercher vos photos parmi des milliers de clichés. Focus Racer vous les livre instantanément, triées et identifiées.</p>
               <ul className="audience-benefits">
                 <li><span className="benefit-check">✓</span>Recherche par dossard, nom ou selfie</li>
-                <li><span className="benefit-check">✓</span>Résultats en moins d'une seconde</li>
+                <li><span className="benefit-check">✓</span>Résultats en moins d&apos;une seconde</li>
                 <li><span className="benefit-check">✓</span>Photos haute résolution téléchargeables</li>
                 <li><span className="benefit-check">✓</span>Notification quand vos photos sont prêtes</li>
               </ul>
@@ -364,7 +612,7 @@ export default function HomeV2() {
             <div className="audience-visual"><div className="audience-img-placeholder">📷</div></div>
             <div className="audience-info">
               <h3>Vendez vos photos automatiquement</h3>
-              <p>Concentrez-vous sur votre art. Notre IA trie, indexe et identifie chaque participant sur vos photos. Vous n'avez plus qu'à encaisser.</p>
+              <p>Concentrez-vous sur votre art. Notre IA trie, indexe et identifie chaque participant sur vos photos. Vous n&apos;avez plus qu&apos;à encaisser.</p>
               <ul className="audience-benefits">
                 <li><span className="benefit-check">✓</span>Tri automatique par dossard et visage</li>
                 <li><span className="benefit-check">✓</span>Upload en masse ou en temps réel</li>
@@ -384,7 +632,7 @@ export default function HomeV2() {
                 <li><span className="benefit-check">✓</span>Galerie aux couleurs de votre événement</li>
                 <li><span className="benefit-check">✓</span>Marketplace de photographes qualifiés</li>
                 <li><span className="benefit-check">✓</span>Diffusion SMS, email et QR code</li>
-                <li><span className="benefit-check">✓</span>Conformité RGPD et droit à l'image</li>
+                <li><span className="benefit-check">✓</span>Conformité RGPD et droit à l&apos;image</li>
               </ul>
               <Link href="/register"><button className="btn-audience">Créer un compte Pro →</button></Link>
             </div>
@@ -397,8 +645,8 @@ export default function HomeV2() {
         <div className="tech-content">
           <div className="tech-info reveal-left">
             <div className="section-tag"><span className="section-tag-line"></span>Technologie</div>
-            <h2 className="section-title">IA & analyse d'image de pointe</h2>
-            <p>Notre moteur d'intelligence artificielle combine plusieurs algorithmes de détection pour identifier chaque sportif avec une précision remarquable, quelle que soit la discipline.</p>
+            <h2 className="section-title">IA &amp; analyse d&apos;image de pointe</h2>
+            <p>Notre moteur d&apos;intelligence artificielle combine plusieurs algorithmes de détection pour identifier chaque sportif avec une précision remarquable, quelle que soit la discipline.</p>
             <div className="tech-features">
               <div className="tech-feature-item">
                 <div className="tech-feature-icon">🔢</div>
@@ -410,11 +658,11 @@ export default function HomeV2() {
               </div>
               <div className="tech-feature-item">
                 <div className="tech-feature-icon">⏱️</div>
-                <div><h4>Traitement temps réel</h4><p>Analyse instantanée pendant l'événement grâce à notre infrastructure cloud haute performance</p></div>
+                <div><h4>Traitement temps réel</h4><p>Analyse instantanée pendant l&apos;événement grâce à notre infrastructure cloud haute performance</p></div>
               </div>
               <div className="tech-feature-item">
                 <div className="tech-feature-icon">🔒</div>
-                <div><h4>RGPD & droit à l'image</h4><p>Conformité totale avec la réglementation européenne sur les données personnelles</p></div>
+                <div><h4>RGPD &amp; droit à l&apos;image</h4><p>Conformité totale avec la réglementation européenne sur les données personnelles</p></div>
               </div>
             </div>
           </div>
@@ -459,7 +707,7 @@ export default function HomeV2() {
         <div className="testimonials-grid">
           <div className="testimonial-card reveal stagger-1">
             <div className="testimonial-stars">★★★★★</div>
-            <p className="testimonial-text">"J'ai retrouvé toutes mes photos du marathon en moins de 30 secondes. L'interface est intuitive et le résultat bluffant. Je recommande à tous les sportifs !"</p>
+            <p className="testimonial-text">&quot;J&apos;ai retrouvé toutes mes photos du marathon en moins de 30 secondes. L&apos;interface est intuitive et le résultat bluffant. Je recommande à tous les sportifs !&quot;</p>
             <div className="testimonial-author">
               <div className="testimonial-avatar">SM</div>
               <div><div className="testimonial-name">Sophie M.</div><div className="testimonial-role">Marathonienne — Paris</div></div>
@@ -467,7 +715,7 @@ export default function HomeV2() {
           </div>
           <div className="testimonial-card reveal stagger-2">
             <div className="testimonial-stars">★★★★★</div>
-            <p className="testimonial-text">"Le tri automatique par dossard me fait gagner des heures de travail après chaque course. Plus besoin de trier manuellement des milliers de photos."</p>
+            <p className="testimonial-text">&quot;Le tri automatique par dossard me fait gagner des heures de travail après chaque course. Plus besoin de trier manuellement des milliers de photos.&quot;</p>
             <div className="testimonial-author">
               <div className="testimonial-avatar">TL</div>
               <div><div className="testimonial-name">Thomas L.</div><div className="testimonial-role">Photographe sportif</div></div>
@@ -475,10 +723,10 @@ export default function HomeV2() {
           </div>
           <div className="testimonial-card reveal stagger-3">
             <div className="testimonial-stars">★★★★★</div>
-            <p className="testimonial-text">"La marketplace nous a permis de trouver facilement des photographes qualifiés pour notre trail. La galerie personnalisée est un vrai plus pour notre image."</p>
+            <p className="testimonial-text">&quot;La marketplace nous a permis de trouver facilement des photographes qualifiés pour notre trail. La galerie personnalisée est un vrai plus pour notre image.&quot;</p>
             <div className="testimonial-author">
               <div className="testimonial-avatar">CD</div>
-              <div><div className="testimonial-name">Claire D.</div><div className="testimonial-role">Organisatrice d'événements</div></div>
+              <div><div className="testimonial-name">Claire D.</div><div className="testimonial-role">Organisatrice d&apos;événements</div></div>
             </div>
           </div>
         </div>
@@ -512,13 +760,58 @@ export default function HomeV2() {
       <section className="cta-section">
         <div className="cta-content reveal">
           <h2>Prêt à retrouver vos photos ?</h2>
-          <p>Rejoignez des milliers de sportifs et photographes qui utilisent Focus Racer pour retrouver, partager et vendre leurs photos d'événements sportifs.</p>
+          <p>Rejoignez des milliers de sportifs et photographes qui utilisent Focus Racer pour retrouver, partager et vendre leurs photos d&apos;événements sportifs.</p>
           <div className="cta-btns">
-            <Link href="/explore"><button className="btn-primary">🔍 Rechercher mes photos</button></Link>
-            <Link href="/register"><button className="btn-secondary">📸 Créer un compte</button></Link>
+            <Link href="/explore"><button className="btn-primary">Rechercher mes photos</button></Link>
+            <Link href="/register"><button className="btn-secondary">Créer un compte</button></Link>
           </div>
         </div>
       </section>
+
+      {/* ═══════════ DARK FOOTER ═══════════ */}
+      <footer className="hv2-footer">
+        <div className="hv2-footer-inner">
+          <div className="hv2-footer-grid">
+            <div className="hv2-footer-brand">
+              <Image
+                src="/logo-focus-racer-white.png"
+                alt="Focus Racer"
+                width={160}
+                height={90}
+                style={{ height: 40, width: "auto" }}
+              />
+              <p className="hv2-footer-brand-desc">
+                La plateforme de référence pour retrouver et acheter vos photos de courses sportives.
+              </p>
+              <div className="hv2-footer-socials">
+                <SocialIcons />
+              </div>
+            </div>
+
+            {Object.values(footerLinks).map((section) => (
+              <div key={section.title}>
+                <div className="hv2-footer-col-title">{section.title}</div>
+                <ul className="hv2-footer-links">
+                  {section.links.map((link) => (
+                    <li key={link.label}>
+                      <Link href={link.href}>{link.label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="hv2-footer-bottom">
+            <p className="hv2-footer-copy">
+              © {new Date().getFullYear()} Focus Racer. Tous droits réservés.
+            </p>
+            <div className="hv2-footer-bottom-socials">
+              <SocialIcons />
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
