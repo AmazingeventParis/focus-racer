@@ -438,7 +438,7 @@ export default function SolutionsOrganisateursPage() {
 
       {/* ═══════════ HERO ═══════════ */}
       <section className="relative min-h-[92vh] flex items-center overflow-hidden bg-gradient-to-br from-[#042F2E] via-[#115E59] to-[#042F2E]">
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-10">
           <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-emerald-500 rounded-full blur-[120px]" />
           <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-orange-400 rounded-full blur-[120px]" />
         </div>
@@ -1203,7 +1203,7 @@ export default function SolutionsOrganisateursPage() {
 
       {/* ═══════════ CTA FINAL ═══════════ */}
       <section className="py-20 md:py-28 bg-gradient-to-br from-[#042F2E] via-[#115E59] to-[#042F2E] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-10">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500 rounded-full blur-[200px]" />
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">

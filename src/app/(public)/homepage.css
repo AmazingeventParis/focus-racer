@@ -342,7 +342,7 @@
     position: absolute;
     inset: 0;
     background: url('/hero-bg.png') center/cover no-repeat;
-    opacity: 0.38;
+    opacity: 0.55;
     pointer-events: none;
 }
 

@@ -193,7 +193,7 @@ export default function PressePage() {
     <main className="bg-white">
       {/* ═══════════ HERO ═══════════ */}
       <section className="relative min-h-[70vh] flex items-center overflow-hidden bg-gradient-to-br from-[#042F2E] via-[#115E59] to-[#042F2E]">
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-10">
           <div className="absolute top-1/4 left-1/2 w-[500px] h-[500px] bg-emerald-500 rounded-full blur-[150px]" />
         </div>
         <div className="container mx-auto px-4 pt-24 pb-16 relative z-10 text-center">
@@ -963,7 +963,7 @@ export default function PressePage() {
 
       {/* ═══════════ CTA FINAL ═══════════ */}
       <section className="py-20 md:py-28 bg-gradient-to-br from-[#042F2E] via-[#115E59] to-[#042F2E] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-10">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500 rounded-full blur-[200px]" />
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
