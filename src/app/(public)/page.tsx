@@ -239,19 +239,21 @@ export default function HomePage() {
           </div>
 
           <div className="hero-visual">
-            {/* Floating cards */}
-            <div className="hero-float-card card-1">
-              <div className="float-icon green">✅</div>
-              <div>
-                <div className="float-label">Dossard détecté</div>
-                <div className="float-value">#1247 — 0.03s</div>
+            {/* Floating cards — above pipeline */}
+            <div className="hero-float-cards">
+              <div className="hero-float-card card-1">
+                <div className="float-icon green">✅</div>
+                <div>
+                  <div className="float-label">Dossard détecté</div>
+                  <div className="float-value">#1247 — 0.03s</div>
+                </div>
               </div>
-            </div>
-            <div className="hero-float-card card-2">
-              <div className="float-icon purple">🎯</div>
-              <div>
-                <div className="float-label">Reconnaissance faciale</div>
-                <div className="float-value">Confiance 99.7%</div>
+              <div className="hero-float-card card-2">
+                <div className="float-icon purple">🎯</div>
+                <div>
+                  <div className="float-label">Reconnaissance faciale</div>
+                  <div className="float-value">Confiance 99.7%</div>
+                </div>
               </div>
             </div>
 

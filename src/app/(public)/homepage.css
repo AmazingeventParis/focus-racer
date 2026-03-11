@@ -700,28 +700,31 @@
 }
 
 /* Floating elements */
+.hero-float-cards {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
 .hero-float-card {
-    position: absolute;
     background: rgba(255,255,255,0.95);
     backdrop-filter: blur(12px);
     border-radius: 14px;
-    padding: 14px 18px;
+    padding: 12px 16px;
     box-shadow: var(--shadow-lg);
     animation: float 6s ease-in-out infinite;
     display: flex;
     align-items: center;
     gap: 10px;
+    flex: 1;
+    min-width: 0;
 }
 
 .hero-float-card.card-1 {
-    top: -10px;
-    left: -30px;
     animation-delay: -1s;
 }
 
 .hero-float-card.card-2 {
-    bottom: 30px;
-    right: -20px;
     animation-delay: -3s;
 }
 
@@ -1619,7 +1622,11 @@
         font-size: 0.85rem;
     }
 
-    .hero-float-card { display: none; }
+    .hero-float-cards { flex-direction: column; gap: 8px; margin-bottom: 10px; }
+    .hero-float-card { padding: 8px 12px; border-radius: 10px; gap: 8px; }
+    .float-icon { width: 32px; height: 32px; border-radius: 8px; font-size: 0.9rem; }
+    .float-label { font-size: 0.72rem; }
+    .float-value { font-size: 0.65rem; }
 
     .social-proof-inner {
         flex-direction: column;
