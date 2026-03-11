@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { UploadCloud, ScanSearch, Image as ImageIcon } from "lucide-react";
+import { UploadCloud, ScanSearch, Image as ImageIcon, Badge, ScanFace, Zap, Palette, CreditCard, Users, Sparkles, ArrowRight } from "lucide-react";
 import "./homev2.css";
 
 const solutionsMenu = [
@@ -549,6 +549,7 @@ export default function HomeV2() {
         <div className="section-header reveal">
           <div className="section-tag">
             <span className="section-tag-line"></span>
+            <Sparkles size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
             Fonctionnalités
             <span className="section-tag-line"></span>
           </div>
@@ -558,36 +559,63 @@ export default function HomeV2() {
           </p>
         </div>
         <div className="features-grid">
-          <div className="feature-card reveal stagger-1">
-            <div className="feature-icon-wrap fi-cyan">🏷️</div>
-            <h3>Recherche par dossard</h3>
-            <p>Entrez simplement votre numéro de dossard et retrouvez toutes vos photos en un instant. La détection IA est précise à 99%.</p>
-          </div>
-          <div className="feature-card reveal stagger-2">
-            <div className="feature-icon-wrap fi-purple">🤳</div>
-            <h3>Reconnaissance faciale</h3>
-            <p>Prenez un selfie et notre IA retrouve toutes les photos où vous apparaissez, même sans dossard visible. Idéal pour les photos de groupe.</p>
-          </div>
-          <div className="feature-card reveal stagger-3">
-            <div className="feature-icon-wrap fi-green">⚡</div>
-            <h3>Mode Live</h3>
-            <p>Upload en temps réel pendant la course avec détection instantanée. Les sportifs retrouvent leurs photos avant même la ligne d&apos;arrivée.</p>
-          </div>
-          <div className="feature-card reveal stagger-4">
-            <div className="feature-icon-wrap fi-amber">🎨</div>
-            <h3>Galeries personnalisées</h3>
-            <p>Chaque événement dispose de sa galerie avec le branding de l&apos;organisateur. Un espace dédié pour chaque course.</p>
-          </div>
-          <div className="feature-card reveal stagger-5">
-            <div className="feature-icon-wrap fi-rose">💳</div>
-            <h3>Paiement sécurisé</h3>
-            <p>Achetez vos photos en toute sécurité via Stripe. Paiement instantané, téléchargement immédiat en haute résolution.</p>
-          </div>
-          <div className="feature-card reveal stagger-6">
-            <div className="feature-icon-wrap fi-teal">🤝</div>
-            <h3>Marketplace</h3>
-            <p>Connectez photographes et organisateurs. Trouvez le photographe idéal pour votre événement ou proposez vos services.</p>
-          </div>
+          {[
+            {
+              icon: <Badge size={26} strokeWidth={1.8} />,
+              title: 'Recherche par dossard',
+              description: "Entrez simplement votre numéro de dossard et retrouvez toutes vos photos en un instant. Détection IA précise à 99%.",
+              iconClass: 'fi-cyan',
+              tag: 'Rapide',
+            },
+            {
+              icon: <ScanFace size={26} strokeWidth={1.8} />,
+              title: 'Reconnaissance faciale',
+              description: "Prenez un selfie et notre IA retrouve toutes les photos où vous apparaissez, même sans dossard visible.",
+              iconClass: 'fi-purple',
+              tag: 'Précise',
+            },
+            {
+              icon: <Zap size={26} strokeWidth={1.8} />,
+              title: 'Mode Live',
+              description: "Upload en temps réel pendant la course avec détection instantanée pour retrouver ses photos avant même l'arrivée.",
+              iconClass: 'fi-amber',
+              tag: 'Temps réel',
+            },
+            {
+              icon: <Palette size={26} strokeWidth={1.8} />,
+              title: 'Galeries personnalisées',
+              description: "Chaque événement dispose de sa galerie avec le branding de l'organisateur. Un espace dédié pour chaque course.",
+              iconClass: 'fi-rose',
+              tag: 'Branding',
+            },
+            {
+              icon: <CreditCard size={26} strokeWidth={1.8} />,
+              title: 'Paiement sécurisé',
+              description: "Achetez vos photos en toute sécurité via Stripe. Paiement instantané et téléchargement immédiat en haute résolution.",
+              iconClass: 'fi-green',
+              tag: 'Stripe',
+            },
+            {
+              icon: <Users size={26} strokeWidth={1.8} />,
+              title: 'Marketplace',
+              description: "Connectez photographes et organisateurs. Trouvez le bon partenaire pour votre événement ou proposez vos services.",
+              iconClass: 'fi-teal',
+              tag: 'Collaboration',
+            },
+          ].map((feature, i) => (
+            <div key={feature.title} className={`feature-card reveal stagger-${i + 1}`}>
+              <div className="feature-card-header">
+                <div className={`feature-icon-wrap ${feature.iconClass}`}>{feature.icon}</div>
+                <span className="feature-tag">{feature.tag}</span>
+              </div>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+              <div className="feature-link">
+                <span>Découvrir</span>
+                <ArrowRight size={14} />
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
