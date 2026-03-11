@@ -747,21 +747,27 @@ export default function HomeV2() {
               </div>
 
               <div className="tech-mock-stage">
-                <div className="tech-runner"></div>
+                <Image
+                  src="/tech-runner.png"
+                  alt="Trailer ultra trail avec dossard #312"
+                  fill
+                  className="tech-runner-img"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
                 <div className="tech-bbox tech-bbox-face"></div>
                 <div className="tech-bbox tech-bbox-bib"></div>
 
                 <div className="tech-chip tech-chip-ocr">
                   <span className="tech-signal tech-tone-cyan"></span>
-                  <div><span>OCR détecté</span><small>#245 reconnu</small></div>
+                  <div><span>OCR détecté</span><small>#312 — Ultra Trail</small></div>
                 </div>
                 <div className="tech-chip tech-chip-face">
                   <span className="tech-signal tech-tone-violet"></span>
-                  <div><span>Face match</span><small>Selfie associé</small></div>
+                  <div><span>Face match</span><small>Confiance 99.2%</small></div>
                 </div>
                 <div className="tech-chip tech-chip-live">
                   <span className="tech-signal tech-tone-indigo"></span>
-                  <div><span>Temps réel</span><small>Pipeline cloud actif</small></div>
+                  <div><span>Temps réel</span><small>0.03s par photo</small></div>
                 </div>
                 <div className="tech-chip tech-chip-gdpr">
                   <span className="tech-signal tech-tone-emerald"></span>

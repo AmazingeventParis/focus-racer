@@ -1221,69 +1221,54 @@
 .hv2 .tech-status-live { color: #22d3ee; }
 
 /* Mock stage */
+/* Mock stage with real photo */
 .hv2 .tech-mock-stage {
   position: relative;
-  min-height: 380px;
+  min-height: 420px;
   border-radius: 22px;
   border: 1px solid var(--v2-border);
-  background:
-    linear-gradient(180deg, rgba(15, 23, 50, 0.2), rgba(15, 23, 50, 0.08)),
-    linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(15, 23, 50, 0.2) 35%, rgba(6, 182, 212, 0.12));
+  background: #0a0f1f;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 36px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
+.hv2 .tech-runner-img {
+  object-fit: cover;
+  object-position: center 15%;
+  z-index: 0;
+}
+/* Subtle dark overlay for readability */
 .hv2 .tech-mock-stage::before {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 1;
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+    linear-gradient(180deg, rgba(7, 11, 31, 0.15) 0%, transparent 30%, transparent 70%, rgba(7, 11, 31, 0.4) 100%),
+    linear-gradient(90deg, rgba(7, 11, 31, 0.3) 0%, transparent 15%, transparent 85%, rgba(7, 11, 31, 0.3) 100%);
   pointer-events: none;
 }
-.hv2 .tech-runner {
-  position: absolute;
-  left: 18%;
-  bottom: 13%;
-  width: 46%;
-  height: 60%;
-  border-radius: 32px;
-  background:
-    radial-gradient(circle at 45% 20%, rgba(255, 255, 255, 0.15), transparent 28%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(15, 23, 42, 0.2)),
-    linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(6, 182, 212, 0.3));
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
-  transform: skewX(-8deg);
-}
-.hv2 .tech-runner::before,
-.hv2 .tech-runner::after {
-  content: "";
-  position: absolute;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-}
-.hv2 .tech-runner::before { width: 26%; height: 18%; top: 10%; left: 32%; }
-.hv2 .tech-runner::after { width: 36%; height: 20%; left: 28%; top: 34%; border-radius: 14px; }
 
-/* Bounding boxes */
+/* Bounding boxes — positioned on the real photo */
 .hv2 .tech-bbox {
   position: absolute;
   border: 2px solid;
-  border-radius: 14px;
+  border-radius: 10px;
+  z-index: 2;
 }
+/* Face: upper center — the runner's face in the photo */
 .hv2 .tech-bbox-face {
-  top: 15%; left: 33%; width: 12%; height: 14%;
+  top: 8%; left: 28%; width: 28%; height: 22%;
   border-color: rgba(124, 58, 237, 0.85);
-  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
 }
+/* Bib: mid-chest — "ULTRA TRAIL 312" area */
 .hv2 .tech-bbox-bib {
-  top: 40%; left: 29%; width: 23%; height: 16%;
+  top: 42%; left: 25%; width: 32%; height: 14%;
   border-color: rgba(6, 182, 212, 0.9);
-  box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.12);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12);
 }
 
-/* Chips */
+/* Chips — positioned around the photo edges */
 .hv2 .tech-chip {
   position: absolute;
   display: inline-flex;
@@ -1291,13 +1276,14 @@
   gap: 8px;
   padding: 8px 11px;
   border-radius: 12px;
-  background: rgba(15, 23, 50, 0.75);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--v2-border);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  background: rgba(7, 11, 31, 0.82);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--v2-text);
+  z-index: 3;
 }
 .hv2 .tech-chip small {
   display: block;
@@ -1305,10 +1291,14 @@
   color: var(--v2-text-secondary);
   font-weight: 600;
 }
-.hv2 .tech-chip-ocr { top: 10%; right: 7%; }
-.hv2 .tech-chip-face { top: 28%; right: 10%; }
-.hv2 .tech-chip-live { bottom: 24%; left: 8%; }
-.hv2 .tech-chip-gdpr { bottom: 10%; right: 12%; }
+/* OCR chip: near bib, right side */
+.hv2 .tech-chip-ocr { top: 44%; right: 6%; }
+/* Face chip: near face, top right */
+.hv2 .tech-chip-face { top: 8%; right: 6%; }
+/* Live chip: bottom left */
+.hv2 .tech-chip-live { bottom: 12%; left: 5%; }
+/* GDPR chip: bottom right */
+.hv2 .tech-chip-gdpr { bottom: 12%; right: 5%; }
 
 .hv2 .tech-signal {
   width: 8px;
@@ -1697,9 +1687,9 @@
   .hv2 .aud-cards-panel { display: none; }
   .hv2 .aud-mobile-select-wrap { display: block; }
   .hv2 .tech-visual-panel, .hv2 .tech-features-panel { padding: 14px; border-radius: 22px; }
-  .hv2 .tech-mock-stage { min-height: 280px; }
-  .hv2 .tech-runner { left: 16%; width: 56%; height: 58%; }
+  .hv2 .tech-mock-stage { min-height: 300px; }
   .hv2 .tech-chip { padding: 6px 8px; font-size: 0.65rem; }
+  .hv2 .tech-chip small { font-size: 0.55rem; }
   .hv2 .tech-analytics, .hv2 .tech-features-grid { grid-template-columns: 1fr; }
   .hv2 .tech-lead-card { padding: 16px; }
   .hv2 .tech-hero h2 { font-size: 1.4rem; }
