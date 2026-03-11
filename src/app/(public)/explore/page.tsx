@@ -221,11 +221,13 @@ export default function ExplorePage() {
   return (
     <main className="bg-white min-h-screen">
       {/* ═══════════ SEO HERO ═══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-neon-bg via-neon-bg-secondary to-neon-bg">
+      <section className="relative overflow-hidden bg-[#070B1F]">
+        <div className="absolute inset-0 bg-[url('/hero-bg.png')] bg-center bg-cover bg-no-repeat opacity-50 pointer-events-none" />
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-neon-cyan rounded-full blur-[120px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neon-purple rounded-full blur-[120px]" />
+          <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-[#6EE7F9] rounded-full blur-[150px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#C084FC] rounded-full blur-[120px]" />
         </div>
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(110,231,249,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(110,231,249,0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
         <div className="relative container mx-auto px-4 py-16 md:py-20">
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-neon-border text-sm text-gray-900 mb-6">

@@ -464,14 +464,13 @@ export default function PartenairesPage() {
   return (
     <main className="bg-white">
       {/* ═══════════ HERO ═══════════ */}
-      <section className="relative min-h-[75vh] flex items-center overflow-hidden bg-gradient-to-br from-[#042F2E] via-[#115E59] to-[#042F2E]">
+      <section className="relative min-h-[75vh] flex items-center overflow-hidden bg-[#070B1F]">
+        <div className="absolute inset-0 bg-[url('/hero-bg.png')] bg-center bg-cover bg-no-repeat opacity-50 pointer-events-none" />
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-emerald-500 rounded-full blur-[180px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-teal-400 rounded-full blur-[150px]" />
+          <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-[#6EE7F9] rounded-full blur-[150px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#C084FC] rounded-full blur-[120px]" />
         </div>
-
-        {/* Dot pattern */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMC41IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDgpIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCBmaWxsPSJ1cmwoI2cpIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIi8+PC9zdmc+')] opacity-50" />
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(110,231,249,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(110,231,249,0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
 
         <div className="container mx-auto px-4 pt-28 pb-20 relative z-10 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
