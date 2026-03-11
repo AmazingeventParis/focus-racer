@@ -97,7 +97,7 @@ const SocialIcons = () => (
 export default function HomeV2() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const [activeAudienceTab, setActiveAudienceTab] = useState<"runners" | "photographers" | "organizers">("runners");
+  const [activeAudience, setActiveAudience] = useState<"sportifs" | "photographes" | "organisateurs">("sportifs");
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -621,69 +621,153 @@ export default function HomeV2() {
 
       {/* ═══════════ AUDIENCE ═══════════ */}
       <section className="section audience-section">
-        <div className="section-header reveal">
-          <div className="section-tag">
-            <span className="section-tag-line"></span>
-            Pour qui ?
-            <span className="section-tag-line"></span>
-          </div>
-          <h2 className="section-title">Une plateforme, trois publics</h2>
-          <p className="section-subtitle">
-            Que vous soyez sportif, photographe ou organisateur, Focus Racer s&apos;adapte à vos besoins.
+        <div className="audience-hero reveal">
+          <span className="audience-eyebrow"><span className="aud-dot"></span> Pour qui ?</span>
+          <h2>Une plateforme, trois publics</h2>
+          <p>
+            Que vous soyez sportif, photographe ou organisateur, Focus Racer s&apos;adapte à vos besoins
+            avec une expérience dédiée, lisible et pensée pour convertir.
           </p>
         </div>
 
-        <div className="audience-tabs-nav reveal">
-          <button className={`audience-tab-btn${activeAudienceTab === "runners" ? " active" : ""}`} onClick={() => setActiveAudienceTab("runners")}>🏃 Sportifs</button>
-          <button className={`audience-tab-btn${activeAudienceTab === "photographers" ? " active" : ""}`} onClick={() => setActiveAudienceTab("photographers")}>📸 Photographes</button>
-          <button className={`audience-tab-btn${activeAudienceTab === "organizers" ? " active" : ""}`} onClick={() => setActiveAudienceTab("organizers")}>🏢 Organisateurs</button>
+        <div className="aud-mobile-select-wrap">
+          <select
+            className="aud-mobile-select"
+            value={activeAudience}
+            onChange={(e) => setActiveAudience(e.target.value as typeof activeAudience)}
+            aria-label="Choisir un profil"
+          >
+            <option value="sportifs">Sportifs</option>
+            <option value="photographes">Photographes</option>
+            <option value="organisateurs">Organisateurs</option>
+          </select>
         </div>
 
-        <div className="audience-panels">
-          <div className={`audience-panel${activeAudienceTab === "runners" ? " active" : ""}`}>
-            <div className="audience-visual"><div className="audience-img-placeholder">🏃‍♂️</div></div>
-            <div className="audience-info">
-              <h3>Retrouvez vos souvenirs instantanément</h3>
-              <p>Fini les heures passées à chercher vos photos parmi des milliers de clichés. Focus Racer vous les livre instantanément, triées et identifiées.</p>
-              <ul className="audience-benefits">
-                <li><span className="benefit-check">✓</span>Recherche par dossard, nom ou selfie</li>
-                <li><span className="benefit-check">✓</span>Résultats en moins d&apos;une seconde</li>
-                <li><span className="benefit-check">✓</span>Photos haute résolution téléchargeables</li>
-                <li><span className="benefit-check">✓</span>Notification quand vos photos sont prêtes</li>
-              </ul>
-              <Link href="/explore"><button className="btn-audience">Trouver mes photos →</button></Link>
-            </div>
-          </div>
+        <div className="aud-layout">
+          <aside className="aud-cards-panel" aria-label="Choix du profil">
+            {([
+              { key: "sportifs" as const, icon: "🏃", tag: "Instantané", title: "Sportifs", desc: "Retrouvez immédiatement vos photos par dossard, nom ou selfie, sans fouiller parmi des milliers d\u2019images." },
+              { key: "photographes" as const, icon: "📷", tag: "Monétisation", title: "Photographes", desc: "Automatisez le tri, l\u2019identification et la vente pour vous concentrer sur la prise de vue et vos revenus." },
+              { key: "organisateurs" as const, icon: "🏁", tag: "Expérience", title: "Organisateurs", desc: "Proposez un service photo premium à votre événement avec galerie de marque, diffusion et conformité." },
+            ]).map((card) => (
+              <button
+                key={card.key}
+                className={`aud-card ${card.key}${activeAudience === card.key ? " active" : ""}`}
+                data-key={card.key}
+                type="button"
+                onClick={() => setActiveAudience(card.key)}
+              >
+                <div className="aud-card-top">
+                  <div className="aud-icon-badge">{card.icon}</div>
+                  <span className="aud-mini-tag">{card.tag}</span>
+                </div>
+                <h3>{card.title}</h3>
+                <p>{card.desc}</p>
+              </button>
+            ))}
+          </aside>
 
-          <div className={`audience-panel${activeAudienceTab === "photographers" ? " active" : ""}`}>
-            <div className="audience-visual"><div className="audience-img-placeholder">📷</div></div>
-            <div className="audience-info">
-              <h3>Vendez vos photos automatiquement</h3>
-              <p>Concentrez-vous sur votre art. Notre IA trie, indexe et identifie chaque participant sur vos photos. Vous n&apos;avez plus qu&apos;à encaisser.</p>
-              <ul className="audience-benefits">
-                <li><span className="benefit-check">✓</span>Tri automatique par dossard et visage</li>
-                <li><span className="benefit-check">✓</span>Upload en masse ou en temps réel</li>
-                <li><span className="benefit-check">✓</span>Paiement direct sur votre compte Stripe</li>
-                <li><span className="benefit-check">✓</span>Dashboard de suivi des ventes</li>
-              </ul>
-              <Link href="/login"><button className="btn-audience">Espace photographe →</button></Link>
-            </div>
-          </div>
+          {(() => {
+            const audienceData = {
+              sportifs: {
+                theme: "aud-sport-theme",
+                pill: "🏃 Espace sportifs",
+                title: "Retrouvez vos souvenirs instantanément",
+                description: "Fini les heures passées à chercher vos photos parmi des milliers de clichés. Focus Racer vous les livre instantanément, triées et identifiées.",
+                checks: ["Recherche par dossard, nom ou selfie", "Résultats en moins d\u2019une seconde", "Photos haute résolution téléchargeables", "Expérience ultra simple sur mobile"],
+                cta: "Voir mes photos \u2192",
+                ctaHref: "/explore",
+                subnote: "Accès ultra-rapide, même pendant l\u2019événement.",
+                search: "Rechercher par dossard, nom ou selfie",
+                button: "Lancer",
+                stat1: ["Temps moyen", "0,8 s", "pour retrouver les bonnes photos"],
+                stat2: ["Téléchargement", "HD", "qualité prête à conserver et partager"],
+                photos: ["Dossard 245", "Photo groupe", "Arrivée"],
+              },
+              photographes: {
+                theme: "aud-photo-theme",
+                pill: "📷 Espace photographes",
+                title: "Vendez vos photos automatiquement",
+                description: "Concentrez-vous sur votre art. Notre IA trie, indexe et identifie chaque participant sur vos photos. Vous n\u2019avez plus qu\u2019à encaisser.",
+                checks: ["Tri automatique par dossard et visage", "Upload en masse ou en temps réel", "Paiement direct sur votre compte Stripe", "Dashboard de suivi des ventes"],
+                cta: "Espace photographe \u2192",
+                ctaHref: "/login",
+                subnote: "Workflow pensé pour la vitesse et la monétisation.",
+                search: "Upload live, import ZIP ou drag & drop",
+                button: "Uploader",
+                stat1: ["Traitement", "10 000", "photos triées en quelques minutes"],
+                stat2: ["Revenus", "+ auto", "vente et encaissement sans friction"],
+                photos: ["Portrait sportif", "Pack course", "Photo finish"],
+              },
+              organisateurs: {
+                theme: "aud-orga-theme",
+                pill: "🏁 Espace organisateurs",
+                title: "Offrez une expérience photo mémorable",
+                description: "Boostez la satisfaction de vos participants avec un service photo intégré à votre événement. Trouvez des photographes via notre marketplace.",
+                checks: ["Galerie aux couleurs de votre événement", "Marketplace de photographes qualifiés", "Diffusion SMS, email et QR code", "Conformité RGPD et droit à l\u2019image"],
+                cta: "Créer un compte Pro \u2192",
+                ctaHref: "/register",
+                subnote: "Un service photo premium prêt à déployer.",
+                search: "Page événement, branding, diffusion, QR code",
+                button: "Publier",
+                stat1: ["Activation", "1 espace", "par course avec identité de marque"],
+                stat2: ["Diffusion", "Multi", "SMS, email, QR code et lien direct"],
+                photos: ["Galerie event", "QR accès", "Branding"],
+              },
+            };
+            const content = audienceData[activeAudience];
+            return (
+              <section className={`aud-content-panel ${content.theme}`}>
+                <div className="aud-content-glow"></div>
+                <div className="aud-content-inner">
+                  <div className="aud-content-copy">
+                    <div className="aud-content-head">
+                      <span className="aud-content-pill">{content.pill}</span>
+                    </div>
+                    <h3 className="aud-content-title">{content.title}</h3>
+                    <p className="aud-content-description">{content.description}</p>
+                    <ul className="aud-checks">
+                      {content.checks.map((item, i) => (
+                        <li key={i}><span className="aud-checkmark">✓</span><span>{item}</span></li>
+                      ))}
+                    </ul>
+                    <div className="aud-cta-row">
+                      <Link href={content.ctaHref} className="aud-cta">{content.cta}</Link>
+                      <span className="aud-subnote">{content.subnote}</span>
+                    </div>
+                  </div>
 
-          <div className={`audience-panel${activeAudienceTab === "organizers" ? " active" : ""}`}>
-            <div className="audience-visual"><div className="audience-img-placeholder">🏟️</div></div>
-            <div className="audience-info">
-              <h3>Offrez une expérience photo mémorable</h3>
-              <p>Boostez la satisfaction de vos participants avec un service photo intégré à votre événement. Trouvez des photographes via notre marketplace.</p>
-              <ul className="audience-benefits">
-                <li><span className="benefit-check">✓</span>Galerie aux couleurs de votre événement</li>
-                <li><span className="benefit-check">✓</span>Marketplace de photographes qualifiés</li>
-                <li><span className="benefit-check">✓</span>Diffusion SMS, email et QR code</li>
-                <li><span className="benefit-check">✓</span>Conformité RGPD et droit à l&apos;image</li>
-              </ul>
-              <Link href="/register"><button className="btn-audience">Créer un compte Pro →</button></Link>
-            </div>
-          </div>
+                  <div className="aud-visual-panel">
+                    <div className="aud-visual-grid">
+                      <div className="aud-glass-box aud-hero-mock">
+                        <div className="aud-mock-top">
+                          <div className="aud-mock-search">{content.search}</div>
+                          <div className="aud-mock-button">{content.button}</div>
+                        </div>
+                        <div className="aud-photo-grid">
+                          {content.photos.map((label, i) => (
+                            <div key={i} className="aud-photo-card"><span>{label}</span></div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="aud-stats-row">
+                        <div className="aud-glass-box aud-stat-card">
+                          <div className="aud-stat-kicker">{content.stat1[0]}</div>
+                          <div className="aud-stat-value">{content.stat1[1]}</div>
+                          <div className="aud-stat-desc">{content.stat1[2]}</div>
+                        </div>
+                        <div className="aud-glass-box aud-stat-card">
+                          <div className="aud-stat-kicker">{content.stat2[0]}</div>
+                          <div className="aud-stat-value">{content.stat2[1]}</div>
+                          <div className="aud-stat-desc">{content.stat2[2]}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            );
+          })()}
         </div>
       </section>
 
