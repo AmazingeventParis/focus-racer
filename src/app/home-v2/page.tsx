@@ -728,51 +728,99 @@ export default function HomeV2() {
 
       {/* ═══════════ TECH / AI ═══════════ */}
       <section className="section tech-section">
-        <div className="tech-content">
-          <div className="tech-info reveal-left">
-            <div className="section-tag"><span className="section-tag-line"></span>Technologie</div>
-            <h2 className="section-title">IA &amp; analyse d&apos;image de pointe</h2>
-            <p>Notre moteur d&apos;intelligence artificielle combine plusieurs algorithmes de détection pour identifier chaque sportif avec une précision remarquable, quelle que soit la discipline.</p>
-            <div className="tech-features">
-              <div className="tech-feature-item">
-                <div className="tech-feature-icon">🔢</div>
-                <div><h4>Lecture OCR de dossard</h4><p>Détection et lecture automatique des numéros, même sur des photos floues ou en mouvement</p></div>
+        <div className="tech-hero reveal">
+          <span className="tech-eyebrow"><span className="tech-dot"></span> Technologie</span>
+          <h2>IA &amp; analyse d&apos;image de pointe</h2>
+          <p>
+            Notre moteur d&apos;intelligence artificielle combine plusieurs algorithmes de détection
+            pour identifier chaque sportif avec une précision remarquable, quelle que soit la discipline.
+          </p>
+        </div>
+
+        <div className="tech-layout">
+          {/* Left: Visual panel */}
+          <div className="tech-visual-panel">
+            <div className="tech-visual-grid">
+              <div className="tech-topbar">
+                <span className="tech-surface-pill">Vision engine · OCR + Face match + Live</span>
+                <span className="tech-surface-pill tech-status-live">● Analyse en direct</span>
               </div>
-              <div className="tech-feature-item">
-                <div className="tech-feature-icon">👤</div>
-                <div><h4>Reconnaissance faciale</h4><p>Regroupement intelligent des photos par visage avec un simple selfie de référence</p></div>
+
+              <div className="tech-mock-stage">
+                <div className="tech-runner"></div>
+                <div className="tech-bbox tech-bbox-face"></div>
+                <div className="tech-bbox tech-bbox-bib"></div>
+
+                <div className="tech-chip tech-chip-ocr">
+                  <span className="tech-signal tech-tone-cyan"></span>
+                  <div><span>OCR détecté</span><small>#245 reconnu</small></div>
+                </div>
+                <div className="tech-chip tech-chip-face">
+                  <span className="tech-signal tech-tone-violet"></span>
+                  <div><span>Face match</span><small>Selfie associé</small></div>
+                </div>
+                <div className="tech-chip tech-chip-live">
+                  <span className="tech-signal tech-tone-indigo"></span>
+                  <div><span>Temps réel</span><small>Pipeline cloud actif</small></div>
+                </div>
+                <div className="tech-chip tech-chip-gdpr">
+                  <span className="tech-signal tech-tone-emerald"></span>
+                  <div><span>RGPD conforme</span><small>Données encadrées</small></div>
+                </div>
               </div>
-              <div className="tech-feature-item">
-                <div className="tech-feature-icon">⏱️</div>
-                <div><h4>Traitement temps réel</h4><p>Analyse instantanée pendant l&apos;événement grâce à notre infrastructure cloud haute performance</p></div>
-              </div>
-              <div className="tech-feature-item">
-                <div className="tech-feature-icon">🔒</div>
-                <div><h4>RGPD &amp; droit à l&apos;image</h4><p>Conformité totale avec la réglementation européenne sur les données personnelles</p></div>
+
+              <div className="tech-analytics">
+                {[
+                  { label: "Détection", value: "Multi-modèle", desc: "OCR, visage et contexte combinés dans un même moteur d\u2019analyse." },
+                  { label: "Traitement", value: "Live", desc: "Résultats quasi instantanés pendant l\u2019événement." },
+                  { label: "Protection", value: "RGPD", desc: "Cadre conforme pour les données personnelles et le droit à l\u2019image." },
+                ].map((s, i) => (
+                  <div key={i} className="tech-stat-card">
+                    <div className="tech-stat-label">{s.label}</div>
+                    <div className="tech-stat-value">{s.value}</div>
+                    <div className="tech-stat-desc">{s.desc}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          <div className="tech-visual reveal-right">
-            <div className="tech-demo-card">
-              <div className="tech-demo-header">
-                <span className="tech-demo-dot red"></span>
-                <span className="tech-demo-dot yellow"></span>
-                <span className="tech-demo-dot green"></span>
+          {/* Right: Features panel */}
+          <div className="tech-features-panel">
+            <div className="tech-features-shell">
+              <div className="tech-lead-card">
+                <h3>Un moteur pensé pour la précision, la vitesse et la confiance</h3>
+                <p>
+                  Chaque brique technologique joue un rôle précis dans l&apos;expérience : identifier plus vite,
+                  mieux regrouper, diffuser en direct et protéger les données personnelles.
+                </p>
               </div>
-              <div className="tech-demo-grid">
+
+              <div className="tech-mini-highlights">
+                <span><i className="tech-highlight-dot"></i> Détection robuste</span>
+                <span><i className="tech-highlight-dot"></i> Infrastructure cloud</span>
+                <span><i className="tech-highlight-dot"></i> Expérience instantanée</span>
+              </div>
+
+              <div className="tech-features-grid">
                 {[
-                  { bg: "linear-gradient(135deg, #4F46E5, #6EE7F9)", tag: "#1247" },
-                  { bg: "linear-gradient(135deg, #7C3AED, #C084FC)", tag: "#892" },
-                  { bg: "linear-gradient(135deg, #D97706, #FBBF24)", tag: "#3041" },
-                  { bg: "linear-gradient(135deg, #DC2626, #F87171)", tag: "Visage" },
-                  { bg: "linear-gradient(135deg, #7C3AED, #A78BFA)", tag: "#567" },
-                  { bg: "linear-gradient(135deg, #0891B2, #6EE7F9)", tag: "#2103" },
-                ].map((photo, i) => (
-                  <div key={i} className="tech-demo-photo" style={{ background: photo.bg }}>
-                    <div className="tech-demo-tag"><span className="tag-indicator"></span> {photo.tag}</div>
+                  { cls: "ocr", icon: "🔢", title: "Lecture OCR de dossard", desc: "Détection et lecture automatique des numéros, même sur des photos floues, éloignées ou en mouvement.", tag: "Numéros reconnus automatiquement" },
+                  { cls: "face", icon: "👤", title: "Reconnaissance faciale", desc: "Regroupement intelligent des photos par visage à partir d\u2019un simple selfie de référence.", tag: "Correspondance photo par photo" },
+                  { cls: "live", icon: "⏱️", title: "Traitement temps réel", desc: "Analyse instantanée pendant l\u2019événement grâce à notre infrastructure cloud haute performance.", tag: "Pipeline optimisé pour le live" },
+                  { cls: "gdpr", icon: "🔒", title: "RGPD & droit à l\u2019image", desc: "Conformité totale avec la réglementation européenne sur les données personnelles et l\u2019usage des images.", tag: "Cadre légal intégré au produit" },
+                ].map((f) => (
+                  <div key={f.cls} className={`tech-fcard tech-fcard-${f.cls}`}>
+                    <div className="tech-fcard-icon">{f.icon}</div>
+                    <h4>{f.title}</h4>
+                    <p>{f.desc}</p>
+                    <span className="tech-fcard-tag">{f.tag}</span>
                   </div>
                 ))}
+              </div>
+
+              <div className="tech-footer-note">
+                Focus Racer exploite AWS Rekognition et un pipeline IA propriétaire pour traiter
+                10 000+ photos en quelques minutes avec une précision de 99%.
               </div>
             </div>
           </div>
