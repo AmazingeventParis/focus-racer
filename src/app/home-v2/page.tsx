@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { CloudUpload, ScanSearch, Images } from "lucide-react";
+import { UploadCloud, ScanSearch, Image as ImageIcon } from "lucide-react";
 import "./homev2.css";
 
 const solutionsMenu = [
@@ -517,7 +517,7 @@ export default function HomeV2() {
               {[
                 {
                   number: '01',
-                  icon: <CloudUpload className="h-8 w-8" strokeWidth={2} />,
+                  icon: <UploadCloud className="h-8 w-8" strokeWidth={2} />,
                   title: 'Upload des photos',
                   description: "Le photographe téléverse ses photos sur la plateforme. Upload en masse ou en temps réel pendant l'événement grâce au mode Live.",
                   badge: 'Batch ou Live',
@@ -537,7 +537,7 @@ export default function HomeV2() {
                 },
                 {
                   number: '03',
-                  icon: <Images className="h-8 w-8" strokeWidth={2} />,
+                  icon: <ImageIcon className="h-8 w-8" strokeWidth={2} />,
                   title: 'Retrouvez vos photos',
                   description: "Recherchez par dossard, selfie ou nom. Achetez vos photos préférées en un clic avec paiement sécurisé Stripe.",
                   badge: 'Recherche + achat instantané',
