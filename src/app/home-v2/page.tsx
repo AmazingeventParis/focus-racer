@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { CloudUpload, ScanSearch, Images } from "lucide-react";
 import "./homev2.css";
 
 const solutionsMenu = [
@@ -493,36 +494,108 @@ export default function HomeV2() {
       </section>
 
       {/* ═══════════ HOW IT WORKS ═══════════ */}
-      <section className="section how-section">
-        <div className="section-header reveal">
-          <div className="section-tag">
-            <span className="section-tag-line"></span>
-            Comment ça marche
-            <span className="section-tag-line"></span>
+      <section className="relative overflow-hidden py-20 sm:py-24" style={{ background: 'var(--v2-bg-secondary)' }}>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(110,231,249,0.08),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(192,132,252,0.06),_transparent_30%)]" />
+
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="inline-flex items-center rounded-full border px-4 py-1 text-sm font-medium shadow-sm backdrop-blur" style={{ borderColor: 'var(--v2-border)', background: 'rgba(21,28,68,0.6)', color: 'var(--v2-accent)' }}>
+              Simple, rapide, automatisé
+            </span>
+            <h2 className="mt-6 text-4xl font-bold tracking-tight sm:text-5xl" style={{ color: 'var(--v2-text)', fontFamily: 'Sora, sans-serif' }}>
+              Comment ça marche
+            </h2>
+            <p className="mt-4 text-lg leading-8" style={{ color: 'var(--v2-text-secondary)' }}>
+              Trois étapes, zéro effort. De l&apos;upload à la livraison, notre intelligence artificielle s&apos;occupe de tout.
+            </p>
           </div>
-          <h2 className="section-title">Trois étapes, zéro effort</h2>
-          <p className="section-subtitle">
-            De l&apos;upload à la livraison, notre intelligence artificielle s&apos;occupe de tout.
-          </p>
-        </div>
-        <div className="steps-grid">
-          <div className="step-card reveal stagger-1">
-            <div className="step-number">1</div>
-            <div className="step-icon">📤</div>
-            <h3>Upload des photos</h3>
-            <p>Le photographe téléverse ses photos sur la plateforme. Upload en masse ou en temps réel pendant l&apos;événement grâce au mode Live.</p>
-          </div>
-          <div className="step-card reveal stagger-2">
-            <div className="step-number">2</div>
-            <div className="step-icon">🤖</div>
-            <h3>Analyse IA automatique</h3>
-            <p>Notre intelligence artificielle détecte les numéros de dossard et les visages en 30 millisecondes par photo. 10 000 photos triées en 5 minutes.</p>
-          </div>
-          <div className="step-card reveal stagger-3">
-            <div className="step-number">3</div>
-            <div className="step-icon">🎉</div>
-            <h3>Retrouvez vos photos</h3>
-            <p>Recherchez par dossard, selfie ou nom. Achetez vos photos préférées en un clic avec paiement sécurisé Stripe.</p>
+
+          <div className="relative mt-16">
+            <div className="absolute left-[16.66%] right-[16.66%] top-16 hidden h-px lg:block" style={{ background: 'linear-gradient(90deg, transparent, var(--v2-accent), var(--v2-accent2), transparent)', opacity: 0.2 }} />
+
+            <div className="grid gap-8 lg:grid-cols-3">
+              {[
+                {
+                  number: '01',
+                  icon: <CloudUpload className="h-8 w-8" strokeWidth={2} />,
+                  title: 'Upload des photos',
+                  description: "Le photographe téléverse ses photos sur la plateforme. Upload en masse ou en temps réel pendant l'événement grâce au mode Live.",
+                  badge: 'Batch ou Live',
+                  iconBg: 'linear-gradient(135deg, rgba(110,231,249,0.2), rgba(79,70,229,0.2))',
+                  iconColor: 'var(--v2-accent)',
+                  glow: 'bg-[#6EE7F9]/10',
+                },
+                {
+                  number: '02',
+                  icon: <ScanSearch className="h-8 w-8" strokeWidth={2} />,
+                  title: 'Analyse IA automatique',
+                  description: "Notre intelligence artificielle détecte les numéros de dossard et les visages en 30 millisecondes par photo. 10 000 photos triées en 5 minutes.",
+                  badge: '30 ms / photo',
+                  iconBg: 'linear-gradient(135deg, rgba(192,132,252,0.2), rgba(236,72,153,0.2))',
+                  iconColor: 'var(--v2-accent2)',
+                  glow: 'bg-[#C084FC]/10',
+                },
+                {
+                  number: '03',
+                  icon: <Images className="h-8 w-8" strokeWidth={2} />,
+                  title: 'Retrouvez vos photos',
+                  description: "Recherchez par dossard, selfie ou nom. Achetez vos photos préférées en un clic avec paiement sécurisé Stripe.",
+                  badge: 'Recherche + achat instantané',
+                  iconBg: 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(110,231,249,0.2))',
+                  iconColor: '#10b981',
+                  glow: 'bg-emerald-500/10',
+                },
+              ].map((step) => (
+                <article
+                  key={step.number}
+                  className="group relative rounded-[28px] p-8 backdrop-blur transition duration-300 hover:-translate-y-1"
+                  style={{
+                    background: 'var(--v2-card)',
+                    border: '1px solid var(--v2-border)',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(110,231,249,0.25)';
+                    e.currentTarget.style.boxShadow = '0 20px 50px rgba(0,0,0,0.35), 0 0 30px rgba(110,231,249,0.06)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--v2-border)';
+                    e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.25)';
+                  }}
+                >
+                  <div className={`absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl ${step.glow}`} />
+
+                  <div className="relative flex items-center justify-between">
+                    <span className="text-sm font-semibold tracking-[0.2em]" style={{ color: 'var(--v2-text-secondary)' }}>
+                      {step.number}
+                    </span>
+                    <div
+                      className="flex h-16 w-16 items-center justify-center rounded-2xl ring-1"
+                      style={{ background: step.iconBg, color: step.iconColor, ringColor: 'var(--v2-border)' }}
+                    >
+                      {step.icon}
+                    </div>
+                  </div>
+
+                  <h3 className="mt-6 text-2xl font-semibold leading-tight" style={{ color: 'var(--v2-text)', fontFamily: 'Sora, sans-serif' }}>
+                    {step.title}
+                  </h3>
+
+                  <p className="mt-4 text-base leading-7" style={{ color: 'var(--v2-text-secondary)' }}>
+                    {step.description}
+                  </p>
+
+                  <div className="mt-6 flex items-center justify-between">
+                    <span className="inline-flex rounded-full px-3 py-1 text-sm font-medium" style={{ border: '1px solid var(--v2-border)', background: 'rgba(21,28,68,0.5)', color: 'var(--v2-text-secondary)' }}>
+                      {step.badge}
+                    </span>
+                    <span className="text-sm transition group-hover:translate-x-1" style={{ color: 'var(--v2-accent)' }}>
+                      →
+                    </span>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
