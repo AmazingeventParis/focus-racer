@@ -44,7 +44,7 @@ const SocialIcon = ({ href, label, children }: { href: string; label: string; ch
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="text-[#6B7AAD] hover:text-[#6EE7F9] transition-colors duration-200"
+    className="text-[#6B7AAD] hover:text-[#0891B2] transition-colors duration-200"
     aria-label={label}
   >
     {children}
@@ -91,7 +91,7 @@ export default function Footer() {
           {/* Link columns */}
           {Object.values(footerLinks).map((section) => (
             <div key={section.title}>
-              <h3 className="font-semibold text-xs uppercase tracking-[0.1em] mb-4 bg-gradient-to-r from-[#6EE7F9] to-[#C084FC] bg-clip-text text-transparent">
+              <h3 className="font-semibold text-xs uppercase tracking-[0.1em] mb-4 bg-gradient-to-r from-[#0891B2] to-[#C084FC] bg-clip-text text-transparent">
                 {section.title}
               </h3>
               <ul className="space-y-3">

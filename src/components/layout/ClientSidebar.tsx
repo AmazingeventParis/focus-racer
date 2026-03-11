@@ -241,16 +241,16 @@ export default function ClientSidebar() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-[#6EE7F9]/10 text-[#6EE7F9] shadow-sm"
+                      ? "bg-[#0891B2]/10 text-[#0891B2] shadow-sm"
                       : "text-[#A7B0D6] hover:bg-white/5 hover:text-white"
                   )}
                 >
-                  <span className={cn(isActive ? "text-[#6EE7F9]" : "text-[#6B7AAD]")}>
+                  <span className={cn(isActive ? "text-[#0891B2]" : "text-[#6B7AAD]")}>
                     {item.icon}
                   </span>
                   {item.labelKey ? t(item.labelKey) : item.label}
                   {item.href === "/photographer/orders" && newOrdersCount > 0 && (
-                    <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#6EE7F9] text-[#070B1F] text-xs font-bold">
+                    <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#0891B2] text-[#070B1F] text-xs font-bold">
                       {newOrdersCount > 99 ? "99+" : newOrdersCount}
                     </span>
                   )}
@@ -269,7 +269,7 @@ export default function ClientSidebar() {
       {/* User profile */}
       <div className="p-4 border-t border-white/5">
         <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white/5 mb-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6EE7F9] to-[#C084FC] flex items-center justify-center text-[#070B1F] font-bold text-xs">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#C084FC] flex items-center justify-center text-[#070B1F] font-bold text-xs">
             {userInitials}
           </div>
           <div className="flex-1 min-w-0">

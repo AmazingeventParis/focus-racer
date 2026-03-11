@@ -285,7 +285,7 @@ export default function StatisticsPage() {
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
               activeTab === tab.id
-                ? "bg-[#151C44] text-[#6EE7F9] shadow-sm"
+                ? "bg-[#151C44] text-[#0891B2] shadow-sm"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >

@@ -39,7 +39,7 @@
 /* focus ring for inputs on dark bg */
 .focus\:ring-emerald-500:focus,
 .focus\:ring-teal-500:focus {
-  --tw-ring-color: rgba(110, 231, 249, 0.3) !important;
+  --tw-ring-color: rgba(8, 145, 178, 0.3) !important;
 }
 
 /* Placeholder text on dark inputs */
@@ -132,15 +132,15 @@ details summary {
 @layer base {
   :root {
     /* Palette "Dark Neon" */
-    --teal-primary: #6EE7F9;
-    --teal-primary-hover: #5AD8EA;
-    --emerald-action: #6EE7F9;
+    --teal-primary: #0891B2;
+    --teal-primary-hover: #0E7490;
+    --emerald-action: #0891B2;
     --emerald-action-hover: #38BDF8;
     --bg-interface: #070B1F;
     --white: #F3F6FF;
     --text-primary: #F3F6FF;
     --text-secondary: #A7B0D6;
-    --success: #6EE7F9;
+    --success: #0891B2;
     --success-light: #111A3A;
     --success-dark: #38BDF8;
 
@@ -203,7 +203,7 @@ details summary {
   }
 
   .gradient-emerald {
-    background: linear-gradient(135deg, #6EE7F9, #C084FC);
+    background: linear-gradient(135deg, #0891B2, #C084FC);
   }
 
   .gradient-navy {
@@ -220,7 +220,7 @@ details summary {
   }
 
   .shadow-emerald-lg {
-    box-shadow: 0 0 24px rgba(110, 231, 249, 0.2);
+    box-shadow: 0 0 24px rgba(8, 145, 178, 0.2);
   }
 
   /* ===== BOUTONS ===== */
@@ -229,7 +229,7 @@ details summary {
            transition-all duration-200 ease-out
            hover:opacity-90 hover:shadow-neon-glow
            active:scale-[0.98];
-    background: linear-gradient(135deg, #6EE7F9, #C084FC);
+    background: linear-gradient(135deg, #0891B2, #C084FC);
     color: #070B1F;
   }
 

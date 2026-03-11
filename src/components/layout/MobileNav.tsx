@@ -85,7 +85,7 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
               {copied ? "Copié !" : sportifId}
             </button>
           )}
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#6EE7F9] to-[#C084FC] flex items-center justify-center text-white font-bold text-xs">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0891B2] to-[#C084FC] flex items-center justify-center text-white font-bold text-xs">
             {userInitials}
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
                 href={item.href}
                 className={cn(
                   "flex-1 flex flex-col items-center justify-center gap-0.5 relative transition-colors active:bg-white/5",
-                  isActive ? "text-[#6EE7F9]" : "text-[#6B7AAD]"
+                  isActive ? "text-[#0891B2]" : "text-[#6B7AAD]"
                 )}
               >
                 <span className="relative">
@@ -120,7 +120,7 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
                   {item.shortLabel || item.label}
                 </span>
                 {isActive && (
-                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#6EE7F9] rounded-b-full" />
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#0891B2] rounded-b-full" />
                 )}
               </Link>
             );
@@ -134,7 +134,7 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
             onClick={() => setMoreOpen(!moreOpen)}
             className={cn(
               "flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors active:bg-white/5",
-              moreOpen ? "text-[#6EE7F9]" : "text-[#6B7AAD]"
+              moreOpen ? "text-[#0891B2]" : "text-[#6B7AAD]"
             )}
           >
             <span className="relative">
@@ -184,12 +184,12 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
                       className={cn(
                         "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all active:bg-white/10",
                         isActive
-                          ? "bg-[#6EE7F9]/10 text-[#6EE7F9]"
+                          ? "bg-[#0891B2]/10 text-[#0891B2]"
                           : "text-[#A7B0D6]"
                       )}
                       onClick={() => setMoreOpen(false)}
                     >
-                      <span className={cn(isActive ? "text-[#6EE7F9]" : "text-[#6B7AAD]")}>
+                      <span className={cn(isActive ? "text-[#0891B2]" : "text-[#6B7AAD]")}>
                         {item.icon}
                       </span>
                       {item.label}
@@ -212,7 +212,7 @@ export default function MobileNav({ mainItems, moreItems, roleLabel, sportifId }
               {/* User info + Logout */}
               <div className="p-4">
                 <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 mb-3">
-                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#6EE7F9] to-[#C084FC] flex items-center justify-center text-white font-bold text-xs">
+                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#C084FC] flex items-center justify-center text-white font-bold text-xs">
                     {userInitials}
                   </div>
                   <div className="flex-1 min-w-0">

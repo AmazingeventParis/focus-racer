@@ -403,7 +403,7 @@ export default function SolutionsPhotographesPage() {
       <section className="relative min-h-[92vh] flex items-center overflow-hidden bg-[#070B1F]">
         <div className="absolute inset-0 bg-[url('/hero-bg.png')] bg-center bg-cover bg-no-repeat opacity-50 pointer-events-none" />
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-[#6EE7F9] rounded-full blur-[150px]" />
+          <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-[#0891B2] rounded-full blur-[150px]" />
           <div className="absolute bottom-1/3 left-1/4 w-[400px] h-[400px] bg-[#C084FC] rounded-full blur-[120px]" />
         </div>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(110,231,249,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(110,231,249,0.03) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />

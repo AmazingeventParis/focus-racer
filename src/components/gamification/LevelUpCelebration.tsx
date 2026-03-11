@@ -69,7 +69,7 @@ export default function LevelUpCelebration() {
         <h2 className="text-2xl font-bold text-[#F3F6FF] mb-2">
           Niveau supérieur !
         </h2>
-        <p className="text-lg font-semibold text-[#6EE7F9] mb-2">
+        <p className="text-lg font-semibold text-[#0891B2] mb-2">
           {levelUp.newName}
         </p>
         <p className="text-sm text-[#A7B0D6]">
