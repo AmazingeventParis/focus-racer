@@ -640,6 +640,26 @@
   z-index: 1;
 }
 .hv2 .step-icon { font-size: 2.2rem; margin-bottom: 16px; }
+.hv2 .step-icon-wrap {
+  width: 64px; height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+.hv2 .step-icon-wrap.fi-cyan {
+  background: linear-gradient(135deg, rgba(110,231,249,0.15), rgba(79,70,229,0.15));
+  color: var(--v2-accent);
+}
+.hv2 .step-icon-wrap.fi-purple {
+  background: linear-gradient(135deg, rgba(192,132,252,0.15), rgba(236,72,153,0.15));
+  color: var(--v2-accent2);
+}
+.hv2 .step-icon-wrap.fi-green {
+  background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(110,231,249,0.15));
+  color: #10b981;
+}
 .hv2 .step-card h3 {
   font-size: 1.2rem;
   font-weight: 700;
@@ -650,6 +670,17 @@
   font-size: 0.92rem;
   color: var(--v2-text-secondary);
   line-height: 1.6;
+}
+.hv2 .step-badge {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 5px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--v2-border);
+  background: rgba(21,28,68,0.5);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--v2-text-secondary);
 }
 
 /* ── FEATURES ── */
