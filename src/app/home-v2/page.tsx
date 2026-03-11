@@ -822,7 +822,7 @@ export default function HomeV2() {
               </div>
 
               <div className="tech-footer-note">
-                Focus Racer exploite AWS Rekognition et un pipeline IA propriétaire pour traiter
+                Focus Racer s&apos;appuie sur un algorithme développé en interne, optimisé pour les images de sport, capable de traiter
                 10 000+ photos en quelques minutes avec une précision de 99%.
               </div>
             </div>
