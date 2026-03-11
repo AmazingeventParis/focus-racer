@@ -754,9 +754,6 @@ export default function HomeV2() {
                   className="tech-runner-img"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
-                <div className="tech-bbox tech-bbox-face"></div>
-                <div className="tech-bbox tech-bbox-bib"></div>
-
                 <div className="tech-chip tech-chip-ocr">
                   <span className="tech-signal tech-tone-cyan"></span>
                   <div><span>OCR détecté</span><small>#312 — Ultra Trail</small></div>

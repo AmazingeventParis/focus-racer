@@ -1248,26 +1248,6 @@
   pointer-events: none;
 }
 
-/* Bounding boxes — positioned on the real photo */
-.hv2 .tech-bbox {
-  position: absolute;
-  border: 2px solid;
-  border-radius: 10px;
-  z-index: 2;
-}
-/* Face: the runner's face — upper area of visible crop */
-.hv2 .tech-bbox-face {
-  top: 8%; left: 30%; width: 26%; height: 34%;
-  border-color: rgba(124, 58, 237, 0.85);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
-}
-/* Bib: "ULTRA TRAIL 312" — lower chest area in visible crop */
-.hv2 .tech-bbox-bib {
-  top: 62%; left: 30%; width: 24%; height: 18%;
-  border-color: rgba(6, 182, 212, 0.9);
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12);
-}
-
 /* Chips — positioned around the photo edges */
 .hv2 .tech-chip {
   position: absolute;
@@ -1291,14 +1271,14 @@
   color: var(--v2-text-secondary);
   font-weight: 600;
 }
-/* OCR chip: near bib, right side */
-.hv2 .tech-chip-ocr { top: 64%; right: 5%; }
-/* Face chip: near face, top right */
-.hv2 .tech-chip-face { top: 12%; right: 5%; }
+/* OCR chip: top left */
+.hv2 .tech-chip-ocr { top: 6%; left: 5%; }
+/* Face chip: top right */
+.hv2 .tech-chip-face { top: 6%; right: 5%; }
 /* Live chip: bottom left */
-.hv2 .tech-chip-live { bottom: 12%; left: 5%; }
+.hv2 .tech-chip-live { bottom: 6%; left: 5%; }
 /* GDPR chip: bottom right */
-.hv2 .tech-chip-gdpr { bottom: 12%; right: 5%; }
+.hv2 .tech-chip-gdpr { bottom: 6%; right: 5%; }
 
 .hv2 .tech-signal {
   width: 8px;
@@ -1688,8 +1668,12 @@
   .hv2 .aud-mobile-select-wrap { display: block; }
   .hv2 .tech-visual-panel, .hv2 .tech-features-panel { padding: 14px; border-radius: 22px; }
   .hv2 .tech-mock-stage { min-height: 300px; }
-  .hv2 .tech-chip { padding: 6px 8px; font-size: 0.65rem; }
-  .hv2 .tech-chip small { font-size: 0.55rem; }
+  .hv2 .tech-chip { padding: 5px 7px; font-size: 0.6rem; gap: 5px; }
+  .hv2 .tech-chip small { font-size: 0.5rem; }
+  .hv2 .tech-chip-ocr { top: 5%; left: 4%; }
+  .hv2 .tech-chip-face { top: 5%; right: 4%; }
+  .hv2 .tech-chip-live { bottom: 5%; left: 4%; }
+  .hv2 .tech-chip-gdpr { bottom: 5%; right: 4%; }
   .hv2 .tech-analytics, .hv2 .tech-features-grid { grid-template-columns: 1fr; }
   .hv2 .tech-lead-card { padding: 16px; }
   .hv2 .tech-hero h2 { font-size: 1.4rem; }
@@ -1716,6 +1700,10 @@
   .hv2 .step-card { padding: 18px; }
   .hv2 .step-number { width: 34px; height: 34px; font-size: 0.82rem; }
   .hv2 .feature-card { padding: 16px; }
+  .hv2 .tech-mock-stage { min-height: 260px; }
+  .hv2 .tech-chip { padding: 4px 6px; font-size: 0.55rem; gap: 4px; border-radius: 8px; }
+  .hv2 .tech-chip small { font-size: 0.46rem; }
+  .hv2 .tech-chip .tech-signal { width: 6px; height: 6px; }
   .hv2 .cta-section { padding: 32px 14px; }
   .hv2 .cta-section h2 { font-size: 1.2rem; }
 }
