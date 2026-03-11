@@ -678,11 +678,6 @@ export default function HomeV2() {
                 cta: "Voir mes photos \u2192",
                 ctaHref: "/explore",
                 subnote: "Accès ultra-rapide, même pendant l\u2019événement.",
-                search: "Rechercher par dossard, nom ou selfie",
-                button: "Lancer",
-                stat1: ["Temps moyen", "0,8 s", "pour retrouver les bonnes photos"],
-                stat2: ["Téléchargement", "HD", "qualité prête à conserver et partager"],
-                photos: ["Dossard 245", "Photo groupe", "Arrivée"],
               },
               photographes: {
                 theme: "aud-photo-theme",
@@ -693,11 +688,6 @@ export default function HomeV2() {
                 cta: "Espace photographe \u2192",
                 ctaHref: "/login",
                 subnote: "Workflow pensé pour la vitesse et la monétisation.",
-                search: "Upload live, import ZIP ou drag & drop",
-                button: "Uploader",
-                stat1: ["Traitement", "10 000", "photos triées en quelques minutes"],
-                stat2: ["Revenus", "+ auto", "vente et encaissement sans friction"],
-                photos: ["Portrait sportif", "Pack course", "Photo finish"],
               },
               organisateurs: {
                 theme: "aud-orga-theme",
@@ -708,11 +698,6 @@ export default function HomeV2() {
                 cta: "Créer un compte Pro \u2192",
                 ctaHref: "/register",
                 subnote: "Un service photo premium prêt à déployer.",
-                search: "Page événement, branding, diffusion, QR code",
-                button: "Publier",
-                stat1: ["Activation", "1 espace", "par course avec identité de marque"],
-                stat2: ["Diffusion", "Multi", "SMS, email, QR code et lien direct"],
-                photos: ["Galerie event", "QR accès", "Branding"],
               },
             };
             const content = audienceData[activeAudience];
@@ -737,33 +722,174 @@ export default function HomeV2() {
                     </div>
                   </div>
 
-                  <div className="aud-visual-panel">
-                    <div className="aud-visual-grid">
-                      <div className="aud-glass-box aud-hero-mock">
-                        <div className="aud-mock-top">
-                          <div className="aud-mock-search">{content.search}</div>
-                          <div className="aud-mock-button">{content.button}</div>
+                  {/* ── VISUAL: Sportif ── */}
+                  {activeAudience === "sportifs" && (
+                    <div className="aud-visual-panel">
+                      <div className="aud-ui-mock">
+                        {/* Search bar */}
+                        <div className="aud-ui-searchbar">
+                          <div className="aud-ui-search-icon">🔍</div>
+                          <div className="aud-ui-search-input">Dossard #1247</div>
+                          <div className="aud-ui-search-btn aud-btn-indigo">Rechercher</div>
                         </div>
-                        <div className="aud-photo-grid">
-                          {content.photos.map((label, i) => (
-                            <div key={i} className="aud-photo-card"><span>{label}</span></div>
+                        {/* Results info */}
+                        <div className="aud-ui-results-bar">
+                          <span className="aud-ui-results-count">12 photos trouvées</span>
+                          <span className="aud-ui-results-time">en 0,8 s</span>
+                        </div>
+                        {/* Photo grid with bib overlays */}
+                        <div className="aud-ui-photo-results">
+                          {[
+                            { bib: "#1247", badge: "HD", gradient: "linear-gradient(135deg, #312e81, #4338ca)" },
+                            { bib: "#1247", badge: "HD", gradient: "linear-gradient(135deg, #3b0764, #6b21a8)" },
+                            { bib: "#1247", badge: "Achetée", gradient: "linear-gradient(135deg, #064e3b, #047857)" },
+                            { bib: "#1247", badge: "HD", gradient: "linear-gradient(135deg, #1e1b4b, #3730a3)" },
+                          ].map((p, i) => (
+                            <div key={i} className="aud-ui-photo" style={{ background: p.gradient }}>
+                              <span className="aud-ui-photo-bib">{p.bib}</span>
+                              <span className={`aud-ui-photo-badge${p.badge === "Achetée" ? " aud-badge-success" : ""}`}>{p.badge}</span>
+                            </div>
                           ))}
                         </div>
-                      </div>
-                      <div className="aud-stats-row">
-                        <div className="aud-glass-box aud-stat-card">
-                          <div className="aud-stat-kicker">{content.stat1[0]}</div>
-                          <div className="aud-stat-value">{content.stat1[1]}</div>
-                          <div className="aud-stat-desc">{content.stat1[2]}</div>
-                        </div>
-                        <div className="aud-glass-box aud-stat-card">
-                          <div className="aud-stat-kicker">{content.stat2[0]}</div>
-                          <div className="aud-stat-value">{content.stat2[1]}</div>
-                          <div className="aud-stat-desc">{content.stat2[2]}</div>
+                        {/* Bottom stats strip */}
+                        <div className="aud-ui-bottom-strip">
+                          <div className="aud-ui-mini-stat">
+                            <span className="aud-ui-mini-icon">📅</span>
+                            <span>3 courses suivies</span>
+                          </div>
+                          <div className="aud-ui-mini-stat">
+                            <span className="aud-ui-mini-icon">🏅</span>
+                            <span>5 badges gagnés</span>
+                          </div>
+                          <div className="aud-ui-mini-stat">
+                            <span className="aud-ui-mini-icon">🔥</span>
+                            <span>Série de 4 sem.</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* ── VISUAL: Photographe ── */}
+                  {activeAudience === "photographes" && (
+                    <div className="aud-visual-panel">
+                      <div className="aud-ui-mock">
+                        {/* KPI row */}
+                        <div className="aud-ui-kpi-row">
+                          {[
+                            { icon: "📸", value: "2 847", label: "Photos" },
+                            { icon: "💰", value: "1 240 €", label: "Revenus" },
+                            { icon: "🛒", value: "89", label: "Ventes" },
+                          ].map((kpi, i) => (
+                            <div key={i} className="aud-ui-kpi">
+                              <span className="aud-ui-kpi-icon">{kpi.icon}</span>
+                              <span className="aud-ui-kpi-value">{kpi.value}</span>
+                              <span className="aud-ui-kpi-label">{kpi.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                        {/* Upload progress mock */}
+                        <div className="aud-ui-upload-card">
+                          <div className="aud-ui-upload-header">
+                            <span className="aud-ui-upload-title">⬆️ Upload en cours</span>
+                            <span className="aud-ui-upload-count">248 / 312 photos</span>
+                          </div>
+                          <div className="aud-ui-progress-bar">
+                            <div className="aud-ui-progress-fill aud-fill-purple" style={{ width: "79%" }}></div>
+                          </div>
+                          <div className="aud-ui-upload-steps">
+                            <span className="aud-ui-step-done">✅ Compression</span>
+                            <span className="aud-ui-step-active">🔍 Détection IA</span>
+                            <span className="aud-ui-step-pending">⏳ Livraison</span>
+                          </div>
+                        </div>
+                        {/* Mini revenue chart */}
+                        <div className="aud-ui-chart-card">
+                          <div className="aud-ui-chart-header">
+                            <span>Revenus 30 jours</span>
+                            <span className="aud-ui-chart-trend">+23%&nbsp;↑</span>
+                          </div>
+                          <div className="aud-ui-chart-bars">
+                            {[35, 48, 28, 62, 45, 78, 55, 90, 68, 82, 95, 72].map((h, i) => (
+                              <div key={i} className="aud-ui-chart-bar" style={{ height: `${h}%` }}></div>
+                            ))}
+                          </div>
+                        </div>
+                        {/* Stripe connect badge */}
+                        <div className="aud-ui-stripe-badge">
+                          <span className="aud-ui-stripe-dot"></span>
+                          Stripe Connect actif — Paiements directs
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── VISUAL: Organisateur ── */}
+                  {activeAudience === "organisateurs" && (
+                    <div className="aud-visual-panel">
+                      <div className="aud-ui-mock">
+                        {/* Event poster card */}
+                        <div className="aud-ui-event-card">
+                          <div className="aud-ui-event-poster">
+                            <div className="aud-ui-event-poster-bg"></div>
+                            <div className="aud-ui-event-poster-content">
+                              <span className="aud-ui-event-badge-live">● Live</span>
+                              <div className="aud-ui-event-name">Marathon de Paris 2026</div>
+                              <div className="aud-ui-event-date">6 avril 2026 — Paris</div>
+                            </div>
+                          </div>
+                          <div className="aud-ui-event-stats">
+                            <div className="aud-ui-event-stat">
+                              <span className="aud-ui-event-stat-val">5 240</span>
+                              <span className="aud-ui-event-stat-lbl">Photos</span>
+                            </div>
+                            <div className="aud-ui-event-stat">
+                              <span className="aud-ui-event-stat-val">3</span>
+                              <span className="aud-ui-event-stat-lbl">Photographes</span>
+                            </div>
+                            <div className="aud-ui-event-stat">
+                              <span className="aud-ui-event-stat-val">98%</span>
+                              <span className="aud-ui-event-stat-lbl">Triées IA</span>
+                            </div>
+                          </div>
+                        </div>
+                        {/* Diffusion channels */}
+                        <div className="aud-ui-diffusion">
+                          <div className="aud-ui-diffusion-title">Canaux de diffusion</div>
+                          <div className="aud-ui-diffusion-channels">
+                            {[
+                              { icon: "📧", label: "Email", status: "2 140 envoyés" },
+                              { icon: "📱", label: "SMS", status: "1 850 envoyés" },
+                              { icon: "🔗", label: "QR Code", status: "Généré" },
+                            ].map((ch, i) => (
+                              <div key={i} className="aud-ui-channel">
+                                <span className="aud-ui-channel-icon">{ch.icon}</span>
+                                <div className="aud-ui-channel-info">
+                                  <span className="aud-ui-channel-label">{ch.label}</span>
+                                  <span className="aud-ui-channel-status">{ch.status}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        {/* Marketplace snippet */}
+                        <div className="aud-ui-marketplace">
+                          <div className="aud-ui-marketplace-header">
+                            <span>Marketplace</span>
+                            <span className="aud-ui-marketplace-tag">3 candidatures</span>
+                          </div>
+                          <div className="aud-ui-marketplace-row">
+                            <div className="aud-ui-marketplace-avatar">TL</div>
+                            <div className="aud-ui-marketplace-info">
+                              <span className="aud-ui-marketplace-name">Thomas L.</span>
+                              <span className="aud-ui-marketplace-role">Photographe sportif — ★ 4.9</span>
+                            </div>
+                            <span className="aud-ui-marketplace-action">Voir</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </section>
             );
