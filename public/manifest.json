@@ -1,0 +1,13 @@
+{
+  "name": "Focus Racer",
+  "short_name": "Focus Racer",
+  "description": "Retrouvez vos photos de courses sportives",
+  "start_url": "/sportif/dashboard",
+  "display": "standalone",
+  "background_color": "#042F2E",
+  "theme_color": "#10B981",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

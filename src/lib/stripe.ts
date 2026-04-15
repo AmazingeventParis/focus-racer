@@ -1,0 +1,36 @@
+import Stripe from "stripe";
+
+let _stripe: Stripe | null = null;
+
+export function getStripe(): Stripe {
+  if (!_stripe) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error("STRIPE_SECRET_KEY is not set");
+    }
+    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  }
+  return _stripe;
+}
+
+/** @deprecated Use getStripe() instead */
+export const stripe = new Proxy({} as Stripe, {
+  get(_, prop) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (getStripe() as any)[prop];
+  },
+});
+
+export const PLATFORM_FEE_PERCENT = 0;
+
+/** 1€ service fee charged to the runner, collected by the platform via application_fee_amount */
+export const SERVICE_FEE_CENTS = 100;
+export const SERVICE_FEE_EUR = SERVICE_FEE_CENTS / 100; // 1.0
+export const SERVICE_FEE_DISPLAY = "1,00 €";
+
+export const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+export const SUBSCRIPTION_PLANS = [
+  { credits: 20000, priceInCents: 19900, label: "20 000 crédits/mois" },
+  { credits: 50000, priceInCents: 39900, label: "50 000 crédits/mois" },
+];

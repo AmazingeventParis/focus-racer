@@ -1,0 +1,147 @@
+import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import { z } from "zod";
+import prisma from "@/lib/prisma";
+import { generateSportifId } from "@/lib/sportif-id";
+import { sendWelcomeEmail } from "@/lib/email";
+import { verifyTurnstileToken } from "@/lib/turnstile";
+import { rateLimit } from "@/lib/rate-limit";
+
+const registerSchema = z.object({
+  firstName: z.string().min(1, "Le prénom est requis"),
+  lastName: z.string().min(1, "Le nom est requis"),
+  email: z.string().email("Email invalide"),
+  password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
+  role: z.enum(["PHOTOGRAPHER", "ORGANIZER", "AGENCY", "CLUB", "FEDERATION", "RUNNER"]).default("PHOTOGRAPHER"),
+  phone: z.string().optional(),
+  company: z.string().optional(),
+  postalCode: z.string().optional(),
+  city: z.string().optional(),
+  portfolio: z.string().url("URL invalide").optional().or(z.literal("")),
+  referralSource: z.string().optional(),
+  acceptedCgu: z.boolean().refine(v => v === true, "Vous devez accepter les CGU"),
+  newsletterOptIn: z.boolean().optional(),
+  turnstileToken: z.string().optional(),
+  website: z.string().optional(), // honeypot
+});
+
+export async function POST(request: NextRequest) {
+  // Rate limit: 3 registrations per hour
+  const rateLimited = rateLimit(request, "register", { limit: 3, windowMs: 3_600_000 });
+  if (rateLimited) return rateLimited;
+
+  try {
+    const body = await request.json();
+    const {
+      firstName, lastName, email, password, role,
+      phone, company, postalCode, city, portfolio,
+      referralSource, newsletterOptIn, turnstileToken, website,
+    } = registerSchema.parse(body);
+
+    // Honeypot check
+    if (website) {
+      return NextResponse.json({ id: "ok", email, name: `${firstName} ${lastName}`, role });
+    }
+
+    // Verify Turnstile token
+    const ip =
+      request.headers.get("x-real-ip") ||
+      request.headers.get("x-forwarded-for")?.split(",")[0].trim();
+    const turnstileValid = await verifyTurnstileToken(turnstileToken, ip || undefined);
+    if (!turnstileValid) {
+      return NextResponse.json(
+        { error: "Vérification de sécurité échouée. Veuillez réessayer." },
+        { status: 403 }
+      );
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "Un compte existe déjà avec cet email" },
+        { status: 400 }
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const WELCOME_CREDITS = 100;
+
+    // Generate unique sportifId with retry
+    let sportifId: string | null = null;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const candidate = generateSportifId();
+      const exists = await prisma.user.findUnique({ where: { sportifId: candidate }, select: { id: true } });
+      if (!exists) {
+        sportifId = candidate;
+        break;
+      }
+    }
+
+    const user = await prisma.$transaction(async (tx) => {
+      const newUser = await tx.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          name: `${firstName} ${lastName}`,
+          firstName,
+          lastName,
+          role,
+          phone: phone || null,
+          company: company || null,
+          postalCode: postalCode || null,
+          city: city || null,
+          portfolio: portfolio || null,
+          referralSource: referralSource || null,
+          acceptedCguAt: new Date(),
+          newsletterOptIn: newsletterOptIn || false,
+          credits: WELCOME_CREDITS,
+          sportifId,
+        },
+      });
+
+      // Record the welcome credits transaction
+      await tx.creditTransaction.create({
+        data: {
+          userId: newUser.id,
+          type: "ADMIN_GRANT",
+          amount: WELCOME_CREDITS,
+          balanceBefore: 0,
+          balanceAfter: WELCOME_CREDITS,
+          reason: "Crédits de bienvenue - inscription",
+        },
+      });
+
+      return newUser;
+    });
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail({
+      to: user.email,
+      firstName: firstName,
+      role: user.role,
+    }).catch((err) => console.error("[Email] Welcome email error:", err));
+
+    return NextResponse.json({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: error.issues[0].message },
+        { status: 400 }
+      );
+    }
+    console.error("Registration error:", error);
+    return NextResponse.json(
+      { error: "Erreur lors de l'inscription" },
+      { status: 500 }
+    );
+  }
+}

@@ -1,0 +1,543 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ===== DARK NEON GLOBAL OVERRIDES ===== */
+/* Remap light-theme utility classes to dark neon palette */
+
+/* bg-white → neon card background */
+.bg-white:where(:not(.keep-white)) {
+  background-color: #151C44 !important;
+}
+
+/* Hover variant */
+.hover\:bg-white:hover {
+  background-color: #1a2252 !important;
+}
+
+/* text-black → light text */
+.text-black {
+  color: #F3F6FF !important;
+}
+
+/* border-white (without opacity) for small elements */
+.divide-white > :not([hidden]) ~ :not([hidden]) {
+  border-color: #2C3566;
+}
+
+/* ring-white */
+.ring-white {
+  --tw-ring-color: #2C3566 !important;
+}
+
+/* focus ring for inputs on dark bg */
+.focus\:ring-emerald-500:focus,
+.focus\:ring-teal-500:focus {
+  --tw-ring-color: rgba(8, 145, 178, 0.3) !important;
+}
+
+/* Placeholder text on dark inputs */
+::placeholder {
+  color: #6B7AAD !important;
+}
+
+/* Select, input native styling */
+select, input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="search"], input[type="tel"], input[type="url"], input[type="date"], textarea {
+  color: #F3F6FF;
+  background-color: #151C44;
+  border-color: #2C3566;
+}
+
+select option {
+  background-color: #151C44;
+  color: #F3F6FF;
+}
+
+/* Table styling */
+table {
+  color: #F3F6FF;
+}
+
+thead {
+  border-color: #2C3566;
+}
+
+th {
+  color: #A7B0D6;
+}
+
+/* Fix divide colors */
+.divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+.divide-gray-200 > :not([hidden]) ~ :not([hidden]),
+.divide-gray-300 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #2C3566;
+}
+
+/* ===== REMAP TEXT-GRAY-* for dark neon theme ===== */
+/* Dark grays (900-700) → light text for readability on dark bg */
+.text-gray-900 { color: #F3F6FF !important; }
+.text-gray-800 { color: #E2E8F4 !important; }
+.text-gray-700 { color: #D1D9EC !important; }
+/* Medium grays (600-500) → secondary text */
+.text-gray-600 { color: #A7B0D6 !important; }
+.text-gray-500 { color: #8B95BF !important; }
+/* Light grays (400-300) → muted text */
+.text-gray-400 { color: #6B7AAD !important; }
+.text-gray-300 { color: #5A6A9A !important; }
+/* Very light grays used as backgrounds → keep dark */
+.text-gray-200 { color: #4A5A8A !important; }
+.text-gray-100 { color: #3A4A7A !important; }
+
+/* ===== REMAP TEXT-SLATE-* for dark neon theme ===== */
+.text-slate-900 { color: #F3F6FF !important; }
+.text-slate-800 { color: #E2E8F4 !important; }
+.text-slate-700 { color: #D1D9EC !important; }
+.text-slate-600 { color: #A7B0D6 !important; }
+.text-slate-500 { color: #8B95BF !important; }
+.text-slate-400 { color: #6B7AAD !important; }
+.text-slate-300 { color: #5A6A9A !important; }
+
+/* ===== REMAP TEXT-ZINC-* for dark neon theme ===== */
+.text-zinc-900 { color: #F3F6FF !important; }
+.text-zinc-800 { color: #E2E8F4 !important; }
+.text-zinc-700 { color: #D1D9EC !important; }
+.text-zinc-600 { color: #A7B0D6 !important; }
+.text-zinc-500 { color: #8B95BF !important; }
+
+/* ===== REMAP BG-GRAY-* for dark neon theme ===== */
+.bg-gray-50 { background-color: #111A3A !important; }
+.bg-gray-100 { background-color: #151C44 !important; }
+.bg-gray-200 { background-color: #1A2252 !important; }
+.bg-gray-800 { background-color: #1A2252 !important; }
+.bg-gray-900 { background-color: #0D1330 !important; }
+.bg-slate-50 { background-color: #111A3A !important; }
+.bg-slate-100 { background-color: #151C44 !important; }
+.bg-slate-200 { background-color: #1A2252 !important; }
+.bg-zinc-50 { background-color: #111A3A !important; }
+.bg-zinc-100 { background-color: #151C44 !important; }
+
+/* Hover bg variants */
+.hover\:bg-gray-50:hover { background-color: #151C44 !important; }
+.hover\:bg-gray-100:hover { background-color: #1A2252 !important; }
+.hover\:bg-gray-200:hover { background-color: #1E2862 !important; }
+.hover\:bg-slate-50:hover { background-color: #151C44 !important; }
+.hover\:bg-slate-100:hover { background-color: #1A2252 !important; }
+
+/* ===== REMAP BORDER-GRAY-* for dark neon theme ===== */
+.border-gray-100 { border-color: #2C3566 !important; }
+.border-gray-200 { border-color: #2C3566 !important; }
+.border-gray-300 { border-color: #3A4570 !important; }
+.border-slate-100 { border-color: #2C3566 !important; }
+.border-slate-200 { border-color: #2C3566 !important; }
+.border-slate-300 { border-color: #3A4570 !important; }
+
+/* ===== REMAP RING-GRAY-* for dark neon theme ===== */
+.ring-gray-200, .ring-gray-300 { --tw-ring-color: #2C3566 !important; }
+.focus\:ring-gray-300:focus { --tw-ring-color: #3A4570 !important; }
+
+/* Accordion / Details elements */
+details summary {
+  color: #F3F6FF;
+}
+
+/* ===== Remap light Tailwind color backgrounds to dark neon ===== */
+/* These standard Tailwind colors are NOT remapped in the config */
+/* Convert light backgrounds (50/100) to dark transparent variants */
+.bg-green-50 { background-color: rgba(34, 197, 94, 0.1) !important; }
+.bg-green-100 { background-color: rgba(34, 197, 94, 0.15) !important; }
+.bg-blue-50 { background-color: rgba(59, 130, 246, 0.1) !important; }
+.bg-blue-100 { background-color: rgba(59, 130, 246, 0.15) !important; }
+.bg-red-50 { background-color: rgba(239, 68, 68, 0.1) !important; }
+.bg-red-100 { background-color: rgba(239, 68, 68, 0.15) !important; }
+.bg-yellow-50 { background-color: rgba(234, 179, 8, 0.1) !important; }
+.bg-yellow-100 { background-color: rgba(234, 179, 8, 0.15) !important; }
+.bg-orange-50 { background-color: rgba(249, 115, 22, 0.1) !important; }
+.bg-orange-100 { background-color: rgba(249, 115, 22, 0.15) !important; }
+.bg-purple-50 { background-color: rgba(168, 85, 247, 0.1) !important; }
+.bg-purple-100 { background-color: rgba(168, 85, 247, 0.15) !important; }
+.bg-indigo-50 { background-color: rgba(99, 102, 241, 0.1) !important; }
+.bg-indigo-100 { background-color: rgba(99, 102, 241, 0.15) !important; }
+.bg-pink-50 { background-color: rgba(236, 72, 153, 0.1) !important; }
+.bg-pink-100 { background-color: rgba(236, 72, 153, 0.15) !important; }
+.bg-amber-50 { background-color: rgba(245, 158, 11, 0.1) !important; }
+.bg-amber-100 { background-color: rgba(245, 158, 11, 0.15) !important; }
+.bg-cyan-50 { background-color: rgba(6, 182, 212, 0.1) !important; }
+.bg-cyan-100 { background-color: rgba(6, 182, 212, 0.15) !important; }
+.bg-violet-50 { background-color: rgba(139, 92, 246, 0.1) !important; }
+.bg-violet-100 { background-color: rgba(139, 92, 246, 0.15) !important; }
+.bg-rose-50 { background-color: rgba(244, 63, 94, 0.1) !important; }
+.bg-rose-100 { background-color: rgba(244, 63, 94, 0.15) !important; }
+.bg-lime-50 { background-color: rgba(132, 204, 22, 0.1) !important; }
+.bg-lime-100 { background-color: rgba(132, 204, 22, 0.15) !important; }
+.bg-sky-50 { background-color: rgba(14, 165, 233, 0.1) !important; }
+.bg-sky-100 { background-color: rgba(14, 165, 233, 0.15) !important; }
+.bg-fuchsia-50 { background-color: rgba(217, 70, 239, 0.1) !important; }
+.bg-fuchsia-100 { background-color: rgba(217, 70, 239, 0.15) !important; }
+.bg-teal-50 { background-color: rgba(20, 184, 166, 0.1) !important; }
+.bg-teal-100 { background-color: rgba(20, 184, 166, 0.15) !important; }
+
+/* Remap light borders to dark neon */
+.border-green-100, .border-green-200 { border-color: rgba(34, 197, 94, 0.2) !important; }
+.border-blue-100, .border-blue-200 { border-color: rgba(59, 130, 246, 0.2) !important; }
+.border-red-100, .border-red-200 { border-color: rgba(239, 68, 68, 0.2) !important; }
+.border-yellow-100, .border-yellow-200 { border-color: rgba(234, 179, 8, 0.2) !important; }
+.border-orange-100, .border-orange-200 { border-color: rgba(249, 115, 22, 0.2) !important; }
+.border-purple-100, .border-purple-200 { border-color: rgba(168, 85, 247, 0.2) !important; }
+.border-indigo-100, .border-indigo-200 { border-color: rgba(99, 102, 241, 0.2) !important; }
+.border-teal-100, .border-teal-200 { border-color: rgba(20, 184, 166, 0.2) !important; }
+
+@layer base {
+  :root {
+    /* Palette "Dark Neon" */
+    --teal-primary: #0891B2;
+    --teal-primary-hover: #0E7490;
+    --emerald-action: #0891B2;
+    --emerald-action-hover: #38BDF8;
+    --bg-interface: #070B1F;
+    --white: #F3F6FF;
+    --text-primary: #F3F6FF;
+    --text-secondary: #A7B0D6;
+    --success: #0891B2;
+    --success-light: #111A3A;
+    --success-dark: #38BDF8;
+
+    /* Semantic colors for shadcn — dark neon base */
+    --background: 230 55% 7%;
+    --foreground: 228 60% 97%;
+    --card: 230 52% 17%;
+    --card-foreground: 228 60% 97%;
+    --popover: 230 52% 17%;
+    --popover-foreground: 228 60% 97%;
+    --primary: 186 90% 71%;
+    --primary-foreground: 230 55% 7%;
+    --secondary: 230 40% 20%;
+    --secondary-foreground: 228 60% 97%;
+    --muted: 230 40% 17%;
+    --muted-foreground: 228 30% 68%;
+    --accent: 230 40% 20%;
+    --accent-foreground: 228 60% 97%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 230 30% 28%;
+    --input: 230 30% 28%;
+    --ring: 186 90% 71%;
+    --chart-1: 186 90% 71%;
+    --chart-2: 270 70% 75%;
+    --chart-3: 16 100% 64%;
+    --chart-4: 43 96% 56%;
+    --chart-5: 260 65% 60%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    @apply bg-neon-bg text-primary antialiased;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-geist-sans), sans-serif;
+    font-weight: 800;
+  }
+}
+
+@layer components {
+  /* ===== GRADIENTS & BACKGROUNDS ===== */
+  .gradient-bg {
+    @apply bg-gradient-to-br from-[#111A3A] via-[#0D1330] to-[#070B1F];
+  }
+
+  .gradient-bg-subtle {
+    @apply bg-gradient-to-b from-[#070B1F] to-[#0C1029];
+  }
+
+  .gradient-emerald {
+    background: linear-gradient(135deg, #0891B2, #C084FC);
+  }
+
+  .gradient-navy {
+    @apply bg-gradient-to-b from-[#0D1330] to-[#070B1F];
+  }
+
+  /* ===== GLASSMORPHISM CARDS ===== */
+  .glass-card {
+    @apply bg-neon-card/80 backdrop-blur-sm border border-neon-border/30 shadow-card;
+  }
+
+  .shadow-glass-lg {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .shadow-emerald-lg {
+    box-shadow: 0 0 24px rgba(8, 145, 178, 0.2);
+  }
+
+  /* ===== BOUTONS ===== */
+  .btn-primary {
+    @apply font-medium px-4 py-2 rounded-lg
+           transition-all duration-200 ease-out
+           hover:opacity-90 hover:shadow-neon-glow
+           active:scale-[0.98];
+    background: linear-gradient(135deg, #0891B2, #C084FC);
+    color: #070B1F;
+  }
+
+  .btn-secondary {
+    @apply bg-neon-card text-emerald border border-neon-border font-medium px-4 py-2 rounded-lg
+           transition-all duration-200 ease-out
+           hover:border-emerald/50 hover:bg-neon-card/80
+           active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-secondary font-medium px-4 py-2 rounded-lg
+           transition-all duration-200 ease-out
+           hover:bg-neon-card hover:text-primary
+           active:scale-[0.98];
+  }
+
+  /* ===== CARTES ===== */
+  .card-base {
+    @apply bg-neon-card rounded-xl shadow-card border border-neon-border/30;
+  }
+
+  .card-interactive {
+    @apply bg-neon-card rounded-xl shadow-card border border-neon-border/30
+           transition-all duration-200 ease-out cursor-pointer
+           hover:shadow-card-hover hover:-translate-y-0.5 hover:border-emerald/20;
+  }
+
+  .card-event {
+    @apply bg-neon-card rounded-xl shadow-card border border-neon-border/30
+           transition-all duration-200 ease-out
+           hover:shadow-card-hover hover:-translate-y-0.5 hover:border-emerald/20;
+  }
+
+  /* ===== BADGES / STATUTS ===== */
+  .badge-draft {
+    @apply bg-neon-card text-secondary text-xs font-medium px-2.5 py-1 rounded-md border border-neon-border/30;
+  }
+
+  .badge-published {
+    @apply bg-emerald/10 text-emerald text-xs font-medium px-2.5 py-1 rounded-md;
+  }
+
+  .badge-archived {
+    @apply bg-neon-card text-neon-purple text-xs font-medium px-2.5 py-1 rounded-md border border-neon-border/30;
+  }
+
+  .badge-success {
+    @apply bg-emerald/10 text-emerald text-xs font-medium px-2.5 py-1 rounded-md;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium
+           transition-all duration-200 ease-out;
+  }
+
+  .sidebar-item-inactive {
+    @apply sidebar-item text-white/70
+           hover:bg-white/10 hover:text-white;
+  }
+
+  .sidebar-item-active {
+    @apply sidebar-item bg-emerald/10 text-emerald shadow-sm;
+  }
+
+  /* ===== INPUTS ===== */
+  .input-base {
+    @apply w-full bg-neon-card border border-neon-border rounded-lg px-4 py-2.5
+           text-primary placeholder:text-secondary
+           transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald;
+  }
+
+  /* ===== SKELETON LOADING ===== */
+  .skeleton {
+    @apply bg-neon-border/50 animate-pulse rounded-lg;
+  }
+
+  .skeleton-card {
+    @apply bg-neon-card rounded-xl shadow-card p-4 space-y-3;
+  }
+
+  .skeleton-line {
+    @apply h-4 bg-neon-border/50 animate-pulse rounded;
+  }
+
+  .skeleton-circle {
+    @apply bg-neon-border/50 animate-pulse rounded-full;
+  }
+
+  /* ===== NAVIGATION GLASS (pour header public) ===== */
+  .glass-nav {
+    @apply bg-neon-bg/92 backdrop-blur-lg border-b border-neon-border/30;
+  }
+
+  /* ===== FOND SOMBRE POUR GALERIE COUREUR ===== */
+  .runner-gallery-bg {
+    @apply bg-[#070B1F];
+  }
+
+  /* ===== PROTECTION IMAGES (anti-vol) ===== */
+  .protected-image-wrapper {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  .protected-image-wrapper img {
+    -webkit-user-drag: none;
+    user-drag: none;
+    pointer-events: none;
+  }
+
+  /* Prevent selection on entire gallery zone */
+  .gallery-protected {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
+
+@layer utilities {
+  /* ===== ANIMATIONS ===== */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slide-in-right 0.4s ease-out forwards;
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  /* ===== MOBILE RESPONSIVE PADDING ===== */
+  @media (max-width: 767px) {
+    .p-8 {
+      padding: 1rem !important;
+    }
+    .mb-8 {
+      margin-bottom: 1.25rem !important;
+    }
+    .grid-cols-3 {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+  }
+
+  /* Safe area for bottom nav on notch devices */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* ===== SCROLLBAR CUSTOM ===== */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #2C3566 transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #2C3566;
+    border-radius: 3px;
+  }
+}

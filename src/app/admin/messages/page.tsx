@@ -1,0 +1,762 @@
+"use client";
+
+import { useEffect, useState, useCallback, useRef } from "react";
+import { useSSENotifications } from "@/hooks/useSSENotifications";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { getRoleLabel } from "@/lib/role-helpers";
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+type MessageCategory =
+  | "BILLING"
+  | "SORTING"
+  | "GDPR"
+  | "ACCOUNT"
+  | "TECHNICAL"
+  | "EVENT"
+  | "OTHER";
+
+type MessageStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
+
+interface MessageUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  sportifId?: string | null;
+}
+
+interface Reply {
+  role: "user" | "admin";
+  content: string;
+  date: string;
+  author?: string;
+}
+
+interface MessageRow {
+  id: string;
+  userId: string | null;
+  guestName: string | null;
+  guestEmail: string | null;
+  subject: string;
+  message: string;
+  category: MessageCategory;
+  status: MessageStatus;
+  eventId: string | null;
+  orderId: string | null;
+  adminReply: string | null;
+  repliedBy: string | null;
+  repliedAt: string | null;
+  replies: Reply[];
+  createdAt: string;
+  updatedAt: string;
+  user: MessageUser | null;
+}
+
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+interface StatusCounts {
+  OPEN: number;
+  IN_PROGRESS: number;
+  RESOLVED: number;
+  CLOSED?: number;
+}
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const CATEGORY_LABELS: Record<MessageCategory, string> = {
+  BILLING: "Facturation",
+  SORTING: "Tri photos",
+  GDPR: "RGPD",
+  ACCOUNT: "Compte",
+  TECHNICAL: "Technique",
+  EVENT: "Événement",
+  OTHER: "Autre",
+};
+
+const CATEGORY_COLORS: Record<MessageCategory, string> = {
+  BILLING: "bg-purple-500/15 text-purple-700 hover:bg-purple-500/15",
+  SORTING: "bg-sky-500/15 text-sky-700 hover:bg-sky-500/15",
+  GDPR: "bg-rose-500/15 text-rose-700 hover:bg-rose-500/15",
+  ACCOUNT: "bg-indigo-500/15 text-indigo-700 hover:bg-indigo-500/15",
+  TECHNICAL: "bg-orange-500/15 text-orange-700 hover:bg-orange-500/15",
+  EVENT: "bg-teal-500/15 text-teal-700 hover:bg-teal-500/15",
+  OTHER: "bg-gray-500/15 text-gray-700 hover:bg-gray-500/15",
+};
+
+const STATUS_LABELS: Record<MessageStatus, string> = {
+  OPEN: "Ouvert",
+  IN_PROGRESS: "En cours",
+  RESOLVED: "Résolu",
+  CLOSED: "Fermé",
+};
+
+const STATUS_COLORS: Record<MessageStatus, string> = {
+  OPEN: "bg-amber-500/15 text-amber-700 hover:bg-amber-500/15",
+  IN_PROGRESS: "bg-blue-500/15 text-blue-700 hover:bg-blue-500/15",
+  RESOLVED: "bg-emerald-500/15 text-emerald-700 hover:bg-emerald-500/15",
+  CLOSED: "bg-gray-500/15 text-gray-500 hover:bg-gray-500/15",
+};
+
+const STATUS_BORDER_COLORS: Record<MessageStatus, string> = {
+  OPEN: "border-l-amber-500",
+  IN_PROGRESS: "border-l-blue-500",
+  RESOLVED: "border-l-emerald-500",
+  CLOSED: "border-l-gray-400",
+};
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
+export default function AdminMessagesPage() {
+  const { toast } = useToast();
+
+  // Data state
+  const [messages, setMessages] = useState<MessageRow[]>([]);
+  const [pagination, setPagination] = useState<Pagination>({
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 0,
+  });
+  const [statusCounts, setStatusCounts] = useState<StatusCounts>({
+    OPEN: 0,
+    IN_PROGRESS: 0,
+    RESOLVED: 0,
+    CLOSED: 0,
+  });
+
+  // Filter state
+  const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("active");
+
+  // UI state
+  const [isLoading, setIsLoading] = useState(true);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [closingId, setClosingId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Debounced search
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // ---------------------------------------------------------------------------
+  // Fetch messages
+  // ---------------------------------------------------------------------------
+
+  const fetchMessages = useCallback(
+    async (page: number) => {
+      setIsLoading(true);
+      try {
+        const params = new URLSearchParams({
+          page: page.toString(),
+          limit: "20",
+        });
+        if (debouncedSearch) params.set("search", debouncedSearch);
+        if (categoryFilter !== "all") params.set("category", categoryFilter);
+        if (statusFilter !== "all") params.set("status", statusFilter);
+
+        const response = await fetch(`/api/admin/messages?${params}`);
+        if (!response.ok) {
+          throw new Error("Erreur lors du chargement des messages");
+        }
+
+        const data = await response.json();
+        setMessages(data.messages);
+        setPagination(data.pagination);
+        setStatusCounts({
+          OPEN: data.statusCounts?.OPEN ?? 0,
+          IN_PROGRESS: data.statusCounts?.IN_PROGRESS ?? 0,
+          RESOLVED: data.statusCounts?.RESOLVED ?? 0,
+          CLOSED: data.statusCounts?.CLOSED ?? 0,
+        });
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les messages",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [debouncedSearch, categoryFilter, statusFilter, toast]
+  );
+
+  useEffect(() => {
+    fetchMessages(1);
+  }, [fetchMessages]);
+
+  // Auto-refresh message list (silently, without loading spinner) on SSE event
+  const paginationRef = useRef(pagination);
+  paginationRef.current = pagination;
+
+  const silentRefresh = useCallback(async () => {
+    try {
+      const params = new URLSearchParams({
+        page: paginationRef.current.page.toString(),
+        limit: "20",
+      });
+      if (debouncedSearch) params.set("search", debouncedSearch);
+      if (categoryFilter !== "all") params.set("category", categoryFilter);
+      if (statusFilter !== "all") params.set("status", statusFilter);
+
+      const response = await fetch(`/api/admin/messages?${params}`);
+      if (!response.ok) return;
+
+      const data = await response.json();
+      setMessages(data.messages);
+      setPagination(data.pagination);
+      setStatusCounts({
+        OPEN: data.statusCounts?.OPEN ?? 0,
+        IN_PROGRESS: data.statusCounts?.IN_PROGRESS ?? 0,
+        RESOLVED: data.statusCounts?.RESOLVED ?? 0,
+        CLOSED: data.statusCounts?.CLOSED ?? 0,
+      });
+    } catch {
+      // silent
+    }
+  }, [debouncedSearch, categoryFilter, statusFilter]);
+
+  // SSE: auto-refresh when user sends or replies to a message
+  useSSENotifications(["admin_unread", "connected"], silentRefresh);
+
+  // Also poll every 10s as safety net
+  useEffect(() => {
+    const interval = setInterval(silentRefresh, 10000);
+    return () => clearInterval(interval);
+  }, [silentRefresh]);
+
+  // ---------------------------------------------------------------------------
+  // Reply / Update status
+  // ---------------------------------------------------------------------------
+
+  const handleReply = async (messageId: string) => {
+    if (!replyText.trim()) {
+      toast({
+        title: "Champs requis",
+        description: "Veuillez saisir une réponse",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`/api/admin/messages/${messageId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adminReply: replyText.trim() }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors de la mise à jour");
+      }
+
+      toast({
+        title: "Réponse envoyée",
+        description: "Le message passe en statut \"En cours\"",
+      });
+
+      setExpandedId(null);
+      setReplyText("");
+      fetchMessages(pagination.page);
+    } catch (error) {
+      console.error("Error updating message:", error);
+      toast({
+        title: "Erreur",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Impossible de mettre à jour le message",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = async (messageId: string) => {
+    setClosingId(messageId);
+    try {
+      const response = await fetch(`/api/admin/messages/${messageId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "CLOSED" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur");
+      }
+
+      toast({ title: "Conversation clôturée" });
+      setExpandedId(null);
+      setReplyText("");
+      fetchMessages(pagination.page);
+    } catch {
+      toast({ title: "Erreur", variant: "destructive" });
+    } finally {
+      setClosingId(null);
+    }
+  };
+
+  // ---------------------------------------------------------------------------
+  // Expand / Collapse
+  // ---------------------------------------------------------------------------
+
+  const toggleExpand = (id: string) => {
+    if (expandedId === id) {
+      setExpandedId(null);
+      setReplyText("");
+    } else {
+      setExpandedId(id);
+      setReplyText("");
+    }
+  };
+
+  // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+
+  const formatDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+  const truncate = (text: string, max: number) =>
+    text.length > max ? text.slice(0, max) + "..." : text;
+
+  const totalOpen = statusCounts.OPEN ?? 0;
+
+  // ---------------------------------------------------------------------------
+  // Render
+  // ---------------------------------------------------------------------------
+
+  return (
+    <div className="animate-fade-in">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-navy">Messagerie</h1>
+          {totalOpen > 0 && (
+            <Badge className="bg-amber-500/15 text-amber-700 hover:bg-amber-500/15 text-sm px-3 py-1">
+              {totalOpen} ouvert{totalOpen > 1 ? "s" : ""}
+            </Badge>
+          )}
+        </div>
+        <p className="text-muted-foreground mt-1">
+          Gérez les messages et demandes des utilisateurs
+        </p>
+      </div>
+
+      {/* Status counter cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {(
+          [
+            { key: "OPEN" as MessageStatus, label: "Ouverts", color: "amber" },
+            {
+              key: "IN_PROGRESS" as MessageStatus,
+              label: "En cours",
+              color: "blue",
+            },
+            {
+              key: "RESOLVED" as MessageStatus,
+              label: "Résolus",
+              color: "emerald",
+            },
+            {
+              key: "CLOSED" as MessageStatus,
+              label: "Fermés",
+              color: "gray",
+            },
+          ] as const
+        ).map(({ key, label, color }) => (
+          <Card
+            key={key}
+            className={`glass-card rounded-2xl border-l-4 border-l-${color}-500 cursor-pointer transition-all hover:shadow-md ${
+              statusFilter === key ? "ring-2 ring-emerald/50" : ""
+            }`}
+            onClick={() =>
+              setStatusFilter(statusFilter === key ? "active" : key)
+            }
+          >
+            <CardHeader className="pb-1 pt-4 px-4">
+              <CardTitle className="text-xs text-muted-foreground font-medium">
+                {label}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pb-4 px-4">
+              <p
+                className={`text-2xl font-bold ${
+                  color === "amber"
+                    ? "text-amber-600"
+                    : color === "blue"
+                    ? "text-blue-600"
+                    : color === "emerald"
+                    ? "text-emerald-600"
+                    : "text-gray-500"
+                }`}
+              >
+                {statusCounts[key] ?? 0}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Filters row */}
+      <div className="flex flex-col md:flex-row gap-3 mb-6">
+        <Input
+          placeholder="Rechercher par sujet, utilisateur, email..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="md:w-80"
+        />
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className="w-full md:w-48">
+            <SelectValue placeholder="Catégorie" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Toutes les catégories</SelectItem>
+            {(Object.keys(CATEGORY_LABELS) as MessageCategory[]).map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {CATEGORY_LABELS[cat]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-full md:w-48">
+            <SelectValue placeholder="Statut" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="active">Actifs uniquement</SelectItem>
+            <SelectItem value="all">Tous les statuts</SelectItem>
+            {(Object.keys(STATUS_LABELS) as MessageStatus[]).map((st) => (
+              <SelectItem key={st} value={st}>
+                {STATUS_LABELS[st]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Messages list */}
+      {isLoading ? (
+        <Card className="glass-card rounded-2xl">
+          <CardContent className="py-16 text-center">
+            <p className="text-muted-foreground">Chargement des messages...</p>
+          </CardContent>
+        </Card>
+      ) : messages.length === 0 ? (
+        <Card className="glass-card rounded-2xl">
+          <CardContent className="py-16 text-center">
+            <p className="text-muted-foreground text-lg mb-1">
+              Aucun message trouvé
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {debouncedSearch || categoryFilter !== "all" || statusFilter !== "all"
+                ? "Essayez de modifier vos filtres"
+                : "Les messages des utilisateurs apparaîtront ici"}
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {messages.map((msg) => {
+            const isExpanded = expandedId === msg.id;
+
+            return (
+              <Card
+                key={msg.id}
+                className={`glass-card rounded-2xl border-l-4 ${
+                  STATUS_BORDER_COLORS[msg.status]
+                } transition-all ${
+                  isExpanded ? "ring-1 ring-emerald/30 shadow-lg" : ""
+                }`}
+              >
+                {/* Message summary - clickable */}
+                <div
+                  className="cursor-pointer hover:bg-white/10 transition-colors rounded-t-2xl"
+                  onClick={() => toggleExpand(msg.id)}
+                >
+                  <CardHeader className="pb-2">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2">
+                      {/* Left: User info + subject */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-1">
+                          <span className="font-semibold text-navy text-sm">
+                            {msg.user?.name || msg.guestName || "Anonyme"}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {msg.user?.email || msg.guestEmail || ""}
+                          </span>
+                          {msg.user ? (
+                            <>
+                              <Badge
+                                variant="outline"
+                                className="border-emerald/30 text-emerald text-xs"
+                              >
+                                {getRoleLabel(msg.user.role)}
+                              </Badge>
+                              {msg.user.sportifId && (
+                                <span className="text-xs font-mono text-muted-foreground">{msg.user.sportifId}</span>
+                              )}
+                            </>
+                          ) : (
+                            <Badge
+                              variant="outline"
+                              className="border-gray-300 text-gray-500 text-xs"
+                            >
+                              Visiteur
+                            </Badge>
+                          )}
+                        </div>
+                        <CardTitle className="text-base text-navy leading-snug">
+                          {msg.subject}
+                        </CardTitle>
+                      </div>
+
+                      {/* Right: Badges + date */}
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <Badge className={CATEGORY_COLORS[msg.category]}>
+                          {CATEGORY_LABELS[msg.category]}
+                        </Badge>
+                        <Badge className={STATUS_COLORS[msg.status]}>
+                          {STATUS_LABELS[msg.status]}
+                        </Badge>
+                      </div>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="pt-0 pb-3">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {isExpanded ? "" : truncate(msg.message, 150)}
+                    </p>
+                    {!isExpanded && (
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-xs text-muted-foreground">
+                          {formatDate(msg.createdAt)}
+                        </span>
+                        {msg.adminReply && (
+                          <Badge
+                            variant="outline"
+                            className="text-xs border-emerald/30 text-emerald"
+                          >
+                            Répondu
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </div>
+
+                {/* Expanded detail */}
+                {isExpanded && (() => {
+                  const replies: Reply[] = Array.isArray(msg.replies) ? msg.replies : [];
+                  return (
+                  <CardContent className="pt-0 border-t border-gray-100">
+                    {/* Conversation thread */}
+                    <div className="mt-4 mb-6 space-y-3">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                        Conversation
+                      </p>
+
+                      {/* Initial user message */}
+                      <div className="bg-blue-500/10 rounded-xl p-4 border border-blue-500/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 rounded-full bg-blue-500/30 flex items-center justify-center">
+                            <svg className="w-3.5 h-3.5 text-blue-700" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                            </svg>
+                          </div>
+                          <span className="text-sm font-medium text-blue-700">{msg.user?.name || msg.guestName || msg.user?.email || msg.guestEmail || "Visiteur"}</span>
+                          <span className="text-xs text-blue-500">{formatDate(msg.createdAt)}</span>
+                        </div>
+                        <p className="text-sm text-blue-800 leading-relaxed whitespace-pre-wrap ml-8">{msg.message}</p>
+                      </div>
+
+                      {/* Legacy admin reply (if no replies array entries) */}
+                      {msg.adminReply && replies.length === 0 && msg.repliedAt && (
+                        <div className="bg-emerald-500/10 rounded-xl p-4 border border-emerald-500/20">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-6 h-6 rounded-full bg-emerald-500/30 flex items-center justify-center">
+                              <svg className="w-3.5 h-3.5 text-emerald-700" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                            </div>
+                            <span className="text-sm font-medium text-emerald-700">Admin{msg.repliedBy && ` (${msg.repliedBy})`}</span>
+                            <span className="text-xs text-emerald-500">{formatDate(msg.repliedAt)}</span>
+                          </div>
+                          <p className="text-sm text-emerald-800 leading-relaxed whitespace-pre-wrap ml-8">{msg.adminReply}</p>
+                        </div>
+                      )}
+
+                      {/* Replies thread */}
+                      {replies.map((reply, i) => (
+                        <div
+                          key={i}
+                          className={`rounded-xl p-4 border ${
+                            reply.role === "admin"
+                              ? "bg-emerald-500/10 border-emerald-500/20"
+                              : "bg-blue-500/10 border-blue-500/20"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                              reply.role === "admin" ? "bg-emerald-500/30" : "bg-blue-500/30"
+                            }`}>
+                              <svg className={`w-3.5 h-3.5 ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                {reply.role === "admin" ? (
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                ) : (
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                )}
+                              </svg>
+                            </div>
+                            <span className={`text-sm font-medium ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`}>
+                              {reply.role === "admin" ? `Admin${reply.author ? ` (${reply.author})` : ""}` : (reply.author || msg.user?.name || msg.guestName || "Utilisateur")}
+                            </span>
+                            <span className={`text-xs ${reply.role === "admin" ? "text-emerald-500" : "text-blue-500"}`}>
+                              {formatDate(reply.date)}
+                            </span>
+                          </div>
+                          <p className={`text-sm leading-relaxed whitespace-pre-wrap ml-8 ${reply.role === "admin" ? "text-emerald-800" : "text-blue-800"}`}>
+                            {reply.content}
+                          </p>
+                        </div>
+                      ))}
+
+                      {msg.eventId && (
+                        <p className="text-xs text-muted-foreground">Événement : {msg.eventId}</p>
+                      )}
+                    </div>
+
+                    {/* Reply form */}
+                    {msg.status !== "CLOSED" ? (
+                      <div className="bg-white/10 rounded-xl p-4 border border-gray-100">
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
+                          Répondre
+                        </p>
+
+                        <textarea
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          placeholder="Saisissez votre réponse..."
+                          rows={4}
+                          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-y min-h-[100px]"
+                        />
+
+                        <div className="flex items-center gap-2 mt-3 justify-end">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setExpandedId(null);
+                              setReplyText("");
+                            }}
+                            disabled={isSubmitting}
+                          >
+                            Annuler
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="border-gray-300 text-gray-600 hover:bg-gray-500/15"
+                            onClick={() => handleClose(msg.id)}
+                            disabled={closingId === msg.id || isSubmitting}
+                          >
+                            {closingId === msg.id ? "..." : "Clôturer"}
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="bg-emerald hover:bg-emerald-dark text-white"
+                            onClick={() => handleReply(msg.id)}
+                            disabled={isSubmitting || !replyText.trim()}
+                          >
+                            {isSubmitting ? "Envoi..." : "Répondre"}
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-gray-500/10 rounded-xl p-3 text-center border border-gray-500/30">
+                        <p className="text-sm text-gray-500">Conversation clôturée</p>
+                      </div>
+                    )}
+                  </CardContent>
+                  );
+                })()}
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {!isLoading && pagination.totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-3">
+          <p className="text-sm text-muted-foreground">
+            {pagination.total} message{pagination.total !== 1 ? "s" : ""} au
+            total
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={pagination.page <= 1}
+              onClick={() => fetchMessages(pagination.page - 1)}
+            >
+              Précédent
+            </Button>
+            <span className="text-sm text-muted-foreground px-2">
+              Page {pagination.page} / {pagination.totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={pagination.page >= pagination.totalPages}
+              onClick={() => fetchMessages(pagination.page + 1)}
+            >
+              Suivant
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

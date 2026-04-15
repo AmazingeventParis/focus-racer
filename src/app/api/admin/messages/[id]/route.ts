@@ -1,0 +1,120 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { notificationEmitter } from "@/lib/notification-emitter";
+import { sendSupportReplyEmail } from "@/lib/email";
+import { canSendEmail, generateUnsubscribeUrl } from "@/lib/notification-preferences";
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || (session.user as any).role !== "ADMIN") {
+    return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+  }
+
+  const message = await prisma.supportMessage.findUnique({
+    where: { id: params.id },
+    include: {
+      user: { select: { id: true, name: true, email: true, role: true, company: true, phone: true } },
+    },
+  });
+
+  if (!message) {
+    return NextResponse.json({ error: "Message introuvable" }, { status: 404 });
+  }
+
+  return NextResponse.json(message);
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || (session.user as any).role !== "ADMIN") {
+    return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+  }
+
+  const body = await request.json();
+  const { status, adminReply } = body;
+
+  const data: any = {};
+  if (status) data.status = status;
+  if (adminReply) {
+    // Fetch current message to get existing replies
+    const current = await prisma.supportMessage.findUnique({
+      where: { id: params.id },
+    });
+    const currentReplies = (current?.replies as any[]) || [];
+    const newReply = {
+      role: "admin",
+      content: adminReply,
+      date: new Date().toISOString(),
+      author: session.user.name || session.user.email,
+    };
+
+    data.replies = [...currentReplies, newReply];
+    data.adminReply = adminReply;
+    data.repliedBy = session.user.name || session.user.email;
+    data.repliedAt = new Date();
+    data.readByUser = false;
+    data.readByRecipient = false;
+    if (!status) data.status = "IN_PROGRESS";
+  }
+
+  const message = await prisma.supportMessage.update({
+    where: { id: params.id },
+    data,
+    include: {
+      user: { select: { id: true, name: true, email: true, role: true } },
+    },
+  });
+
+  // Notify user in real-time that admin replied or status changed
+  if (message.userId) {
+    notificationEmitter.notifyUser(message.userId);
+  }
+  // Also notify admin sidebar (badge count changes when status changes)
+  notificationEmitter.notifyAdmin();
+
+  // Send email to user/guest when admin replies
+  if (adminReply) {
+    const recipientEmail = message.user?.email || message.guestEmail;
+    const recipientName = message.user?.name || message.guestName || "utilisateur";
+    const repliedByName = session.user.name || session.user.email || "L'équipe Focus Racer";
+
+    if (recipientEmail) {
+      // Check preference only for registered users
+      const shouldSend = message.userId
+        ? await canSendEmail(message.userId, "supportReply")
+        : true;
+
+      if (shouldSend) {
+        const unsubscribeUrl = message.userId
+          ? generateUnsubscribeUrl(message.userId, "supportReply")
+          : "";
+
+        sendSupportReplyEmail({
+          to: recipientEmail,
+          name: recipientName,
+          subject: message.subject,
+          replyContent: adminReply,
+          repliedBy: repliedByName,
+          unsubscribeUrl,
+        }).catch((err) => console.error("[Email] Support reply error:", err));
+      }
+
+      // Push notification for registered users
+      if (message.userId) {
+        import("@/lib/notify").then(({ notifySupportReply }) =>
+          notifySupportReply(message.userId!, message.subject)
+        ).catch(() => {});
+      }
+    }
+  }
+
+  return NextResponse.json(message);
+}

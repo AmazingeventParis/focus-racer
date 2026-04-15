@@ -1,0 +1,8 @@
+node_modules/
+builds/
+android/.gradle/
+android/app/build/
+android/build/
+android/capacitor-cordova-android-plugins/build/
+android/app/focus-racer-release.keystore
+*.apk

@@ -1,0 +1,662 @@
+"use client";
+
+import { useEffect, useState, useCallback, useRef } from "react";
+import { useSSENotifications } from "@/hooks/useSSENotifications";
+import { useSession } from "next-auth/react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+
+interface Reply {
+  role: "user" | "admin" | "recipient";
+  content: string;
+  date: string;
+  author?: string;
+}
+
+interface SupportMessage {
+  id: string;
+  subject: string;
+  message: string;
+  category: string;
+  status: string;
+  adminReply: string | null;
+  repliedAt: string | null;
+  recipientId: string | null;
+  userId: string | null;
+  readByUser: boolean;
+  readByRecipient: boolean;
+  replies: Reply[];
+  user?: { id: string; name: string; sportifId?: string | null } | null;
+  recipient?: { id: string; name: string } | null;
+  createdAt: string;
+}
+
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+interface PhotographerOption {
+  id: string;
+  name: string;
+  eventName: string;
+}
+
+const CATEGORY_OPTIONS = [
+  { value: "BILLING", label: "Facturation / Paiement" },
+  { value: "ACCOUNT", label: "Mon compte" },
+  { value: "TECHNICAL", label: "Problème technique" },
+  { value: "EVENT", label: "Événement / Photos" },
+  { value: "GDPR", label: "RGPD / Données personnelles" },
+  { value: "OTHER", label: "Autre" },
+];
+
+const CATEGORY_LABELS: Record<string, string> = {
+  BILLING: "Facturation",
+  SORTING: "Tri photos",
+  GDPR: "RGPD",
+  ACCOUNT: "Mon compte",
+  TECHNICAL: "Technique",
+  EVENT: "Événement",
+  OTHER: "Autre",
+};
+
+const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
+  OPEN: { label: "Ouvert", className: "bg-amber-500/15 text-amber-700 border-amber-500/30" },
+  IN_PROGRESS: { label: "En cours", className: "bg-blue-500/15 text-blue-700 border-blue-500/30" },
+  RESOLVED: { label: "Résolu", className: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30" },
+  CLOSED: { label: "Fermé", className: "bg-gray-500/15 text-gray-500 border-gray-500/30" },
+};
+
+export default function SportifMessageriePage() {
+  const { data: session } = useSession();
+  const { toast } = useToast();
+
+  const [messages, setMessages] = useState<SupportMessage[]>([]);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+
+  // Reply form
+  const [replyText, setReplyText] = useState("");
+  const [isReplying, setIsReplying] = useState(false);
+  const [closingId, setClosingId] = useState<string | null>(null);
+
+  // Form
+  const [recipient, setRecipient] = useState<"support" | string>("support");
+  const [subject, setSubject] = useState("");
+  const [category, setCategory] = useState("OTHER");
+  const [message, setMessage] = useState("");
+  const [photographers, setPhotographers] = useState<PhotographerOption[]>([]);
+
+  // Load photographers from followed events
+  useEffect(() => {
+    fetch("/api/account/favorites")
+      .then((r) => r.json())
+      .then((data) => {
+        const favs = data?.favorites || [];
+        const opts: PhotographerOption[] = [];
+        const seen = new Set<string>();
+        for (const fav of favs) {
+          const event = fav.event;
+          if (event?.userId && !seen.has(event.userId)) {
+            seen.add(event.userId);
+            opts.push({ id: event.userId, name: event.user?.name || "Photographe", eventName: event.name });
+          }
+        }
+        setPhotographers(opts);
+      })
+      .catch(() => {});
+  }, []);
+
+  const fetchMessages = useCallback(async (pageNum: number) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/support?page=${pageNum}&limit=20`);
+      if (res.ok) {
+        const data = await res.json();
+        setMessages(data.messages);
+        setPagination(data.pagination);
+      }
+    } catch {
+      // silent
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (session) fetchMessages(page);
+  }, [session, page, fetchMessages]);
+
+  const pageRef = useRef(page);
+  pageRef.current = page;
+
+  const silentRefresh = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/support?page=${pageRef.current}&limit=20`);
+      if (res.ok) {
+        const data = await res.json();
+        setMessages(data.messages);
+        setPagination(data.pagination);
+      }
+    } catch {
+      // silent
+    }
+  }, []);
+
+  useSSENotifications(["user_unread", "connected"], silentRefresh);
+
+  useEffect(() => {
+    const interval = setInterval(silentRefresh, 10000);
+    return () => clearInterval(interval);
+  }, [silentRefresh]);
+
+  // Track which messages were unread on load (for visual indicator)
+  const [initialUnreadIds, setInitialUnreadIds] = useState<Set<string>>(new Set());
+
+  // When messages load, capture unread IDs then mark as read
+  useEffect(() => {
+    if (messages.length > 0 && session?.user?.id && !isLoading) {
+      const unreadIds = new Set<string>();
+      for (const msg of messages) {
+        const isUnread =
+          (msg.userId === session.user.id && !msg.readByUser) ||
+          (msg.recipientId === session.user.id && !msg.readByRecipient);
+        if (isUnread) unreadIds.add(msg.id);
+      }
+      if (unreadIds.size > 0) {
+        setInitialUnreadIds((prev) => {
+          const merged = new Set(prev);
+          unreadIds.forEach((id) => merged.add(id));
+          return merged;
+        });
+      }
+      // Mark as read after a short delay so badge updates
+      const timer = setTimeout(() => {
+        fetch("/api/support/mark-read", { method: "POST" }).catch(() => {});
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [messages, session?.user?.id, isLoading]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!subject.trim() || !message.trim()) {
+      toast({ title: "Champs requis", description: "Veuillez remplir le sujet et le message.", variant: "destructive" });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      let res: Response;
+      if (recipient === "support") {
+        res = await fetch("/api/support", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ subject: subject.trim(), message: message.trim(), category }),
+        });
+      } else {
+        res = await fetch("/api/sportif/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ recipientId: recipient, subject: subject.trim(), message: message.trim() }),
+        });
+      }
+
+      if (res.ok) {
+        toast({ title: "Message envoyé" });
+        setSubject("");
+        setCategory("OTHER");
+        setMessage("");
+        setRecipient("support");
+        setShowForm(false);
+        setPage(1);
+        fetchMessages(1);
+      } else {
+        const data = await res.json();
+        toast({ title: "Erreur", description: data.error || "Impossible d'envoyer", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Erreur", description: "Erreur de connexion", variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleReply = async (msgId: string) => {
+    if (!replyText.trim()) {
+      toast({ title: "Champs requis", description: "Veuillez saisir une réponse", variant: "destructive" });
+      return;
+    }
+
+    setIsReplying(true);
+    try {
+      const res = await fetch(`/api/support/${msgId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reply: replyText.trim() }),
+      });
+
+      if (res.ok) {
+        toast({ title: "Réponse envoyée" });
+        setReplyText("");
+        fetchMessages(page);
+      } else {
+        const data = await res.json();
+        toast({ title: "Erreur", description: data.error || "Impossible d'envoyer la réponse", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Erreur", description: "Erreur de connexion", variant: "destructive" });
+    } finally {
+      setIsReplying(false);
+    }
+  };
+
+  const handleClose = async (msgId: string) => {
+    setClosingId(msgId);
+    try {
+      const res = await fetch(`/api/support/${msgId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "close" }),
+      });
+
+      if (res.ok) {
+        toast({ title: "Conversation clôturée" });
+        setExpandedId(null);
+        setReplyText("");
+        fetchMessages(page);
+      } else {
+        toast({ title: "Erreur", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Erreur", variant: "destructive" });
+    } finally {
+      setClosingId(null);
+    }
+  };
+
+  const toggleExpanded = (id: string) => {
+    if (expandedId === id) {
+      setExpandedId(null);
+      setReplyText("");
+    } else {
+      setExpandedId(id);
+      setReplyText("");
+    }
+  };
+
+  const formatDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+  return (
+    <div className="p-8 max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-navy">Messagerie</h1>
+          <p className="text-muted-foreground mt-1">Contactez le support ou un photographe</p>
+        </div>
+        <Button
+          onClick={() => setShowForm(!showForm)}
+          className={showForm ? "bg-gray-200 text-gray-700 hover:bg-gray-300 rounded-lg" : "bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200"}
+        >
+          {showForm ? (
+            <>
+              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Fermer
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Nouveau message
+            </>
+          )}
+        </Button>
+      </div>
+
+      {/* New message form */}
+      {showForm && (
+        <Card className="glass-card rounded-2xl mb-8">
+          <CardHeader>
+            <CardTitle className="text-lg">Nouveau message</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Recipient */}
+              <div className="space-y-2">
+                <Label className="text-gray-700">Destinataire</Label>
+                <Select value={recipient} onValueChange={setRecipient}>
+                  <SelectTrigger className="bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald">
+                    <SelectValue placeholder="Choisir" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="support">Support Focus Racer</SelectItem>
+                    {photographers.map((p) => (
+                      <SelectItem key={p.id} value={p.id}>
+                        {p.name} ({p.eventName})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-700">Sujet</Label>
+                  <Input
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="Ex: Question sur mes photos"
+                    className="bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald"
+                    required
+                  />
+                </div>
+                {recipient === "support" && (
+                  <div className="space-y-2">
+                    <Label className="text-gray-700">Catégorie</Label>
+                    <Select value={category} onValueChange={setCategory}>
+                      <SelectTrigger className="bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CATEGORY_OPTIONS.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-gray-700">Message</Label>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Décrivez votre question..."
+                  rows={5}
+                  className="flex w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald resize-y"
+                  required
+                />
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <Button type="submit" disabled={isSubmitting} className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Envoi...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                      </svg>
+                      Envoyer
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Messages list */}
+      {isLoading ? (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="glass-card rounded-2xl animate-pulse">
+              <CardContent className="p-6">
+                <div className="h-5 w-48 bg-gray-200 rounded mb-3" />
+                <div className="h-4 w-full bg-gray-100 rounded" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : messages.length === 0 ? (
+        <Card className="glass-card rounded-2xl">
+          <CardContent className="py-16 text-center">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+              </svg>
+            </div>
+            <p className="text-muted-foreground mb-2">Aucun message</p>
+            <Button onClick={() => setShowForm(true)} className="bg-emerald hover:bg-emerald-dark text-white shadow-emerald transition-all duration-200">
+              Envoyer un message
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <div className="space-y-4">
+            {messages.map((msg) => {
+              const statusCfg = STATUS_CONFIG[msg.status] || STATUS_CONFIG.OPEN;
+              const isExpanded = expandedId === msg.id;
+              const isClosed = msg.status === "CLOSED";
+              const replies: Reply[] = Array.isArray(msg.replies) ? msg.replies : [];
+              const hasConversation = replies.length > 0 || msg.adminReply;
+              const isUnread = initialUnreadIds.has(msg.id);
+
+              return (
+                <Card
+                  key={msg.id}
+                  className={`glass-card rounded-2xl hover:shadow-glass-lg transition-all duration-200 cursor-pointer ${isClosed ? "opacity-70" : ""} ${isUnread ? "ring-2 ring-emerald-400 border-emerald-300 bg-emerald-500/5" : ""}`}
+                  onClick={() => toggleExpanded(msg.id)}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-3">
+                        {isUnread && (
+                          <span className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                        )}
+                        <h3 className={`font-medium ${isUnread ? "text-emerald-900 font-semibold" : "text-gray-900"}`}>{msg.subject}</h3>
+                        {msg.recipientId ? (
+                          <Badge variant="outline" className="text-xs bg-purple-500/10 text-purple-700 border-purple-500/30">
+                            Photographe{msg.recipient?.name ? ` — ${msg.recipient.name}` : ""}
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs bg-blue-500/10 text-blue-700 border-blue-500/30">Support</Badge>
+                        )}
+                        {hasConversation && (
+                          <span className="flex items-center gap-1 text-xs text-blue-600">
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+                            </svg>
+                            {replies.length + (msg.adminReply && replies.length === 0 ? 1 : 0)} réponse{(replies.length + (msg.adminReply && replies.length === 0 ? 1 : 0)) > 1 ? "s" : ""}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {isUnread && (
+                          <Badge className="text-xs bg-emerald-500 text-white border-emerald-600">Nouveau</Badge>
+                        )}
+                        <Badge className={`text-xs ${statusCfg.className}`}>{statusCfg.label}</Badge>
+                        <Badge variant="outline" className="text-xs">{CATEGORY_LABELS[msg.category] || msg.category}</Badge>
+                        <span className="text-xs text-gray-400">
+                          {new Date(msg.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
+                        </span>
+                        <svg className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {!isExpanded && <p className="text-sm text-muted-foreground line-clamp-2">{msg.message}</p>}
+
+                    {isExpanded && (
+                      <div className="mt-3 space-y-3" onClick={(e) => e.stopPropagation()}>
+                        {/* Initial message */}
+                        <div className="bg-gray-50 rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-6 h-6 rounded-full bg-gray-500/30 flex items-center justify-center">
+                              <svg className="w-3.5 h-3.5 text-gray-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                              </svg>
+                            </div>
+                            <span className="text-sm font-medium text-gray-700">
+                              {msg.userId === session?.user?.id ? "Vous" : (msg.user?.name || "Utilisateur")}
+                            </span>
+                            <span className="text-xs text-gray-400">{formatDate(msg.createdAt)}</span>
+                          </div>
+                          <p className="text-sm text-gray-700 whitespace-pre-wrap ml-8">{msg.message}</p>
+                        </div>
+
+                        {/* Legacy admin reply (if no replies array entries) */}
+                        {msg.adminReply && replies.length === 0 && (
+                          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="w-6 h-6 rounded-full bg-emerald-500/30 flex items-center justify-center">
+                                <svg className="w-3.5 h-3.5 text-emerald-700" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                              </div>
+                              <span className="text-sm font-medium text-emerald-700">Support</span>
+                              {msg.repliedAt && (
+                                <span className="text-xs text-emerald-500">{formatDate(msg.repliedAt)}</span>
+                              )}
+                            </div>
+                            <p className="text-sm text-emerald-800 whitespace-pre-wrap ml-8">{msg.adminReply}</p>
+                          </div>
+                        )}
+
+                        {/* Conversation thread from replies array */}
+                        {replies.map((reply, i) => (
+                          <div
+                            key={i}
+                            className={`rounded-lg p-4 ${
+                              reply.role === "admin"
+                                ? "bg-emerald-500/10 border border-emerald-500/20"
+                                : "bg-blue-500/10 border border-blue-500/20"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                                reply.role === "admin" ? "bg-emerald-500/30" : "bg-blue-500/30"
+                              }`}>
+                                <svg className={`w-3.5 h-3.5 ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                  {reply.role === "admin" ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                  )}
+                                </svg>
+                              </div>
+                              <span className={`text-sm font-medium ${reply.role === "admin" ? "text-emerald-700" : "text-blue-700"}`}>
+                                {reply.role === "admin"
+                                  ? "Support"
+                                  : reply.role === "user"
+                                    ? (msg.userId === session?.user?.id ? "Vous" : (reply.author || "Sportif"))
+                                    : reply.role === "recipient"
+                                      ? (msg.recipientId === session?.user?.id ? "Vous" : (reply.author || "Photographe"))
+                                      : (reply.author || "Utilisateur")}
+                              </span>
+                              <span className={`text-xs ${reply.role === "admin" ? "text-emerald-500" : "text-blue-500"}`}>
+                                {formatDate(reply.date)}
+                              </span>
+                            </div>
+                            <p className={`text-sm whitespace-pre-wrap ml-8 ${reply.role === "admin" ? "text-emerald-800" : "text-blue-800"}`}>
+                              {reply.content}
+                            </p>
+                          </div>
+                        ))}
+
+                        {/* Reply form + Close button (only if not closed) */}
+                        {!isClosed && (
+                          <div className="bg-white border border-gray-200 rounded-lg p-4 mt-2">
+                            <textarea
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                              placeholder="Votre réponse..."
+                              rows={3}
+                              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald/20 focus:border-emerald resize-y min-h-[80px]"
+                            />
+                            <div className="flex items-center gap-2 mt-3 justify-end">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="border-gray-300 text-gray-600 hover:bg-gray-100"
+                                onClick={() => handleClose(msg.id)}
+                                disabled={closingId === msg.id || isReplying}
+                              >
+                                {closingId === msg.id ? "..." : "Clôturer"}
+                              </Button>
+                              <Button
+                                size="sm"
+                                className="bg-emerald hover:bg-emerald-dark text-white"
+                                onClick={() => handleReply(msg.id)}
+                                disabled={isReplying || !replyText.trim()}
+                              >
+                                {isReplying ? "Envoi..." : "Répondre"}
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Closed notice */}
+                        {isClosed && (
+                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
+                            <p className="text-sm text-gray-500">Cette conversation est clôturée</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {pagination && pagination.totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-8">
+              <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)} className="rounded-lg">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+              </Button>
+              <span className="text-sm text-muted-foreground">Page {pagination.page} sur {pagination.totalPages}</span>
+              <Button variant="outline" size="sm" disabled={page >= pagination.totalPages} onClick={() => setPage(page + 1)} className="rounded-lg">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </Button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}

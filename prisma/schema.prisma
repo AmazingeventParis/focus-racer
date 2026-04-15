@@ -1,0 +1,941 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PHOTOGRAPHER
+  ORGANIZER
+  AGENCY
+  CLUB
+  FEDERATION
+  ADMIN
+  RUNNER
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum SportType {
+  RUNNING
+  TRAIL
+  TRIATHLON
+  CYCLING
+  SWIMMING
+  OBSTACLE
+  OTHER
+}
+
+enum PackType {
+  SINGLE
+  PACK_5
+  PACK_10
+  ALL_INCLUSIVE
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  DELIVERED
+  REFUNDED
+  EXPIRED
+}
+
+enum PayoutStatus {
+  NOT_APPLICABLE
+  PENDING
+  TRANSFERRED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String
+  firstName        String?
+  lastName         String?
+  role          UserRole  @default(PHOTOGRAPHER)
+  phone         String?
+  avatar        String?
+  company       String?
+  isActive         Boolean   @default(true)
+  emailVerified    DateTime?
+  stripeAccountId  String?
+  stripeOnboarded  Boolean   @default(false)
+  bio              String?
+  portfolio        String?
+  location         String?
+  postalCode       String?
+  city             String?
+  referralSource   String?
+  acceptedCguAt    DateTime?
+  newsletterOptIn  Boolean   @default(false)
+  credits          Int       @default(0)
+  stripeCustomerId           String?   @unique
+  stripeSubscriptionId       String?   @unique
+  subscriptionStatus         String?   // "active", "past_due", "canceled", "ended"
+  subscriptionPlan           String?   // "20000" ou "50000"
+  subscriptionStartedAt      DateTime?
+  subscriptionEndsAt         DateTime? // date anniversaire (fin engagement)
+  subscriptionCancelRequestedAt DateTime? // date de demande de résiliation
+  avgRating        Float     @default(0)
+  totalReviews     Int       @default(0)
+  sportifId        String?   @unique
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  events           Event[]
+  orders           Order[]
+  creditTransactions CreditTransaction[]
+  createdListings    MarketplaceListing[]  @relation("ListingCreator")
+  applicationsAsPh   MarketplaceApplication[] @relation("ApplicationPhotographer")
+  reviewsGiven       MarketplaceReview[]  @relation("ReviewAuthor")
+  reviewsReceived    MarketplaceReview[]  @relation("ReviewTarget")
+  supportMessages    SupportMessage[]
+  receivedMessages   SupportMessage[]    @relation("MessageRecipient")
+  apiKeys            ApiKey[]
+  faceImagePath      String?
+  eventFavorites     EventFavorite[]
+  notifications      Notification[]
+  hordeOwned              Horde?                          @relation("HordeOwner")
+  hordeMemberships        HordeMember[]                   @relation("HordeMemberUser")
+  conversationsCreated    HordeConversation[]             @relation("ConversationCreator")
+  conversationMemberships HordeConversationParticipant[]  @relation("ConversationParticipant")
+  hordeMessages           HordeMessage[]                  @relation("HordeMessageSender")
+  photoAlerts             PhotoAlert[]
+  badges                  UserBadge[]
+  referralCode            String?     @unique
+
+  // Gamification relations
+  xpEvents                XpEvent[]
+  userLevel               UserLevel?
+  leaderboardEntries      LeaderboardEntry[]
+  streaks                 UserStreak[]
+  referralsSent           Referral[]        @relation("ReferralReferrer")
+  referralsReceived       Referral[]        @relation("ReferralReferee")
+  photoReactions          PhotoReaction[]
+  shareEvents             ShareEvent[]
+  creditRewards           CreditReward[]
+  smartAlerts             SmartAlert[]
+  wrappedRecaps           WrappedRecap[]
+
+  notificationPreference  NotificationPreference?
+  deviceTokens            DeviceToken[]
+
+  @@index([role])
+  @@index([isActive])
+}
+
+model Event {
+  id           String      @id @default(cuid())
+  name         String
+  date         DateTime
+  location     String?
+  description  String?
+  sportType    SportType   @default(RUNNING)
+  status       EventStatus @default(DRAFT)
+  coverImage   String?
+  primaryColor String?
+  bannerImage  String?
+  logoImage    String?
+  userId       String
+  user         User        @relation(fields: [userId], references: [id])
+  photos       Photo[]
+  startListEntries StartListEntry[]
+  pricePacks   PricePack[]
+  orders       Order[]
+  faceClusteredAt DateTime? // When face clustering was last run
+  uploadStartedAt DateTime? // When the first batch upload started
+  processingStartedAt DateTime? // When AI processing started (after file save)
+  uploadCompletedAt DateTime? // When the last photo was processed
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  latitude     Float?
+  longitude    Float?
+  favorites      EventFavorite[]
+  notifications  Notification[]
+  photoAlerts    PhotoAlert[]
+  guestFollowers GuestEventFollower[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model Photo {
+  id            String      @id @default(cuid())
+  filename      String
+  originalName  String
+  path          String      // HD original (for purchase/download only)
+  webPath       String?     // Optimized version for AI pipeline + web display
+  s3Key         String?
+  thumbnailPath String?
+  bibNumbers    BibNumber[]
+  faces         PhotoFace[]
+  eventId       String
+  event         Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  orderItems    OrderItem[]
+  reactions     PhotoReaction[]
+  shares        ShareEvent[]
+  qualityScore  Float?
+  isBlurry      Boolean     @default(false)
+  autoEdited    Boolean     @default(false)
+  labels        String?
+  faceIndexed   Boolean     @default(false)
+  ocrProvider      String?
+  processedAt      DateTime?
+  creditDeducted   Boolean     @default(false)
+  creditRefunded   Boolean     @default(false)
+  createdAt        DateTime    @default(now())
+
+  @@index([eventId])
+}
+
+model BibNumber {
+  id         String @id @default(cuid())
+  number     String
+  photoId    String
+  photo      Photo  @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  confidence Float?
+  source     String @default("ocr") // ocr_tesseract, ocr_aws, face_cluster, manual
+
+  @@unique([photoId, number])
+  @@index([number])
+  @@index([photoId])
+}
+
+model PhotoFace {
+  id          String @id @default(cuid())
+  photoId     String
+  photo       Photo  @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  faceId      String // AWS Rekognition FaceId
+  confidence  Float?
+  boundingBox String? // JSON: {left, top, width, height}
+  cropPath    String? // Smart crop path for this face
+  createdAt   DateTime @default(now())
+
+  @@index([photoId])
+  @@index([faceId])
+}
+
+model StartListEntry {
+  id         String    @id @default(cuid())
+  bibNumber  String
+  firstName  String
+  lastName   String
+  email      String?
+  eventId    String
+  event      Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  notifiedAt DateTime?
+
+  @@unique([eventId, bibNumber])
+  @@index([eventId])
+}
+
+model PricePack {
+  id       String   @id @default(cuid())
+  name     String
+  type     PackType
+  price    Float
+  quantity Int?
+  isActive Boolean  @default(true)
+  eventId  String
+  event    Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  orders   Order[]
+
+  @@index([eventId])
+}
+
+model Order {
+  id                 String      @id @default(cuid())
+  userId             String?
+  user               User?       @relation(fields: [userId], references: [id])
+  guestEmail         String?
+  guestName          String?
+  eventId            String
+  event              Event       @relation(fields: [eventId], references: [id])
+  packId             String?
+  pack               PricePack?  @relation(fields: [packId], references: [id])
+  items              OrderItem[]
+  status             OrderStatus @default(PENDING)
+  totalAmount        Float
+  platformFee        Float       @default(0)
+  serviceFee         Float       @default(0)
+  stripeFee          Float       @default(0)
+  photographerPayout Float       @default(0)
+  stripeTransferId   String?
+  payoutStatus       PayoutStatus @default(NOT_APPLICABLE)
+  transferredAt      DateTime?
+  stripeSessionId    String?     @unique
+  stripePaymentId    String?
+  downloadToken      String?     @unique
+  downloadExpiresAt  DateTime?
+  downloadCount      Int         @default(0)
+  lastDownloadAt     DateTime?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@index([downloadToken])
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  photoId   String
+  photo     Photo  @relation(fields: [photoId], references: [id])
+  unitPrice Float
+
+  @@index([orderId])
+  @@index([photoId])
+}
+
+enum GdprRequestStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  REJECTED
+}
+
+enum GdprRequestType {
+  DELETION
+  ACCESS
+  RECTIFICATION
+}
+
+model GdprRequest {
+  id            String            @id @default(cuid())
+  type          GdprRequestType   @default(DELETION)
+  status        GdprRequestStatus @default(PENDING)
+  email         String
+  name          String
+  bibNumber     String?
+  eventId       String?
+  reason        String?
+  adminNote     String?
+  processedBy   String?
+  processedAt   DateTime?
+  photosDeleted Int               @default(0)
+  facesDeleted  Int               @default(0)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  auditLogs     GdprAuditLog[]
+
+  @@index([email])
+  @@index([status])
+}
+
+model GdprAuditLog {
+  id          String      @id @default(cuid())
+  requestId   String
+  request     GdprRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  action      String
+  details     String?
+  performedBy String?
+  createdAt   DateTime    @default(now())
+
+  @@index([requestId])
+}
+
+// =========== CREDITS ===========
+
+enum TransactionType {
+  PURCHASE
+  DEDUCTION
+  REFUND
+  ADMIN_GRANT
+}
+
+model CreditTransaction {
+  id              String          @id @default(cuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  type            TransactionType
+  amount          Int
+  balanceBefore   Int
+  balanceAfter    Int
+  reason          String?
+  photoId         String?
+  eventId         String?
+  stripeSessionId String?         @unique // idempotence : empêche double-créditage
+  createdAt       DateTime        @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// =========== MARKETPLACE ===========
+
+enum ListingStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+model MarketplaceListing {
+  id           String         @id @default(cuid())
+  title        String
+  description  String
+  sportType    SportType      @default(RUNNING)
+  eventDate    DateTime
+  eventLocation String
+  budget       Float?
+  currency     String         @default("EUR")
+  status       ListingStatus  @default(OPEN)
+  creatorId    String
+  creator      User           @relation("ListingCreator", fields: [creatorId], references: [id])
+  applications MarketplaceApplication[]
+  requirements String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([creatorId])
+  @@index([status])
+  @@index([sportType])
+  @@index([eventDate])
+}
+
+model MarketplaceApplication {
+  id             String            @id @default(cuid())
+  listingId      String
+  listing        MarketplaceListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  photographerId String
+  photographer   User              @relation("ApplicationPhotographer", fields: [photographerId], references: [id])
+  message        String?
+  proposedRate   Float?
+  status         ApplicationStatus @default(PENDING)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@unique([listingId, photographerId])
+  @@index([listingId])
+  @@index([photographerId])
+  @@index([status])
+}
+
+// =========== SUPPORT MESSAGING ===========
+
+enum MessageCategory {
+  BILLING
+  SORTING
+  GDPR
+  ACCOUNT
+  TECHNICAL
+  EVENT
+  OTHER
+}
+
+enum MessageStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+model SupportMessage {
+  id           String          @id @default(cuid())
+  userId       String?
+  user         User?           @relation(fields: [userId], references: [id])
+  recipientId  String?
+  recipient    User?           @relation("MessageRecipient", fields: [recipientId], references: [id])
+  guestName    String?
+  guestEmail   String?
+  subject      String
+  message      String
+  category     MessageCategory @default(OTHER)
+  status       MessageStatus   @default(OPEN)
+  eventId      String?
+  orderId      String?
+  adminReply   String?
+  repliedBy    String?
+  repliedAt    DateTime?
+  readByUser      Boolean         @default(true)
+  readByRecipient Boolean         @default(true)
+  replies         Json            @default("[]")
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([recipientId])
+  @@index([status])
+  @@index([category])
+  @@index([createdAt])
+}
+
+// =========== API KEYS ===========
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  keyHash    String    @unique
+  keyPrefix  String
+  isActive   Boolean   @default(true)
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@index([keyHash])
+}
+
+// =========== PLATFORM SETTINGS ===========
+
+model PlatformSettings {
+  id               String   @id @default("default")
+  watermarkPath    String?
+  watermarkOpacity Float    @default(0.3)
+  updatedAt        DateTime @updatedAt
+}
+
+model MarketplaceReview {
+  id         String   @id @default(cuid())
+  authorId   String
+  author     User     @relation("ReviewAuthor", fields: [authorId], references: [id])
+  targetId   String
+  target     User     @relation("ReviewTarget", fields: [targetId], references: [id])
+  listingId  String?
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  @@index([authorId])
+  @@index([targetId])
+}
+
+// =========== EVENT FAVORITES ===========
+
+model EventFavorite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+}
+
+// =========== HORDE (SPORTIF GROUPS) ===========
+
+enum HordeMemberStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+enum ConversationType {
+  GROUP
+  DM
+}
+
+model Horde {
+  id            String              @id @default(cuid())
+  ownerId       String              @unique
+  owner         User                @relation("HordeOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  name          String              @default("Ma Horde")
+  members       HordeMember[]
+  conversations HordeConversation[]
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+}
+
+model HordeMember {
+  id        String            @id @default(cuid())
+  hordeId   String
+  horde     Horde             @relation(fields: [hordeId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User              @relation("HordeMemberUser", fields: [userId], references: [id], onDelete: Cascade)
+  status    HordeMemberStatus @default(PENDING)
+  invitedAt DateTime          @default(now())
+  joinedAt  DateTime?
+
+  @@unique([hordeId, userId])
+  @@index([userId])
+}
+
+// =========== HORDE CHAT ===========
+
+model HordeConversation {
+  id           String                        @id @default(cuid())
+  hordeId      String
+  horde        Horde                         @relation(fields: [hordeId], references: [id], onDelete: Cascade)
+  type         ConversationType
+  name         String?
+  createdById  String
+  createdBy    User                          @relation("ConversationCreator", fields: [createdById], references: [id])
+  participants HordeConversationParticipant[]
+  messages     HordeMessage[]
+  createdAt    DateTime                      @default(now())
+  updatedAt    DateTime                      @updatedAt
+
+  @@index([hordeId])
+}
+
+model HordeConversationParticipant {
+  id             String            @id @default(cuid())
+  conversationId String
+  conversation   HordeConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User              @relation("ConversationParticipant", fields: [userId], references: [id], onDelete: Cascade)
+  lastReadAt     DateTime          @default(now())
+
+  @@unique([conversationId, userId])
+  @@index([userId])
+}
+
+model HordeMessage {
+  id             String            @id @default(cuid())
+  conversationId String
+  conversation   HordeConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User              @relation("HordeMessageSender", fields: [userId], references: [id], onDelete: Cascade)
+  content        String
+  createdAt      DateTime          @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+// =========== PHOTO ALERTS ===========
+
+model PhotoAlert {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId     String
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  bibNumber   String
+  photoCount  Int      @default(0)
+  lastNotifiedCount Int @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, eventId, bibNumber])
+  @@index([userId])
+  @@index([eventId, bibNumber])
+}
+
+// =========== USER BADGES ===========
+
+model UserBadge {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badgeKey String
+  earnedAt DateTime @default(now())
+
+  @@unique([userId, badgeKey])
+  @@index([userId])
+}
+
+// =========== NOTIFICATIONS ===========
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // PHOTOS_AVAILABLE, EVENT_PUBLISHED, WRONG_MATCH_RESOLVED
+  title     String
+  message   String
+  eventId   String?
+  event     Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([eventId])
+  @@index([read])
+}
+
+// =========== GAMIFICATION: XP & LEVELS ===========
+
+enum XpActionType {
+  PHOTO_PURCHASE
+  EVENT_FAVORITE
+  PROFILE_COMPLETE
+  FRIEND_ADDED
+  PHOTO_SHARED
+  PHOTO_REACTION
+  REFERRAL_COMPLETED
+  PHOTO_UPLOADED
+  EVENT_PUBLISHED
+  PHOTO_SOLD
+  BADGE_EARNED
+  STRIPE_CONNECTED
+  HIGH_OCR_RATE
+  EVENT_CREATED
+  START_LIST_IMPORTED
+  HIGH_COVERAGE
+  DAILY_LOGIN
+  STREAK_BONUS
+}
+
+model XpEvent {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    XpActionType
+  xpAmount  Int
+  metadata  String?
+  createdAt DateTime     @default(now())
+
+  @@index([userId])
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}
+
+model UserLevel {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalXp        Int      @default(0)
+  level          Int      @default(1)
+  levelName      String   @default("Débutant")
+  currentLevelXp Int      @default(0)
+  nextLevelXp    Int      @default(100)
+  updatedAt      DateTime @updatedAt
+}
+
+// =========== GAMIFICATION: LEADERBOARDS ===========
+
+enum LeaderboardPeriod {
+  WEEKLY
+  MONTHLY
+  ALL_TIME
+}
+
+model LeaderboardEntry {
+  id        String            @id @default(cuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  period    LeaderboardPeriod
+  periodKey String
+  role      UserRole
+  category  String
+  score     Int               @default(0)
+  updatedAt DateTime          @updatedAt
+
+  @@unique([userId, period, periodKey, category])
+  @@index([period, periodKey, category, score])
+}
+
+// =========== GAMIFICATION: STREAKS ===========
+
+model UserStreak {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  streakType       String
+  currentStreak    Int      @default(0)
+  longestStreak    Int      @default(0)
+  lastActivityDate DateTime
+  nextDeadline     DateTime
+  updatedAt        DateTime @updatedAt
+
+  @@unique([userId, streakType])
+  @@index([nextDeadline])
+}
+
+// =========== GAMIFICATION: PHOTO REACTIONS ===========
+
+enum ReactionType {
+  LIKE
+  LOVE
+  FIRE
+  WOW
+}
+
+model PhotoReaction {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photoId   String
+  photo     Photo        @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  type      ReactionType
+  createdAt DateTime     @default(now())
+
+  @@unique([userId, photoId, type])
+  @@index([photoId])
+  @@index([userId])
+}
+
+// =========== GAMIFICATION: REFERRALS ===========
+
+enum ReferralStatus {
+  PENDING
+  COMPLETED
+  EXPIRED
+}
+
+model Referral {
+  id              String         @id @default(cuid())
+  referrerId      String
+  referrer        User           @relation("ReferralReferrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  refereeId       String?
+  referee         User?          @relation("ReferralReferee", fields: [refereeId], references: [id], onDelete: SetNull)
+  referralCode    String
+  refereeEmail    String?
+  status          ReferralStatus @default(PENDING)
+  referrerReward  Int            @default(0)
+  refereeReward   Int            @default(0)
+  completedAction String?
+  completedAt     DateTime?
+  createdAt       DateTime       @default(now())
+
+  @@index([referrerId])
+  @@index([referralCode])
+}
+
+// =========== GAMIFICATION: SOCIAL SHARING ===========
+
+model ShareEvent {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  photoId     String
+  photo       Photo    @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  shareToken  String   @unique @default(cuid())
+  platform    String?
+  viewCount   Int      @default(0)
+  rewardGiven Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([shareToken])
+  @@index([photoId])
+}
+
+// =========== GAMIFICATION: CREDIT REWARDS ===========
+
+model CreditReward {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  actionKey String
+  credits   Int
+  claimedAt DateTime @default(now())
+
+  @@unique([userId, actionKey])
+}
+
+// =========== GAMIFICATION: SMART ALERTS ===========
+
+enum AlertType {
+  PHOTOS_AVAILABLE
+  PURCHASE_REMINDER
+  SORTING_REMINDER
+  WEEKLY_STATS
+  STREAK_AT_RISK
+  BADGE_EARNED
+  LEVEL_UP
+  REFERRAL_COMPLETED
+}
+
+model SmartAlert {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  alertType   AlertType
+  title       String
+  message     String
+  metadata    String?
+  read        Boolean   @default(false)
+  emailSent   Boolean   @default(false)
+  scheduledAt DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+
+  @@index([userId, read])
+  @@index([scheduledAt])
+}
+
+// =========== GAMIFICATION: WRAPPED RECAP ===========
+
+model WrappedRecap {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  year        Int
+  role        UserRole
+  statsJson   String
+  cardImageS3 String?
+  generatedAt DateTime @default(now())
+
+  @@unique([userId, year, role])
+}
+
+// =========== GUEST EVENT FOLLOWERS ===========
+
+model GuestEventFollower {
+  id               String    @id @default(cuid())
+  email            String
+  name             String?
+  eventId          String
+  event            Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  bibNumber        String?
+  unsubscribeToken String    @unique @default(cuid())
+  verified         Boolean   @default(true)
+  notifiedAt       DateTime?
+  createdAt        DateTime  @default(now())
+
+  @@unique([email, eventId])
+  @@index([eventId])
+}
+
+// =========== DEVICE TOKENS (Push Notifications) ===========
+
+model DeviceToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  platform  String   @default("android") // android, web
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// =========== NOTIFICATION PREFERENCES ===========
+
+model NotificationPreference {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Non-transactional preferences (opt-out: true = enabled by default)
+  photosAvailable     Boolean  @default(true)
+  eventPublished      Boolean  @default(true)
+  supportReply        Boolean  @default(true)
+  badgeEarned         Boolean  @default(true)
+  streakAtRisk        Boolean  @default(true)
+  purchaseReminder    Boolean  @default(true)
+  sortingReminder     Boolean  @default(true)
+  stripeOnboarded     Boolean  @default(true)
+  newSupportMessage   Boolean  @default(true)
+  newSale             Boolean  @default(true)
+  newFollower         Boolean  @default(true)
+  lowCredits          Boolean  @default(true)
+  productUpdates      Boolean  @default(true)
+  referralCompleted   Boolean  @default(true)
+  newsletter          Boolean  @default(true)
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}

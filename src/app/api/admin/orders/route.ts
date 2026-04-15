@@ -1,0 +1,109 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "20");
+    const status = searchParams.get("status") || "";
+    const search = searchParams.get("search") || "";
+    const eventId = searchParams.get("eventId") || "";
+    const from = searchParams.get("from") || "";
+    const to = searchParams.get("to") || "";
+
+    const where: Record<string, unknown> = {};
+
+    if (status && status !== "all") {
+      where.status = status;
+    }
+
+    if (eventId) {
+      where.eventId = eventId;
+    }
+
+    if (from || to) {
+      const dateFilter: Record<string, Date> = {};
+      if (from) dateFilter.gte = new Date(from);
+      if (to) {
+        const toDate = new Date(to);
+        toDate.setHours(23, 59, 59, 999);
+        dateFilter.lte = toDate;
+      }
+      where.createdAt = dateFilter;
+    }
+
+    if (search) {
+      where.OR = [
+        { user: { name: { contains: search, mode: "insensitive" } } },
+        { user: { email: { contains: search, mode: "insensitive" } } },
+        { guestEmail: { contains: search, mode: "insensitive" } },
+        { guestName: { contains: search, mode: "insensitive" } },
+        { id: { contains: search } },
+      ];
+    }
+
+    const [orders, total] = await Promise.all([
+      prisma.order.findMany({
+        where,
+        include: {
+          user: {
+            select: { id: true, name: true, email: true, sportifId: true },
+          },
+          event: {
+            select: {
+              id: true,
+              name: true,
+              user: { select: { id: true, name: true, sportifId: true, stripeOnboarded: true } },
+            },
+          },
+          pack: {
+            select: { name: true, type: true },
+          },
+          _count: { select: { items: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.order.count({ where }),
+    ]);
+
+    return NextResponse.json({
+      orders,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching admin orders:", error);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
+}
+
+export async function DELETE() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+    }
+
+    // Delete order items first (FK constraint), then orders
+    const deletedItems = await prisma.orderItem.deleteMany({});
+    const deletedOrders = await prisma.order.deleteMany({});
+
+    return NextResponse.json({
+      message: "Toutes les commandes ont été supprimées",
+      deletedOrders: deletedOrders.count,
+      deletedItems: deletedItems.count,
+    });
+  } catch (error) {
+    console.error("Error deleting all orders:", error);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
+}

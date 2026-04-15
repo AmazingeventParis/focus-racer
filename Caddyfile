@@ -1,0 +1,65 @@
+focusracer.swipego.app {
+    # Automatic HTTPS with Let's Encrypt
+    # No configuration needed - Caddy handles it!
+
+    # SSE notifications — no buffering, no compression
+    @sse path /api/notifications/stream
+    reverse_proxy @sse app:3000 {
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+        flush_interval -1
+    }
+
+    # Reverse proxy to Next.js app
+    reverse_proxy app:3000 {
+        # Forward real client IP
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Enable Brotli + gzip compression (Brotli ~15-20% smaller)
+    encode zstd br gzip
+
+    # Security headers
+    header {
+        # Prevent clickjacking
+        X-Frame-Options "SAMEORIGIN"
+        # XSS protection
+        X-Content-Type-Options "nosniff"
+        # Referrer policy
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Permissions policy — block camera/mic/geolocation
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        # HSTS — force HTTPS for 2 years
+        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+        # Remove server header
+        -Server
+    }
+
+    # Hotlink protection: block external sites from embedding our images
+    @hotlink {
+        path /api/uploads/* /_next/image*
+        not header Referer *focusracer.swipego.app*
+        not header Referer *localhost*
+        not header Referer ""
+    }
+    respond @hotlink 403
+
+    # Large upload support (for photo batches)
+    request_body {
+        max_size 100MB
+    }
+
+    # Logs
+    log {
+        output file /var/log/caddy/access.log
+        format json
+    }
+}
+
+# Redirect www to non-www (optional)
+www.focusracer.swipego.app {
+    redir https://focusracer.swipego.app{uri} permanent
+}

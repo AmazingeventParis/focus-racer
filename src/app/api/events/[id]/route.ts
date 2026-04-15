@@ -1,0 +1,256 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { z } from "zod";
+import prisma from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
+import { s3KeyToPublicPath } from "@/lib/s3";
+import { grantXp } from "@/lib/gamification/xp-service";
+import { geocodeLocation } from "@/lib/gamification/geocoding";
+
+const updateEventSchema = z.object({
+  name: z.string().min(1).optional(),
+  date: z.string().optional(),
+  location: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  sportType: z.enum(["RUNNING", "TRAIL", "TRIATHLON", "CYCLING", "SWIMMING", "OBSTACLE", "OTHER"]).optional(),
+  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional(),
+  primaryColor: z.string().optional().nullable(),
+});
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "Non autorisé" },
+        { status: 401 }
+      );
+    }
+
+    const event = await prisma.event.findUnique({
+      where: { id },
+      include: {
+        photos: {
+          include: {
+            bibNumbers: true,
+          },
+          orderBy: { createdAt: "desc" },
+        },
+        _count: {
+          select: { photos: true, startListEntries: true },
+        },
+      },
+    });
+
+    if (!event) {
+      return NextResponse.json(
+        { error: "Événement non trouvé" },
+        { status: 404 }
+      );
+    }
+
+    // Allow owner or admin
+    if (event.userId !== session.user.id && session.user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Non autorisé" },
+        { status: 403 }
+      );
+    }
+
+    // Convert S3 keys to public paths for frontend
+    const mapped = {
+      ...event,
+      coverImage: event.coverImage ? s3KeyToPublicPath(event.coverImage) : null,
+      bannerImage: event.bannerImage ? s3KeyToPublicPath(event.bannerImage) : null,
+      logoImage: event.logoImage ? s3KeyToPublicPath(event.logoImage) : null,
+      photos: event.photos.map((photo) => ({
+        ...photo,
+        path: s3KeyToPublicPath(photo.path),
+        webPath: photo.webPath ? s3KeyToPublicPath(photo.webPath) : null,
+        thumbnailPath: photo.thumbnailPath ? s3KeyToPublicPath(photo.thumbnailPath) : null,
+      })),
+    };
+
+    return NextResponse.json(mapped);
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    return NextResponse.json(
+      { error: "Erreur lors de la récupération de l'événement" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
+    const event = await prisma.event.findUnique({ where: { id } });
+
+    if (!event) {
+      return NextResponse.json({ error: "Événement non trouvé" }, { status: 404 });
+    }
+
+    if (event.userId !== session.user.id && session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const data = updateEventSchema.parse(body);
+
+    // Geocode location if changed
+    let geoData: { latitude?: number; longitude?: number } = {};
+    if (data.location && data.location !== event.location) {
+      try {
+        const coords = await geocodeLocation(data.location);
+        if (coords) {
+          geoData = { latitude: coords.lat, longitude: coords.lng };
+        }
+      } catch (geoErr) {
+        console.error("Geocoding error:", geoErr);
+      }
+    }
+
+    const wasPublished = event.status === "PUBLISHED";
+
+    const updated = await prisma.event.update({
+      where: { id },
+      data: {
+        ...data,
+        ...geoData,
+        date: data.date ? new Date(data.date) : undefined,
+      },
+    });
+
+    // Grant XP if status changed to PUBLISHED
+    if (!wasPublished && updated.status === "PUBLISHED") {
+      try {
+        await grantXp(session.user.id, "EVENT_PUBLISHED", { eventId: id });
+        // Auto-claim first_event credit reward
+        const { claimCreditReward } = await import("@/lib/gamification/credit-reward-service");
+        await claimCreditReward(session.user.id, "first_event");
+      } catch (xpErr) {
+        console.error("Error granting event published XP:", xpErr);
+      }
+
+      // Notify followers by email
+      try {
+        const { canSendEmail, generateUnsubscribeUrl } = await import("@/lib/notification-preferences");
+        const { sendEventPublishedEmail } = await import("@/lib/email");
+
+        const followers = await prisma.eventFavorite.findMany({
+          where: { eventId: id },
+          select: {
+            userId: true,
+            user: { select: { email: true, name: true } },
+          },
+        });
+
+        const eventDateFormatted = updated.date.toLocaleDateString("fr-FR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+
+        for (const f of followers) {
+          try {
+            if (await canSendEmail(f.userId, "eventPublished")) {
+              await sendEventPublishedEmail({
+                to: f.user.email,
+                name: f.user.name || "sportif",
+                eventName: updated.name,
+                eventId: id,
+                eventDate: eventDateFormatted,
+                eventLocation: updated.location || undefined,
+                unsubscribeUrl: generateUnsubscribeUrl(f.userId, "eventPublished"),
+              });
+            }
+          } catch (emailErr) {
+            console.error(`[Email] Event published notify error for ${f.user.email}:`, emailErr);
+          }
+        }
+
+        // Push notification to all followers
+        const { notifyEventPublished } = await import("@/lib/notify");
+        await notifyEventPublished(
+          followers.map((f) => f.userId),
+          updated.name,
+          id
+        );
+      } catch (notifErr) {
+        console.error("Error notifying followers about published event:", notifErr);
+      }
+    }
+
+    return NextResponse.json(updated);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: error.issues[0].message }, { status: 400 });
+    }
+    console.error("Error updating event:", error);
+    return NextResponse.json(
+      { error: "Erreur lors de la mise à jour de l'événement" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "Non autorisé" },
+        { status: 401 }
+      );
+    }
+
+    const event = await prisma.event.findUnique({
+      where: { id },
+    });
+
+    if (!event) {
+      return NextResponse.json(
+        { error: "Événement non trouvé" },
+        { status: 404 }
+      );
+    }
+
+    if (event.userId !== session.user.id && session.user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Non autorisé" },
+        { status: 403 }
+      );
+    }
+
+    await prisma.event.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    return NextResponse.json(
+      { error: "Erreur lors de la suppression de l'événement" },
+      { status: 500 }
+    );
+  }
+}
