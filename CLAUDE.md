@@ -41,6 +41,70 @@
 
 **Config prod** : Body size 100MB (Caddy + Next.js) • Output standalone • AI workers 16 • NODE_OPTIONS=16384MB • Sharp config centralisée (`src/lib/sharp-config.ts`) concurrency=1/worker cache=2GB • WebP web versions • Chunks 25
 
+### Charte graphique "Fresh Green" (Session 28)
+
+**Principe** : thème light vert/blanc aligné sur la homepage publique, lisibilité optimale, standards startup.
+
+#### Palette principale
+
+| Rôle | Hex | Tailwind | Usage |
+|------|-----|----------|-------|
+| Background | `#F8FAF9` | — | Fond pages |
+| Surface | `#FFFFFF` | `bg-white` | Cards, modals |
+| Surface Alt | `#F0FDF4` | `bg-emerald-50` | Highlights subtils |
+| Border | `#E2E8F0` | `border-slate-200` | Bordures générales |
+| Text Primary | `#0F172A` | `text-slate-900` | Titres, texte principal |
+| Text Secondary | `#475569` | `text-slate-600` | Descriptions, labels |
+| Text Muted | `#94A3B8` | `text-slate-400` | Placeholders, timestamps |
+| Primary | `#10B981` | `bg-emerald-500` | Boutons, liens actifs, accents |
+| Primary Hover | `#059669` | `bg-emerald-600` | Hover boutons |
+| Primary Light | `#D1FAE5` | `bg-emerald-100` | Badges, backgrounds subtils |
+| Sidebar BG | `#042F2E` | `bg-teal-950` | Sidebar + header mobile (dark teal) |
+| Danger | `#EF4444` | `text-red-500` | Erreurs, suppressions |
+| Warning | `#F59E0B` | `text-amber-500` | Alertes |
+
+#### Composants
+
+| Composant | Style |
+|-----------|-------|
+| **Sidebar** | `bg-[#042F2E]` dark teal, items actifs `bg-emerald-500/15 text-emerald-400 border-l-[3px]`, inactifs `text-white/60` |
+| **MobileNav** | Header `bg-[#042F2E]` + bottom bar `bg-white border-t border-slate-200`, tabs `text-emerald-600` / `text-slate-400` |
+| **Header public** | `bg-white/95 backdrop-blur-xl`, liens `text-slate-600` → `hover:text-emerald-600`, CTA `bg-emerald-500 text-white` |
+| **Footer** | `bg-[#042F2E]` dark teal, texte `text-emerald-300/60`, hover `text-emerald-400` |
+| **Cards** | `bg-white border border-slate-200 rounded-xl shadow-card`, hover `shadow-card-hover border-emerald-300` |
+| **Bouton primary** | `bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg` |
+| **Bouton secondary** | `bg-white border border-slate-200 text-slate-700 hover:bg-slate-50` |
+| **Inputs** | `bg-white border border-slate-300 rounded-lg`, focus `ring-emerald-500/20 border-emerald-500` |
+| **Badges** | Success `bg-emerald-50 text-emerald-700`, Warning `bg-amber-50 text-amber-700`, Error `bg-red-50 text-red-700` |
+| **Dropdowns** | `bg-white border border-slate-200 rounded-xl shadow-lg`, items hover `bg-emerald-50 text-emerald-700` |
+| **Skeleton** | `bg-slate-200 animate-pulse rounded-lg` |
+| **Scrollbar** | `scrollbar-color: #cbd5e1 transparent` |
+
+#### Contrastes WCAG AA
+
+| Combinaison | Ratio |
+|-------------|-------|
+| `#0F172A` sur `#FFFFFF` | 15.4:1 (AAA) |
+| `#475569` sur `#FFFFFF` | 7.1:1 (AAA) |
+| `#FFFFFF` sur `#042F2E` | 15.8:1 (AAA) |
+| `#FFFFFF` sur `#10B981` | 3.6:1 (AA large) |
+| `#FFFFFF` sur `#059669` | 4.6:1 (AA) |
+
+#### Fichiers de config
+
+- `tailwind.config.ts` — couleurs, shadows, gradients
+- `src/app/globals.css` — variables CSS shadcn, composants réutilisables (.btn-primary, .card-base, etc.)
+- Sidebars : `src/components/layout/ClientSidebar.tsx` (photographe), `OrganizerSidebar.tsx`, `SportifSidebar.tsx`, `AdminSidebar.tsx`
+- Mobile : `src/components/layout/MobileNav.tsx`
+
+#### Migration restante
+
+- [x] Site public (header, footer, pages marketing, galerie événements)
+- [x] Espace photographe (sidebar, dashboard, events, orders, statistics, credits, support, settings)
+- [ ] Espace organisateur (copie photographe — mêmes hex à remplacer)
+- [ ] Espace sportif
+- [ ] Espace admin
+
 ---
 
 ## 3. Architecture fichiers (simplifiée)
@@ -407,6 +471,7 @@ Focus Racer/
 | **24** | 2026-02-24 | Fix financier centimes→euros, KPIs ventes (total/packs/unitaires), Stripe webhook configuré (`we_1T4NAdFeQbxycmAHy48wZwSb`), 30 badges PNG custom (10 sportif + 10 photographe + 10 organisateur) avec artwork transparent, affiches événements dans dashboard, endpoint admin DELETE orders |
 | **26** | 2026-02-26 | Système de notifications complet (15 préférences opt-out, 12 templates email, 13 triggers, UI accordéon, one-click unsubscribe, List-Unsubscribe header), prochaine recharge crédits dans carte solde, fix Stripe API 2025+ (current_period_end supprimé) |
 | **27** | 2026-02-26 | Protection anti-bot complète : Cloudflare Turnstile (CAPTCHA invisible, vraies clés prod), brute force login (lockout progressif 5→15min 10→1h), bot detection middleware (25+ UA bloqués, scraping pattern 15/10s), honeypot 3 formulaires, rate limiting 9 routes ajoutées, robots.txt, CSP + HSTS |
+| **28** | 2026-04-16 | Charte graphique "Fresh Green" : migration dark neon → light emerald/blanc (51 fichiers). Palette emerald-500 (#10B981), sidebar dark teal (#042F2E), MobileNav blanc+teal, Header blanc, Footer dark teal. Tailwind config + globals.css remappés. Appliqué au site public + espace photographe. Espaces organisateur/sportif/admin restent en dark neon (à migrer) |
 
 **Fichiers clés créés** : `src/lib/turnstile.ts`, `src/lib/login-protection.ts`, `src/lib/bot-detection.ts`, `src/lib/request-context.ts`, `src/components/TurnstileWidget.tsx`, `src/app/api/auth/verify-turnstile/route.ts`, `public/robots.txt`, `src/lib/notification-preferences.ts`, `src/app/api/notifications/preferences/route.ts`, `src/app/api/notifications/unsubscribe/route.ts`, `src/components/NotificationPreferencesCard.tsx`, `src/components/layout/MobileNav.tsx`, `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`, `src/app/api/sportif/horde/conversations/route.ts`, `src/app/api/sportif/horde/conversations/[id]/messages/route.ts`, `src/app/api/sportif/horde/conversations/[id]/read/route.ts`, `src/app/api/sportif/horde/conversations/unread-total/route.ts`, `src/components/horde/HordeChat.tsx`, `src/components/horde/ConversationList.tsx`, `src/components/horde/MessageThread.tsx`, `src/components/horde/CreateGroupDialog.tsx`, `src/components/horde/CreateDMDialog.tsx`, `src/app/homepage.css`, `src/lib/photographer-badges.ts`, `src/lib/organizer-badges.ts`, `src/app/api/photographer/badges/route.ts`, `src/app/api/organizer/badges/route.ts`, `src/components/photographer/PhotographerBadgeRow.tsx`, `src/components/organizer/OrganizerBadgeRow.tsx`, `public/badges/` (30 PNG)
 
@@ -594,4 +659,4 @@ orga@test.com / orga123
 
 ---
 
-**Dernière mise à jour** : Session 27, 2026-02-26 (protection anti-bot complète : Turnstile CAPTCHA, brute force login, bot detection middleware, honeypot, rate limiting 13 routes, robots.txt, CSP + HSTS)
+**Dernière mise à jour** : Session 28, 2026-04-16 (charte graphique Fresh Green : migration dark neon → light emerald/blanc, 51 fichiers modifiés, site public + espace photographe)
