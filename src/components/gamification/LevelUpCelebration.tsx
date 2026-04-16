@@ -62,17 +62,17 @@ export default function LevelUpCelebration() {
       ))}
 
       {/* Level up card */}
-      <div className="relative bg-[#151C44] border border-[#2C3566] rounded-3xl shadow-2xl p-8 text-center max-w-sm mx-4 animate-bounce-in">
+      <div className="relative bg-white border border-slate-200 rounded-3xl shadow-2xl p-8 text-center max-w-sm mx-4 animate-bounce-in">
         <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
           {levelUp.newLevel}
         </div>
-        <h2 className="text-2xl font-bold text-[#F3F6FF] mb-2">
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">
           Niveau supérieur !
         </h2>
-        <p className="text-lg font-semibold text-[#0891B2] mb-2">
+        <p className="text-lg font-semibold text-emerald-500 mb-2">
           {levelUp.newName}
         </p>
-        <p className="text-sm text-[#A7B0D6]">
+        <p className="text-sm text-slate-600">
           Continuez comme ça pour débloquer de nouvelles récompenses !
         </p>
         <button

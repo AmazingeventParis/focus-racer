@@ -200,7 +200,7 @@ export default function ClientSidebar() {
   }, [userRole]);
 
   return (
-    <aside className="hidden md:flex w-64 bg-[#0D1330] border-r border-[#2C3566]/30 text-white min-h-screen flex-col">
+    <aside className="hidden md:flex w-64 bg-[#042F2E] border-r border-[#115E59]/30 text-white min-h-screen flex-col">
       {/* Logo */}
       <div className="p-6">
         <Link href="/" className="flex items-center">
@@ -212,7 +212,7 @@ export default function ClientSidebar() {
             className="h-9 w-auto"
           />
         </Link>
-        <p className="text-navy-200 text-xs mt-2 ml-10">{getRoleLabel(userRole)}</p>
+        <p className="text-emerald-300/70 text-xs mt-2 ml-10">{getRoleLabel(userRole)}</p>
       </div>
 
       {/* XP Bar */}
@@ -226,10 +226,10 @@ export default function ClientSidebar() {
             if (item.disabled) {
               return (
                 <li key={item.href}>
-                  <span className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-navy-300/40 cursor-not-allowed select-none">
-                    <span className="text-navy-300/30">{item.icon}</span>
+                  <span className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-white/20 cursor-not-allowed select-none">
+                    <span className="text-white/15">{item.icon}</span>
                     {item.labelKey ? t(item.labelKey) : item.label}
-                    <span className="ml-auto text-[10px] uppercase tracking-wide text-navy-300/30 font-semibold">Nous contacter</span>
+                    <span className="ml-auto text-[10px] uppercase tracking-wide text-white/20 font-semibold">Nous contacter</span>
                   </span>
                 </li>
               );
@@ -241,16 +241,16 @@ export default function ClientSidebar() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-[#0891B2]/10 text-[#0891B2] shadow-sm"
-                      : "text-[#A7B0D6] hover:bg-white/5 hover:text-white"
+                      ? "bg-emerald-500/15 text-emerald-400 border-l-[3px] border-emerald-400"
+                      : "text-white/60 hover:bg-white/5 hover:text-white/90"
                   )}
                 >
-                  <span className={cn(isActive ? "text-[#0891B2]" : "text-[#6B7AAD]")}>
+                  <span className={cn(isActive ? "text-emerald-400" : "text-white/40")}>
                     {item.icon}
                   </span>
                   {item.labelKey ? t(item.labelKey) : item.label}
                   {item.href === "/photographer/orders" && newOrdersCount > 0 && (
-                    <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#0891B2] text-[#070B1F] text-xs font-bold">
+                    <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-emerald-500 text-white text-xs font-bold">
                       {newOrdersCount > 99 ? "99+" : newOrdersCount}
                     </span>
                   )}
@@ -267,19 +267,19 @@ export default function ClientSidebar() {
       </nav>
 
       {/* User profile */}
-      <div className="p-4 border-t border-white/5">
+      <div className="p-4 border-t border-white/10">
         <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white/5 mb-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#C084FC] flex items-center justify-center text-[#070B1F] font-bold text-xs">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold text-xs">
             {userInitials}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-white truncate">{userName}</p>
-            <p className="text-xs text-[#6B7AAD] truncate">{getRoleLabel(userRole)}</p>
+            <p className="text-xs text-white/40 truncate">{getRoleLabel(userRole)}</p>
           </div>
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-[#6B7AAD] hover:text-white hover:bg-white/5 transition-all duration-200"
+          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-white/40 hover:text-white hover:bg-white/5 transition-all duration-200"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />

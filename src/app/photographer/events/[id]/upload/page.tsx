@@ -428,7 +428,7 @@ export default function UploadPage({
 
   if (status === "loading" || isLoading) {
     return (
-      <div className="min-h-screen bg-[#070B1F] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F8FAF9] flex items-center justify-center">
         <p className="text-muted-foreground">Chargement...</p>
       </div>
     );

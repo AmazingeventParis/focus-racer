@@ -171,7 +171,7 @@ export default function DebugOcrPage({ params }: { params: { id: string } }) {
               {data.photos.map((photo) => (
                 <div
                   key={photo.id}
-                  className="border border-[#2C3566] rounded-lg p-4 bg-white/5 hover:bg-white/10 transition-colors"
+                  className="border border-slate-200 rounded-lg p-4 bg-slate-50 hover:bg-slate-100 transition-colors"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">

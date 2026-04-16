@@ -332,7 +332,7 @@ export default function StartListPage({
                   </div>
                 </div>
 
-                <div className="border border-[#2C3566] rounded-xl overflow-hidden max-h-64 overflow-auto">
+                <div className="border border-slate-200 rounded-xl overflow-hidden max-h-64 overflow-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -480,7 +480,7 @@ export default function StartListPage({
                   onChange={(e) => setSearchFilter(e.target.value)}
                   className="max-w-sm"
                 />
-                <div className="border border-[#2C3566] rounded-xl overflow-hidden max-h-96 overflow-auto">
+                <div className="border border-slate-200 rounded-xl overflow-hidden max-h-96 overflow-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>

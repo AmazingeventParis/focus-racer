@@ -294,7 +294,7 @@ export default function EventPhotosPage({
             {filteredPhotos.slice(0, visibleCount).map((photo) => (
               <div
                 key={photo.id}
-                className="group relative aspect-square bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-[#2C3566] cursor-pointer"
+                className="group relative aspect-square bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-slate-200 cursor-pointer"
                 onClick={() => handleOpenLightbox(photo)}
               >
                 {/* Photo */}

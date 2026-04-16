@@ -65,7 +65,7 @@ export function HomeEvents() {
                     />
                   </div>
                 ) : (
-                  <div className="aspect-video flex items-center justify-center bg-[#151C44] px-4">
+                  <div className="aspect-video flex items-center justify-center bg-white px-4">
                     <span className="text-lg font-bold text-gray-900 text-center leading-tight">
                       {event.name}
                     </span>

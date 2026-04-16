@@ -11,8 +11,8 @@ function UnsubscribeContent() {
   const category = searchParams.get("category");
 
   return (
-    <div className="min-h-screen bg-[#070B1F] flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-[#151C44] rounded-2xl shadow-sm border border-[#2C3566] p-8 text-center">
+    <div className="min-h-screen bg-[#F8FAF9] flex items-center justify-center px-4">
+      <div className="max-w-md w-full bg-[#FFFFFF] rounded-2xl shadow-sm border border-[#E2E8F0] p-8 text-center">
         {status === "success" ? (
           <>
             <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -73,7 +73,7 @@ function UnsubscribeContent() {
 export default function UnsubscribePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#070B1F] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F8FAF9] flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full" />
       </div>
     }>

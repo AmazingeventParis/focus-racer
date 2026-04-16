@@ -205,7 +205,7 @@ export default function NotificationPreferencesCard() {
 
   if (loading) {
     return (
-      <Card className="bg-[#151C44] border-[#2C3566] shadow-card rounded-xl">
+      <Card className="bg-white border-slate-200 shadow-card rounded-xl">
         <CardHeader>
           <CardTitle className="text-lg font-display text-gray-900">Notifications email</CardTitle>
         </CardHeader>
@@ -223,7 +223,7 @@ export default function NotificationPreferencesCard() {
   if (!prefs) return null;
 
   return (
-    <Card className="bg-[#151C44] border-[#2C3566] shadow-card rounded-xl">
+    <Card className="bg-white border-slate-200 shadow-card rounded-xl">
       <CardHeader>
         <CardTitle className="text-lg font-display text-gray-900">Notifications email</CardTitle>
         <CardDescription className="text-gray-500">
@@ -237,7 +237,7 @@ export default function NotificationPreferencesCard() {
           const totalCount = group.items.length;
 
           return (
-            <div key={group.group} className="rounded-xl border border-[#2C3566] overflow-hidden">
+            <div key={group.group} className="rounded-xl border border-slate-200 overflow-hidden">
               <button
                 type="button"
                 onClick={() => toggleGroup(group.group)}
@@ -245,7 +245,7 @@ export default function NotificationPreferencesCard() {
               >
                 <div className="flex items-center gap-2.5">
                   <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{group.group}</span>
-                  <span className="text-[10px] font-medium text-gray-400 bg-white/10 rounded-full px-2 py-0.5">
+                  <span className="text-[10px] font-medium text-gray-400 bg-slate-100 rounded-full px-2 py-0.5">
                     {enabledCount}/{totalCount}
                   </span>
                 </div>
@@ -271,7 +271,7 @@ export default function NotificationPreferencesCard() {
                         onClick={() => togglePref(item.key)}
                         disabled={updatingKeys.has(item.key)}
                         className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 ${
-                          prefs[item.key] ? "bg-emerald-500" : "bg-white/20"
+                          prefs[item.key] ? "bg-emerald-500" : "bg-slate-200"
                         } ${updatingKeys.has(item.key) ? "opacity-50" : ""}`}
                         role="switch"
                         aria-checked={prefs[item.key]}

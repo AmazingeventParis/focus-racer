@@ -29,14 +29,14 @@ export default function PhotographerBadgeRow() {
 
   if (loading) {
     return (
-      <div className="bg-[#151C44] border border-[#2C3566] shadow-card rounded-xl p-6">
+      <div className="bg-white border border-slate-200 shadow-card rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <div className="h-5 w-40 bg-white/10 rounded animate-pulse" />
+          <div className="h-5 w-40 bg-slate-100 rounded animate-pulse" />
         </div>
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="flex flex-col items-center gap-2 animate-pulse">
-              <div className="w-14 h-14 bg-white/10 rounded-full" />
+              <div className="w-14 h-14 bg-slate-100 rounded-full" />
               <div className="h-3 w-16 bg-gray-200 rounded" />
             </div>
           ))}
@@ -46,7 +46,7 @@ export default function PhotographerBadgeRow() {
   }
 
   return (
-    <div className="bg-[#151C44] border border-[#2C3566] shadow-card rounded-xl p-6">
+    <div className="bg-white border border-slate-200 shadow-card rounded-xl p-6">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-lg font-display font-semibold text-gray-900">
           Mes Badges{" "}

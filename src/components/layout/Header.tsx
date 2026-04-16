@@ -94,7 +94,7 @@ export default function Header() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-[#070B1F]/92 backdrop-blur-xl border-b border-[#2C3566]/30 shadow-lg shadow-black/20"
+          ? "bg-white/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm"
           : "bg-transparent"
       )}
     >
@@ -120,8 +120,8 @@ export default function Header() {
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                 pathname === link.href
-                  ? "text-[#0891B2] bg-[#0891B2]/10"
-                  : "text-[#A7B0D6] hover:text-[#0891B2] hover:bg-[#0891B2]/5"
+                  ? "text-emerald-600 bg-emerald-50"
+                  : "text-slate-600 hover:text-emerald-600 hover:bg-emerald-50"
               )}
             >
               {link.label}
@@ -136,8 +136,8 @@ export default function Header() {
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1",
                 isSolutionsActive
-                  ? "text-[#0891B2] bg-[#0891B2]/10"
-                  : "text-[#A7B0D6] hover:text-[#0891B2] hover:bg-[#0891B2]/5"
+                  ? "text-emerald-600 bg-emerald-50"
+                  : "text-slate-600 hover:text-emerald-600 hover:bg-emerald-50"
               )}
             >
               Solutions
@@ -148,7 +148,7 @@ export default function Header() {
 
             {solutionsOpen && (
               <div
-                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[280px] bg-[#151C44]/95 backdrop-blur-2xl rounded-2xl shadow-xl border border-[#2C3566] p-4 animate-fade-in"
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[280px] bg-white/95 backdrop-blur-2xl rounded-2xl shadow-xl border border-slate-200 p-4 animate-fade-in"
                 onMouseLeave={() => setSolutionsOpen(false)}
               >
                 <div className="space-y-1">
@@ -156,21 +156,21 @@ export default function Header() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex items-start gap-3 p-3 rounded-xl hover:bg-[#0891B2]/5 transition-colors group"
+                      className="flex items-start gap-3 p-3 rounded-xl hover:bg-emerald-50 transition-colors group"
                     >
-                      <span className="text-[#0891B2] mt-0.5 group-hover:scale-110 transition-transform">{item.icon}</span>
+                      <span className="text-emerald-500 mt-0.5 group-hover:scale-110 transition-transform">{item.icon}</span>
                       <div>
-                        <p className="font-medium text-[#F3F6FF] text-sm">{item.title}</p>
-                        <p className="text-xs text-[#A7B0D6]">{item.desc}</p>
+                        <p className="font-medium text-slate-900 text-sm">{item.title}</p>
+                        <p className="text-xs text-slate-500">{item.desc}</p>
                       </div>
                     </Link>
                   ))}
                 </div>
-                <div className="mt-3 p-4 rounded-xl bg-gradient-to-br from-[#0891B2]/10 to-[#C084FC]/10 border border-[#0891B2]/15">
-                  <p className="text-sm font-medium text-[#F3F6FF] mb-1">Essai gratuit</p>
-                  <p className="text-xs text-[#A7B0D6] mb-3">Créez votre compte et uploadez vos premières photos.</p>
+                <div className="mt-3 p-4 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200">
+                  <p className="text-sm font-medium text-slate-900 mb-1">Essai gratuit</p>
+                  <p className="text-xs text-slate-500 mb-3">Créez votre compte et uploadez vos premières photos.</p>
                   <Link href="/register">
-                    <button className="w-full py-2 px-4 bg-gradient-to-r from-[#0891B2] to-[#C084FC] text-[#070B1F] text-sm font-semibold rounded-lg transition-opacity hover:opacity-90">
+                    <button className="w-full py-2 px-4 bg-emerald-500 text-white text-sm font-semibold rounded-lg transition-opacity hover:opacity-90">
                       Commencer
                     </button>
                   </Link>
@@ -186,13 +186,13 @@ export default function Header() {
             <div className="flex items-center gap-2">
               {isAdmin && (
                 <Link href="/photographer/dashboard">
-                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-[#A7B0D6] hover:text-[#0891B2] hover:bg-[#0891B2]/5 transition-all">
+                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 transition-all">
                     Espace Pro
                   </button>
                 </Link>
               )}
               <Link href={dashboardHref}>
-                <button className="px-5 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#0891B2] to-[#C084FC] text-[#070B1F] shadow-neon-glow transition-all hover:opacity-90 hover:-translate-y-0.5">
+                <button className="px-5 py-2 rounded-lg text-sm font-semibold bg-emerald-500 text-white shadow-emerald transition-all hover:opacity-90 hover:-translate-y-0.5">
                   {isAdmin ? "Admin" : "Mon espace"}
                 </button>
               </Link>
@@ -200,12 +200,12 @@ export default function Header() {
           ) : (
             <>
               <Link href="/register">
-                <button className="px-4 py-2 rounded-lg text-sm font-medium text-[#A7B0D6] border border-transparent hover:text-[#0891B2] hover:border-[#0891B2]/20 hover:bg-[#0891B2]/5 transition-all">
+                <button className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 border border-transparent hover:text-emerald-600 hover:border-emerald-300 hover:bg-emerald-50 transition-all">
                   Créer un compte
                 </button>
               </Link>
               <Link href="/login">
-                <button className="px-5 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#0891B2] to-[#C084FC] text-[#070B1F] shadow-neon-glow transition-all hover:opacity-90 hover:-translate-y-0.5">
+                <button className="px-5 py-2 rounded-lg text-sm font-semibold bg-emerald-500 text-white shadow-emerald transition-all hover:opacity-90 hover:-translate-y-0.5">
                   Mon espace
                 </button>
               </Link>
@@ -220,15 +220,15 @@ export default function Header() {
           aria-label="Menu"
         >
           <span className={cn(
-            "block w-6 h-0.5 bg-[#A7B0D6] transition-all duration-200",
+            "block w-6 h-0.5 bg-slate-600 transition-all duration-200",
             mobileOpen && "rotate-45 translate-y-2"
           )} />
           <span className={cn(
-            "block w-6 h-0.5 bg-[#A7B0D6] transition-all duration-200",
+            "block w-6 h-0.5 bg-slate-600 transition-all duration-200",
             mobileOpen && "opacity-0"
           )} />
           <span className={cn(
-            "block w-6 h-0.5 bg-[#A7B0D6] transition-all duration-200",
+            "block w-6 h-0.5 bg-slate-600 transition-all duration-200",
             mobileOpen && "-rotate-45 -translate-y-2"
           )} />
         </button>
@@ -236,7 +236,7 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-[#070B1F]/97 backdrop-blur-xl border-b border-[#2C3566]/30 shadow-lg animate-fade-in">
+        <div className="md:hidden bg-white/97 backdrop-blur-xl border-b border-slate-200/60 shadow-lg animate-fade-in">
           <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
             {navLinks.map((link, i) => (
               <Link
@@ -245,8 +245,8 @@ export default function Header() {
                 className={cn(
                   "px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200",
                   pathname === link.href
-                    ? "text-[#0891B2] bg-[#0891B2]/10"
-                    : "text-[#A7B0D6] hover:text-[#0891B2] hover:bg-[#0891B2]/5"
+                    ? "text-emerald-600 bg-emerald-50"
+                    : "text-slate-600 hover:text-emerald-600 hover:bg-emerald-50"
                 )}
               >
                 {link.label}
@@ -255,7 +255,7 @@ export default function Header() {
 
             <button
               onClick={() => setMobileSolutionsOpen(!mobileSolutionsOpen)}
-              className="px-4 py-3 rounded-lg text-sm font-medium text-[#A7B0D6] hover:text-[#0891B2] hover:bg-[#0891B2]/5 transition-all duration-200 flex items-center justify-between w-full"
+              className="px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 transition-all duration-200 flex items-center justify-between w-full"
             >
               Solutions
               <svg className={cn("w-4 h-4 transition-transform duration-200", mobileSolutionsOpen && "rotate-180")} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -268,31 +268,31 @@ export default function Header() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-[#A7B0D6] hover:text-[#0891B2] hover:bg-[#0891B2]/5 transition-all"
+                    className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 transition-all"
                   >
-                    <span className="text-[#0891B2]">{item.icon}</span>
+                    <span className="text-emerald-500">{item.icon}</span>
                     {item.title}
                   </Link>
                 ))}
               </div>
             )}
 
-            <div className="border-t border-[#2C3566]/30 mt-2 pt-4 flex flex-col gap-2">
+            <div className="border-t border-slate-200 mt-2 pt-4 flex flex-col gap-2">
               {session ? (
                 <Link href={dashboardHref}>
-                  <button className="w-full py-2.5 px-4 bg-gradient-to-r from-[#0891B2] to-[#C084FC] text-[#070B1F] text-sm font-semibold rounded-lg">
+                  <button className="w-full py-2.5 px-4 bg-emerald-500 text-white text-sm font-semibold rounded-lg">
                     {isAdmin ? "Admin" : "Mon espace"}
                   </button>
                 </Link>
               ) : (
                 <>
                   <Link href="/register">
-                    <button className="w-full py-2.5 px-4 border border-[#2C3566] text-[#A7B0D6] text-sm font-medium rounded-lg hover:border-[#0891B2]/30">
+                    <button className="w-full py-2.5 px-4 border border-slate-200 text-slate-600 text-sm font-medium rounded-lg hover:border-emerald-300">
                       Créer un compte
                     </button>
                   </Link>
                   <Link href="/login">
-                    <button className="w-full py-2.5 px-4 bg-gradient-to-r from-[#0891B2] to-[#C084FC] text-[#070B1F] text-sm font-semibold rounded-lg">
+                    <button className="w-full py-2.5 px-4 bg-emerald-500 text-white text-sm font-semibold rounded-lg">
                       Mon espace
                     </button>
                   </Link>

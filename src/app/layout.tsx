@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   viewport: "width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover",
   robots: "index, follow",
   manifest: "/manifest.json",
-  themeColor: "#070B1F",
+  themeColor: "#042F2E",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -52,7 +52,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-[family-name:var(--font-geist-sans)] antialiased bg-neon-bg min-h-screen text-[#F3F6FF]`}
+        className={`${geistSans.variable} ${geistMono.variable} font-[family-name:var(--font-geist-sans)] antialiased bg-[#F8FAF9] min-h-screen text-slate-900`}
       >
         <SessionProvider>
           <ThemeProvider>

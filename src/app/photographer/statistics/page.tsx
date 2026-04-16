@@ -178,7 +178,7 @@ function ProgressBar({
           {suffix === "%" ? `${pct.toFixed(1)}%` : `${value}${suffix}`}
         </span>
       </div>
-      <div className="h-2.5 bg-[#0C1029] rounded-full overflow-hidden">
+      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full ${color} transition-all duration-700 ease-out`}
           style={{ width: `${pct}%` }}
@@ -278,14 +278,14 @@ export default function StatisticsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-[#0C1029] rounded-xl p-1 mb-8 overflow-x-auto">
+      <div className="flex gap-1 bg-slate-100 rounded-xl p-1 mb-8 overflow-x-auto">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
               activeTab === tab.id
-                ? "bg-[#151C44] text-[#0891B2] shadow-sm"
+                ? "bg-slate-50 text-emerald-600 shadow-sm"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -494,7 +494,7 @@ export default function StatisticsPage() {
                   {[1, 2, 3, 4].map(i => (
                     <div key={i}>
                       <div className="h-4 w-32 bg-gray-200 rounded mb-2" />
-                      <div className="h-2.5 bg-[#0C1029] rounded-full" />
+                      <div className="h-2.5 bg-slate-100 rounded-full" />
                     </div>
                   ))}
                 </div>
@@ -642,7 +642,7 @@ export default function StatisticsPage() {
                             <span className="text-gray-700 font-medium">{SPORT_LABELS[item.sportType] || item.sportType}</span>
                             <span className="text-gray-500">{item._count} événement{item._count > 1 ? "s" : ""} ({pct.toFixed(0)}%)</span>
                           </div>
-                          <div className="h-3 bg-[#0C1029] rounded-full overflow-hidden">
+                          <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
                             <div
                               className={`h-full rounded-full ${SPORT_COLORS[item.sportType] || "bg-gray-400"} transition-all duration-700 ease-out`}
                               style={{ width: `${pct}%` }}
@@ -683,7 +683,7 @@ export default function StatisticsPage() {
                   {events.map(event => {
                     const statusInfo = STATUS_LABELS[event.status] || STATUS_LABELS.DRAFT;
                     return (
-                      <div key={event.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-[#0C1029] transition-colors">
+                      <div key={event.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors">
                         <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold text-sm flex-shrink-0">
                           {event.name.charAt(0).toUpperCase()}
                         </div>
@@ -718,7 +718,7 @@ export default function StatisticsPage() {
           variant="outline"
           onClick={fetchStats}
           disabled={isLoading}
-          className="text-gray-500 hover:text-emerald-400 border-[#2C3566] hover:border-emerald-500/30 rounded-xl"
+          className="text-gray-500 hover:text-emerald-600 border-slate-200 hover:border-emerald-300 rounded-xl"
         >
           {isLoading ? (
             <svg className="w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">

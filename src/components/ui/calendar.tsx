@@ -29,13 +29,13 @@ function Calendar({ className, classNames, ...props }: CalendarProps) {
         week: "flex w-full mt-2",
         day: "h-9 w-9 text-center text-sm p-0 relative rounded-md focus-within:relative focus-within:z-20",
         day_button:
-          "h-9 w-9 p-0 font-normal inline-flex items-center justify-center rounded-md hover:bg-[#0891B2]/10 hover:text-[#0891B2] transition-colors",
+          "h-9 w-9 p-0 font-normal inline-flex items-center justify-center rounded-md hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors",
         selected:
           "bg-emerald-500 text-white hover:bg-emerald-600 focus:bg-emerald-600 rounded-md",
-        today: "bg-neon-card text-[#0891B2] font-bold",
+        today: "bg-neon-card text-emerald-600 font-bold",
         outside: "text-muted-foreground opacity-50",
         disabled: "text-muted-foreground opacity-50",
-        range_middle: "bg-[#0891B2]/10 text-[#0891B2] rounded-none",
+        range_middle: "bg-emerald-500/10 text-emerald-600 rounded-none",
         range_start: "bg-emerald-500 text-white rounded-l-md rounded-r-none",
         range_end: "bg-emerald-500 text-white rounded-r-md rounded-l-none",
         hidden: "invisible",

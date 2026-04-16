@@ -38,8 +38,8 @@ export function AnalyticsVisual({
   const bibsPerPhoto = photosWithBibs > 0 ? totalAssociations / photosWithBibs : 0;
 
   return (
-    <Card className="bg-[#151C44] shadow-sm border-[#2C3566] overflow-hidden">
-      <CardHeader className="border-b border-[#2C3566] bg-gradient-to-r from-white/5 to-transparent pb-4">
+    <Card className="bg-white shadow-sm border-slate-200 overflow-hidden">
+      <CardHeader className="border-b border-slate-200 bg-gradient-to-r from-slate-50 to-transparent pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2.5">
             <div className="p-1.5 rounded-lg bg-blue-500/10">
@@ -59,7 +59,7 @@ export function AnalyticsVisual({
           {/* Total Photos */}
           <div className="group">
             <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-md bg-white/10 group-hover:bg-white/20 transition-colors">
+              <div className="p-1.5 rounded-md bg-slate-100 group-hover:bg-slate-200 transition-colors">
                 <ImageIcon className="h-3.5 w-3.5 text-gray-500" />
               </div>
               <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Photos</span>
@@ -144,7 +144,7 @@ export function AnalyticsVisual({
               <span className="text-xs text-slate-500">{totalPhotos} total</span>
             </div>
             <div className="relative">
-              <div className="flex h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="flex h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-700 ease-out"
                   style={{ width: `${sortedPercentage}%` }}

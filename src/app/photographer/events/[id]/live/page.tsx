@@ -167,7 +167,7 @@ export default function LiveUploadPage({
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-[#070B1F] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F8FAF9] flex items-center justify-center">
         <p className="text-white/50">Chargement...</p>
       </div>
     );
@@ -176,9 +176,9 @@ export default function LiveUploadPage({
   const pendingProcessing = stats.totalPhotos - stats.processed;
 
   return (
-    <div className="min-h-screen bg-[#070B1F] text-white">
+    <div className="min-h-screen bg-[#F8FAF9] text-slate-900">
       {/* Header bar */}
-      <header className="bg-[#151C44] border-b border-white/10">
+      <header className="bg-white border-b border-slate-200">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
@@ -192,7 +192,7 @@ export default function LiveUploadPage({
             </Badge>
           </div>
           <Link href={`/photographer/events/${id}`}>
-            <Button variant="outline" size="sm" className="text-white/70 border-white/10 hover:bg-white/5">
+            <Button variant="outline" size="sm" className="text-white/70 border-slate-200 hover:bg-white/5">
               Quitter le mode live
             </Button>
           </Link>
@@ -205,19 +205,19 @@ export default function LiveUploadPage({
 
         {/* Stats bar */}
         <div className="grid grid-cols-3 gap-4 mb-8">
-          <Card className="bg-[#151C44] border-white/10 rounded-2xl">
+          <Card className="bg-white border-slate-200 rounded-2xl">
             <CardContent className="pt-6 text-center">
               <p className="text-4xl font-bold text-emerald">{stats.totalPhotos}</p>
               <p className="text-sm text-white/50 mt-1">Photos reçues</p>
             </CardContent>
           </Card>
-          <Card className="bg-[#151C44] border-white/10 rounded-2xl">
+          <Card className="bg-white border-slate-200 rounded-2xl">
             <CardContent className="pt-6 text-center">
               <p className="text-4xl font-bold text-emerald-400">{stats.processed}</p>
               <p className="text-sm text-white/50 mt-1">Traitées</p>
             </CardContent>
           </Card>
-          <Card className="bg-[#151C44] border-white/10 rounded-2xl">
+          <Card className="bg-white border-slate-200 rounded-2xl">
             <CardContent className="pt-6 text-center">
               <p className={`text-4xl font-bold ${pendingProcessing > 0 ? "text-amber-400" : "text-white/40"}`}>
                 {pendingProcessing}
@@ -229,7 +229,7 @@ export default function LiveUploadPage({
 
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Drop zone */}
-          <Card className="bg-[#151C44] border-white/10 rounded-2xl">
+          <Card className="bg-white border-slate-200 rounded-2xl">
             <CardHeader>
               <CardTitle className="text-white">Envoyer des photos</CardTitle>
               <CardDescription className="text-white/50">
@@ -240,7 +240,7 @@ export default function LiveUploadPage({
               <div
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
-                className="border-2 border-dashed border-white/10 rounded-xl p-12 text-center hover:border-emerald transition-colors cursor-pointer"
+                className="border-2 border-dashed border-slate-200 rounded-xl p-12 text-center hover:border-emerald transition-colors cursor-pointer"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <input
@@ -287,7 +287,7 @@ export default function LiveUploadPage({
           </Card>
 
           {/* Live feed */}
-          <Card className="bg-[#151C44] border-white/10 rounded-2xl">
+          <Card className="bg-white border-slate-200 rounded-2xl">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 Flux en direct

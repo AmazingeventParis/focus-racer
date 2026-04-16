@@ -250,7 +250,7 @@ export default function ApiKeysPage() {
         <CardContent className="space-y-4">
           <div>
             <h4 className="font-medium text-gray-900 mb-2">Analyser une image</h4>
-            <pre className="bg-[#070B1F] text-gray-500 rounded-lg p-4 text-sm overflow-x-auto">
+            <pre className="bg-slate-900 text-gray-500 rounded-lg p-4 text-sm overflow-x-auto">
 {`curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://focusracer.swipego.app"}/api/v1/analyze \\
   -H "Authorization: Bearer VOTRE_CLE_API" \\
   -F "image=@photo.jpg"`}
@@ -258,7 +258,7 @@ export default function ApiKeysPage() {
           </div>
           <div>
             <h4 className="font-medium text-gray-900 mb-2">Consulter votre consommation</h4>
-            <pre className="bg-[#070B1F] text-gray-500 rounded-lg p-4 text-sm overflow-x-auto">
+            <pre className="bg-slate-900 text-gray-500 rounded-lg p-4 text-sm overflow-x-auto">
 {`curl ${typeof window !== "undefined" ? window.location.origin : "https://focusracer.swipego.app"}/api/v1/usage \\
   -H "Authorization: Bearer VOTRE_CLE_API"`}
             </pre>
