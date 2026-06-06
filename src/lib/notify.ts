@@ -48,23 +48,6 @@ export async function notifyEventPublished(
   );
 }
 
-/** Badge earned */
-export async function notifyBadgeEarned(
-  userId: string,
-  badgeName: string
-) {
-  notificationEmitter.notifyUserGamification(userId, { type: "badge_earned", badgeName });
-  await sendPushToUser(
-    userId,
-    {
-      title: "Nouveau badge debloque !",
-      body: badgeName,
-      data: { type: "badge_earned" },
-    },
-    "badgeEarned"
-  );
-}
-
 /** Purchase reminder */
 export async function notifyPurchaseReminder(
   userId: string,

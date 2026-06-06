@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { grantXp } from "./xp-service";
 
 const REFERRER_CREDITS = 100;
 const REFEREE_CREDITS = 100;
@@ -79,8 +78,8 @@ export async function trackReferral(referralCode: string, refereeId: string): Pr
 
 /**
  * Complete referral rewards based on the referrer's role.
- * - Sportifs: badge "Ambassadeur" + 100 XP (no credits)
- * - Pros: 50 credits referrer + 25 credits referee + 100 XP
+ * - Sportifs: smart alert only (no credits)
+ * - Pros: 100 credits referrer + 100 credits referee
  */
 async function completeReferralRewards(
   referrerId: string,
@@ -96,22 +95,14 @@ async function completeReferralRewards(
   const isRunner = referrer.role === "RUNNER";
 
   if (isRunner) {
-    // Sportif referrer: badge + XP only (no credits)
-    // Badge "ambassadeur" will be auto-evaluated by the badges API
-    // Just grant XP
-    await grantXp(referrerId, "REFERRAL_COMPLETED", {
-      refereeId,
-      action: "registration",
-    });
-
-    // Smart alert
+    // Sportif referrer: smart alert only (no credits)
     await prisma.smartAlert.create({
       data: {
         userId: referrerId,
         alertType: "REFERRAL_COMPLETED",
         title: "Parrainage réussi !",
-        message: "Votre filleul s'est inscrit. Vous avez débloqué le badge Ambassadeur et gagné 100 XP !",
-        metadata: JSON.stringify({ refereeId, reward: "badge_ambassadeur" }),
+        message: "Votre filleul s'est inscrit. Merci de faire grandir la communauté !",
+        metadata: JSON.stringify({ refereeId }),
       },
     });
   } else {
@@ -163,12 +154,6 @@ async function completeReferralRewards(
         },
       }),
     ]);
-
-    // XP for referrer
-    await grantXp(referrerId, "REFERRAL_COMPLETED", {
-      refereeId,
-      action: "registration",
-    });
 
     // Smart alert
     await prisma.smartAlert.create({

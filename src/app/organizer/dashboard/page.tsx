@@ -7,9 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { EventWithStats } from "@/types";
-import OrganizerBadgeRow from "@/components/organizer/OrganizerBadgeRow";
 import SmartAlertsList from "@/components/gamification/SmartAlertsList";
-import LeaderboardCard from "@/components/gamification/LeaderboardCard";
 import StreakCard from "@/components/gamification/StreakCard";
 
 const SPORT_LABELS: Record<string, string> = {
@@ -176,11 +174,6 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* Badges */}
-      <div className="mb-8">
-        <OrganizerBadgeRow />
-      </div>
-
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent events */}
         <div className="lg:col-span-2">
@@ -272,7 +265,6 @@ export default function DashboardPage() {
 
         {/* Gamification + Quick actions */}
         <div className="space-y-6">
-          <LeaderboardCard role="ORGANIZER" />
           <StreakCard />
           <Card className="bg-white border-0 shadow-card rounded-xl">
             <CardHeader>

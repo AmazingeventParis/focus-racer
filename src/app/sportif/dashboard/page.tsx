@@ -6,10 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import BadgeRow from "@/components/sportif/BadgeRow";
 import SeasonRecap from "@/components/sportif/SeasonRecap";
 import RecommendationCards from "@/components/sportif/RecommendationCards";
-import LeaderboardCard from "@/components/gamification/LeaderboardCard";
 import StreakCard from "@/components/gamification/StreakCard";
 import SmartAlertsList from "@/components/gamification/SmartAlertsList";
 
@@ -55,11 +53,6 @@ interface StatsData {
   monthlySpending: { month: string; spent: number; orders: number; photos: number }[];
 }
 
-interface BadgesData {
-  earned: { badgeKey: string; earnedAt: string }[];
-  newlyEarned: string[];
-}
-
 interface RecosData {
   recommendations: {
     id: string;
@@ -86,11 +79,9 @@ export default function SportifDashboard() {
   const { data: session } = useSession();
   const [data, setData] = useState<DashboardData | null>(null);
   const [stats, setStats] = useState<StatsData | null>(null);
-  const [badges, setBadges] = useState<BadgesData | null>(null);
   const [recos, setRecos] = useState<RecosData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [statsLoading, setStatsLoading] = useState(true);
-  const [badgesLoading, setBadgesLoading] = useState(true);
   const [recosLoading, setRecosLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
@@ -107,12 +98,6 @@ export default function SportifDashboard() {
       .then(setStats)
       .catch(console.error)
       .finally(() => setStatsLoading(false));
-
-    fetch("/api/sportif/badges")
-      .then((res) => res.json())
-      .then(setBadges)
-      .catch(console.error)
-      .finally(() => setBadgesLoading(false));
 
     fetch("/api/sportif/recommendations")
       .then((res) => res.json())
@@ -227,15 +212,6 @@ export default function SportifDashboard() {
         </Card>
       </div>
 
-      {/* Badge Row */}
-      <div className="mb-6">
-        <BadgeRow
-          badges={badges?.earned ?? []}
-          newlyEarned={badges?.newlyEarned ?? []}
-          sportifId={data?.sportifId}
-          loading={badgesLoading}
-        />
-      </div>
 
       {/* Season Recap */}
       <div className="mb-6">
@@ -342,9 +318,6 @@ export default function SportifDashboard() {
               )}
             </CardContent>
           </Card>
-
-          {/* Leaderboard */}
-          <LeaderboardCard role="RUNNER" linkHref="/sportif/classement" />
 
           {/* Streaks */}
           <StreakCard />

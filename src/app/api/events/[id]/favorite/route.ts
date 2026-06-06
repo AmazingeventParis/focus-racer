@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { grantXp } from "@/lib/gamification/xp-service";
 import { recordStreakActivity } from "@/lib/gamification/streak-service";
 
 // Toggle event favorite for the authenticated runner
@@ -32,12 +31,11 @@ export async function POST(
       data: { userId: session.user.id, eventId },
     });
 
-    // Grant XP + record streak for favoriting
+    // Record streak for favoriting
     try {
-      await grantXp(session.user.id, "EVENT_FAVORITE", { eventId });
       await recordStreakActivity(session.user.id, "favorite");
     } catch (e) {
-      console.error("Failed to grant XP for favorite:", e);
+      console.error("Failed to record favorite streak:", e);
     }
 
     // Notify photographer of new follower

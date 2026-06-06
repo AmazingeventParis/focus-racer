@@ -4,7 +4,6 @@ import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { s3KeyToPublicPath } from "@/lib/s3";
-import { grantXp } from "@/lib/gamification/xp-service";
 import { recordStreakActivity } from "@/lib/gamification/streak-service";
 import { geocodeLocation } from "@/lib/gamification/geocoding";
 
@@ -98,12 +97,11 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Grant XP for event creation
+    // Record event-creation streak
     try {
-      await grantXp(session.user.id, "EVENT_CREATED", { eventId: event.id });
       await recordStreakActivity(session.user.id, "event_create");
     } catch (xpErr) {
-      console.error("Error granting event creation XP:", xpErr);
+      console.error("Error recording event creation streak:", xpErr);
     }
 
     return NextResponse.json(event);

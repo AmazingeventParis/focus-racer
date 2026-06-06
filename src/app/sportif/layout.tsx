@@ -7,8 +7,6 @@ import { useSSENotifications } from "@/hooks/useSSENotifications";
 import { useLocale } from "@/components/providers/LocaleProvider";
 import SportifSidebar from "@/components/layout/SportifSidebar";
 import MobileNav, { type MobileNavItem } from "@/components/layout/MobileNav";
-import XpToast from "@/components/gamification/XpToast";
-import LevelUpCelebration from "@/components/gamification/LevelUpCelebration";
 
 const icon = (d: string) => (
   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -104,8 +102,6 @@ export default function SportifLayout({
       <SportifSidebar />
       <SportifMobileNav />
       <main className="flex-1 bg-interface overflow-auto scrollbar-thin pt-14 pb-16 md:pt-0 md:pb-0">{children}</main>
-      <XpToast />
-      <LevelUpCelebration />
     </div>
   );
 }

@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { grantXp } from "@/lib/gamification/xp-service";
 
 export async function POST(
   request: NextRequest,
@@ -28,9 +27,6 @@ export async function POST(
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     const shareUrl = `${appUrl}/share/${shareEvent.shareToken}`;
-
-    // Grant XP
-    await grantXp(session.user.id, "PHOTO_SHARED", { photoId, platform: platform || "link" });
 
     return NextResponse.json({ shareUrl, shareToken: shareEvent.shareToken });
   } catch (error) {

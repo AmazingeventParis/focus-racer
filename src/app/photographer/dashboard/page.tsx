@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { EventWithStats } from "@/types";
-import PhotographerBadgeRow from "@/components/photographer/PhotographerBadgeRow";
-import LeaderboardCard from "@/components/gamification/LeaderboardCard";
 import StreakCard from "@/components/gamification/StreakCard";
 import SmartAlertsList from "@/components/gamification/SmartAlertsList";
 
@@ -178,11 +176,6 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* Photographer Badges */}
-      <div className="mb-8">
-        <PhotographerBadgeRow />
-      </div>
-
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent events */}
         <div className="lg:col-span-2">
@@ -305,9 +298,6 @@ export default function DashboardPage() {
               </Link>
             </CardContent>
           </Card>
-
-          {/* Leaderboard */}
-          <LeaderboardCard role="PHOTOGRAPHER" linkHref="/photographer/classement" />
 
           {/* Streaks */}
           <StreakCard />

@@ -9,9 +9,6 @@ interface WrappedData {
   year: number;
   eventsOrganized?: number;
   runnersManaged?: number;
-  badgesEarned?: number;
-  levelReached?: number;
-  totalXp?: number;
 }
 
 export default function OrganizerWrappedPage() {
@@ -59,17 +56,6 @@ export default function OrganizerWrappedPage() {
               <p className="text-xs text-white/50">Sportifs</p>
               <p className="text-2xl font-bold">{data.runnersManaged || 0}</p>
             </div>
-            <div className="bg-white/10 rounded-xl p-4">
-              <p className="text-xs text-white/50">Badges</p>
-              <p className="text-2xl font-bold">{data.badgesEarned || 0}</p>
-            </div>
-            <div className="bg-white/10 rounded-xl p-4">
-              <p className="text-xs text-white/50">XP total</p>
-              <p className="text-2xl font-bold">{data.totalXp || 0}</p>
-            </div>
-          </div>
-          <div className="text-center">
-            <p className="text-sm text-white/40">Niveau {data.levelReached || 1}</p>
           </div>
         </CardContent>
       </Card>

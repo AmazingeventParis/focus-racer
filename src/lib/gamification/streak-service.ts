@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { grantXp } from "./xp-service";
 
 export interface StreakDef {
   type: string;
@@ -102,12 +101,6 @@ export async function recordStreakActivity(
 
   // Check milestones
   const isMilestone = def.milestones.includes(newStreak);
-  if (isMilestone) {
-    await grantXp(userId, "STREAK_BONUS", {
-      streakType,
-      milestone: String(newStreak),
-    });
-  }
 
   return { currentStreak: newStreak, milestone: isMilestone };
 }

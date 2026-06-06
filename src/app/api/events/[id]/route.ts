@@ -4,7 +4,6 @@ import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { s3KeyToPublicPath } from "@/lib/s3";
-import { grantXp } from "@/lib/gamification/xp-service";
 import { geocodeLocation } from "@/lib/gamification/geocoding";
 
 const updateEventSchema = z.object({
@@ -135,15 +134,13 @@ export async function PUT(
       },
     });
 
-    // Grant XP if status changed to PUBLISHED
+    // Auto-claim first_event credit reward on first publish
     if (!wasPublished && updated.status === "PUBLISHED") {
       try {
-        await grantXp(session.user.id, "EVENT_PUBLISHED", { eventId: id });
-        // Auto-claim first_event credit reward
         const { claimCreditReward } = await import("@/lib/gamification/credit-reward-service");
         await claimCreditReward(session.user.id, "first_event");
       } catch (xpErr) {
-        console.error("Error granting event published XP:", xpErr);
+        console.error("Error claiming first_event reward:", xpErr);
       }
 
       // Notify followers by email

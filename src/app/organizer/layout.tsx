@@ -6,8 +6,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useSSENotifications } from "@/hooks/useSSENotifications";
 import OrganizerSidebar from "@/components/layout/OrganizerSidebar";
 import MobileNav, { type MobileNavItem } from "@/components/layout/MobileNav";
-import XpToast from "@/components/gamification/XpToast";
-import LevelUpCelebration from "@/components/gamification/LevelUpCelebration";
 import { getRoleLabel } from "@/lib/role-helpers";
 
 const icon = (d: string) => (
@@ -90,8 +88,6 @@ export default function OrganizerLayout({
       <OrganizerSidebar />
       <OrganizerMobileNav />
       <main className="flex-1 bg-interface overflow-auto scrollbar-thin pt-14 pb-16 md:pt-0 md:pb-0">{children}</main>
-      <XpToast />
-      <LevelUpCelebration />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 # Focus Racer - État du Projet
 
-> **Dernière mise à jour** : Session 27, 2026-02-26
+> **Dernière mise à jour** : Session 28, 2026-06-05
+> ⚠️ Entre Session 27 et 28, une gamification complète (XP, niveaux, classements, badges, streaks, réactions, parrainage, partage, Wrapped) a été codée sans être consignée. Session 28 a retiré badges + XP + niveaux + classements. **Le code fait foi** (`src/lib/gamification/`, `prisma/schema.prisma`).
 
 ## Vue d'ensemble
 Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives par IA.
@@ -9,7 +10,7 @@ Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 - **Coolify UUID** : `ms440oowockwkso0k0c8okgc`
 - **Repo** : https://github.com/AmazingeventParis/focus-racer.git (remote `amazingevent`)
 - **Serveur** : OVH dédié `217.182.89.133` — AMD EPYC 4344P, 64GB RAM, 2x NVMe 960GB
-- **Status** : Production, 27 sessions de dev
+- **Status** : Production, 28 sessions de dev
 
 ## Stack
 - Next.js 14.2 (App Router) + React 18 + TypeScript + Tailwind + shadcn/ui
@@ -110,7 +111,10 @@ src/hooks/
 ```
 
 ## DB (modèles Prisma)
-User, Event, Photo, BibNumber, PhotoFace, StartListEntry, PricePack, Order, OrderItem, CreditTransaction, SupportMessage, MarketplaceListing, MarketplaceApplication, MarketplaceReview, GdprRequest, GdprAuditLog, ApiKey, PlatformSettings, Horde, HordeMember, HordeConversation, HordeConversationParticipant, HordeMessage, Notification, FriendRequest, FavoriteEvent, NotificationPreference
+User, Event, Photo, BibNumber, PhotoFace, StartListEntry, PricePack, Order, OrderItem, CreditTransaction, SupportMessage, MarketplaceListing, MarketplaceApplication, MarketplaceReview, GdprRequest, GdprAuditLog, ApiKey, PlatformSettings, Horde, HordeMember, HordeConversation, HordeConversationParticipant, HordeMessage, Notification, FriendRequest, FavoriteEvent, NotificationPreference, PhotoAlert, DeviceToken, GuestEventFollower
+
+**Gamification conservée (Session 28)** : UserStreak, PhotoReaction (enum ReactionType), Referral (enum ReferralStatus), ShareEvent, CreditReward, SmartAlert (enum AlertType), WrappedRecap
+**Gamification supprimée (Session 28)** : ~~UserBadge, XpEvent, UserLevel, LeaderboardEntry~~ + enums ~~XpActionType, LeaderboardPeriod~~
 
 ## Fonctionnalités complètes
 
@@ -127,12 +131,12 @@ User, Event, Photo, BibNumber, PhotoFace, StartListEntry, PricePack, Order, Orde
 - Statistiques détaillées
 - Marketplace (annonces, candidatures, avis)
 - Messagerie support
-- 10 badges photographe (Premier Shoot, Œil de Lynx, Marathonien, Photographe d'Or, Best-Seller, Machine à Cash, Multi-Terrain, Fidèle au Poste, Connecté Stripe, Zéro Déchet)
-- 10 badges organisateur (Premier Départ, Peloton, Organisateur Série, Galerie Complète, Fan de Data, Importateur Pro, Parrain, Multi-Discipline, Roi du Branding, Vétéran)
+- Streaks (séries) + StreakCard sur le dashboard
 - Affiches événements dans dashboard (coverImage en miniature)
+- ~~Badges photographe/organisateur~~ : supprimés Session 28
 
 ### Espace Sportif
-- Dashboard personnel + 10 badges (Premier achat, Collectionneur, Passionné, Multi-sport, Fidèle, Explorateur, Social, Leader, Mécène, Pionnier)
+- Dashboard personnel (StreakCard, réactions, parrainage — ~~badges supprimés Session 28~~)
 - Mes courses + photos
 - Ma Horde (membres, chat temps réel groupe/DM, demandes d'ami)
 - Messagerie (support bidirectionnel)
@@ -236,21 +240,23 @@ UV_THREADPOOL_SIZE=16
 - [ ] Brancher detectLabels() dans le pipeline ou retirer le flag
 - [ ] CloudFront CDN (optionnel, S3 direct pour l'instant)
 
-### Rétention & Gamification (à implémenter)
-- [ ] **Système de niveaux / XP** : actions = XP (achat, favori, partage, profil complet), niveaux Débutant→Légende, barre progression, 3 rôles
-- [ ] **Classements / Leaderboards** : top sportifs, photographes, organisateurs (hebdo/mensuel avec reset)
-- [ ] **Séries (Streaks)** : achats/uploads consécutifs → badge + réduction
-- [ ] **Challenges temporaires** : missions hebdo/mensuelles avec countdown + progression + récompenses
-- [ ] **Missions onboarding gamifié** : checklist nouveau sportif/photographe/organisateur avec récompense par étape
-- [ ] **Parrainage** : code unique, crédits parrain+filleul, tableau de suivi
-- [ ] **Réactions sur photos** : likes, "Photo de ouf", notifications photographe/sportif
-- [ ] **Partage social avec incentive** : partage watermarké → HD gratuite, story templates auto
-- [ ] **Programme fidélité à points** : 1€ = 10 pts, seuils réductions, expirables 12 mois
-- [ ] **Réductions dynamiques** : photos invendues -30% après 48h, early bird -15%, bundles multi-courses
-- [ ] **Crédits gratuits pour actions** : profil complet, 1ère review, bug signalé
+### Rétention & Gamification (état réel Session 28)
+> Implémentée en entier hors-journal, puis retrait badges + XP + niveaux + classements en Session 28. Reste dans `src/lib/gamification/`.
+- [x] ~~**Système de niveaux / XP**~~ : implémenté hors-journal, **SUPPRIMÉ Session 28** (XpEvent, UserLevel, « Stagiaire »→« Légende »)
+- [x] ~~**Classements / Leaderboards**~~ : implémentés hors-journal, **SUPPRIMÉS Session 28** (dépendaient des XP)
+- [x] ~~**Badges**~~ : implémentés (Session 24), **SUPPRIMÉS Session 28** (UserBadge, 30 PNG, APIs)
+- [x] **Séries (Streaks)** : conservé, décâblé des XP (`streak-service.ts`, StreakCard)
+- [x] **Parrainage** : conservé (codes uniques + crédits parrain/filleul, `referral-service.ts`)
+- [x] **Réactions sur photos** : conservé (LIKE/LOVE/FIRE/WOW, `PhotoReaction`)
+- [x] **Partage social** : conservé (ShareEvent + tokens, `photos/[id]/share`)
+- [x] **Crédits gratuits pour actions** : conservé (profil complet, 1ère réaction, 1er événement, `credit-reward-service.ts`)
 - [x] **Alertes intelligentes** : photos dispo, relance achat, rappel tri, nouvelle vente, nouveau follower, crédits bas (Session 26)
-- [ ] **Récap annuel (Wrapped)** : stats personnalisées sportif/photographe/organisateur, partageable social
-- [ ] **Carte des courses** : carte interactive événements suivis/couverts, badges régions
+- [x] **Récap annuel (Wrapped)** : conservé, sans niveau/XP/badges (`wrapped-service.ts`)
+- [ ] **Challenges temporaires** : missions hebdo/mensuelles avec countdown + récompenses
+- [ ] **Missions onboarding gamifié** : checklist avec récompense par étape
+- [ ] **Programme fidélité à points** : 1€ = 10 pts, seuils réductions, expirables 12 mois
+- [ ] **Réductions dynamiques** : photos invendues -30% après 48h, early bird -15%, bundles
+- [ ] **Carte des courses** : carte interactive événements suivis/couverts (RaceMap + geocoding présents)
 
 ## Conventions
 - **Toujours** utiliser les accents français : é, è, ê, à, ù, ç, î, ô
@@ -288,3 +294,5 @@ curl -s "http://217.182.89.133:8000/api/v1/deploy?uuid=ms440oowockwkso0k0c8okgc&
 | 24 | Fix affichage financier (centimes→euros), KPIs ventes (total/packs/unitaires), Stripe webhook configuré, badges PNG (10 sportif + 10 photographe + 10 organisateur avec artwork custom), affiches événements dans dashboard |
 | 26 | Système notifications complet (15 préférences opt-out, 12 templates email, 13 triggers, UI accordéon, one-click unsubscribe), prochaine recharge crédits (date+heure), fix Stripe API 2025+ (current_period_end supprimé) |
 | 27 | Protection anti-bot complète : Cloudflare Turnstile CAPTCHA (vraies clés prod), brute force login (lockout progressif), bot detection middleware (25+ UA, anti-scraping), honeypot 3 formulaires, rate limiting 13 routes, robots.txt, CSP + HSTS |
+| 28? | **(hors-journal)** Gamification complète codée sans être consignée : XP + niveaux, classements, streaks, réactions, parrainage, partage, Wrapped, smart alerts, crédits-récompenses (migration `20260225000000_add_gamification`) |
+| 28 | **Retrait gamification partiel** : suppression badges + XP + niveaux + classements (UserBadge/XpEvent/UserLevel/LeaderboardEntry + enums droppés, migration `20260604120000_remove_badges_xp_leaderboards`). Conservés (décâblés des XP) : streaks, réactions, parrainage, partage, Wrapped, smart alerts, crédits-récompenses. Comptes de test réintégrés au seed |

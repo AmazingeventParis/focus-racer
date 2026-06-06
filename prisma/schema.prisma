@@ -109,13 +109,9 @@ model User {
   conversationMemberships HordeConversationParticipant[]  @relation("ConversationParticipant")
   hordeMessages           HordeMessage[]                  @relation("HordeMessageSender")
   photoAlerts             PhotoAlert[]
-  badges                  UserBadge[]
   referralCode            String?     @unique
 
   // Gamification relations
-  xpEvents                XpEvent[]
-  userLevel               UserLevel?
-  leaderboardEntries      LeaderboardEntry[]
   streaks                 UserStreak[]
   referralsSent           Referral[]        @relation("ReferralReferrer")
   referralsReceived       Referral[]        @relation("ReferralReferee")
@@ -633,19 +629,6 @@ model PhotoAlert {
   @@index([eventId, bibNumber])
 }
 
-// =========== USER BADGES ===========
-
-model UserBadge {
-  id       String   @id @default(cuid())
-  userId   String
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  badgeKey String
-  earnedAt DateTime @default(now())
-
-  @@unique([userId, badgeKey])
-  @@index([userId])
-}
-
 // =========== NOTIFICATIONS ===========
 
 model Notification {
@@ -663,78 +646,6 @@ model Notification {
   @@index([userId])
   @@index([eventId])
   @@index([read])
-}
-
-// =========== GAMIFICATION: XP & LEVELS ===========
-
-enum XpActionType {
-  PHOTO_PURCHASE
-  EVENT_FAVORITE
-  PROFILE_COMPLETE
-  FRIEND_ADDED
-  PHOTO_SHARED
-  PHOTO_REACTION
-  REFERRAL_COMPLETED
-  PHOTO_UPLOADED
-  EVENT_PUBLISHED
-  PHOTO_SOLD
-  BADGE_EARNED
-  STRIPE_CONNECTED
-  HIGH_OCR_RATE
-  EVENT_CREATED
-  START_LIST_IMPORTED
-  HIGH_COVERAGE
-  DAILY_LOGIN
-  STREAK_BONUS
-}
-
-model XpEvent {
-  id        String       @id @default(cuid())
-  userId    String
-  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  action    XpActionType
-  xpAmount  Int
-  metadata  String?
-  createdAt DateTime     @default(now())
-
-  @@index([userId])
-  @@index([userId, createdAt])
-  @@index([createdAt])
-}
-
-model UserLevel {
-  id             String   @id @default(cuid())
-  userId         String   @unique
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  totalXp        Int      @default(0)
-  level          Int      @default(1)
-  levelName      String   @default("Débutant")
-  currentLevelXp Int      @default(0)
-  nextLevelXp    Int      @default(100)
-  updatedAt      DateTime @updatedAt
-}
-
-// =========== GAMIFICATION: LEADERBOARDS ===========
-
-enum LeaderboardPeriod {
-  WEEKLY
-  MONTHLY
-  ALL_TIME
-}
-
-model LeaderboardEntry {
-  id        String            @id @default(cuid())
-  userId    String
-  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  period    LeaderboardPeriod
-  periodKey String
-  role      UserRole
-  category  String
-  score     Int               @default(0)
-  updatedAt DateTime          @updatedAt
-
-  @@unique([userId, period, periodKey, category])
-  @@index([period, periodKey, category, score])
 }
 
 // =========== GAMIFICATION: STREAKS ===========

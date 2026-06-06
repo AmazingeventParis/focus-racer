@@ -1,7 +1,5 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { BADGE_DEFINITIONS } from "@/lib/badges";
-import BadgeIcon from "@/components/sportif/BadgeIcon";
 
 const SPORT_LABELS: Record<string, string> = {
   RUNNING: "Course à pied",
@@ -30,7 +28,6 @@ interface ProfileData {
   eventCount: number;
   hordeSize: number;
   sportBreakdown: Record<string, number>;
-  badges: { badgeKey: string; earnedAt: string }[];
 }
 
 async function getProfile(sportifId: string): Promise<ProfileData | null> {
@@ -69,7 +66,6 @@ export default async function PublicProfilePage({
   const profile = await getProfile(params.sportifId);
   if (!profile) notFound();
 
-  const earnedKeys = new Set(profile.badges.map((b) => b.badgeKey));
   const memberDate = new Date(profile.memberSince);
   const initials = profile.name
     .split(" ")
@@ -140,37 +136,6 @@ export default async function PublicProfilePage({
             </div>
           </div>
         )}
-
-        {/* Badges */}
-        <div className="glass-card rounded-2xl p-6 mb-6">
-          <h2 className="text-base font-semibold text-navy mb-4">
-            Badges{" "}
-            <span className="text-sm font-normal text-muted-foreground">
-              ({earnedKeys.size}/{BADGE_DEFINITIONS.length})
-            </span>
-          </h2>
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
-            {BADGE_DEFINITIONS.map((def) => {
-              const isEarned = earnedKeys.has(def.key);
-              return (
-                <div
-                  key={def.key}
-                  className="flex flex-col items-center gap-1.5"
-                  title={def.descriptionFr}
-                >
-                  <BadgeIcon badgeKey={def.key} earned={isEarned} size={56} />
-                  <span
-                    className={`text-xs font-medium text-center leading-tight ${
-                      isEarned ? "text-gray-800" : "text-gray-400"
-                    }`}
-                  >
-                    {def.labelFr}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
 
         {/* CTA */}
         <div className="text-center">

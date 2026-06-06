@@ -12,7 +12,6 @@ import {
   sendStripeOnboardedEmail,
   sendNewSaleEmail,
 } from "@/lib/email";
-import { grantXp } from "@/lib/gamification/xp-service";
 import { recordStreakActivity } from "@/lib/gamification/streak-service";
 import { completeReferral } from "@/lib/gamification/referral-service";
 import { canSendEmail, generateUnsubscribeUrl } from "@/lib/notification-preferences";
@@ -157,22 +156,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Grant XP for purchase (sportif) and sale (photographe)
+    // Record purchase streak (sportif) and complete referral
     try {
       if (order.userId) {
-        for (let i = 0; i < order.items.length; i++) {
-          await grantXp(order.userId, "PHOTO_PURCHASE", { orderId: order.id, photoId: order.items[i].photoId });
-        }
         await recordStreakActivity(order.userId, "purchase");
         await completeReferral(order.userId, "first_purchase");
       }
-      if (order.event.userId) {
-        for (let i = 0; i < order.items.length; i++) {
-          await grantXp(order.event.userId, "PHOTO_SOLD", { orderId: order.id, photoId: order.items[i].photoId });
-        }
-      }
     } catch (xpErr) {
-      console.error("Failed to grant XP:", xpErr);
+      console.error("Failed post-purchase gamification:", xpErr);
     }
 
     // Notify photographer of new sale

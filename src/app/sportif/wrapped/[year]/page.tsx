@@ -12,12 +12,9 @@ interface WrappedData {
   totalSpent?: number;
   topSport?: string | null;
   topEvent?: { name: string; photoCount: number } | null;
-  badgesEarned?: number;
-  levelReached?: number;
   longestStreak?: number;
   reactionsGiven?: number;
   hordeSize?: number;
-  totalXp?: number;
 }
 
 const SPORT_LABELS: Record<string, string> = {
@@ -70,7 +67,7 @@ export default function SportifWrappedPage() {
           <StatBox label="Événements suivis" value={data.eventsFollowed || 0} />
           <StatBox label="Photos achetées" value={data.photosBought || 0} />
           <StatBox label="Total dépensé" value={`${(data.totalSpent || 0).toFixed(0)}€`} />
-          <StatBox label="XP total" value={data.totalXp || 0} />
+          <StatBox label="Réactions données" value={data.reactionsGiven || 0} />
         </div>
       ),
     },
@@ -78,8 +75,6 @@ export default function SportifWrappedPage() {
       title: "Vos performances",
       content: (
         <div className="space-y-4">
-          <StatBox label="Niveau atteint" value={data.levelReached || 1} big />
-          <StatBox label="Badges gagnés" value={data.badgesEarned || 0} big />
           <StatBox label="Record de série" value={`${data.longestStreak || 0} semaines`} big />
         </div>
       ),
@@ -104,10 +99,10 @@ export default function SportifWrappedPage() {
       content: (
         <div className="text-center space-y-4">
           <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white text-3xl font-bold">
-            {data.levelReached || 1}
+            🏅
           </div>
           <p className="text-lg font-semibold text-white/80">
-            {data.photosBought || 0} photos · {data.eventsFollowed || 0} événements · {data.totalXp || 0} XP
+            {data.photosBought || 0} photos · {data.eventsFollowed || 0} événements
           </p>
           <p className="text-sm text-gray-400">Merci d'avoir été avec nous en {year} !</p>
         </div>

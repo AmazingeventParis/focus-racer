@@ -10,8 +10,6 @@ export interface WrappedStats {
   totalSpent?: number;
   topSport?: string | null;
   topEvent?: { name: string; photoCount: number } | null;
-  badgesEarned?: number;
-  levelReached?: number;
   longestStreak?: number;
   reactionsGiven?: number;
   hordeSize?: number;
@@ -26,8 +24,6 @@ export interface WrappedStats {
   eventsOrganized?: number;
   runnersManaged?: number;
   avgCoverage?: number;
-  // Common
-  totalXp?: number;
 }
 
 /**
@@ -94,8 +90,6 @@ async function generateRunnerWrapped(
   const [
     eventsFollowed,
     orders,
-    badges,
-    userLevel,
     longestStreak,
     reactionsGiven,
     hordeSize,
@@ -110,10 +104,6 @@ async function generateRunnerWrapped(
         items: true,
       },
     }),
-    prisma.userBadge.count({
-      where: { userId, earnedAt: { gte: yearStart, lt: yearEnd } },
-    }),
-    prisma.userLevel.findUnique({ where: { userId } }),
     prisma.userStreak.findFirst({
       where: { userId },
       orderBy: { longestStreak: "desc" },
@@ -159,12 +149,9 @@ async function generateRunnerWrapped(
     totalSpent,
     topSport,
     topEvent,
-    badgesEarned: badges,
-    levelReached: userLevel?.level ?? 1,
     longestStreak: longestStreak?.longestStreak ?? 0,
     reactionsGiven,
     hordeSize,
-    totalXp: userLevel?.totalXp ?? 0,
   };
 }
 
@@ -178,8 +165,6 @@ async function generatePhotographerWrapped(
     events,
     photosUploaded,
     soldOrders,
-    badges,
-    userLevel,
     reactionsReceived,
   ] = await Promise.all([
     prisma.event.findMany({
@@ -197,10 +182,6 @@ async function generatePhotographerWrapped(
       },
       include: { event: { select: { name: true } }, items: true },
     }),
-    prisma.userBadge.count({
-      where: { userId, earnedAt: { gte: yearStart, lt: yearEnd } },
-    }),
-    prisma.userLevel.findUnique({ where: { userId } }),
     prisma.photoReaction.count({
       where: {
         photo: { event: { userId } },
@@ -231,10 +212,7 @@ async function generatePhotographerWrapped(
     photosUploaded,
     totalRevenue,
     bestSeller,
-    badgesEarned: badges,
-    levelReached: userLevel?.level ?? 1,
     reactionsReceived,
-    totalXp: userLevel?.totalXp ?? 0,
   };
 }
 
@@ -247,8 +225,6 @@ async function generateOrganizerWrapped(
   const [
     events,
     runnersManaged,
-    badges,
-    userLevel,
   ] = await Promise.all([
     prisma.event.count({
       where: { userId, createdAt: { gte: yearStart, lt: yearEnd } },
@@ -256,10 +232,6 @@ async function generateOrganizerWrapped(
     prisma.startListEntry.count({
       where: { event: { userId, createdAt: { gte: yearStart, lt: yearEnd } } },
     }),
-    prisma.userBadge.count({
-      where: { userId, earnedAt: { gte: yearStart, lt: yearEnd } },
-    }),
-    prisma.userLevel.findUnique({ where: { userId } }),
   ]);
 
   return {
@@ -267,8 +239,5 @@ async function generateOrganizerWrapped(
     role: "ORGANIZER",
     eventsOrganized: events,
     runnersManaged,
-    badgesEarned: badges,
-    levelReached: userLevel?.level ?? 1,
-    totalXp: userLevel?.totalXp ?? 0,
   };
 }

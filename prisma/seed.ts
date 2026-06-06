@@ -19,6 +19,42 @@ async function main() {
   });
   console.log(`Admin created: ${admin.email}`);
 
+  // Test users (dev / staging only)
+  const testUsers = [
+    {
+      email: "photographe@test.com",
+      password: "photo123",
+      name: "Photographe Test",
+      role: UserRole.PHOTOGRAPHER,
+    },
+    {
+      email: "coureur@test.com",
+      password: "runner123",
+      name: "Coureur Test",
+      role: UserRole.RUNNER,
+    },
+    {
+      email: "orga@test.com",
+      password: "orga123",
+      name: "Organisateur Test",
+      role: UserRole.ORGANIZER,
+    },
+  ];
+
+  for (const u of testUsers) {
+    const user = await prisma.user.upsert({
+      where: { email: u.email },
+      update: {},
+      create: {
+        email: u.email,
+        password: await bcrypt.hash(u.password, 10),
+        name: u.name,
+        role: u.role,
+      },
+    });
+    console.log(`Test user created: ${user.email} (${user.role})`);
+  }
+
   console.log("Seeding completed!");
 }
 

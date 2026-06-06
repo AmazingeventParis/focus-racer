@@ -30,7 +30,7 @@ export async function GET(
       );
     }
 
-    const [favoritesWithSport, hordeData, badges] = await Promise.all([
+    const [favoritesWithSport, hordeData] = await Promise.all([
       prisma.eventFavorite.findMany({
         where: { userId: user.id },
         select: { event: { select: { sportType: true } } },
@@ -43,11 +43,6 @@ export async function GET(
             select: { id: true },
           },
         },
-      }),
-      prisma.userBadge.findMany({
-        where: { userId: user.id },
-        select: { badgeKey: true, earnedAt: true },
-        orderBy: { earnedAt: "asc" },
       }),
     ]);
 
@@ -65,7 +60,6 @@ export async function GET(
       eventCount: favoritesWithSport.length,
       hordeSize: hordeData?.members.length ?? 0,
       sportBreakdown,
-      badges,
     });
   } catch (error) {
     console.error("Error fetching public profile:", error);

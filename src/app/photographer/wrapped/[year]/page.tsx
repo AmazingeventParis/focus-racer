@@ -11,10 +11,7 @@ interface WrappedData {
   photosUploaded?: number;
   totalRevenue?: number;
   bestSeller?: { eventName: string; soldCount: number } | null;
-  badgesEarned?: number;
-  levelReached?: number;
   reactionsReceived?: number;
-  totalXp?: number;
 }
 
 export default function PhotographerWrappedPage() {
@@ -67,8 +64,8 @@ export default function PhotographerWrappedPage() {
               <p className="text-2xl font-bold">{(data.totalRevenue || 0).toFixed(0)}€</p>
             </div>
             <div className="bg-white/10 rounded-xl p-4">
-              <p className="text-xs text-white/50">XP total</p>
-              <p className="text-2xl font-bold">{data.totalXp || 0}</p>
+              <p className="text-xs text-white/50">Réactions</p>
+              <p className="text-2xl font-bold">{data.reactionsReceived || 0}</p>
             </div>
           </div>
           {data.bestSeller && (
@@ -79,7 +76,7 @@ export default function PhotographerWrappedPage() {
             </div>
           )}
           <div className="text-center">
-            <p className="text-sm text-white/40">Niveau {data.levelReached} · {data.badgesEarned} badges · {data.reactionsReceived} réactions</p>
+            <p className="text-sm text-white/40">{data.reactionsReceived} réactions reçues</p>
           </div>
         </CardContent>
       </Card>
