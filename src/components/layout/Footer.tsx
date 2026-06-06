@@ -44,7 +44,7 @@ const SocialIcon = ({ href, label, children }: { href: string; label: string; ch
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="text-[#6B7AAD] hover:text-[#0891B2] transition-colors duration-200"
+    className="text-[#64748B] hover:text-[#059669] transition-colors duration-200"
     aria-label={label}
   >
     {children}
@@ -63,21 +63,21 @@ const FacebookIcon = () => (
 
 export default function Footer() {
   return (
-    <footer className="bg-[#070B1F] border-t border-[#2C3566]/50 text-[#F3F6FF]">
+    <footer className="bg-white border-t border-[#E2E8F0]/50 text-slate-900">
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 lg:gap-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <div className="flex items-center mb-4">
               <Image
-                src="/logo-focus-racer-white.png"
+                src="/logo-focus-racer.png"
                 alt="Focus Racer"
                 width={160}
                 height={90}
                 className="h-10 w-auto"
               />
             </div>
-            <p className="text-[#A7B0D6] text-sm leading-relaxed max-w-xs">
+            <p className="text-[#475569] text-sm leading-relaxed max-w-xs">
               La plateforme de référence pour retrouver et acheter vos photos de courses sportives.
             </p>
             {/* Social icons — mobile/tablet */}
@@ -91,7 +91,7 @@ export default function Footer() {
           {/* Link columns */}
           {Object.values(footerLinks).map((section) => (
             <div key={section.title}>
-              <h3 className="font-semibold text-xs uppercase tracking-[0.1em] mb-4 bg-gradient-to-r from-[#0891B2] to-[#C084FC] bg-clip-text text-transparent">
+              <h3 className="font-semibold text-xs uppercase tracking-[0.1em] mb-4 bg-gradient-to-r from-[#059669] to-[#F97316] bg-clip-text text-transparent">
                 {section.title}
               </h3>
               <ul className="space-y-3">
@@ -99,7 +99,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-[#A7B0D6] hover:text-[#F3F6FF] text-sm transition-colors duration-200"
+                      className="text-[#475569] hover:text-slate-900 text-sm transition-colors duration-200"
                     >
                       {link.label}
                     </Link>
@@ -111,8 +111,8 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-[#2C3566]/50 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[#6B7AAD] text-sm">
+        <div className="border-t border-[#E2E8F0]/50 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-[#64748B] text-sm">
             © {new Date().getFullYear()} Focus Racer. Tous droits réservés.
           </p>
           <div className="hidden lg:flex items-center gap-6">

@@ -239,7 +239,7 @@ export default function HomeV2() {
         <div className="hv2-header-inner">
           <Link href="/">
             <Image
-              src="/logo-focus-racer-white.png"
+              src="/logo-focus-racer.png"
               alt="Focus Racer"
               width={160}
               height={90}
@@ -911,7 +911,7 @@ export default function HomeV2() {
           <div className="hv2-footer-grid">
             <div className="hv2-footer-brand">
               <Image
-                src="/logo-focus-racer-white.png"
+                src="/logo-focus-racer.png"
                 alt="Focus Racer"
                 width={160}
                 height={90}

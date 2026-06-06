@@ -236,7 +236,7 @@ function RegisterPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center">
             <Image
-              src="/logo-focus-racer-white.png"
+              src="/logo-focus-racer.png"
               alt="Focus Racer"
               width={180}
               height={101}

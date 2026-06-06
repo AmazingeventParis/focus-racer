@@ -422,7 +422,7 @@ export default function RunnerStatisticsPage() {
                       return (
                         <div key={purchase.id} className="flex items-start gap-4 p-3 relative rounded-xl hover:bg-white/5 transition-colors">
                           {/* Timeline dot */}
-                          <div className={`w-[9px] h-[9px] rounded-full mt-1.5 flex-shrink-0 z-10 ring-4 ring-[#151C44] ${
+                          <div className={`w-[9px] h-[9px] rounded-full mt-1.5 flex-shrink-0 z-10 ring-4 ring-[#FFFFFF] ${
                             index === 0 ? "bg-emerald-500" : "bg-gray-300"
                           }`} />
 

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -97,7 +97,7 @@ export default function EventsListPage() {
             placeholder="Rechercher un événement..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-[#0C1029] border-[#2C3566] text-[#F3F6FF] rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald transition-all"
+            className="bg-[#F1F5F9] border-[#E2E8F0] text-slate-900 rounded-lg focus:ring-2 focus:ring-emerald/20 focus:border-emerald transition-all"
           />
         </div>
         <div className="flex gap-2">
@@ -115,7 +115,7 @@ export default function EventsListPage() {
               className={
                 statusFilter === f.value
                   ? "bg-emerald hover:bg-emerald-hover text-white rounded-lg"
-                  : "bg-[#0C1029] text-gray-400 border-[#2C3566] hover:bg-[#151C44] rounded-lg"
+                  : "bg-[#F1F5F9] text-gray-400 border-[#E2E8F0] hover:bg-[#FFFFFF] rounded-lg"
               }
             >
               {f.label}

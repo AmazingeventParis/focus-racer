@@ -212,7 +212,7 @@ export default function CheckoutPage({
   if (photos.length === 0) {
     return (
       <div className="min-h-screen gradient-bg-subtle">
-        <header className="bg-[#151C44] shadow-sm border-b border-[#2C3566]">
+        <header className="bg-[#FFFFFF] shadow-sm border-b border-[#E2E8F0]">
           <div className="container mx-auto px-4 py-4">
             <Link href="/" className="text-xl font-bold text-gray-900">Focus Racer</Link>
           </div>
@@ -229,7 +229,7 @@ export default function CheckoutPage({
 
   return (
     <div className="min-h-screen gradient-bg-subtle">
-      <header className="bg-[#151C44] shadow-sm border-b border-[#2C3566]">
+      <header className="bg-[#FFFFFF] shadow-sm border-b border-[#E2E8F0]">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/" className="text-xl font-bold text-gray-900">Focus Racer</Link>
           <Link href={`/events/${id}/favorites`}>
@@ -279,7 +279,7 @@ export default function CheckoutPage({
                     <button
                       onClick={() => setSelectedPackId(null)}
                       className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${
-                        !selectedPackId ? "border-emerald bg-emerald-500/10" : "border-[#2C3566] hover:border-emerald/30"
+                        !selectedPackId ? "border-emerald bg-emerald-500/10" : "border-[#E2E8F0] hover:border-emerald/30"
                       }`}
                     >
                       <div className="flex justify-between items-center">
@@ -306,8 +306,8 @@ export default function CheckoutPage({
                             selectedPackId === pack.id
                               ? "border-emerald bg-emerald-500/10"
                               : isApplicable
-                              ? "border-[#2C3566] hover:border-emerald/30"
-                              : "border-[#2C3566] opacity-50 cursor-not-allowed"
+                              ? "border-[#E2E8F0] hover:border-emerald/30"
+                              : "border-[#E2E8F0] opacity-50 cursor-not-allowed"
                           }`}
                         >
                           <div className="flex justify-between items-center">

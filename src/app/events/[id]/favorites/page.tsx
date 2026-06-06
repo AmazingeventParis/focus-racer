@@ -264,7 +264,7 @@ export default function FavoritesPage({
 
               {/* Upsell suggestions */}
               {upsell.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-[#2C3566]">
+                <div className="mt-4 pt-4 border-t border-[#E2E8F0]">
                   {upsell.map((s, i) => (
                     <div
                       key={i}
@@ -308,14 +308,14 @@ export default function FavoritesPage({
                   />
                   <button
                     onClick={() => removeFavorite(photo.id)}
-                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-[#151C44]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#151C44] transition-all duration-200 shadow-sm"
+                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-[#FFFFFF]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#FFFFFF] transition-all duration-200 shadow-sm"
                     title="Retirer des favoris"
                   >
                     <span className="text-emerald">×</span>
                   </button>
                 </div>
                 {photo.bibNumbers.length > 0 && (
-                  <div className="p-2 flex flex-wrap gap-1 bg-[#0C1029]/50">
+                  <div className="p-2 flex flex-wrap gap-1 bg-[#F1F5F9]/50">
                     {photo.bibNumbers.map((bib) => (
                       <Badge key={bib.id} variant="secondary" className="text-xs bg-emerald-500/10 text-emerald">
                         #{bib.number}

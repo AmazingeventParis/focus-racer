@@ -108,10 +108,10 @@ export default function HordeChat({ hordeId, acceptedMembers }: HordeChatProps) 
   }
 
   return (
-    <div className="border border-[#2C3566] rounded-2xl bg-[#151C44] overflow-hidden" style={{ height: "600px" }}>
+    <div className="border border-[#E2E8F0] rounded-2xl bg-[#FFFFFF] overflow-hidden" style={{ height: "600px" }}>
       {/* Desktop: 2 columns */}
       <div className="hidden md:flex h-full">
-        <div className="w-80 border-r border-[#2C3566] flex-shrink-0">
+        <div className="w-80 border-r border-[#E2E8F0] flex-shrink-0">
           <ConversationList
             conversations={conversations}
             activeId={activeConv?.id || null}
@@ -163,7 +163,7 @@ export default function HordeChat({ hordeId, acceptedMembers }: HordeChatProps) 
         ) : activeConv ? (
           <div className="flex flex-col h-full">
             {/* Back button */}
-            <div className="px-3 py-2 border-b border-[#2C3566] bg-[#151C44]">
+            <div className="px-3 py-2 border-b border-[#E2E8F0] bg-[#FFFFFF]">
               <button
                 onClick={handleBack}
                 className="flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-700"

@@ -94,8 +94,8 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
       />
 
       {/* Financial Metrics */}
-      <Card className="bg-[#151C44] shadow-sm border-[#2C3566] overflow-hidden">
-        <CardHeader className="border-b border-[#2C3566] bg-gradient-to-r from-white/5 to-transparent pb-4">
+      <Card className="bg-[#FFFFFF] shadow-sm border-[#E2E8F0] overflow-hidden">
+        <CardHeader className="border-b border-[#E2E8F0] bg-gradient-to-r from-white/5 to-transparent pb-4">
           <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2.5">
             <div className="p-1.5 rounded-lg bg-emerald-500/10">
               <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -194,7 +194,7 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
               </div>
 
               {/* Financial breakdown */}
-              <div className="border-t border-[#2C3566] pt-6">
+              <div className="border-t border-[#E2E8F0] pt-6">
                 <h4 className="text-sm font-semibold text-gray-500 mb-4">Détail financier</h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between py-2">
@@ -211,7 +211,7 @@ export function EventAnalytics({ eventId }: { eventId: string }) {
                     </div>
                     <span className="text-sm font-medium text-gray-500">{formatEuro(revenue.stripeFee)}</span>
                   </div>
-                  <div className="flex items-center justify-between py-3 border-t border-[#2C3566] mt-1">
+                  <div className="flex items-center justify-between py-3 border-t border-[#E2E8F0] mt-1">
                     <span className="text-sm font-semibold text-gray-900">Total</span>
                     <span className="text-sm font-bold text-gray-900">{formatEuro(revenue.totalRevenue)}</span>
                   </div>

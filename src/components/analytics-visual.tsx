@@ -38,8 +38,8 @@ export function AnalyticsVisual({
   const bibsPerPhoto = photosWithBibs > 0 ? totalAssociations / photosWithBibs : 0;
 
   return (
-    <Card className="bg-[#151C44] shadow-sm border-[#2C3566] overflow-hidden">
-      <CardHeader className="border-b border-[#2C3566] bg-gradient-to-r from-white/5 to-transparent pb-4">
+    <Card className="bg-[#FFFFFF] shadow-sm border-[#E2E8F0] overflow-hidden">
+      <CardHeader className="border-b border-[#E2E8F0] bg-gradient-to-r from-white/5 to-transparent pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2.5">
             <div className="p-1.5 rounded-lg bg-blue-500/10">

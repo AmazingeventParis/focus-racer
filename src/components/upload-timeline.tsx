@@ -37,8 +37,8 @@ export function UploadTimeline({ steps }: UploadTimelineProps) {
                     step.status === "completed"
                       ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/50"
                       : step.status === "active"
-                      ? "bg-[#151C44] border-4 border-emerald-500 text-emerald-500 shadow-lg"
-                      : "bg-[#151C44] border-2 border-[#2C3566] text-slate-400"
+                      ? "bg-[#FFFFFF] border-4 border-emerald-500 text-emerald-500 shadow-lg"
+                      : "bg-[#FFFFFF] border-2 border-[#E2E8F0] text-slate-400"
                   }`}
                 >
                   {step.status === "completed" ? (

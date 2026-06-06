@@ -258,7 +258,7 @@ export default function PacksPage({
                 Aucun pack créé. Utilisez le formulaire ci-dessus.
               </p>
             ) : (
-              <div className="border border-[#2C3566] rounded-xl overflow-hidden">
+              <div className="border border-[#E2E8F0] rounded-xl overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>

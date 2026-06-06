@@ -92,7 +92,7 @@ export default function ReferralCard() {
 
       {/* Stats */}
       {stats && (stats.sent > 0 || stats.completed > 0) && (
-        <div className={`grid ${isRunner ? "grid-cols-2" : "grid-cols-3"} gap-2 pt-2 border-t border-[#2C3566]`}>
+        <div className={`grid ${isRunner ? "grid-cols-2" : "grid-cols-3"} gap-2 pt-2 border-t border-[#E2E8F0]`}>
           <div className="text-center">
             <p className="text-lg font-bold text-gray-900">{stats.sent}</p>
             <p className="text-[10px] text-gray-400">Invités</p>

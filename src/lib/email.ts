@@ -18,7 +18,7 @@ const transporter = SMTP_USER && SMTP_PASS
 
 const EMAIL_FROM = process.env.EMAIL_FROM || `Focus Racer <${SMTP_USER || "noreply@focusracer.swipego.app"}>`;
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-const LOGO_URL = `${APP_URL}/logo-focus-racer-white.png`;
+const LOGO_URL = `${APP_URL}/logo-focus-racer.png`;
 const CURRENT_YEAR = new Date().getFullYear();
 
 // =========== DESIGN TOKENS ===========

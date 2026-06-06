@@ -164,19 +164,19 @@ export default function SportifSidebar() {
   };
 
   return (
-    <aside className="hidden md:flex w-64 bg-[#0D1330] border-r border-[#2C3566]/30 text-white min-h-screen flex-col">
+    <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 shadow-sidebar text-slate-900 min-h-screen flex-col">
       {/* Logo */}
       <div className="p-6">
         <Link href="/" className="flex items-center">
           <Image
-            src="/logo-focus-racer-white.png"
+            src="/logo-focus-racer.png"
             alt="Focus Racer"
             width={140}
             height={78}
             className="h-9 w-auto"
           />
         </Link>
-        <p className="text-navy-200 text-xs mt-2 ml-10">{t("nav.space")}</p>
+        <p className="text-slate-500 text-xs mt-2 ml-10">{t("nav.space")}</p>
       </div>
 
       {/* Navigation */}
@@ -191,11 +191,11 @@ export default function SportifSidebar() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-[#0891B2]/10 text-[#0891B2] shadow-sm"
-                      : "text-[#A7B0D6] hover:bg-white/5 hover:text-white"
+                      ? "bg-emerald/10 text-emerald shadow-sm"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                   )}
                 >
-                  <span className={cn(isActive ? "text-[#0891B2]" : "text-[#6B7AAD]")}>
+                  <span className={cn(isActive ? "text-emerald" : "text-slate-500")}>
                     {item.icon}
                   </span>
                   {t(item.labelKey)}
@@ -222,17 +222,17 @@ export default function SportifSidebar() {
       </nav>
 
       {/* User profile */}
-      <div className="p-4 border-t border-white/5">
-        <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white/5 mb-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#C084FC] flex items-center justify-center text-[#070B1F] font-bold text-xs">
+      <div className="p-4 border-t border-slate-200">
+        <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-slate-50 mb-3">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald to-energy flex items-center justify-center text-white font-bold text-xs">
             {userInitials}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">{userName}</p>
+            <p className="text-sm font-medium text-slate-900 truncate">{userName}</p>
             {sportifId && (
               <button
                 onClick={copySportifId}
-                className="text-xs text-navy-200 hover:text-emerald transition-colors flex items-center gap-1"
+                className="text-xs text-slate-500 hover:text-emerald transition-colors flex items-center gap-1"
                 title={t("common.copy")}
               >
                 {sportifId}
@@ -251,7 +251,7 @@ export default function SportifSidebar() {
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-[#6B7AAD] hover:text-white hover:bg-white/5 transition-all duration-200"
+          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />

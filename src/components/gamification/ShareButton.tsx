@@ -65,7 +65,7 @@ export default function ShareButton({ photoId }: Props) {
         disabled={loading}
         className={cn(
           "flex items-center gap-1 px-2 py-1 rounded-full text-xs border transition-colors",
-          "bg-white/5 border-[#2C3566] text-gray-500 hover:bg-white/10"
+          "bg-white/5 border-[#E2E8F0] text-gray-500 hover:bg-white/10"
         )}
       >
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -77,7 +77,7 @@ export default function ShareButton({ photoId }: Props) {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute bottom-full mb-2 right-0 z-50 bg-[#151C44] rounded-xl shadow-lg border border-[#2C3566] py-1 min-w-[180px]">
+          <div className="absolute bottom-full mb-2 right-0 z-50 bg-[#FFFFFF] rounded-xl shadow-lg border border-[#E2E8F0] py-1 min-w-[180px]">
             <button
               onClick={handleCopyLink}
               className="w-full px-4 py-2 text-left text-sm text-gray-500 hover:bg-white/10 flex items-center gap-2"

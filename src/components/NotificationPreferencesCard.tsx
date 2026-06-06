@@ -203,7 +203,7 @@ export default function NotificationPreferencesCard() {
 
   if (loading) {
     return (
-      <Card className="bg-[#151C44] border-[#2C3566] shadow-card rounded-xl">
+      <Card className="bg-[#FFFFFF] border-[#E2E8F0] shadow-card rounded-xl">
         <CardHeader>
           <CardTitle className="text-lg font-display text-gray-900">Notifications email</CardTitle>
         </CardHeader>
@@ -221,7 +221,7 @@ export default function NotificationPreferencesCard() {
   if (!prefs) return null;
 
   return (
-    <Card className="bg-[#151C44] border-[#2C3566] shadow-card rounded-xl">
+    <Card className="bg-[#FFFFFF] border-[#E2E8F0] shadow-card rounded-xl">
       <CardHeader>
         <CardTitle className="text-lg font-display text-gray-900">Notifications email</CardTitle>
         <CardDescription className="text-gray-500">
@@ -235,7 +235,7 @@ export default function NotificationPreferencesCard() {
           const totalCount = group.items.length;
 
           return (
-            <div key={group.group} className="rounded-xl border border-[#2C3566] overflow-hidden">
+            <div key={group.group} className="rounded-xl border border-[#E2E8F0] overflow-hidden">
               <button
                 type="button"
                 onClick={() => toggleGroup(group.group)}

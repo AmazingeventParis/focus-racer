@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --v2-bg: #070B1F;
-  --v2-bg-secondary: #111A3A;
-  --v2-card: #151C44;
-  --v2-accent: #0891B2;
-  --v2-accent2: #C084FC;
-  --v2-interact: #7C3AED;
-  --v2-text: #F3F6FF;
-  --v2-text-secondary: #A7B0D6;
-  --v2-border: #2C3566;
-  --v2-gradient: linear-gradient(135deg, #0891B2, #C084FC);
-  --v2-gradient2: linear-gradient(135deg, #4F46E5, #7C3AED);
+  --v2-bg: #FFFFFF;
+  --v2-bg-secondary: #F8FAFC;
+  --v2-card: #FFFFFF;
+  --v2-accent: #059669;
+  --v2-accent2: #F97316;
+  --v2-interact: #EA580C;
+  --v2-text: #0F172A;
+  --v2-text-secondary: #475569;
+  --v2-border: #E2E8F0;
+  --v2-gradient: linear-gradient(135deg, #059669, #F97316);
+  --v2-gradient2: linear-gradient(135deg, #EA580C, #EA580C);
   --v2-glow-cyan: rgba(8, 145, 178, 0.15);
   --v2-glow-purple: rgba(192, 132, 252, 0.15);
   --v2-radius: 16px;
@@ -726,8 +726,8 @@
   font-size: 1.3rem;
   margin-bottom: 0;
 }
-.hv2 .fi-cyan { background: rgba(8, 145, 178, 0.12); color: #0891B2; }
-.hv2 .fi-purple { background: rgba(192, 132, 252, 0.12); color: #C084FC; }
+.hv2 .fi-cyan { background: rgba(8, 145, 178, 0.12); color: #059669; }
+.hv2 .fi-purple { background: rgba(192, 132, 252, 0.12); color: #F97316; }
 .hv2 .fi-green { background: rgba(52, 211, 153, 0.12); color: #34D399; }
 .hv2 .fi-amber { background: rgba(251, 191, 36, 0.12); color: #FBBF24; }
 .hv2 .fi-rose { background: rgba(251, 113, 133, 0.12); color: #FB7185; }
@@ -1843,7 +1843,7 @@
   width: 100%;
   padding: 8px 16px;
   background: var(--v2-gradient);
-  color: #070B1F;
+  color: #FFFFFF;
   font-weight: 600;
   font-size: 0.85rem;
   border: none;
@@ -1882,7 +1882,7 @@
   border-radius: 10px;
   font-size: 0.88rem;
   font-weight: 600;
-  color: #070B1F;
+  color: #FFFFFF;
   background: var(--v2-gradient);
   border: none;
   cursor: pointer;

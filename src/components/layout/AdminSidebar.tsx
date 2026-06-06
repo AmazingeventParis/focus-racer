@@ -114,11 +114,11 @@ export default function AdminSidebar() {
   }, [fetchUnread]);
 
   return (
-    <aside className="hidden md:flex w-64 bg-[#0D1330] border-r border-[#2C3566]/30 text-white min-h-screen flex-col">
+    <aside className="hidden md:flex w-64 bg-[#FFFFFF] border-r border-[#E2E8F0]/30 text-white min-h-screen flex-col">
       <div className="p-6">
         <Link href="/focus-mgr-7k9x/dashboard" className="flex items-center">
           <Image
-            src="/logo-focus-racer-white.png"
+            src="/logo-focus-racer.png"
             alt="Focus Racer"
             width={140}
             height={78}
@@ -139,11 +139,11 @@ export default function AdminSidebar() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-[#0891B2]/10 text-[#0891B2] shadow-sm"
-                      : "text-[#A7B0D6] hover:bg-white/5 hover:text-white"
+                      ? "bg-[#059669]/10 text-[#059669] shadow-sm"
+                      : "text-[#475569] hover:bg-white/5 hover:text-white"
                   )}
                 >
-                  <span className={cn(isActive ? "text-[#0891B2]" : "text-[#6B7AAD]")}>
+                  <span className={cn(isActive ? "text-[#059669]" : "text-[#64748B]")}>
                     {item.icon}
                   </span>
                   {item.label}
