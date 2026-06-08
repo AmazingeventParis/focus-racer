@@ -627,7 +627,7 @@ function drawTrailer(ctx: CanvasRenderingContext2D, t: Target, now: number) {
   ctx.fillRect(t.x + 5, t.y + 4, t.w - 10, 3);
 
   // Backpack
-  ctx.fillStyle = "#7c3aed";
+  ctx.fillStyle = "#EA580C";
   ctx.fillRect(t.x + t.w - 4, t.y + 14, 6, 18);
 
   // Hiking poles

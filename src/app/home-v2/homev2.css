@@ -1073,9 +1073,9 @@
 .hv2 .aud-sport-theme .aud-content-pill { color: #818cf8; }
 .hv2 .aud-sport-theme .aud-content-glow { background: rgba(79, 70, 229, 0.2); }
 .hv2 .aud-sport-theme .aud-checkmark,
-.hv2 .aud-sport-theme .aud-cta { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+.hv2 .aud-sport-theme .aud-cta { background: linear-gradient(135deg, #EA580C, #10B981); }
 
-.hv2 .aud-photo-theme .aud-content-pill { color: #c084fc; }
+.hv2 .aud-photo-theme .aud-content-pill { color: #F97316; }
 .hv2 .aud-photo-theme .aud-content-glow { background: rgba(147, 51, 234, 0.2); }
 .hv2 .aud-photo-theme .aud-checkmark,
 .hv2 .aud-photo-theme .aud-cta { background: linear-gradient(135deg, #9333ea, #c026d3); }
@@ -1218,7 +1218,7 @@
   font-size: 0.72rem;
   font-weight: 700;
 }
-.hv2 .tech-status-live { color: #22d3ee; }
+.hv2 .tech-status-live { color: #34D399; }
 
 /* Mock stage */
 /* Mock stage with real photo */
@@ -1288,7 +1288,7 @@
   box-shadow: 0 0 0 5px color-mix(in srgb, currentColor 16%, transparent);
   flex-shrink: 0;
 }
-.hv2 .tech-tone-cyan { color: #22d3ee; }
+.hv2 .tech-tone-cyan { color: #34D399; }
 .hv2 .tech-tone-violet { color: #a78bfa; }
 .hv2 .tech-tone-indigo { color: #818cf8; }
 .hv2 .tech-tone-emerald { color: #34d399; }

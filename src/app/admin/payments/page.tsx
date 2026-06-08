@@ -593,13 +593,13 @@ export default function AdminPaymentsPage() {
         const revenueSlices: PieSlice[] = [
           { value: salesAmount, color: "#8b5cf6", label: "Commission ventes" },
           { value: packAmount, color: "#2563eb", label: "Packs crédits" },
-          { value: subAmount, color: "#6366f1", label: "Abonnements crédits" },
+          { value: subAmount, color: "#10B981", label: "Abonnements crédits" },
           { value: apiAmount, color: "#ea580c", label: "API" },
         ];
 
         const feeSlices: PieSlice[] = [
           { value: stats.connect.totalPhotographerPayouts, color: "#059669", label: "Reverse photographes" },
-          { value: stats.connect.totalStripeFees, color: "#7c3aed", label: "Frais Stripe" },
+          { value: stats.connect.totalStripeFees, color: "#EA580C", label: "Frais Stripe" },
           { value: stats.connect.totalServiceFees, color: "#6b7280", label: "Commission plateforme" },
         ];
 

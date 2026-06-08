@@ -759,7 +759,7 @@ export default function HomePage() {
                 </div>
                 <div
                   className="tech-demo-photo"
-                  style={{ background: "linear-gradient(135deg, #155e75, #06b6d4)" }}
+                  style={{ background: "linear-gradient(135deg, #065F46, #10B981)" }}
                 >
                   <div className="tech-demo-tag">
                     <span className="tag-indicator"></span> #2103
