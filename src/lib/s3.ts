@@ -13,11 +13,15 @@ let client: S3Client | null = null;
 
 function getClient(): S3Client {
   if (!client) {
+    const s = aiConfig.storage;
     client = new S3Client({
-      region: aiConfig.region,
+      region: s.region,
+      // Custom endpoint for S3-compatible providers (OVH); undefined = AWS S3 native.
+      endpoint: s.endpoint || undefined,
+      forcePathStyle: s.forcePathStyle,
       credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+        accessKeyId: s.accessKeyId,
+        secretAccessKey: s.secretAccessKey,
       },
     });
   }

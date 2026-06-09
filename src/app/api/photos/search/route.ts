@@ -1,31 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
-import { s3KeyToPublicPath } from "@/lib/s3";
+import { s3KeyToPublicPath, getFromS3AsBuffer } from "@/lib/s3";
 import { searchFacesByFaceId, searchFaceByImage } from "@/lib/rekognition";
 import { aiConfig } from "@/lib/ai-config";
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 
-// Get photo image buffer from S3 for face search
+// Get photo image buffer from object storage for face search.
+// Uses the shared storage client (AWS S3 or OVH S3-compatible) — the bytes are
+// then sent to Rekognition, so storage location is independent of the AI provider.
 async function getPhotoBuffer(s3Key: string): Promise<Buffer | null> {
   try {
-    const s3 = new S3Client({
-      region: process.env.AWS_REGION || "eu-west-1",
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-      },
-    });
-    const resp = await s3.send(new GetObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET!,
-      Key: s3Key,
-    }));
-    if (!resp.Body) return null;
-    const chunks: Uint8Array[] = [];
-    for await (const chunk of resp.Body as AsyncIterable<Uint8Array>) {
-      chunks.push(chunk);
-    }
-    return Buffer.concat(chunks);
+    return await getFromS3AsBuffer(s3Key);
   } catch {
     return null;
   }
