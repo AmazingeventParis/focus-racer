@@ -92,10 +92,10 @@ export default function Header() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white border-b border-slate-200",
         scrolled
-          ? "bg-white/92 backdrop-blur-xl border-b border-[#E2E8F0]/30 shadow-lg shadow-black/20"
-          : "bg-transparent"
+          ? "shadow-sm"
+          : ""
       )}
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -166,11 +166,11 @@ export default function Header() {
                     </Link>
                   ))}
                 </div>
-                <div className="mt-3 p-4 rounded-xl bg-gradient-to-br from-[#059669]/10 to-[#F97316]/10 border border-[#059669]/15">
+                <div className="mt-3 p-4 rounded-xl bg-[#059669]/5 border border-[#059669]/15">
                   <p className="text-sm font-medium text-slate-900 mb-1">Essai gratuit</p>
                   <p className="text-xs text-[#475569] mb-3">Créez votre compte et uploadez vos premières photos.</p>
                   <Link href="/register">
-                    <button className="w-full py-2 px-4 bg-gradient-to-r from-[#059669] to-[#F97316] text-white text-sm font-semibold rounded-lg transition-opacity hover:opacity-90">
+                    <button className="w-full py-2 px-4 bg-[#059669] hover:bg-[#047857] text-white text-sm font-semibold rounded-lg transition-opacity hover:opacity-90">
                       Commencer
                     </button>
                   </Link>
@@ -192,7 +192,7 @@ export default function Header() {
                 </Link>
               )}
               <Link href={dashboardHref}>
-                <button className="px-5 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#059669] to-[#F97316] text-white shadow-neon-glow transition-all hover:opacity-90 hover:-translate-y-0.5">
+                <button className="px-5 py-2 rounded-lg text-sm font-semibold bg-[#059669] hover:bg-[#047857] text-white shadow-neon-glow transition-all hover:opacity-90 hover:-translate-y-0.5">
                   {isAdmin ? "Admin" : "Mon espace"}
                 </button>
               </Link>
@@ -205,7 +205,7 @@ export default function Header() {
                 </button>
               </Link>
               <Link href="/login">
-                <button className="px-5 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#059669] to-[#F97316] text-white shadow-neon-glow transition-all hover:opacity-90 hover:-translate-y-0.5">
+                <button className="px-5 py-2 rounded-lg text-sm font-semibold bg-[#059669] hover:bg-[#047857] text-white shadow-neon-glow transition-all hover:opacity-90 hover:-translate-y-0.5">
                   Mon espace
                 </button>
               </Link>
@@ -280,7 +280,7 @@ export default function Header() {
             <div className="border-t border-[#E2E8F0]/30 mt-2 pt-4 flex flex-col gap-2">
               {session ? (
                 <Link href={dashboardHref}>
-                  <button className="w-full py-2.5 px-4 bg-gradient-to-r from-[#059669] to-[#F97316] text-white text-sm font-semibold rounded-lg">
+                  <button className="w-full py-2.5 px-4 bg-[#059669] hover:bg-[#047857] text-white text-sm font-semibold rounded-lg">
                     {isAdmin ? "Admin" : "Mon espace"}
                   </button>
                 </Link>
@@ -292,7 +292,7 @@ export default function Header() {
                     </button>
                   </Link>
                   <Link href="/login">
-                    <button className="w-full py-2.5 px-4 bg-gradient-to-r from-[#059669] to-[#F97316] text-white text-sm font-semibold rounded-lg">
+                    <button className="w-full py-2.5 px-4 bg-[#059669] hover:bg-[#047857] text-white text-sm font-semibold rounded-lg">
                       Mon espace
                     </button>
                   </Link>
