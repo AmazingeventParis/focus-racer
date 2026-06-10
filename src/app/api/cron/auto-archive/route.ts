@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { deleteMultipleFromS3 } from "@/lib/s3";
+import { collectPhotoS3Keys } from "@/lib/storage";
+import { deleteIndexedFaces } from "@/lib/rekognition";
 
 const RETENTION_DAYS = 30;
 
@@ -35,7 +37,7 @@ export async function GET(request: NextRequest) {
             webPath: true,
             thumbnailPath: true,
             faces: {
-              select: { cropPath: true },
+              select: { cropPath: true, faceId: true },
             },
           },
         },
@@ -54,17 +56,8 @@ export async function GET(request: NextRequest) {
     let totalS3KeysDeleted = 0;
 
     for (const event of expiredEvents) {
-      // Collect all S3 keys for this event
-      const s3Keys: string[] = [];
-
-      for (const photo of event.photos) {
-        if (photo.path) s3Keys.push(photo.path);
-        if (photo.webPath) s3Keys.push(photo.webPath);
-        if (photo.thumbnailPath) s3Keys.push(photo.thumbnailPath);
-        for (const face of photo.faces) {
-          if (face.cropPath) s3Keys.push(face.cropPath);
-        }
-      }
+      // Collect all S3 keys for this event (incl. micro thumbnails + crops)
+      const s3Keys: string[] = event.photos.flatMap((p) => collectPhotoS3Keys(p));
 
       // Event branding images
       if (event.coverImage) s3Keys.push(event.coverImage);
@@ -75,6 +68,11 @@ export async function GET(request: NextRequest) {
       if (s3Keys.length > 0) {
         await deleteMultipleFromS3(s3Keys);
       }
+
+      // Purge Rekognition face vectors (billed per stored vector, GDPR)
+      await deleteIndexedFaces(
+        event.photos.flatMap((p) => p.faces.map((f) => f.faceId))
+      );
 
       // Delete OrderItems referencing these photos (avoid FK constraint)
       const photoIds = event.photos.map((p) => p.id);

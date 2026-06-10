@@ -63,6 +63,24 @@ export async function POST(
       photosPerBib.set(bib.number, current + 1);
     }
 
+    // Respect notification preferences: entries whose email matches a user
+    // account that opted out of "photosAvailable" must not be emailed
+    const entryEmails = startListEntries
+      .map((e) => e.email)
+      .filter((e): e is string => !!e);
+    const usersWithPrefs = await prisma.user.findMany({
+      where: { email: { in: entryEmails } },
+      select: {
+        email: true,
+        notificationPreference: { select: { photosAvailable: true } },
+      },
+    });
+    const optedOut = new Set(
+      usersWithPrefs
+        .filter((u) => u.notificationPreference?.photosAvailable === false)
+        .map((u) => u.email)
+    );
+
     // Send notifications
     let sent = 0;
     let skipped = 0;
@@ -77,6 +95,11 @@ export async function POST(
       }
 
       if (!entry.email) continue;
+
+      if (optedOut.has(entry.email)) {
+        skipped++;
+        continue;
+      }
 
       try {
         await sendRunnerNotification({

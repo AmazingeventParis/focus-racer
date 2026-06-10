@@ -108,6 +108,8 @@ async function processPhotoWithProgress(
           select: { id: true, boundingBox: true },
         });
 
+        // Generate all crops, then persist paths in a single transaction
+        const cropUpdates: { id: string; cropPath: string }[] = [];
         for (let fi = 0; fi < createdFaces.length; fi++) {
           const face = createdFaces[fi];
           if (!face.boundingBox) continue;
@@ -115,22 +117,31 @@ async function processPhotoWithProgress(
             const bbox = JSON.parse(face.boundingBox);
             const cropPath = await smartCropFace(jpegBuffer, eventId, photoId, fi, bbox);
             if (cropPath) {
-              await prisma.photoFace.update({
-                where: { id: face.id },
-                data: { cropPath },
-              });
+              cropUpdates.push({ id: face.id, cropPath });
             }
           } catch (cropErr) {
             console.error(`[Batch] Smart crop error for face ${fi}:`, cropErr);
           }
         }
+        if (cropUpdates.length > 0) {
+          await prisma.$transaction(
+            cropUpdates.map((cu) =>
+              prisma.photoFace.update({
+                where: { id: cu.id },
+                data: { cropPath: cu.cropPath },
+              })
+            )
+          );
+        }
       }
     }
 
-    // Auto-retouch: apply to web version (free, Sharp local)
+    // Auto-retouch: apply to web version (free, Sharp local).
+    // jpegBuffer is the 1600px source already in memory — passing it skips
+    // a full S3 download+decode round-trip per photo.
     if (options.autoRetouch && webPath) {
       try {
-        const retouched = await autoRetouchWebVersion(webPath);
+        const retouched = await autoRetouchWebVersion(webPath, jpegBuffer);
         if (retouched) {
           photoData.autoEdited = true;
         }
@@ -399,12 +410,45 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // If all files failed, return error
+    // Auto-refund credits for files whose save failed (e.g. S3 unavailable):
+    // credits were deducted upfront for ALL files, the user must not pay
+    // for photos that never made it to storage
+    if (failedFiles.length > 0 && totalCredits > 0) {
+      const refundAmount = failedFiles.length * creditsPerPhoto;
+      try {
+        const refundResult = await prisma.$transaction(async (tx) => {
+          const user = await tx.user.update({
+            where: { id: session.user.id },
+            data: { credits: { increment: refundAmount } },
+            select: { credits: true },
+          });
+          await tx.creditTransaction.create({
+            data: {
+              userId: session.user.id,
+              type: "REFUND",
+              amount: refundAmount,
+              balanceBefore: user.credits - refundAmount,
+              balanceAfter: user.credits,
+              reason: `Remboursement auto : ${failedFiles.length} fichier(s) non sauvegardé(s) - ${event.name}`,
+              eventId,
+            },
+          });
+          return user.credits;
+        });
+        creditsRemaining = refundResult;
+        console.log(`[Batch] Auto-refunded ${refundAmount} credit(s) for ${failedFiles.length} failed save(s)`);
+      } catch (refundErr) {
+        console.error("[Batch] Credit auto-refund failed:", refundErr);
+      }
+    }
+
+    // If all files failed, return error (credits already refunded above)
     if (photos.length === 0) {
       return NextResponse.json(
         {
           error: "Impossible de traiter les fichiers",
           details: `${failedFiles.length} fichier(s) ont echoue: ${failedFiles.join(", ")}`,
+          creditsRefunded: failedFiles.length * creditsPerPhoto,
           failedFiles
         },
         { status: 400 }
@@ -460,11 +504,19 @@ export async function POST(request: NextRequest) {
       try {
         const blurryIds: string[] = [];
 
-        for (const photo of photosToProcess) {
-          const quality = await analyzeQuality(photo.jpegBuffer);
-          if (quality.isBlurry) {
-            blurryIds.push(photo.id);
-          }
+        // Analyze in parallel chunks of 8 — sequential analysis wastes
+        // most of the wall clock on a 16-core machine
+        const QUALITY_CHUNK = 8;
+        for (let qi = 0; qi < photosToProcess.length; qi += QUALITY_CHUNK) {
+          const chunk = photosToProcess.slice(qi, qi + QUALITY_CHUNK);
+          const results = await Promise.all(
+            chunk.map((photo) => analyzeQuality(photo.jpegBuffer))
+          );
+          results.forEach((quality, ci) => {
+            if (quality.isBlurry) {
+              blurryIds.push(chunk[ci].id);
+            }
+          });
         }
 
         if (blurryIds.length > 0) {
@@ -526,7 +578,14 @@ export async function POST(request: NextRequest) {
           });
 
           if (isComplete) {
-            // Record upload completion timestamp
+            // Record upload completion timestamp.
+            // Read the previous value first: a non-null value means a prior
+            // chunk/upload already completed and followers were already notified.
+            const prevEvent = await prisma.event.findUnique({
+              where: { id: eventId },
+              select: { uploadCompletedAt: true },
+            });
+            const hadCompletedBefore = !!prevEvent?.uploadCompletedAt;
             await prisma.event.update({
               where: { id: eventId },
               data: { uploadCompletedAt: new Date() },
@@ -540,50 +599,68 @@ export async function POST(request: NextRequest) {
               console.error("Error recording upload streak:", xpErr);
             }
 
-            // Notify runners who favorited this event
+            // Notify runners who favorited this event.
+            // Guard: the client uploads in chunks (one POST per ~25 photos),
+            // each chunk completes its own queue — without this guard every
+            // chunk would re-email all followers. Only the FIRST completed
+            // upload for this event sends emails (in-app notifications are
+            // created once too).
+            const alreadyNotifiedFollowers = hadCompletedBefore;
             try {
-              const eventInfo = await prisma.event.findUnique({
-                where: { id: eventId },
-                select: { name: true },
-              });
-              const followers = await prisma.eventFavorite.findMany({
-                where: { eventId },
-                select: {
-                  userId: true,
-                  user: { select: { email: true, name: true } },
-                },
-              });
-              if (followers.length > 0) {
-                await prisma.notification.createMany({
-                  data: followers.map((f) => ({
-                    userId: f.userId,
-                    type: "PHOTOS_AVAILABLE",
-                    title: "Photos disponibles !",
-                    message: `De nouvelles photos sont disponibles pour ${eventInfo?.name || "votre evenement"}.`,
-                    eventId,
-                  })),
+              if (!alreadyNotifiedFollowers) {
+                const eventInfo = await prisma.event.findUnique({
+                  where: { id: eventId },
+                  select: { name: true },
                 });
+                const followers = await prisma.eventFavorite.findMany({
+                  where: { eventId },
+                  select: {
+                    userId: true,
+                    user: { select: { email: true, name: true } },
+                  },
+                });
+                if (followers.length > 0) {
+                  await prisma.notification.createMany({
+                    data: followers.map((f) => ({
+                      userId: f.userId,
+                      type: "PHOTOS_AVAILABLE",
+                      title: "Photos disponibles !",
+                      message: `De nouvelles photos sont disponibles pour ${eventInfo?.name || "votre evenement"}.`,
+                      eventId,
+                    })),
+                  });
 
-                // Send email to followers (non-blocking)
-                const { canSendEmail, generateUnsubscribeUrl } = await import("@/lib/notification-preferences");
-                const { sendPhotosAvailableEmail } = await import("@/lib/email");
-                const photoTotal = await prisma.photo.count({ where: { eventId } });
-                const evtName = eventInfo?.name || "votre événement";
+                  // Send emails in small batches with a pause: Gmail SMTP
+                  // tolerates ~10/s bursts badly and caps daily volume
+                  const { canSendEmail, generateUnsubscribeUrl } = await import("@/lib/notification-preferences");
+                  const { sendPhotosAvailableEmail } = await import("@/lib/email");
+                  const photoTotal = await prisma.photo.count({ where: { eventId } });
+                  const evtName = eventInfo?.name || "votre événement";
 
-                for (const f of followers) {
-                  try {
-                    if (await canSendEmail(f.userId, "photosAvailable")) {
-                      await sendPhotosAvailableEmail({
-                        to: f.user.email,
-                        name: f.user.name || "sportif",
-                        eventName: evtName,
-                        eventId,
-                        photoCount: photoTotal,
-                        unsubscribeUrl: generateUnsubscribeUrl(f.userId, "photosAvailable"),
-                      });
+                  const EMAIL_BATCH = 5;
+                  for (let bi = 0; bi < followers.length; bi += EMAIL_BATCH) {
+                    const emailBatch = followers.slice(bi, bi + EMAIL_BATCH);
+                    await Promise.all(
+                      emailBatch.map(async (f) => {
+                        try {
+                          if (await canSendEmail(f.userId, "photosAvailable")) {
+                            await sendPhotosAvailableEmail({
+                              to: f.user.email,
+                              name: f.user.name || "sportif",
+                              eventName: evtName,
+                              eventId,
+                              photoCount: photoTotal,
+                              unsubscribeUrl: generateUnsubscribeUrl(f.userId, "photosAvailable"),
+                            });
+                          }
+                        } catch (emailErr) {
+                          console.error(`[Email] Error notifying follower ${f.user.email}:`, emailErr);
+                        }
+                      })
+                    );
+                    if (bi + EMAIL_BATCH < followers.length) {
+                      await new Promise((r) => setTimeout(r, 1000));
                     }
-                  } catch (emailErr) {
-                    console.error(`[Email] Error notifying follower ${f.user.email}:`, emailErr);
                   }
                 }
               }
@@ -591,35 +668,46 @@ export async function POST(request: NextRequest) {
               console.error("Error creating notifications:", notifErr);
             }
 
-            // Notify guest followers by email
+            // Notify guest followers by email (skip those already notified)
             try {
               const guestFollowers = await prisma.guestEventFollower.findMany({
-                where: { eventId, verified: true },
+                where: { eventId, verified: true, notifiedAt: null },
               });
-              const photoTotal = await prisma.photo.count({ where: { eventId } });
-              const eventData = await prisma.event.findUnique({
-                where: { id: eventId },
-                select: { name: true },
-              });
-              const evtName = eventData?.name || "votre événement";
+              if (guestFollowers.length > 0) {
+                const photoTotal = await prisma.photo.count({ where: { eventId } });
+                const eventData = await prisma.event.findUnique({
+                  where: { id: eventId },
+                  select: { name: true },
+                });
+                const evtName = eventData?.name || "votre événement";
 
-              for (const guest of guestFollowers) {
-                try {
-                  await sendGuestPhotoNotification({
-                    to: guest.email,
-                    name: guest.name || undefined,
-                    eventName: evtName,
-                    eventId,
-                    photoCount: photoTotal,
-                    bibNumber: guest.bibNumber || undefined,
-                    unsubscribeToken: guest.unsubscribeToken,
-                  });
-                  await prisma.guestEventFollower.update({
-                    where: { id: guest.id },
-                    data: { notifiedAt: new Date() },
-                  });
-                } catch (emailErr) {
-                  console.error(`[Email] Error notifying guest ${guest.email}:`, emailErr);
+                const EMAIL_BATCH = 5;
+                for (let bi = 0; bi < guestFollowers.length; bi += EMAIL_BATCH) {
+                  const guestBatch = guestFollowers.slice(bi, bi + EMAIL_BATCH);
+                  await Promise.all(
+                    guestBatch.map(async (guest) => {
+                      try {
+                        await sendGuestPhotoNotification({
+                          to: guest.email,
+                          name: guest.name || undefined,
+                          eventName: evtName,
+                          eventId,
+                          photoCount: photoTotal,
+                          bibNumber: guest.bibNumber || undefined,
+                          unsubscribeToken: guest.unsubscribeToken,
+                        });
+                        await prisma.guestEventFollower.update({
+                          where: { id: guest.id },
+                          data: { notifiedAt: new Date() },
+                        });
+                      } catch (emailErr) {
+                        console.error(`[Email] Error notifying guest ${guest.email}:`, emailErr);
+                      }
+                    })
+                  );
+                  if (bi + EMAIL_BATCH < guestFollowers.length) {
+                    await new Promise((r) => setTimeout(r, 1000));
+                  }
                 }
               }
             } catch (guestNotifErr) {

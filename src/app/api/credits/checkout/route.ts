@@ -96,16 +96,42 @@ export async function POST(request: NextRequest) {
   }
 
   if (type === "subscription") {
-    // Block double subscription
+    // Block double subscription (DB check)
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: { stripeSubscriptionId: true, subscriptionStatus: true },
     });
-    if (user?.stripeSubscriptionId && user.subscriptionStatus === "active") {
+    if (
+      user?.stripeSubscriptionId &&
+      ["active", "past_due", "trialing"].includes(user.subscriptionStatus || "")
+    ) {
       return NextResponse.json(
         { error: "Vous avez déjà un abonnement actif. Résiliez-le avant d'en souscrire un nouveau." },
         { status: 400 }
       );
+    }
+
+    // Source of truth check on Stripe — covers the window where the
+    // checkout completed but the webhook hasn't written the DB yet
+    try {
+      const stripeCheck = getStripe();
+      const existingSubs = await stripeCheck.subscriptions.list({
+        customer: customerId,
+        status: "all",
+        limit: 10,
+      });
+      const hasLive = existingSubs.data.some((s) =>
+        ["active", "trialing", "past_due", "unpaid", "incomplete"].includes(s.status)
+      );
+      if (hasLive) {
+        return NextResponse.json(
+          { error: "Vous avez déjà un abonnement en cours. Résiliez-le avant d'en souscrire un nouveau." },
+          { status: 400 }
+        );
+      }
+    } catch (subCheckErr) {
+      console.error("Stripe subscription check failed:", subCheckErr);
+      // On Stripe API failure, fall back to the DB check above
     }
 
     const credits = amount;

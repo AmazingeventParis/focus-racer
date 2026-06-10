@@ -248,6 +248,10 @@ export async function POST(request: NextRequest) {
     console.log(`Credits fulfilled: +${creditAmount} for user ${userId} (balance now ${user?.credits || 0})`);
   }
 
+  // Any fulfillment error must return 500 so Stripe retries the event.
+  // Email/notification failures inside handlers are caught locally and do
+  // NOT fail the webhook (they are non-critical).
+  try {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
@@ -624,8 +628,61 @@ export async function POST(request: NextRequest) {
       break;
     }
 
+    case "charge.refunded": {
+      // Refund issued (e.g. directly from the Stripe dashboard):
+      // mark the order REFUNDED and revoke the download token
+      const charge = event.data.object as Stripe.Charge;
+      const piId =
+        typeof charge.payment_intent === "string"
+          ? charge.payment_intent
+          : charge.payment_intent?.id;
+      if (piId) {
+        const fullyRefunded = charge.amount_refunded >= charge.amount;
+        if (fullyRefunded) {
+          const updated = await prisma.order.updateMany({
+            where: { stripePaymentId: piId, status: { in: ["PAID", "DELIVERED"] } },
+            data: {
+              status: "REFUNDED",
+              downloadToken: null,
+              downloadExpiresAt: null,
+            },
+          });
+          if (updated.count > 0) {
+            console.log(`Order refunded via Stripe (pi ${piId}): download access revoked`);
+          }
+        } else {
+          console.log(`Partial refund on pi ${piId} (${charge.amount_refunded}/${charge.amount}) — order left as-is`);
+        }
+      }
+      break;
+    }
+
+    case "charge.dispute.created": {
+      // Chargeback opened: revoke download access while the dispute is open
+      const dispute = event.data.object as Stripe.Dispute;
+      const piId =
+        typeof dispute.payment_intent === "string"
+          ? dispute.payment_intent
+          : dispute.payment_intent?.id;
+      if (piId) {
+        const updated = await prisma.order.updateMany({
+          where: { stripePaymentId: piId },
+          data: { downloadToken: null, downloadExpiresAt: null },
+        });
+        console.warn(
+          `Dispute created on pi ${piId} (${dispute.amount / 100}€, reason: ${dispute.reason}) — ${updated.count} order(s) download access revoked`
+        );
+      }
+      break;
+    }
+
     default:
       break;
+  }
+  } catch (fulfillErr) {
+    console.error(`Webhook fulfillment error for event ${event.type} (${event.id}):`, fulfillErr);
+    // 500 → Stripe will retry this event
+    return NextResponse.json({ error: "Fulfillment failed" }, { status: 500 });
   }
 
   return NextResponse.json({ received: true });
