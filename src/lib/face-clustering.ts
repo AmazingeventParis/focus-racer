@@ -92,75 +92,83 @@ export async function clusterFacesByEvent(eventId: string): Promise<ClusteringSt
       }
     }
 
-    // 3. For each anchor photo, search for similar faces
-    const processedOrphans = new Set<string>();
-
+    // 3. Search anchor faces in parallel batches — the AWS SearchFaces calls
+    // dominate clustering latency; running them sequentially made clustering
+    // take minutes on large events
+    const searchTasks: { faceId: string; bibNumbers: string[]; anchorId: string }[] = [];
     for (const anchor of anchorPhotos) {
       const bibNumbers = anchor.bibNumbers.map((b) => b.number);
-
       for (const face of anchor.faces) {
-        try {
-          stats.facesSearched++;
+        searchTasks.push({ faceId: face.faceId, bibNumbers, anchorId: anchor.id });
+      }
+    }
 
-          // Search for similar faces in the collection
-          const matches = await searchFacesByFaceId(face.faceId, 100, 85);
+    const SEARCH_BATCH = 10;
+    const newBibRows: { photoId: string; number: string; confidence: number; source: string }[] = [];
+    const seenPairs = new Set<string>();
+    const linkedPhotos = new Set<string>();
 
-          for (const match of matches) {
-            // Extract photoId from externalImageId (format: "eventId:photoId")
-            const parts = match.externalImageId.split(":");
-            if (parts.length !== 2) continue;
-
-            const [matchEventId, matchPhotoId] = parts;
-
-            // Only consider matches from the same event
-            if (matchEventId !== eventId) continue;
-
-            // Skip if this is the anchor photo itself
-            if (matchPhotoId === anchor.id) continue;
-
-            // Check if this is an orphan photo
-            if (!orphanFaceToPhoto.has(match.faceId)) continue;
-
-            const orphanPhotoId = orphanFaceToPhoto.get(match.faceId);
-            if (!orphanPhotoId || processedOrphans.has(`${orphanPhotoId}:${bibNumbers.join(",")}`)) continue;
-
-            // Assign all bib numbers from anchor to this orphan photo
-            for (const bibNumber of bibNumbers) {
-              try {
-                await prisma.bibNumber.upsert({
-                  where: {
-                    photoId_number: {
-                      photoId: orphanPhotoId,
-                      number: bibNumber,
-                    },
-                  },
-                  create: {
-                    photoId: orphanPhotoId,
-                    number: bibNumber,
-                    confidence: match.similarity / 100,
-                    source: "face_cluster",
-                  },
-                  update: {
-                    // Don't overwrite if already exists with higher confidence
-                  },
-                });
-
-                stats.newBibsAssigned++;
-                console.log(`[Clustering] Linked photo ${orphanPhotoId} to bib #${bibNumber} (similarity: ${match.similarity.toFixed(1)}%)`);
-              } catch {
-                // Might fail if already exists, that's OK
-              }
-            }
-
-            processedOrphans.add(`${orphanPhotoId}:${bibNumbers.join(",")}`);
-            stats.photosLinked++;
+    for (let i = 0; i < searchTasks.length; i += SEARCH_BATCH) {
+      const batch = searchTasks.slice(i, i + SEARCH_BATCH);
+      const results = await Promise.all(
+        batch.map(async (task) => {
+          try {
+            stats.facesSearched++;
+            const matches = await searchFacesByFaceId(task.faceId, 100, 85);
+            return { task, matches };
+          } catch (err) {
+            const errorMsg = `Error searching face ${task.faceId}: ${err}`;
+            console.error(`[Clustering] ${errorMsg}`);
+            stats.errors.push(errorMsg);
+            return { task, matches: [] as Awaited<ReturnType<typeof searchFacesByFaceId>> };
           }
-        } catch (err) {
-          const errorMsg = `Error searching face ${face.faceId}: ${err}`;
-          console.error(`[Clustering] ${errorMsg}`);
-          stats.errors.push(errorMsg);
+        })
+      );
+
+      for (const { task, matches } of results) {
+        for (const match of matches) {
+          // Extract photoId from externalImageId (format: "eventId:photoId")
+          const parts = match.externalImageId.split(":");
+          if (parts.length !== 2) continue;
+
+          const [matchEventId, matchPhotoId] = parts;
+
+          // Only consider matches from the same event
+          if (matchEventId !== eventId) continue;
+
+          // Skip if this is the anchor photo itself
+          if (matchPhotoId === task.anchorId) continue;
+
+          // Check if this is an orphan photo
+          const orphanPhotoId = orphanFaceToPhoto.get(match.faceId);
+          if (!orphanPhotoId) continue;
+
+          for (const bibNumber of task.bibNumbers) {
+            const pairKey = `${orphanPhotoId}:${bibNumber}`;
+            if (seenPairs.has(pairKey)) continue;
+            seenPairs.add(pairKey);
+            newBibRows.push({
+              photoId: orphanPhotoId,
+              number: bibNumber,
+              confidence: match.similarity / 100,
+              source: "face_cluster",
+            });
+            linkedPhotos.add(orphanPhotoId);
+          }
         }
       }
+    }
+
+    // Persist all new links in one batch. The photoId_number unique
+    // constraint + skipDuplicates is equivalent to the previous
+    // upsert-with-empty-update, in a single round-trip.
+    if (newBibRows.length > 0) {
+      const created = await prisma.bibNumber.createMany({
+        data: newBibRows,
+        skipDuplicates: true,
+      });
+      stats.newBibsAssigned = created.count;
+      stats.photosLinked = linkedPhotos.size;
     }
 
     // 4. Update event to mark clustering as done

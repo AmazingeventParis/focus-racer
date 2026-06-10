@@ -1,5 +1,8 @@
 import { Metadata } from "next";
 import prisma from "@/lib/prisma";
+import { s3KeyToPublicPath } from "@/lib/s3";
+
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://focusracer.swipego.app";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -45,7 +48,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: `${event.name} - Focus Racer`,
         description,
         type: "website",
-        ...(event.coverImage ? { images: [{ url: event.coverImage }] } : {}),
+        ...(event.coverImage
+          ? { images: [{ url: `${APP_URL}${s3KeyToPublicPath(event.coverImage)}` }] }
+          : {}),
       },
     };
   } catch {

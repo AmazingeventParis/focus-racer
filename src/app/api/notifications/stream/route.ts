@@ -27,9 +27,12 @@ export async function GET() {
       const listener = (data: { type: string }) => {
         try {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
-        } catch {
-          // Stream closed
+        } catch (err) {
+          // Stream closed: clean up AND rethrow so the emitter's own
+          // dead-listener detection (notify + periodic sweep) sees it —
+          // swallowing the error here would leak the subscription forever
           cleanup();
+          throw err;
         }
       };
 

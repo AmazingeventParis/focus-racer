@@ -12,6 +12,41 @@ class NotificationEmitter {
   private adminSubscriptions: Map<string, Subscription> = new Map();
   private userSubscriptions: Map<string, Subscription[]> = new Map();
   private nextId = 0;
+  private sweepTimer: ReturnType<typeof setInterval> | null = null;
+
+  constructor() {
+    // Periodic sweep: clients that disconnect abruptly (browser crash,
+    // mobile network drop) never call unsubscribe — their listeners stay
+    // in the maps forever on a long-running process. Ping every listener
+    // and drop the ones whose controller is closed.
+    this.sweepTimer = setInterval(() => this.sweepDeadListeners(), 5 * 60 * 1000);
+    // Don't keep the process alive just for the sweep
+    if (typeof this.sweepTimer.unref === "function") {
+      this.sweepTimer.unref();
+    }
+  }
+
+  private sweepDeadListeners(): void {
+    // Iterate over copies: a throwing listener triggers unsubscribe() which
+    // mutates the maps. Never re-set arrays here — that could resurrect
+    // subscriptions removed concurrently.
+    for (const sub of [...this.adminSubscriptions.values()]) {
+      try {
+        sub.listener({ type: "ping" });
+      } catch {
+        this.adminSubscriptions.delete(sub.id);
+      }
+    }
+    for (const subs of [...this.userSubscriptions.values()]) {
+      for (const sub of [...subs]) {
+        try {
+          sub.listener({ type: "ping" });
+        } catch {
+          this.unsubscribe(sub.id);
+        }
+      }
+    }
+  }
 
   // Subscribe to admin notifications (new messages from users)
   subscribeAdmin(listener: Listener): string {

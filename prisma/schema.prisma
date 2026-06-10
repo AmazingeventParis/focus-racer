@@ -190,6 +190,9 @@ model Photo {
   createdAt        DateTime    @default(now())
 
   @@index([eventId])
+  @@index([ocrProvider])
+  @@index([faceIndexed])
+  @@index([processedAt])
 }
 
 model BibNumber {

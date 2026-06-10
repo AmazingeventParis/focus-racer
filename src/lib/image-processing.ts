@@ -52,12 +52,17 @@ export async function analyzeQuality(
 
 /**
  * Auto-retouch applied to the web version stored in S3.
- * Reads from S3, processes, re-uploads to the same key.
+ * If sourceBuffer is provided (upload pipeline has the JPEG in memory),
+ * the S3 download round-trip is skipped entirely.
  * @param webS3Key - S3 key like "events/{eventId}/web/web_xxx.webp"
+ * @param sourceBuffer - optional in-memory source (1600px JPEG from the pipeline)
  */
-export async function autoRetouchWebVersion(webS3Key: string): Promise<boolean> {
+export async function autoRetouchWebVersion(
+  webS3Key: string,
+  sourceBuffer?: Buffer
+): Promise<boolean> {
   try {
-    const webBuffer = await getFromS3AsBuffer(webS3Key);
+    const webBuffer = sourceBuffer ?? (await getFromS3AsBuffer(webS3Key));
 
     const retouchedBuffer = await sharp(webBuffer)
       .normalize()
@@ -185,16 +190,19 @@ export async function findDuplicateIndices(
   }
 
   const THRESHOLD = 5; // hamming distance <= 5 = duplicate
-  const hashes: string[] = [];
+  const hashes: string[] = new Array(jpegBuffers.length);
 
-  // Compute all hashes
-  for (const buf of jpegBuffers) {
-    try {
-      const hash = await computePerceptualHash(buf);
-      hashes.push(hash);
-    } catch {
-      hashes.push(""); // Empty hash = never matches = always kept
-    }
+  // Compute hashes in parallel chunks (sequential hashing wastes the
+  // multi-core CPU; chunking bounds peak Sharp memory)
+  const HASH_CHUNK = 8;
+  for (let i = 0; i < jpegBuffers.length; i += HASH_CHUNK) {
+    const chunk = jpegBuffers.slice(i, i + HASH_CHUNK);
+    const results = await Promise.all(
+      chunk.map((buf) => computePerceptualHash(buf).catch(() => ""))
+    );
+    results.forEach((hash, ci) => {
+      hashes[i + ci] = hash; // Empty hash = never matches = always kept
+    });
   }
 
   // Mark duplicates (keep first occurrence in each group)

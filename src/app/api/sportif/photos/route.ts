@@ -33,43 +33,51 @@ export async function GET() {
     photos: { id: string; thumbnail: string | null; webPath: string | null; purchased: boolean }[];
   }> = {};
 
-  for (const entry of startListEntries) {
-    const bibPhotos = await prisma.bibNumber.findMany({
-      where: { number: entry.bibNumber, photo: { eventId: entry.eventId } },
-      include: {
-        photo: {
-          select: {
-            id: true,
-            thumbnailPath: true,
-            webPath: true,
-            event: {
-              select: { id: true, name: true, date: true, location: true, sportType: true, coverImage: true },
+  // Single batched query instead of one query per start-list entry (N+1).
+  // The OR pairs (bibNumber, eventId) keep the exact same matching semantics.
+  const bibPhotos =
+    startListEntries.length === 0
+      ? []
+      : await prisma.bibNumber.findMany({
+          where: {
+            OR: startListEntries.map((entry) => ({
+              number: entry.bibNumber,
+              photo: { eventId: entry.eventId },
+            })),
+          },
+          include: {
+            photo: {
+              select: {
+                id: true,
+                thumbnailPath: true,
+                webPath: true,
+                event: {
+                  select: { id: true, name: true, date: true, location: true, sportType: true, coverImage: true },
+                },
+              },
             },
           },
-        },
-      },
-    });
-
-    for (const bib of bibPhotos) {
-      const eventId = bib.photo.event.id;
-      if (!photosByEvent[eventId]) {
-        photosByEvent[eventId] = {
-          event: {
-            ...bib.photo.event,
-            date: bib.photo.event.date.toISOString(),
-          },
-          photos: [],
-        };
-      }
-      // Avoid duplicates
-      if (!photosByEvent[eventId].photos.find((p) => p.id === bib.photo.id)) {
-        photosByEvent[eventId].photos.push({
-          id: bib.photo.id,
-          thumbnail: bib.photo.thumbnailPath ? s3KeyToPublicPath(bib.photo.thumbnailPath) : null,
-          webPath: bib.photo.webPath ? s3KeyToPublicPath(bib.photo.webPath) : null,
-          purchased: purchasedPhotoIds.has(bib.photo.id),
         });
-      }
+
+  for (const bib of bibPhotos) {
+    const eventId = bib.photo.event.id;
+    if (!photosByEvent[eventId]) {
+      photosByEvent[eventId] = {
+        event: {
+          ...bib.photo.event,
+          date: bib.photo.event.date.toISOString(),
+        },
+        photos: [],
+      };
+    }
+    // Avoid duplicates
+    if (!photosByEvent[eventId].photos.find((p) => p.id === bib.photo.id)) {
+      photosByEvent[eventId].photos.push({
+        id: bib.photo.id,
+        thumbnail: bib.photo.thumbnailPath ? s3KeyToPublicPath(bib.photo.thumbnailPath) : null,
+        webPath: bib.photo.webPath ? s3KeyToPublicPath(bib.photo.webPath) : null,
+        purchased: purchasedPhotoIds.has(bib.photo.id),
+      });
     }
   }
 

@@ -68,6 +68,34 @@ export async function getFromS3(key: string): Promise<ReadableStream | null> {
 }
 
 /**
+ * Get a file stream from S3 along with its size and content type.
+ * Avoids a separate HeadObject round-trip when serving files.
+ */
+export async function getFromS3WithMeta(key: string): Promise<{
+  stream: ReadableStream;
+  size: number | null;
+  contentType: string | null;
+} | null> {
+  const s3 = getClient();
+
+  const response = await s3.send(
+    new GetObjectCommand({
+      Bucket: aiConfig.s3Bucket,
+      Key: key,
+    })
+  );
+
+  const stream = response.Body?.transformToWebStream();
+  if (!stream) return null;
+
+  return {
+    stream,
+    size: response.ContentLength ?? null,
+    contentType: response.ContentType ?? null,
+  };
+}
+
+/**
  * Get a file from S3 as Buffer (for image processing).
  */
 export async function getFromS3AsBuffer(key: string): Promise<Buffer> {
