@@ -151,6 +151,32 @@ export async function saveFile(
 }
 
 /**
+ * Collect every S3 key belonging to a photo (HD original, web version,
+ * watermarked thumbnail, micro thumbnail, face crops).
+ * Used by all deletion paths so nothing is left orphaned in S3.
+ */
+export function collectPhotoS3Keys(photo: {
+  path?: string | null;
+  webPath?: string | null;
+  thumbnailPath?: string | null;
+  faces?: { cropPath: string | null }[];
+}): string[] {
+  const keys: string[] = [];
+  if (photo.path) keys.push(photo.path);
+  if (photo.webPath) keys.push(photo.webPath);
+  if (photo.thumbnailPath) {
+    keys.push(photo.thumbnailPath);
+    // Micro thumbnail lives next to the watermarked one: thumbs/wm_x.webp → thumbs/micro_x.webp
+    const microKey = photo.thumbnailPath.replace(/\/wm_([^/]+)$/, "/micro_$1");
+    if (microKey !== photo.thumbnailPath) keys.push(microKey);
+  }
+  for (const face of photo.faces || []) {
+    if (face.cropPath) keys.push(face.cropPath);
+  }
+  return keys;
+}
+
+/**
  * Delete a photo and all its versions from S3.
  */
 export async function deleteFile(s3Key: string): Promise<void> {

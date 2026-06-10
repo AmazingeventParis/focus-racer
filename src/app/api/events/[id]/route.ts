@@ -238,6 +238,38 @@ export async function DELETE(
       );
     }
 
+    // Clean up S3 objects + Rekognition face vectors before the cascade
+    // delete wipes the records that hold the keys
+    try {
+      const { collectPhotoS3Keys } = await import("@/lib/storage");
+      const { deleteMultipleFromS3 } = await import("@/lib/s3");
+      const { deleteIndexedFaces } = await import("@/lib/rekognition");
+
+      const photos = await prisma.photo.findMany({
+        where: { eventId: id },
+        select: {
+          path: true,
+          webPath: true,
+          thumbnailPath: true,
+          faces: { select: { faceId: true, cropPath: true } },
+        },
+      });
+
+      const s3Keys: string[] = photos.flatMap((p) => collectPhotoS3Keys(p));
+      if (event.coverImage) s3Keys.push(event.coverImage);
+      if (event.bannerImage) s3Keys.push(event.bannerImage);
+      if (event.logoImage) s3Keys.push(event.logoImage);
+
+      if (s3Keys.length > 0) {
+        await deleteMultipleFromS3(s3Keys);
+      }
+      await deleteIndexedFaces(
+        photos.flatMap((p) => p.faces.map((f) => f.faceId))
+      );
+    } catch (cleanupErr) {
+      console.error(`[Event Delete] S3/Rekognition cleanup error for ${id}:`, cleanupErr);
+    }
+
     await prisma.event.delete({
       where: { id },
     });

@@ -7,6 +7,7 @@ import {
   SearchFacesCommand,
   CreateCollectionCommand,
   ListCollectionsCommand,
+  DeleteFacesCommand,
 } from "@aws-sdk/client-rekognition";
 import { readFileSync } from "fs";
 import { aiConfig } from "./ai-config";
@@ -234,6 +235,35 @@ export async function indexFaces(
       top: record.Face?.BoundingBox?.Top || 0,
     },
   }));
+}
+
+/**
+ * Delete face vectors from the Rekognition collection.
+ * Must be called when photos are deleted (GDPR + the collection is billed
+ * per stored face vector and grows forever otherwise).
+ * AWS limit: 4096 face IDs per DeleteFaces call.
+ */
+export async function deleteIndexedFaces(faceIds: string[]): Promise<void> {
+  const validIds = faceIds.filter(Boolean);
+  if (validIds.length === 0) return;
+
+  const rekognition = getClient();
+
+  for (let i = 0; i < validIds.length; i += 4096) {
+    const batch = validIds.slice(i, i + 4096);
+    try {
+      await rekognition.send(
+        new DeleteFacesCommand({
+          CollectionId: aiConfig.faceCollectionId,
+          FaceIds: batch,
+        })
+      );
+    } catch (err) {
+      // Non-fatal: the photo deletion must not fail because of this,
+      // but log loudly — orphan vectors cost money and break GDPR erasure
+      console.error(`[Rekognition] DeleteFaces failed for ${batch.length} face(s):`, err);
+    }
+  }
 }
 
 // ---------- Face Search by Selfie ----------
