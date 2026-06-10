@@ -18,7 +18,7 @@ Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 - Prisma 5.22 + PostgreSQL 16
 - NextAuth.js (JWT, credential provider)
 - AWS Rekognition (OCR dossards, détection visages)
-- AWS S3 (stockage photos exclusif — pas de disque local)
+- **OVH Object Storage** (stockage photos, bucket `focusracer`/GRA, depuis 2026-06-10) — bascule via `STORAGE_S3_*` ; AWS S3 conservé en fallback/rollback (vidé)
 - Stripe Connect Express + Payment Element
 - Gmail SMTP via Nodemailer (12 templates email, notifications préférences opt-out)
 - Sharp (traitement images, 1 thread/worker, 2GB cache)
@@ -244,7 +244,8 @@ UV_THREADPOOL_SIZE=16
 - [ ] **Crontab serveur OVH** (Session 29) : curl quotidien sur /api/cron/auto-archive + process-alerts + retry-payouts avec CRON_SECRET (var créée dans Coolify) — AUCUN cron ne tourne tant que ce n'est pas fait
 - [ ] **Rotation mot de passe admin prod** (publié dans l'historique git du repo public)
 - [ ] **Migration Resend** : RESEND_API_KEY existe dans Coolify mais le code utilise Gmail SMTP (~500 mails/jour max)
-- [ ] **Migration OVH Object Storage** : en pause, runbook prêt (voir mémoire)
+- [x] **Migration OVH Object Storage** : faite 2026-06-10 (bucket focusracer/GRA, STORAGE_S3_* dans Coolify, données de test purgées, AWS gardé fallback). Reste : upload de test réel pour valider le bout-en-bout
+- [ ] **Vider/supprimer le bucket AWS** une fois OVH validé en conditions réelles (déjà vidé des tests, mais conservé pour rollback)
 - [ ] Basculer le deploy vers `prisma migrate deploy` (nécessite baseline) au lieu de `db push --accept-data-loss`
 - [ ] Différencier espace organisateur vs photographe (dashboard, upload, marketplace, crédits, branding, équipe)
 - [x] Configurer Stripe webhook sur serveur dédié (Session 24 — webhook créé `we_1T4NAdFeQbxycmAHy48wZwSb`)
