@@ -31,7 +31,7 @@
 
 **IA** : AWS Rekognition (OCR, faces, labels) • Tesseract.js (fallback dev) • Sharp (auto-editing, watermark)
 
-**Storage** : AWS S3 (`focusracer-1771162064453`) — stockage exclusif (pas de disque local) • CloudFront CDN (optionnel)
+**Storage** : OVH Object Storage (`focusracer`, région GRA) depuis Session 29 — bascule via `STORAGE_S3_*`, fallback AWS • AWS S3 conservé pour Rekognition + rollback • pas de disque local • CloudFront optionnel
 
 **Déploiement** : Serveur dédié OVH (`217.182.89.133`) • Coolify (PaaS) • Docker multi-stage • Caddy reverse proxy (auto-SSL) • PostgreSQL Docker
 
@@ -410,7 +410,9 @@ Focus Racer/
 **NextAuth** : `NEXTAUTH_SECRET`, `NEXTAUTH_URL` (https://focusracer.swipego.app)
 **Stripe** : `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
 **Email** : `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM` (Gmail SMTP via Nodemailer)
-**AWS** : `AWS_REGION` (eu-west-1), `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REKOGNITION_COLLECTION_ID`, `AWS_S3_BUCKET` (focusracer-1771162064453), `AWS_CLOUDFRONT_URL`
+**AWS** : `AWS_REGION` (eu-west-1), `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REKOGNITION_COLLECTION_ID` (focusracer-faces), `AWS_S3_BUCKET` (focusracer-1771162064453, conservé pour rollback), `AWS_CLOUDFRONT_URL`
+**Stockage OVH** (Session 29) : `STORAGE_S3_ENDPOINT` (https://s3.gra.io.cloud.ovh.net), `STORAGE_S3_REGION` (gra), `STORAGE_S3_BUCKET` (focusracer), `STORAGE_S3_ACCESS_KEY_ID`, `STORAGE_S3_SECRET_ACCESS_KEY`, `STORAGE_S3_FORCE_PATH_STYLE` (true) — bascule le stockage ; les vider + redeploy = rollback AWS
+**Crons** : `CRON_SECRET` (Session 29, pour /api/cron/*)
 **IA** : `AI_OCR_CONFIDENCE_THRESHOLD` (70), `AI_QUALITY_THRESHOLD` (30), `AI_AUTO_EDIT_ENABLED`, `AI_FACE_INDEX_ENABLED`, `AI_LABEL_DETECTION_ENABLED`, `AI_MAX_CONCURRENT` (16)
 **Turnstile** : `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (0x4AAAAAACir9Q54rTI0lWLo), `TURNSTILE_SECRET_KEY`
 **Node.js** : `NODE_OPTIONS` (--max-old-space-size=16384 --expose-gc), `UV_THREADPOOL_SIZE` (16)
@@ -448,6 +450,7 @@ Focus Racer/
 | **28?** | (hors-journal) | **Gamification complète implémentée mais jamais documentée** : XP + niveaux (« Stagiaire »→« Légende »), classements/leaderboards (hebdo/mensuel/all-time), streaks, réactions photos, parrainage (codes + crédits), partage social, Wrapped (récap annuel), smart alerts, crédits-récompenses. Migration `20260225000000_add_gamification`. Le journal s'est figé Session 27 alors que le code a continué. |
 | **28** | 2026-06-05 | **Retrait gamification partiel** : suppression badges + XP + niveaux + classements (modèles UserBadge/XpEvent/UserLevel/LeaderboardEntry + enums XpActionType/LeaderboardPeriod droppés, migration `20260604120000_remove_badges_xp_leaderboards`). Conservés mais décâblés des XP : streaks, réactions, parrainage, partage, Wrapped, smart alerts, crédits-récompenses. `grantXp()` retiré de ~9 routes API. Comptes de test réintégrés dans `prisma/seed.ts`. |
 | **29** | 2026-06-10 | **Audit complet + correctifs prod déployés** : requireAdmin() sur 14 routes admin, IDOR commandes (preuve Stripe), HMAC unsubscribe, seed prod désactive les comptes de test, webhook Stripe durci (500 sur échec, charge.refunded/dispute abonnés), remboursement auto crédits, nettoyage S3+DeleteFaces sur toutes les suppressions (RGPD), fix spam emails followers (1 envoi par chunk de 25 → 1 par upload), crons process-alerts + retry-payouts + CRON_SECRET créé, sharp.concurrency(2), clustering parallèle ~10×, N+1 sportif, 3 index Photo, sitemap.xml, caches API publics ×10 |
+| **29 (suite)** | 2026-06-10 | **Migration stockage OVH Object Storage** : bascule AWS S3 → OVH (bucket `focusracer`/GRA, co-localisé serveur), 6 vars `STORAGE_S3_*` dans Coolify, AWS gardé pour Rekognition+rollback. Données de test jetables purgées (reset complet : 4 events/180 photos/647 visages via endpoint temporaire guardé CRON_SECRET puis retiré), buckets AWS+OVH vidés, collection Rekognition purgée. CORS non requis (proxy serveur). Comparatif coûts (egress gratuit OVH vs 0,09 $/Go AWS) + vitesse documenté. Reste : upload de test réel pour valider le bout-en-bout |
 
 **Fichiers clés créés** : `src/lib/turnstile.ts`, `src/lib/login-protection.ts`, `src/lib/bot-detection.ts`, `src/lib/request-context.ts`, `src/components/TurnstileWidget.tsx`, `src/app/api/auth/verify-turnstile/route.ts`, `public/robots.txt`, `src/lib/notification-preferences.ts`, `src/app/api/notifications/preferences/route.ts`, `src/app/api/notifications/unsubscribe/route.ts`, `src/components/NotificationPreferencesCard.tsx`, `src/components/layout/MobileNav.tsx`, `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`, `src/app/api/sportif/horde/conversations/route.ts`, `src/app/api/sportif/horde/conversations/[id]/messages/route.ts`, `src/app/api/sportif/horde/conversations/[id]/read/route.ts`, `src/app/api/sportif/horde/conversations/unread-total/route.ts`, `src/components/horde/HordeChat.tsx`, `src/components/horde/ConversationList.tsx`, `src/components/horde/MessageThread.tsx`, `src/components/horde/CreateGroupDialog.tsx`, `src/components/horde/CreateDMDialog.tsx`, `src/app/homepage.css`, `src/lib/photographer-badges.ts`, `src/lib/organizer-badges.ts`, `src/app/api/photographer/badges/route.ts`, `src/app/api/organizer/badges/route.ts`, `src/components/photographer/PhotographerBadgeRow.tsx`, `src/components/organizer/OrganizerBadgeRow.tsx`, `public/badges/` (30 PNG)
 
@@ -490,14 +493,23 @@ Focus Racer/
 - **Après** : ~0,003€/photo OCR + ~0,50€/mois pour 10 000 photos stockées
 - **IAM user** : `focusracer-rekognition` avec Rekognition + S3 FullAccess
 
-### Stockage (S3-only depuis Session 17)
-- **S3 exclusif** : bucket `focusracer-1771162064453` (eu-west-1), plus aucun stockage disque local
-- **Structure S3** : `events/{eventId}/{originals|web|thumbs|crops|branding}/`, `platform/watermark.png`
+### Stockage (OVH Object Storage depuis Session 29, S3-only depuis Session 17)
+- **OVH Object Storage** (depuis 2026-06-10) : bucket `focusracer`, région **GRA** (Standard S3 1-AZ), endpoint `https://s3.gra.io.cloud.ovh.net`, co-localisé avec le serveur (Gravelines)
+- **Bascule via `STORAGE_S3_*`** (`src/lib/ai-config.ts` getter `storage`, fallback AWS automatique) : ENDPOINT/REGION=gra/BUCKET=focusracer/ACCESS_KEY_ID/SECRET_ACCESS_KEY/FORCE_PATH_STYLE=true
+- **AWS conservé** : Rekognition (OCR+faces) reste sur AWS (reçoit des bytes, indépendant du stockage). `AWS_S3_BUCKET` (`focusracer-1771162064453`, eu-west-1) vidé mais gardé pour rollback instantané (retirer les `STORAGE_S3_*` + redeploy)
+- **Structure (identique)** : `events/{eventId}/{originals|web|thumbs|crops|branding}/`, `platform/watermark.png` — pas de migration DB, clés identiques
 - **DB fields** : `path`, `webPath`, `thumbnailPath` stockent des clés S3 (pas des chemins fichiers)
-- **Helpers** : `s3KeyToPublicPath()` (clé S3 → URL `/uploads/...`), `publicPathToS3Key()` (reverse)
-- **Proxy** : `/api/uploads/[...path]` fetch depuis S3 (backward compat URLs)
-- **URLs signées** : 24h pour téléchargements sécurisés
-- **CDN** : CloudFront optionnel (non configuré actuellement)
+- **Helpers** : `s3KeyToPublicPath()` (clé → URL `/uploads/...`), `publicPathToS3Key()` (reverse)
+- **Proxy** : `/api/uploads/[...path]` fetch côté serveur (backward compat URLs) — pas d'accès direct navigateur→stockage, donc **CORS non requis** (et refusé par l'API S3 OVH de toute façon)
+- **URLs signées** : 24h pour téléchargements sécurisés (`getSignedDownloadUrl` — actuellement non utilisé, tout passe par le proxy)
+- **CDN** : CloudFront / `STORAGE_PUBLIC_URL` optionnel (non configuré)
+
+### Coûts stockage AWS vs OVH (comparatif Session 29)
+- **Rekognition inchangé** (reste AWS, ~0,0035 $/photo) — la migration ne touche que stockage + livraison
+- **Stockage** : AWS 0,023 $/Go/mois • OVH ~0,012 €/Go/mois (~2× moins cher). Volume borné par l'auto-archivage 30j (stocké ≈ 1 mois d'uploads)
+- **Egress (le seul vrai levier)** : AWS = 100 Go/mois gratuits puis **0,09 $/Go** • OVH = **inclus/gratuit**. Tout transite par le proxy serveur → chaque affichage = egress du stockage. Sous 100 Go/mois les deux sont quasi gratuits ; au-delà (gros événement, galeries très consultées) AWS grimpe (ex. 600 Go egress = ~45 $/mois) pendant qu'OVH reste plat (~1 €). **Coût OVH prévisible, indépendant du trafic**
+- **Requêtes** PUT/GET : négligeables sur AWS, gratuites sur OVH
+- **Vitesse** : tri IA dominé par Rekognition (inchangé) → gain modeste (~90-120 ms d'I/O stockage économisés/photo par co-localisation GRA vs Irlande) ; **affichage galeries : gain réel ~15-18 ms TTFB/image** (stockage↔serveur même datacenter). Estimations géographiques, à confirmer par mesure réelle (timestamps `uploadStartedAt`/`processingStartedAt`/`uploadCompletedAt` après un upload de test)
 
 ### Stripe (Connect Express depuis Session 17)
 - Payment Element embarqué (Apple Pay, Google Pay, Link, SEPA, CB)
@@ -644,6 +656,6 @@ orga@test.com               (dev uniquement)
 
 ---
 
-**Dernière mise à jour** : Session 29, 2026-06-10 (audit complet + tous correctifs déployés en prod : sécurité admin/IDOR/seed, webhook Stripe durci + nouveaux events, remboursement auto crédits, nettoyage S3+Rekognition RGPD, anti-spam emails followers, crons, perf Sharp/clustering/index, sitemap. Restent côté utilisateur : crontab serveur, rotation mot de passe admin, migration Resend, migration OVH en pause)
+**Dernière mise à jour** : Session 29, 2026-06-10 (audit complet + correctifs prod déployés ; **migration stockage OVH Object Storage effectuée** : bucket focusracer/GRA, données de test purgées, AWS gardé pour Rekognition+rollback. Restent côté utilisateur : upload de test réel sur OVH, crontab serveur, rotation mot de passe admin, migration Resend)
 
 > ⚠️ **Note** : entre la Session 27 et la 28, une gamification complète (XP, niveaux, classements, badges, streaks, réactions, parrainage, partage, Wrapped) a été développée sans être consignée ici. Le code fait foi, pas ce journal — vérifier `prisma/schema.prisma` et `src/lib/gamification/` avant de se fier aux sections ci-dessus.
