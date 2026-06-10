@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
         photoCount: photos.length.toString(),
         ...(photographerConnected ? { photographerStripeAccountId: event.user.stripeAccountId! } : {}),
       },
-      success_url: `${APP_URL}/events/${data.eventId}/checkout/success?order=${order.id}`,
+      success_url: `${APP_URL}/events/${data.eventId}/checkout/success?order=${order.id}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${APP_URL}/events/${data.eventId}/checkout/cancel`,
     });
 

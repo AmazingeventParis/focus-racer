@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/admin-guard";
 import {
   CostExplorerClient,
   GetCostAndUsageCommand,
@@ -22,6 +23,9 @@ const FREE_TIER = {
 
 export async function GET(request: NextRequest) {
   try {
+    const guard = await requireAdmin();
+    if (guard) return guard;
+
     const { searchParams } = new URL(request.url);
     const fromParam = searchParams.get("from");
     const toParam = searchParams.get("to");

@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
+import { requireAdmin } from "@/lib/admin-guard";
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const guard = await requireAdmin();
+    if (guard) return guard;
+
     const { id } = await params;
     // Read body (reason is stored for logging purposes)
     await request.json();

@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/admin-guard";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const guard = await requireAdmin();
+    if (guard) return guard;
+
     const { id } = await params;
 
     const user = await prisma.user.findUnique({
@@ -99,6 +103,9 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const guard = await requireAdmin();
+    if (guard) return guard;
+
     const { id } = await params;
     const body = await request.json();
 
@@ -138,6 +145,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const guard = await requireAdmin();
+    if (guard) return guard;
+
     const { id } = await params;
     const { searchParams } = new URL(request.url);
     const hard = searchParams.get("hard") === "true";

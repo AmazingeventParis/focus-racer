@@ -28,6 +28,11 @@ export default function CheckoutSuccessPage({
   const searchParams = useSearchParams();
   const { data: session } = useSession();
   const orderId = searchParams.get("order");
+  // Proof of possession: client secret (Payment Element) or Checkout Session id
+  const proof =
+    searchParams.get("proof") ||
+    searchParams.get("payment_intent_client_secret") ||
+    searchParams.get("session_id");
   const [order, setOrder] = useState<OrderInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
@@ -40,7 +45,8 @@ export default function CheckoutSuccessPage({
 
     const fetchOrder = async () => {
       try {
-        const response = await fetch(`/api/orders/${orderId}`);
+        const proofParam = proof ? `?proof=${encodeURIComponent(proof)}` : "";
+        const response = await fetch(`/api/orders/${orderId}${proofParam}`);
         if (response.ok) {
           const data = await response.json();
           setOrder(data);

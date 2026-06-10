@@ -194,7 +194,8 @@ export default function CheckoutPage({
   };
 
   const handlePaymentSuccess = () => {
-    router.push(`/events/${id}/checkout/success?order=${orderId}`);
+    const proof = clientSecret ? `&proof=${encodeURIComponent(clientSecret)}` : "";
+    router.push(`/events/${id}/checkout/success?order=${orderId}${proof}`);
   };
 
   const handlePaymentError = (message: string) => {

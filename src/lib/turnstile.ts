@@ -26,8 +26,13 @@ export async function verifyTurnstileToken(
 ): Promise<boolean> {
   const secretKey = process.env.TURNSTILE_SECRET_KEY;
 
-  // Dev bypass: if secret key not configured, allow all requests
+  // Bypass only outside production: in prod a missing key must fail closed,
+  // otherwise a misconfigured deploy silently disables the CAPTCHA
   if (!secretKey) {
+    if (process.env.NODE_ENV === "production") {
+      console.error("[Turnstile] TURNSTILE_SECRET_KEY manquant en production — rejet");
+      return false;
+    }
     return true;
   }
 

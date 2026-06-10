@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { aiConfig } from "@/lib/ai-config";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/admin-guard";
 
 export async function GET() {
   try {
+    const guard = await requireAdmin();
+    if (guard) return guard;
+
     // Get processing stats
     const [totalPhotos, processedPhotos, blurryPhotos, faceIndexedPhotos, autoEditedPhotos] =
       await Promise.all([

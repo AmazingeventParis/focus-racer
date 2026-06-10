@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/admin-guard";
 
 export async function POST(request: NextRequest) {
   try {
+    const guard = await requireAdmin();
+    if (guard) return guard;
+
     const body = await request.json();
     const { name, email, password, role } = body;
 
@@ -54,6 +58,9 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const guard = await requireAdmin();
+    if (guard) return guard;
+
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import { rateLimit } from "@/lib/rate-limit";
-import { getFromS3, getS3ObjectSize } from "@/lib/s3";
+import { getFromS3WithMeta } from "@/lib/s3";
 
 export async function GET(
   request: NextRequest,
@@ -11,12 +11,22 @@ export async function GET(
   const limited = rateLimit(request, "uploads", { limit: 120 });
   if (limited) return limited;
 
-  // Hotlink protection: block requests from external sites
+  // Hotlink protection: block requests from external sites.
+  // Strict hostname comparison — a substring check would let
+  // "focusracer.swipego.app.attacker.com" through.
   const referer = request.headers.get("referer") || "";
-  const isAllowed =
-    !referer ||
-    referer.includes("focusracer.swipego.app") ||
-    referer.includes("localhost");
+  let isAllowed = !referer;
+  if (referer) {
+    try {
+      const refHost = new URL(referer).hostname;
+      isAllowed =
+        refHost === "focusracer.swipego.app" ||
+        refHost === "localhost" ||
+        refHost === "127.0.0.1";
+    } catch {
+      isAllowed = false;
+    }
+  }
   if (!isAllowed) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
@@ -37,10 +47,11 @@ export async function GET(
   }
 
   try {
-    const stream = await getFromS3(s3Key);
-    if (!stream) {
+    const s3Object = await getFromS3WithMeta(s3Key);
+    if (!s3Object) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
+    const { stream, size } = s3Object;
 
     const filename = segments[segments.length - 1];
     const ext = path.extname(filename).toLowerCase();
@@ -60,8 +71,7 @@ export async function GET(
       "Cache-Control": "public, max-age=31536000, immutable",
     };
 
-    // Try to get content length for better streaming
-    const size = await getS3ObjectSize(s3Key);
+    // Content length comes with the GET response (no extra HeadObject call)
     if (size) {
       headers["Content-Length"] = size.toString();
     }

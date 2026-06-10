@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { s3KeyToPublicPath } from "@/lib/s3";
+import { requireAdmin } from "@/lib/admin-guard";
 
 export async function GET(request: NextRequest) {
   try {
+    const guard = await requireAdmin();
+    if (guard) return guard;
+
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");

@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/admin-guard";
 
 export async function GET(request: NextRequest) {
   try {
+    const guard = await requireAdmin();
+    if (guard) return guard;
+
     const { searchParams } = new URL(request.url);
     const role = searchParams.get("role") || "";
     const search = searchParams.get("search") || "";

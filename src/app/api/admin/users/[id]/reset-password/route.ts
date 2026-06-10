@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/admin-guard";
 
 function generateTempPassword(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
@@ -16,6 +17,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const guard = await requireAdmin();
+    if (guard) return guard;
+
     const { id } = await params;
 
     const user = await prisma.user.findUnique({ where: { id } });

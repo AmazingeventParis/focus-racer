@@ -121,6 +121,45 @@ export async function PATCH(
           const photoIds = [...new Set(bibNumbers.map((b) => b.photoId))];
 
           if (photoIds.length > 0) {
+            // GDPR erasure: remove S3 files AND Rekognition face vectors,
+            // not just the DB records — biometric data must actually be erased
+            try {
+              const { collectPhotoS3Keys } = await import("@/lib/storage");
+              const { deleteMultipleFromS3 } = await import("@/lib/s3");
+              const { deleteIndexedFaces } = await import("@/lib/rekognition");
+
+              const photosToErase = await prisma.photo.findMany({
+                where: { id: { in: photoIds } },
+                select: {
+                  path: true,
+                  webPath: true,
+                  thumbnailPath: true,
+                  faces: { select: { faceId: true } },
+                },
+              });
+
+              const s3Keys = photosToErase.flatMap((p) =>
+                collectPhotoS3Keys({ ...p, faces: [] })
+              );
+              // Crops are selected separately to also count real faces
+              const cropPaths = await prisma.photoFace.findMany({
+                where: { photoId: { in: photoIds } },
+                select: { cropPath: true, faceId: true },
+              });
+              for (const f of cropPaths) {
+                if (f.cropPath) s3Keys.push(f.cropPath);
+              }
+
+              if (s3Keys.length > 0) {
+                await deleteMultipleFromS3(s3Keys);
+              }
+              const faceIds = cropPaths.map((f) => f.faceId);
+              await deleteIndexedFaces(faceIds);
+              facesDeleted = faceIds.length;
+            } catch (cleanupErr) {
+              console.error("[GDPR] S3/Rekognition cleanup error:", cleanupErr);
+            }
+
             // Delete bib numbers
             await prisma.bibNumber.deleteMany({
               where: { photoId: { in: photoIds } },
@@ -187,7 +226,8 @@ export async function PATCH(
           });
         }
 
-        facesDeleted = photosDeleted; // Approximation — faces indexed per photo
+        // facesDeleted is now the real count of face vectors removed from
+        // the Rekognition collection (set during cleanup above)
       }
 
       // Mark as completed

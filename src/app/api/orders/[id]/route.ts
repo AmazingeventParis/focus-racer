@@ -42,12 +42,20 @@ export async function GET(
       return NextResponse.json({ error: "Commande non trouvée" }, { status: 404 });
     }
 
-    // Access control: must be the order owner or the order must be recent (< 1h for success page)
+    // Access control: owner, admin, or proof of possession (Stripe client secret
+    // or Checkout Session id passed by the success page after payment)
     const isOwner = session?.user?.id && order.userId === session.user.id;
-    const isRecent = Date.now() - new Date(order.createdAt).getTime() < 60 * 60 * 1000;
     const isAdmin = session?.user?.role === "ADMIN";
+    const proof =
+      request.nextUrl.searchParams.get("proof") ||
+      request.nextUrl.searchParams.get("payment_intent_client_secret");
+    const hasProof =
+      !!proof &&
+      !!order.stripeSessionId &&
+      (proof === order.stripeSessionId ||
+        proof.startsWith(`${order.stripeSessionId}_secret_`));
 
-    if (!isOwner && !isRecent && !isAdmin) {
+    if (!isOwner && !isAdmin && !hasProof) {
       return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
     }
 
