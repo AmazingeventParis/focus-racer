@@ -1,7 +1,8 @@
 # Focus Racer - État du Projet
 
-> **Dernière mise à jour** : Session 28, 2026-06-05
+> **Dernière mise à jour** : Session 29, 2026-06-10 — audit complet + correctifs déployés en prod (sécurité, Stripe, RGPD/S3, perf, SEO). Détail dans CLAUDE.md Session 29.
 > ⚠️ Entre Session 27 et 28, une gamification complète (XP, niveaux, classements, badges, streaks, réactions, parrainage, partage, Wrapped) a été codée sans être consignée. Session 28 a retiré badges + XP + niveaux + classements. **Le code fait foi** (`src/lib/gamification/`, `prisma/schema.prisma`).
+> ⚠️ **Pipeline deploy** : le conteneur prod exécute `prisma db push --accept-data-loss` + `node prisma/seed.js` à CHAQUE démarrage (pas `migrate deploy`). Les fichiers `prisma/migrations/` ne sont pas exécutés en prod ; toute modif de seed doit toucher seed.js ET seed.ts.
 
 ## Vue d'ensemble
 Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives par IA.
@@ -196,10 +197,21 @@ User, Event, Photo, BibNumber, PhotoFace, StartListEntry, PricePack, Order, Orde
 - Credit Packs : 1000 (19€), 5000 (85€), 15000 (225€)
 - Subscriptions : 20000/mois (199€), 50000/mois (399€)
 - Checkout Sessions (redirect Stripe hébergé) pour crédits
-- Webhooks : payment_intent.succeeded, account.updated, checkout.session.completed, invoice.payment_succeeded, invoice.payment_failed, customer.subscription.deleted, customer.subscription.updated, checkout.session.expired
+- Webhooks (11 events depuis Session 29) : payment_intent.succeeded/payment_failed, account.updated, checkout.session.completed/expired, invoice.payment_succeeded/payment_failed, customer.subscription.deleted/updated, **charge.refunded** (REFUNDED + révocation downloadToken), **charge.dispute.created** (révocation token)
+- Webhook : 500 sur échec fulfillment (retry Stripe), échecs email non-bloquants
+- Anti double abonnement : check subscriptions.list côté Stripe avant Checkout Session
+- Accès commande post-paiement : preuve de possession (`?proof=` client_secret ou session_id) — plus d'accès "récent < 1h"
+- Remboursement auto crédits si saveFile S3 échoue (batch-upload)
+- Payouts Connect PENDING rejoués par cron `/api/cron/retry-payouts`
 
 ## Sécurité
 - Admin URL secrète : /focus-mgr-7k9x/ (redirect 404 sur /admin/*)
+- **requireAdmin()** (`src/lib/admin-guard.ts`, Session 29) : double verrou dans CHAQUE handler /api/admin/* — tout nouveau handler admin DOIT l'appeler en première ligne
+- **Preuve de possession commandes** (Session 29) : /api/orders/[id] exige owner/admin OU `?proof=` (client_secret PI ou session_id Checkout)
+- **Token unsubscribe HMAC-SHA256** (clé NEXTAUTH_SECRET, Session 29)
+- **Turnstile fail-closed en prod** si TURNSTILE_SECRET_KEY absent (Session 29)
+- **Seed prod** : désactive les comptes de test à chaque démarrage (Session 29)
+- **report-wrong rate-limité** 5/min/IP (Session 29)
 - **Cloudflare Turnstile** : CAPTCHA invisible sur login, register, contact (`src/lib/turnstile.ts`, `src/components/TurnstileWidget.tsx`)
 - **Brute force login** : lockout progressif 5→15min, 10→1h, dual IP+email (`src/lib/login-protection.ts`)
 - **Bot detection middleware** : 25+ UA bloqués, crawlers agressifs, validation headers navigateur, anti-scraping 15req/10s (`src/lib/bot-detection.ts`)
@@ -229,6 +241,11 @@ UV_THREADPOOL_SIZE=16
 ```
 
 ## TODO restant
+- [ ] **Crontab serveur OVH** (Session 29) : curl quotidien sur /api/cron/auto-archive + process-alerts + retry-payouts avec CRON_SECRET (var créée dans Coolify) — AUCUN cron ne tourne tant que ce n'est pas fait
+- [ ] **Rotation mot de passe admin prod** (publié dans l'historique git du repo public)
+- [ ] **Migration Resend** : RESEND_API_KEY existe dans Coolify mais le code utilise Gmail SMTP (~500 mails/jour max)
+- [ ] **Migration OVH Object Storage** : en pause, runbook prêt (voir mémoire)
+- [ ] Basculer le deploy vers `prisma migrate deploy` (nécessite baseline) au lieu de `db push --accept-data-loss`
 - [ ] Différencier espace organisateur vs photographe (dashboard, upload, marketplace, crédits, branding, équipe)
 - [x] Configurer Stripe webhook sur serveur dédié (Session 24 — webhook créé `we_1T4NAdFeQbxycmAHy48wZwSb`)
 - [ ] Sync Chrono (données course temps réel)
@@ -264,11 +281,12 @@ UV_THREADPOOL_SIZE=16
 - Vérifier chaque chaîne française avant de soumettre
 
 ## Seed data (dev/test)
+> Session 29 : mots de passe via env vars (`SEED_*_PASSWORD`) sinon générés aléatoirement (affichés dans les logs). En prod le seed **désactive** les comptes de test. Rotation du mot de passe admin prod recommandée (`npx tsx scripts/update-admin-password.ts`).
 ```
-admin@focusracer.com / Laurytal2   → /focus-mgr-7k9x/dashboard
-photographe@test.com / photo123
-coureur@test.com / runner123
-orga@test.com / orga123
+admin@focusracer.com        → /focus-mgr-7k9x/dashboard
+photographe@test.com        (dev uniquement)
+coureur@test.com            (dev uniquement)
+orga@test.com               (dev uniquement)
 ```
 
 ## Deploy
@@ -296,3 +314,4 @@ curl -s "http://217.182.89.133:8000/api/v1/deploy?uuid=ms440oowockwkso0k0c8okgc&
 | 27 | Protection anti-bot complète : Cloudflare Turnstile CAPTCHA (vraies clés prod), brute force login (lockout progressif), bot detection middleware (25+ UA, anti-scraping), honeypot 3 formulaires, rate limiting 13 routes, robots.txt, CSP + HSTS |
 | 28? | **(hors-journal)** Gamification complète codée sans être consignée : XP + niveaux, classements, streaks, réactions, parrainage, partage, Wrapped, smart alerts, crédits-récompenses (migration `20260225000000_add_gamification`) |
 | 28 | **Retrait gamification partiel** : suppression badges + XP + niveaux + classements (UserBadge/XpEvent/UserLevel/LeaderboardEntry + enums droppés, migration `20260604120000_remove_badges_xp_leaderboards`). Conservés (décâblés des XP) : streaks, réactions, parrainage, partage, Wrapped, smart alerts, crédits-récompenses. Comptes de test réintégrés au seed |
+| 29 | **Audit complet + correctifs prod** (4 commits déployés + smoke tests) : requireAdmin() 14 routes admin, IDOR commandes → preuve Stripe, HMAC unsubscribe, seed prod désactive comptes de test, webhook Stripe 500-sur-échec + charge.refunded/dispute/session.expired abonnés, remboursement auto crédits si S3 échoue, nettoyage S3+DeleteFaces sur DELETE photo/event/RGPD/auto-archive, fix spam emails followers (par chunk → par upload), crons process-alerts/retry-payouts + CRON_SECRET, sharp.concurrency(2), clustering parallèle ~10×, N+1 sportif, index Photo ×3, sitemap.xml, cache API public ×10, xlsx dynamic |

@@ -8,7 +8,7 @@
 
 ## 1. Vue d'ensemble
 
-**Version** : 0.9.12
+**Version** : 0.9.13
 **URL** : https://focusracer.swipego.app
 **Type** : Plateforme SaaS B2B2C de tri automatique et vente de photos de courses sportives
 
@@ -345,6 +345,44 @@ Focus Racer/
   - CSP : script-src self + Turnstile, img-src self + S3, frame-src Stripe + Turnstile, connect-src self + Stripe + Turnstile + S3
   - HSTS : max-age=63072000 (2 ans), includeSubDomains, preload (next.config + Caddyfile)
 
+### ✅ Audit complet + correctifs prod (Session 29)
+> Audit multi-agents (sécurité, paiements, RGPD, perf, coûts, emails, front) puis application de tous les correctifs, déployés et smoke-testés en prod. Commits `84ce080`, `5c68bb5`, `3cd2db7`, `1bf7f70`.
+- **Sécurité** :
+  - `requireAdmin()` (`src/lib/admin-guard.ts`) en défense en profondeur dans 14 handlers `/api/admin/*` qui dépendaient uniquement du middleware (reset-password, refund, data, users, stats, exports, + GET admin/orders sans aucun check)
+  - IDOR commandes : accès "récent < 1h" remplacé par preuve de possession Stripe (`?proof=` = client_secret PaymentIntent ou session_id Checkout) — checkout invité préservé
+  - `report-wrong` rate-limité 5/min/IP (supprimait des associations dossard sans limite)
+  - Token unsubscribe signé HMAC-SHA256 (était un simple base64 forgeable)
+  - Turnstile fail-closed en prod si clé absente • NextAuth maxAge 7j • Referer hotlink en comparaison stricte de hostname
+  - **seed.js (celui qui tourne en prod à chaque démarrage !)** : mots de passe via env vars (`SEED_*_PASSWORD`), en production les comptes de test sont **désactivés** (mots de passe publiés sur le repo public, photographe@test.com avait 999 999 crédits)
+- **Paiements** :
+  - Webhook Stripe : try/catch global → **500 sur échec de fulfillment** (Stripe rejoue), échecs email restent non-bloquants
+  - Nouveaux events gérés ET abonnés sur `we_1T4NAd...` : `charge.refunded` (REFUNDED + révocation downloadToken), `charge.dispute.created` (révocation token), `checkout.session.expired` (était géré dans le code mais **jamais abonné**)
+  - Anti double abonnement : vérification `subscriptions.list` côté Stripe avant nouvelle Checkout Session
+  - **Remboursement auto des crédits** si `saveFile()` échoue (le photographe payait pour zéro photo si S3 down)
+- **RGPD / coûts** :
+  - `deleteIndexedFaces()` (DeleteFaces, lots 4096) + `collectPhotoS3Keys()` (HD+web+thumb+micro+crops)
+  - Branchés sur DELETE photo, DELETE event, effacement RGPD, cron auto-archive — avant, seuls les enregistrements DB étaient supprimés : fichiers S3 facturés à vie + vecteurs biométriques conservés après demande d'effacement
+  - `facesDeleted` RGPD = vrai compte de vecteurs supprimés (était une approximation)
+- **Emails** :
+  - Fix spam followers : chaque chunk de 25 photos ré-envoyait "photos disponibles" à tous les followers → envoi uniquement à la **première complétion** d'upload, lots de 5 + pause 1s, guests déjà notifiés (`notifiedAt`) ignorés
+  - `notify-runners` respecte la préférence `photosAvailable` des comptes correspondants
+- **Crons** (pattern `?secret=CRON_SECRET`, var créée dans Coolify — elle n'existait pas, donc **aucun cron ne tournait**, auto-archive inclus) :
+  - `/api/cron/process-alerts` (smart alerts jamais déclenchées auparavant)
+  - `/api/cron/retry-payouts` (payouts Connect PENDING jamais rejoués → photographes jamais payés si le transfer échouait)
+  - ⚠️ Crontab serveur à ajouter par l'utilisateur (lignes fournies en fin de Session 29)
+- **Performance** :
+  - `sharp.concurrency(2)` (1 × 16 workers laissait la moitié du CPU EPYC inutilisée)
+  - Clustering facial : SearchFaces par lots de 10 en parallèle + `createMany skipDuplicates` (~10× plus rapide)
+  - `autoRetouchWebVersion(key, buffer?)` : plus d'aller-retour S3 quand le buffer est en mémoire
+  - pHash doublons + analyse flou par chunks parallèles de 8 • smart crop persisté en une transaction
+  - N+1 supprimé dans `/api/sportif/photos` (requête OR batchée)
+  - Proxy `/api/uploads` : Content-Length via le GET S3 (HeadObject supprimé = 1 appel S3 en moins par image)
+  - SSE : sweep périodique 5 min des listeners morts + le listener du stream relance l'erreur après cleanup (les abonnements fantômes fuyaient indéfiniment)
+  - Index Prisma `Photo` : `ocrProvider`, `faceIndexed`, `processedAt` (dashboards admin en full scan sinon)
+- **SEO/front** : `src/app/sitemap.ts` dynamique (statiques + events publiés, vérifié en prod) • OG image événement en URL publique absolue • cache API public 60s→600s (liste) / 300s (détail) • import `xlsx` à la demande (−300 KB bundle start-list)
+- **Faux positifs d'audit écartés après vérification** : middleware protège bien `/api/admin/*` (Next 14.2.35 patché CVE-2025-29927), watermark.ts déjà optimisé, homepage.css déjà scopé par route, generateMetadata events existait déjà
+- **Découverte pipeline deploy** : le conteneur prod exécute `prisma db push --accept-data-loss` + `node prisma/seed.js` à CHAQUE démarrage (pas `migrate deploy`) — les fichiers `prisma/migrations/` ne sont pas exécutés en prod
+
 ### ✅ Footer + FAQ + Contact API (Session 20)
 - **Page FAQ** : `/faq` — 18 questions/réponses en 6 sections accordéon (Coureurs, Photographes, Organisateurs, Paiements, Technique & IA, RGPD)
 - **API Contact** : `POST /api/contact` — pas d'auth requise, guest OK (guestName + guestEmail), crée un SupportMessage
@@ -409,6 +447,7 @@ Focus Racer/
 | **27** | 2026-02-26 | Protection anti-bot complète : Cloudflare Turnstile (CAPTCHA invisible, vraies clés prod), brute force login (lockout progressif 5→15min 10→1h), bot detection middleware (25+ UA bloqués, scraping pattern 15/10s), honeypot 3 formulaires, rate limiting 9 routes ajoutées, robots.txt, CSP + HSTS |
 | **28?** | (hors-journal) | **Gamification complète implémentée mais jamais documentée** : XP + niveaux (« Stagiaire »→« Légende »), classements/leaderboards (hebdo/mensuel/all-time), streaks, réactions photos, parrainage (codes + crédits), partage social, Wrapped (récap annuel), smart alerts, crédits-récompenses. Migration `20260225000000_add_gamification`. Le journal s'est figé Session 27 alors que le code a continué. |
 | **28** | 2026-06-05 | **Retrait gamification partiel** : suppression badges + XP + niveaux + classements (modèles UserBadge/XpEvent/UserLevel/LeaderboardEntry + enums XpActionType/LeaderboardPeriod droppés, migration `20260604120000_remove_badges_xp_leaderboards`). Conservés mais décâblés des XP : streaks, réactions, parrainage, partage, Wrapped, smart alerts, crédits-récompenses. `grantXp()` retiré de ~9 routes API. Comptes de test réintégrés dans `prisma/seed.ts`. |
+| **29** | 2026-06-10 | **Audit complet + correctifs prod déployés** : requireAdmin() sur 14 routes admin, IDOR commandes (preuve Stripe), HMAC unsubscribe, seed prod désactive les comptes de test, webhook Stripe durci (500 sur échec, charge.refunded/dispute abonnés), remboursement auto crédits, nettoyage S3+DeleteFaces sur toutes les suppressions (RGPD), fix spam emails followers (1 envoi par chunk de 25 → 1 par upload), crons process-alerts + retry-payouts + CRON_SECRET créé, sharp.concurrency(2), clustering parallèle ~10×, N+1 sportif, 3 index Photo, sitemap.xml, caches API publics ×10 |
 
 **Fichiers clés créés** : `src/lib/turnstile.ts`, `src/lib/login-protection.ts`, `src/lib/bot-detection.ts`, `src/lib/request-context.ts`, `src/components/TurnstileWidget.tsx`, `src/app/api/auth/verify-turnstile/route.ts`, `public/robots.txt`, `src/lib/notification-preferences.ts`, `src/app/api/notifications/preferences/route.ts`, `src/app/api/notifications/unsubscribe/route.ts`, `src/components/NotificationPreferencesCard.tsx`, `src/components/layout/MobileNav.tsx`, `src/app/api/credits/checkout/route.ts`, `src/components/home-events.tsx`, `src/app/organizer/` (22 pages copiées de photographer), `src/components/layout/OrganizerSidebar.tsx`, `src/lib/sharp-config.ts`, `src/components/stripe-payment.tsx`, `src/lib/auto-cluster.ts`, `src/lib/processing-queue.ts`, `src/components/game/bib-runner.tsx`, `src/app/api/uploads/[...path]/route.ts`, `src/app/api/admin/reprocess-photos/route.ts`, `scripts/setup-aws.js`, `scripts/setup-s3.js`, `src/app/api/debug/ocr/route.ts`, `src/components/analytics-visual.tsx`, `src/app/photographer/events/[id]/photos/page.tsx`, `src/components/upload-timeline.tsx`, `docker-compose.production.yml`, `Caddyfile`, `.env.production.template`, `src/app/api/admin/settings/watermark/route.ts`, `src/app/admin/settings/page.tsx`, `src/app/api/admin/users/route.ts`, `src/app/api/admin/users/[id]/route.ts`, `src/app/api/admin/users/[id]/credits/route.ts`, `src/app/api/support/route.ts`, `src/app/api/admin/messages/route.ts`, `src/app/api/admin/messages/[id]/route.ts`, `src/app/api/admin/messages/unread-count/route.ts`, `src/app/api/support/unread-count/route.ts`, `src/app/api/support/mark-read/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/connect/status/route.ts`, `src/app/api/stripe/connect/dashboard/route.ts`, `src/app/api/admin/payments-stats/route.ts`, `src/app/api/contact/route.ts`, `src/app/faq/page.tsx`, `src/app/api/sportif/horde/conversations/route.ts`, `src/app/api/sportif/horde/conversations/[id]/messages/route.ts`, `src/app/api/sportif/horde/conversations/[id]/read/route.ts`, `src/app/api/sportif/horde/conversations/unread-total/route.ts`, `src/components/horde/HordeChat.tsx`, `src/components/horde/ConversationList.tsx`, `src/components/horde/MessageThread.tsx`, `src/components/horde/CreateGroupDialog.tsx`, `src/components/horde/CreateDMDialog.tsx`, `src/app/homepage.css`, `src/lib/photographer-badges.ts`, `src/lib/organizer-badges.ts`, `src/app/api/photographer/badges/route.ts`, `src/app/api/organizer/badges/route.ts`, `src/components/photographer/PhotographerBadgeRow.tsx`, `src/components/organizer/OrganizerBadgeRow.tsx`, `public/badges/` (30 PNG)
 
@@ -468,7 +507,8 @@ Focus Racer/
 - **Fallback** : si photographe non connecté, paiement classique (tout va à la plateforme, pas de frais service)
 - **Constantes** : `SERVICE_FEE_CENTS = 100`, `SERVICE_FEE_DISPLAY = "1,00 €"` (dans `src/lib/stripe.ts`)
 - Checkout guest avec guestEmail/guestName
-- Webhooks : payment_intent.succeeded, account.updated (Connect), checkout.session.completed (crédits), invoice.payment_succeeded (abonnements)
+- Webhooks (endpoint `we_1T4NAdFeQbxycmAHy48wZwSb`, 11 events depuis Session 29) : payment_intent.succeeded/payment_failed, account.updated, checkout.session.completed/expired, invoice.payment_succeeded/payment_failed, customer.subscription.deleted/updated, charge.refunded, charge.dispute.created
+- Le webhook retourne 500 sur échec de fulfillment (retry Stripe) ; échecs email non-bloquants
 - **Stripe Checkout Crédits** : `POST /api/credits/checkout` → Checkout Session → fulfillment via webhook
 - **Packs valides** : 1000 crédits (19€), 5000 (85€), 15000 (225€)
 - **Abonnements** : 20000 crédits/mois (199€), 50000 crédits/mois (399€)
@@ -532,19 +572,25 @@ Focus Racer/
 - `npm run reprocess` : regenerate web/thumbs + re-run OCR
 
 ### Seed data
+> ⚠️ Depuis Session 29 : mots de passe via env vars (`SEED_ADMIN_PASSWORD`, `SEED_PHOTOGRAPHER_PASSWORD`, etc.), sinon générés aléatoirement et affichés dans les logs du seed. **En production le seed désactive les comptes de test** (`isActive=false`, crédits 0). Les anciens mots de passe en clair ont été retirés du code (mais restent dans l'historique git → **rotation du mot de passe admin prod recommandée** : `npx tsx scripts/update-admin-password.ts`).
 ```
-admin@focusracer.com / Laurytal2   (admin → /focus-mgr-7k9x/dashboard)
-photographe@test.com / photo123
-coureur@test.com / runner123
-orga@test.com / orga123
+admin@focusracer.com        (admin → /focus-mgr-7k9x/dashboard)
+photographe@test.com        (dev uniquement)
+coureur@test.com            (dev uniquement)
+orga@test.com               (dev uniquement)
 ```
 
 ### Admin secret
 - **URL** : `https://focusracer.swipego.app/focus-mgr-7k9x/dashboard`
-- **Login** : `admin@focusracer.com` / `Laurytal2`
+- **Login** : `admin@focusracer.com` (mot de passe : ne plus le stocker ici — ce fichier est sur un repo public ; rotation recommandée via `npx tsx scripts/update-admin-password.ts`)
 - **Slug defini dans** : `next.config.mjs` (constante `ADMIN_SLUG`) + `middleware.ts`
 - **Redirect 404** : `/admin/*` redirige vers 404 (direct access bloqué)
-- **Script MDP prod** : `npx tsx scripts/update-admin-password.ts`
+
+### Crons (Session 29 — pattern `?secret=CRON_SECRET`, var dans Coolify)
+- `/api/cron/auto-archive` : archive les events > 30 j (S3 + visages Rekognition purgés)
+- `/api/cron/process-alerts` : smart alerts (relance achat, rappel tri, streak)
+- `/api/cron/retry-payouts` : rejoue les payouts Connect PENDING
+- ⚠️ Nécessite un crontab sur le serveur OVH (curl quotidien) — à configurer
 
 ---
 
@@ -598,6 +644,6 @@ orga@test.com / orga123
 
 ---
 
-**Dernière mise à jour** : Session 28, 2026-06-05 (mise en phase journal↔code : gamification complète était implémentée hors-journal ; retrait badges + XP + niveaux + classements ; conservation streaks/réactions/parrainage/partage/Wrapped/crédits-récompenses décâblés des XP ; comptes de test réintégrés au seed)
+**Dernière mise à jour** : Session 29, 2026-06-10 (audit complet + tous correctifs déployés en prod : sécurité admin/IDOR/seed, webhook Stripe durci + nouveaux events, remboursement auto crédits, nettoyage S3+Rekognition RGPD, anti-spam emails followers, crons, perf Sharp/clustering/index, sitemap. Restent côté utilisateur : crontab serveur, rotation mot de passe admin, migration Resend, migration OVH en pause)
 
 > ⚠️ **Note** : entre la Session 27 et la 28, une gamification complète (XP, niveaux, classements, badges, streaks, réactions, parrainage, partage, Wrapped) a été développée sans être consignée ici. Le code fait foi, pas ce journal — vérifier `prisma/schema.prisma` et `src/lib/gamification/` avant de se fier aux sections ci-dessus.
