@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getStripe } from "@/lib/stripe";
 import { isAuthorizedCron } from "@/lib/cron-auth";
+import { transferPhotographerPayout } from "@/lib/stripe-payout";
 
 export const maxDuration = 300;
 
@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
       where: {
         status: { in: ["PAID", "DELIVERED"] },
         payoutStatus: "PENDING",
+        stripeTransferId: null, // belt-and-suspenders: skip any already-transferred row
         photographerPayout: { gt: 0 },
         event: {
           user: {
@@ -48,7 +49,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ retried: 0, transferred: 0, failed: 0 });
     }
 
-    const stripeClient = getStripe();
     let transferred = 0;
     let failed = 0;
 
@@ -60,27 +60,20 @@ export async function GET(request: NextRequest) {
       if (transferAmount <= 0) continue;
 
       try {
-        const transfer = await stripeClient.transfers.create({
-          amount: transferAmount,
-          currency: "eur",
-          destination,
-          metadata: {
-            orderId: order.id,
-            type: "retry_payout",
-          },
+        const result = await transferPhotographerPayout({
+          orderId: order.id,
+          photographerStripeAccountId: destination,
+          transferAmountCents: transferAmount,
+          photographerPayout: order.photographerPayout,
         });
 
-        await prisma.order.update({
-          where: { id: order.id },
-          data: {
-            payoutStatus: "TRANSFERRED",
-            transferredAt: new Date(),
-            stripeTransferId: transfer.id,
-          },
-        });
+        if (result.status === "already_transferred") {
+          console.log(`[cron/retry-payouts] Order ${order.id}: already transferred, skipping`);
+          continue;
+        }
 
         transferred++;
-        console.log(`[cron/retry-payouts] Order ${order.id}: ${order.photographerPayout.toFixed(2)}€ transferred (${transfer.id})`);
+        console.log(`[cron/retry-payouts] Order ${order.id}: ${order.photographerPayout.toFixed(2)}€ transferred (${result.transferId})`);
       } catch (transferErr) {
         failed++;
         console.error(`[cron/retry-payouts] Transfer failed for order ${order.id}:`, transferErr);

@@ -11,6 +11,7 @@ import {
 } from "@/lib/email";
 import { canSendEmail, generateUnsubscribeUrl } from "@/lib/notification-preferences";
 import { fulfillOrder } from "@/lib/stripe-fulfillment";
+import { transferPhotographerPayout } from "@/lib/stripe-payout";
 
 /**
  * Transfer pending payouts to a newly-connected Stripe account.
@@ -251,34 +252,24 @@ export async function POST(request: NextRequest) {
           try {
             const transferAmountCents = Math.round(photographerPayout * 100);
             if (transferAmountCents > 0) {
-              const stripeClient = getStripe();
-              const transfer = await stripeClient.transfers.create({
-                amount: transferAmountCents,
-                currency: "eur",
-                destination: photographerStripeAccountId,
-                source_transaction: chargeId || undefined,
-                metadata: {
-                  orderId,
-                  type: "photo_sale_payout",
-                },
+              const result = await transferPhotographerPayout({
+                orderId,
+                photographerStripeAccountId,
+                transferAmountCents,
+                photographerPayout,
+                stripeFee,
+                chargeId,
               });
 
-              await prisma.order.updateMany({
-                where: { id: orderId },
-                data: {
-                  stripeFee,
-                  photographerPayout,
-                  payoutStatus: "TRANSFERRED",
-                  transferredAt: new Date(),
-                  stripeTransferId: transfer.id,
-                },
-              });
-
-              console.log(
-                `Payout transferred: order ${orderId}, total ${euro(totalAmount)}, ` +
-                `platform ${euro(serviceFeeAmount)}, stripe ${euro(stripeFee)}, ` +
-                `photographer ${euro(photographerPayout)}, transfer ${transfer.id}`
-              );
+              if (result.status === "already_transferred") {
+                console.log(`Payout already handled for order ${orderId}, skipping transfer`);
+              } else {
+                console.log(
+                  `Payout transferred: order ${orderId}, total ${euro(totalAmount)}, ` +
+                  `platform ${euro(serviceFeeAmount)}, stripe ${euro(stripeFee)}, ` +
+                  `photographer ${euro(photographerPayout)}, transfer ${result.transferId}`
+                );
+              }
             }
           } catch (transferErr) {
             console.error(`Error creating transfer for order ${orderId}:`, transferErr);
