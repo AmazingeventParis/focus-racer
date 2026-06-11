@@ -62,4 +62,4 @@ USER nextjs
 EXPOSE 3000
 
 # Run database migration then start the server
-CMD ["sh", "-c", "echo 'Starting Focus Racer...' && echo 'Syncing database schema...' && npx prisma db push --accept-data-loss 2>&1 && echo 'Schema synced. Running seed...' && node prisma/seed.js 2>&1 && echo 'Seed done. Starting server...' && node server.js"]
+CMD ["sh", "-c", "echo 'Applying migrations...' && npx prisma migrate deploy && node prisma/seed.js && node server.js"]
