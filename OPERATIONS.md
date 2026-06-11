@@ -1,0 +1,1 @@
+The cron endpoints now require `Authorization: Bearer $CRON_SECRET` instead of `?secret=`. Update the server crontab curl lines accordingly. The seed endpoint requires the same header with `$NEXTAUTH_SECRET` and is disabled in production.

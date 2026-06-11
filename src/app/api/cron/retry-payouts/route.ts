@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
+import { isAuthorizedCron } from "@/lib/cron-auth";
 
 export const maxDuration = 300;
 
@@ -9,13 +10,10 @@ export const maxDuration = 300;
  * A transfer can fail transiently (webhook error, account just connected) and
  * the only other retry path is the account.updated webhook — which may never
  * fire again. This cron guarantees photographers eventually get paid.
- * Schedule daily: curl "https://.../api/cron/retry-payouts?secret=$CRON_SECRET"
+ * Schedule daily: curl -H "Authorization: Bearer $CRON_SECRET" "https://.../api/cron/retry-payouts"
  */
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const secret = searchParams.get("secret");
-
-  if (!process.env.CRON_SECRET || secret !== process.env.CRON_SECRET) {
+  if (!isAuthorizedCron(request, process.env.CRON_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

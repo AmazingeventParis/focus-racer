@@ -3,14 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { deleteMultipleFromS3 } from "@/lib/s3";
 import { collectPhotoS3Keys } from "@/lib/storage";
 import { deleteIndexedFaces } from "@/lib/rekognition";
+import { isAuthorizedCron } from "@/lib/cron-auth";
 
 const RETENTION_DAYS = 30;
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const secret = searchParams.get("secret");
-
-  if (!process.env.CRON_SECRET || secret !== process.env.CRON_SECRET) {
+  if (!isAuthorizedCron(request, process.env.CRON_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

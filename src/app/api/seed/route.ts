@@ -1,17 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { isAuthorizedCron } from "@/lib/cron-auth";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   if (process.env.NODE_ENV === "production") {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  // Protect with a secret token
-  const { searchParams } = new URL(request.url);
-  const token = searchParams.get("token");
-
-  if (token !== process.env.NEXTAUTH_SECRET) {
+  // Protect with a secret token — read from Authorization: Bearer header
+  if (!isAuthorizedCron(request, process.env.NEXTAUTH_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
