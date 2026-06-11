@@ -35,19 +35,19 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Update target's average rating
-    const allReviews = await prisma.marketplaceReview.findMany({
+    // Update target's average rating using aggregate (one query instead of findMany+reduce)
+    const stats = await prisma.marketplaceReview.aggregate({
       where: { targetId: data.targetId },
-      select: { rating: true },
+      _avg: { rating: true },
+      _count: { _all: true },
     });
-
-    const avgRating = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
+    const avgRating = stats._avg.rating ?? 0;
 
     await prisma.user.update({
       where: { id: data.targetId },
       data: {
         avgRating: Math.round(avgRating * 10) / 10,
-        totalReviews: allReviews.length,
+        totalReviews: stats._count._all,
       },
     });
 

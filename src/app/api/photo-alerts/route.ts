@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
+import { buildAlertCounts } from "@/lib/alert-counts";
 
 const createSchema = z.object({
   eventId: z.string(),
@@ -27,31 +28,53 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
 
-    // Count current photos per alert
-    const enriched = await Promise.all(
-      alerts.map(async (alert) => {
-        const photoCount = await prisma.photo.count({
-          where: {
-            eventId: alert.eventId,
-            bibNumbers: { some: { number: alert.bibNumber } },
+    // Batch all photo counts in one query instead of N separate photo.count calls
+    let countMap = new Map<string, number>();
+    if (alerts.length > 0) {
+      const uniqueEventIds = [...new Set(alerts.map((a) => a.eventId))];
+      const uniqueBibNumbers = [...new Set(alerts.map((a) => a.bibNumber))];
+
+      const photosForAlerts = await prisma.photo.findMany({
+        where: {
+          eventId: { in: uniqueEventIds },
+          bibNumbers: { some: { number: { in: uniqueBibNumbers } } },
+        },
+        select: {
+          eventId: true,
+          bibNumbers: {
+            select: { number: true },
+            where: { number: { in: uniqueBibNumbers } },
           },
-        });
+        },
+      });
 
-        // Update stored count if changed
-        if (photoCount !== alert.photoCount) {
-          await prisma.photoAlert.update({
-            where: { id: alert.id },
-            data: { photoCount },
-          });
-        }
+      countMap = buildAlertCounts(photosForAlerts, alerts);
+    }
 
-        return {
-          ...alert,
-          photoCount,
-          hasNewPhotos: photoCount > alert.lastNotifiedCount,
-        };
-      })
-    );
+    // Enrich alerts with current counts (no DB calls inside map)
+    const enriched = alerts.map((alert) => {
+      const photoCount = countMap.get(`${alert.eventId}::${alert.bibNumber}`) ?? 0;
+      return {
+        ...alert,
+        photoCount,
+        hasNewPhotos: photoCount > alert.lastNotifiedCount,
+      };
+    });
+
+    // Persist count changes in one batched transaction (skip if nothing changed)
+    const staleUpdates = alerts
+      .map((alert, i) => ({ alert, newCount: enriched[i].photoCount }))
+      .filter(({ alert, newCount }) => newCount !== alert.photoCount)
+      .map(({ alert, newCount }) =>
+        prisma.photoAlert.update({
+          where: { id: alert.id },
+          data: { photoCount: newCount },
+        })
+      );
+
+    if (staleUpdates.length > 0) {
+      await prisma.$transaction(staleUpdates);
+    }
 
     // Count total unread (new photos across all alerts)
     const unreadCount = enriched.filter((a) => a.hasNewPhotos).length;
