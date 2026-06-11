@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   const ext = "jpg";
   const s3Key = `users/${session.user.id}/face_${uuidv4()}.${ext}`;
 
-  await uploadToS3(s3Key, processed, `image/jpeg`);
+  await uploadToS3(processed, s3Key, `image/jpeg`);
 
   // Update user profile
   await prisma.user.update({
