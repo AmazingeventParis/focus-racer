@@ -13,10 +13,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-cost-explorer": "^3.992.0",
-    "@aws-sdk/client-rekognition": "^3.983.0",
-    "@aws-sdk/client-s3": "^3.983.0",
-    "@aws-sdk/s3-request-presigner": "^3.983.0",
+    "@aws-sdk/client-cost-explorer": "^3.1066.0",
+    "@aws-sdk/client-rekognition": "^3.1066.0",
+    "@aws-sdk/client-s3": "^3.1066.0",
+    "@aws-sdk/s3-request-presigner": "^3.1066.0",
     "@hookform/resolvers": "^3.3.0",
     "@prisma/client": "^5.22.0",
     "@radix-ui/react-avatar": "^1.0.4",

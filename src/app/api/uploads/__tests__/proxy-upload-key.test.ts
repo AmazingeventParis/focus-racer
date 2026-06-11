@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isServableUploadKey } from "../[...path]/route";
+import { isServableUploadKey } from "../upload-key-utils";
 
 describe("isServableUploadKey", () => {
   it("rejects a key that contains originals/ segment", () => {

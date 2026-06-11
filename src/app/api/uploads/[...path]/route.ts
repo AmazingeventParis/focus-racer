@@ -2,18 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import { rateLimit } from "@/lib/rate-limit";
 import { getFromS3WithMeta } from "@/lib/s3";
-
-/**
- * Guard: returns false for any S3 key that contains an `originals/` segment.
- * HD originals are the paid product and must never be served through the public
- * proxy — only through the authenticated download routes.
- */
-export function isServableUploadKey(s3Key: string): boolean {
-  if (/(^|\/)originals\//.test(s3Key) || s3Key.endsWith("/originals")) {
-    return false;
-  }
-  return true;
-}
+import { isServableUploadKey } from "../upload-key-utils";
 
 export async function GET(
   request: NextRequest,
