@@ -4,9 +4,8 @@ const ADMIN_SLUG = "focus-mgr-7k9x";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  // Keep build checks disabled for faster builds (enable if needed for debugging)
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   eslint: {
     ignoreDuringBuilds: true,
