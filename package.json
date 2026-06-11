@@ -7,7 +7,9 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "reprocess": "ts-node --compiler-options {\"module\":\"CommonJS\"} scripts/reprocess-photos.ts"
+    "reprocess": "ts-node --compiler-options {\"module\":\"CommonJS\"} scripts/reprocess-photos.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@aws-sdk/client-cost-explorer": "^3.992.0",
@@ -77,6 +79,8 @@
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.8"
   }
 }
