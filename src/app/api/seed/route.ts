@@ -3,6 +3,10 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 export async function POST(request: Request) {
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
   // Protect with a secret token
   const { searchParams } = new URL(request.url);
   const token = searchParams.get("token");
@@ -28,7 +32,7 @@ export async function POST(request: Request) {
     const admin = await prisma.user.create({
       data: {
         email: "admin@focusracer.com",
-        password: await bcrypt.hash("admin123", 10),
+        password: await bcrypt.hash(process.env.SEED_ADMIN_PASSWORD ?? "admin123", 10),
         name: "Admin Focus Racer",
         role: "ADMIN",
       },
@@ -37,7 +41,7 @@ export async function POST(request: Request) {
     const photographer = await prisma.user.create({
       data: {
         email: "photographe@test.com",
-        password: await bcrypt.hash("photo123", 10),
+        password: await bcrypt.hash(process.env.SEED_PHOTOGRAPHER_PASSWORD ?? "photo123", 10),
         name: "Pierre Photo",
         role: "PHOTOGRAPHER",
         company: "Photo Sport Pro",
@@ -48,7 +52,7 @@ export async function POST(request: Request) {
     const runner = await prisma.user.create({
       data: {
         email: "coureur@test.com",
-        password: await bcrypt.hash("runner123", 10),
+        password: await bcrypt.hash(process.env.SEED_RUNNER_PASSWORD ?? "runner123", 10),
         name: "Marie Sportif",
         role: "RUNNER",
       },
@@ -57,7 +61,7 @@ export async function POST(request: Request) {
     const organizer = await prisma.user.create({
       data: {
         email: "orga@test.com",
-        password: await bcrypt.hash("orga123", 10),
+        password: await bcrypt.hash(process.env.SEED_ORGANIZER_PASSWORD ?? "orga123", 10),
         name: "Lucas Organisateur",
         role: "ORGANIZER",
         company: "Run Events SARL",
