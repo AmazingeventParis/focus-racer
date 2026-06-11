@@ -36,8 +36,8 @@ export async function GET() {
 
     // current_period_end removed in Stripe API 2025+
     // Fallback: latest_invoice line item period.end
-    if ((subscription as Record<string, unknown>).current_period_end) {
-      nextInvoiceDate = new Date(((subscription as Record<string, unknown>).current_period_end as number) * 1000).toISOString();
+    if ((subscription as unknown as Record<string, unknown>).current_period_end) {
+      nextInvoiceDate = new Date(((subscription as unknown as Record<string, unknown>).current_period_end as number) * 1000).toISOString();
     } else if (subscription.latest_invoice) {
       try {
         const invId = typeof subscription.latest_invoice === "string"

@@ -1,6 +1,6 @@
 import { Check, Loader2 } from "lucide-react";
 
-interface TimelineStep {
+export interface TimelineStep {
   id: string;
   label: string;
   status: "pending" | "active" | "completed";

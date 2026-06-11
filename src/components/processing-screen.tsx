@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { getFactForMilestone } from "@/lib/runner-facts";
 import Link from "next/link";
-import { UploadTimeline } from "@/components/upload-timeline";
+import { UploadTimeline, type TimelineStep } from "@/components/upload-timeline";
 
 interface ProcessingScreenProps {
   sessionId: string;
@@ -83,29 +83,29 @@ export default function ProcessingScreen({
 
   const runnerPosition = Math.min(progress.percent, 100);
 
-  const timelineSteps = [
+  const timelineSteps: TimelineStep[] = [
     {
       id: "compress",
       label: "Compression",
-      status: "completed" as const,
+      status: "completed",
       progress: 100,
     },
     {
       id: "upload",
       label: "Envoi serveur",
-      status: "completed" as const,
+      status: "completed",
       progress: 100,
     },
     {
       id: "processing",
       label: "Traitement",
-      status: (progress.complete ? "completed" : "active") as const,
+      status: progress.complete ? "completed" : "active",
       progress: progress.percent,
     },
     {
       id: "complete",
       label: "Terminé",
-      status: (progress.complete ? "completed" : "pending") as const,
+      status: progress.complete ? "completed" : "pending",
     },
   ];
 

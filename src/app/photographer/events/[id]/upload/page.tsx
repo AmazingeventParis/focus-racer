@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Event } from "@/types";
 import ProcessingScreen from "@/components/processing-screen";
-import { UploadTimeline } from "@/components/upload-timeline";
+import { UploadTimeline, type TimelineStep } from "@/components/upload-timeline";
 import FocusCatcher from "@/components/game/focus-catcher";
 
 function generateSessionId(): string {
@@ -441,7 +441,7 @@ export default function UploadPage({
     const isCompressing = uploadStep === "compressing";
     const currentPercent = isCompressing ? compressProgress : uploadProgress;
 
-    const timelineSteps = [
+    const timelineSteps: TimelineStep[] = [
       {
         id: "compress",
         label: "Compression",
@@ -464,7 +464,7 @@ export default function UploadPage({
         label: "Terminé",
         status: "pending",
       },
-    ] as const;
+    ];
 
     // Combined progress: compression = 0-50%, upload = 50-100%
     const combinedProgress = isCompressing
