@@ -5,7 +5,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Papa from "papaparse";
-// xlsx (~300 KB) is loaded on demand when an Excel file is actually parsed
+// xlsx (~300 KB) is loaded on demand via parseXlsxBuffer
+import { parseXlsxBuffer, parseRows, MAX_FILE_SIZE_BYTES } from "@/lib/parse-start-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,12 +24,7 @@ interface StartListEntry {
   sportifId?: string | null;
 }
 
-interface ParsedEntry {
-  bibNumber: string;
-  firstName: string;
-  lastName: string;
-  email?: string;
-}
+import type { ParsedEntry } from "@/lib/parse-start-list";
 
 export default function StartListPage({
   params,
@@ -111,35 +107,20 @@ export default function StartListPage({
     }
   }, [status, fetchEntries, fetchEventName, fetchConnectors]);
 
-  const normalizeHeader = (header: string): string => {
-    const h = header.toLowerCase().trim().normalize("NFD").replace(/[̀-ͯ]/g, "");
-    if (h.includes("dossard") || h.includes("bib") || h === "n°" || h === "no" || h === "numero" || h === "number") return "bibNumber";
-    if (h.includes("prenom") || h === "first" || h === "firstname" || h === "first_name" || h === "first name") return "firstName";
-    if (h.includes("nom") || h === "last" || h === "lastname" || h === "last_name" || h === "last name" || h === "name") return "lastName";
-    if (h.includes("email") || h.includes("mail") || h.includes("courriel")) return "email";
-    return h;
-  };
-
-  const parseRows = (rows: Record<string, string>[]): ParsedEntry[] => {
-    return rows
-      .map((row) => {
-        const mapped: Record<string, string> = {};
-        for (const [key, value] of Object.entries(row)) {
-          mapped[normalizeHeader(key)] = value;
-        }
-        return {
-          bibNumber: mapped.bibNumber || "",
-          firstName: mapped.firstName || "",
-          lastName: mapped.lastName || "",
-          email: mapped.email || undefined,
-        };
-      })
-      .filter((e) => e.bibNumber && (e.firstName || e.lastName));
-  };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Size guard: reject before any parse to prevent DoS via huge files
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      toast({
+        title: "Fichier trop volumineux",
+        description: `La taille maximale autorisée est ${MAX_FILE_SIZE_BYTES / 1024 / 1024} Mo.`,
+        variant: "destructive",
+      });
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
 
     const ext = file.name.split(".").pop()?.toLowerCase();
 
@@ -148,7 +129,7 @@ export default function StartListPage({
         header: true,
         skipEmptyLines: true,
         complete: (results) => {
-          const parsed = parseRows(results.data as Record<string, string>[]);
+          const parsed = parseRows(results.data as Record<string, unknown>[]);
           setPreview(parsed);
           if (parsed.length === 0) {
             toast({
@@ -165,19 +146,26 @@ export default function StartListPage({
     } else if (ext === "xlsx" || ext === "xls") {
       const reader = new FileReader();
       reader.onload = async (ev) => {
-        const XLSX = await import("xlsx");
-        const data = new Uint8Array(ev.target?.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: "array" });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json<Record<string, string>>(firstSheet, { defval: "" });
-        const parsed = parseRows(rows);
-        setPreview(parsed);
-        if (parsed.length === 0) {
+        try {
+          const parsed = await parseXlsxBuffer(
+            ev.target?.result as ArrayBuffer,
+            file.size
+          );
+          setPreview(parsed);
+          if (parsed.length === 0) {
+            toast({
+              title: "Aucune entrée valide",
+              description: "Vérifiez que le fichier contient les colonnes : dossard, prénom, nom",
+              variant: "destructive",
+            });
+          }
+        } catch (err) {
           toast({
-            title: "Aucune entrée valide",
-            description: "Vérifiez que le fichier contient les colonnes : dossard, prénom, nom",
+            title: "Erreur de lecture du fichier Excel",
+            description: err instanceof Error ? err.message : undefined,
             variant: "destructive",
           });
+          if (fileInputRef.current) fileInputRef.current.value = "";
         }
       };
       reader.readAsArrayBuffer(file);
