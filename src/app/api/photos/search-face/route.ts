@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
       count: photos.length,
       photos: photos.map((p) => ({
         id: p.id,
-        src: s3KeyToPublicPath(p.thumbnailPath || p.webPath || p.path),
+        src: s3KeyToPublicPath(p.thumbnailPath || p.webPath || ""),
         originalName: p.originalName,
         bibNumbers: p.bibNumbers,
       })),

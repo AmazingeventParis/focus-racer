@@ -112,7 +112,7 @@ async function expandByFace(
     if (!hasConflictingBib) {
       photosMap.set(p.id, {
         id: p.id,
-        src: s3KeyToPublicPath(p.thumbnailPath || p.webPath || p.path),
+        src: s3KeyToPublicPath(p.thumbnailPath || p.webPath || ""),
         originalName: p.originalName,
         bibNumbers: p.bibNumbers,
       });
@@ -165,7 +165,7 @@ export async function GET(request: NextRequest) {
         if (!photosMap.has(b.photo.id)) {
           photosMap.set(b.photo.id, {
             id: b.photo.id,
-            src: s3KeyToPublicPath(b.photo.thumbnailPath || b.photo.webPath || b.photo.path),
+            src: s3KeyToPublicPath(b.photo.thumbnailPath || b.photo.webPath || ""),
             originalName: b.photo.originalName,
             bibNumbers: b.photo.bibNumbers,
           });
@@ -244,7 +244,7 @@ export async function GET(request: NextRequest) {
         if (!photosMap.has(b.photo.id)) {
           photosMap.set(b.photo.id, {
             id: b.photo.id,
-            src: s3KeyToPublicPath(b.photo.thumbnailPath || b.photo.webPath || b.photo.path),
+            src: s3KeyToPublicPath(b.photo.thumbnailPath || b.photo.webPath || ""),
             originalName: b.photo.originalName,
             bibNumbers: b.photo.bibNumbers,
           });

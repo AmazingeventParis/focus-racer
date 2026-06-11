@@ -57,7 +57,7 @@ export async function GET(
 
     const photosPublic = photos.map((photo) => ({
       id: photo.id,
-      src: s3KeyToPublicPath(photo.thumbnailPath || photo.webPath || photo.path),
+      src: s3KeyToPublicPath(photo.thumbnailPath || photo.webPath || ""),
       originalName: photo.originalName,
       bibNumbers: photo.bibNumbers,
       createdAt: photo.createdAt,
