@@ -256,41 +256,15 @@ export async function POST(request: NextRequest) {
     let creditsRemaining = 0;
 
     if (totalCredits > 0) {
-      const creditResult = await prisma.$transaction(async (tx) => {
-        const user = await tx.user.findUnique({
-          where: { id: session.user.id },
-          select: { credits: true },
-        });
-
-        if (!user) throw new Error("User not found");
-        if (user.credits < totalCredits) {
-          throw new Error("INSUFFICIENT_CREDITS");
-        }
-
-        const balanceBefore = user.credits;
-        const balanceAfter = balanceBefore - totalCredits;
-
-        await tx.user.update({
-          where: { id: session.user.id },
-          data: { credits: balanceAfter },
-        });
-
-        await tx.creditTransaction.create({
-          data: {
-            userId: session.user.id,
-            type: "DEDUCTION",
-            amount: totalCredits,
-            balanceBefore,
-            balanceAfter,
-            reason: `Import ${planLabel} de ${nbPhotos} photo${nbPhotos > 1 ? "s" : ""} (${creditsPerPhoto} cr/photo) - ${event.name}`,
-            eventId,
-          },
-        });
-
-        return { balanceAfter };
-      }).catch((err) => {
-        if (err.message === "INSUFFICIENT_CREDITS") return null;
-        throw err;
+      const { deductUploadCredits } = await import("@/lib/credits");
+      const creditResult = await deductUploadCredits({
+        userId: session.user.id,
+        totalCredits,
+        planLabel,
+        nbPhotos,
+        creditsPerPhoto,
+        eventName: event.name,
+        eventId,
       });
 
       if (!creditResult) {
