@@ -49,6 +49,8 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
+# Cron trigger script (used by Coolify Scheduled Tasks)
+COPY --from=builder /app/scripts/cron-trigger.mjs ./scripts/cron-trigger.mjs
 
 # Prisma CLI for migrate deploy at runtime
 COPY --from=deps /app/node_modules/prisma ./node_modules/prisma
