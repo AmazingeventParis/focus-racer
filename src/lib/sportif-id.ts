@@ -1,3 +1,4 @@
+import { randomInt } from "crypto";
 import prisma from "./prisma";
 
 const CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -5,7 +6,7 @@ const CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 export function generateSportifId(): string {
   let id = "FR-";
   for (let i = 0; i < 6; i++) {
-    id += CHARS[Math.floor(Math.random() * CHARS.length)];
+    id += CHARS[randomInt(CHARS.length)];
   }
   return id;
 }

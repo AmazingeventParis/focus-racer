@@ -1,3 +1,4 @@
+import { randomInt } from "crypto";
 import prisma from "@/lib/prisma";
 
 const REFERRER_CREDITS = 100;
@@ -227,7 +228,7 @@ function generateCode(length: number): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "";
   for (let i = 0; i < length; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
+    code += chars[randomInt(chars.length)];
   }
   return code;
 }
